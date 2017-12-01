@@ -1,3 +1,3 @@
-import campaign from 'schemas/campaign';
+import game from 'schemas/game';
 
-export default campaign;
+export default game;

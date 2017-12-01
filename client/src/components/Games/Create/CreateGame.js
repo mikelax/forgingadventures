@@ -3,9 +3,9 @@ import { graphql } from 'react-apollo';
 import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
-import { createCampaign, campaignsQuery } from '../queries';
+import { createGameMutation, gamesQuery } from '../queries';
 
-const CreateMessage = class CreateMessage extends Component {
+const CreateGame = class CreateGame extends Component {
 
   state = {
     minPlayers: 1,
@@ -16,11 +16,11 @@ const CreateMessage = class CreateMessage extends Component {
 
   render() {
     if (this.state.saved) {
-      return <Redirect to="/campaigns"/>;
+      return <Redirect to="/games"/>;
     }
 
     return (
-      <div className="Create">
+      <div className="create">
         <h1>Create a New Campaign</h1>
 
         <form>
@@ -103,17 +103,17 @@ const CreateMessage = class CreateMessage extends Component {
             }
           }
         },
-        update: (store, { data: { createCampaign } }) => {
+        update: (store, { data: { createGameMutation } }) => {
           // Read the data from our cache for this query.
-          const data = store.readQuery({ query: campaignsQuery });
+          const data = store.readQuery({ query: gamesQuery });
           // Add our comment from the mutation to the end.
-          data.campaigns.push(createCampaign);
+          data.campaigns.push(createGameMutation);
           // Write our data back to the cache.
-          store.writeQuery({ query: campaignsQuery, data });
+          store.writeQuery({ query: gamesQuery, data });
         }
       })
       .then(() => this.setState({ saved: true }))
   }
 };
 
-export default graphql(createCampaign)(CreateMessage);
+export default graphql(createGameMutation)(CreateGame);

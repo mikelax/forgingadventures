@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 
 import { graphql } from 'react-apollo';
 
-import { campaignsQuery } from '../queries';
+import { gamesQuery } from '../queries';
 
-class ListCampaigns extends Component {
+class ListGames extends Component {
 
   render() {
     const {match} = this.props;
 
-    return <div className="campaigns-list">
+    return <div className="games-list">
       <h1>Campaigns</h1>
 
       <Link to={`${match.url}/create`}>
@@ -39,4 +39,4 @@ class ListCampaigns extends Component {
   }
 }
 
-export default graphql(campaignsQuery)(ListCampaigns);
+export default graphql(gamesQuery)(ListGames);
