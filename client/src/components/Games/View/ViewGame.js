@@ -4,6 +4,9 @@ import { graphql } from 'react-apollo/index';
 import { compose, pure } from "recompose";
 
 import { gameQuery } from '../queries';
+
+import CreateMessage from './CreateMessage';
+import GamesMessages from './GameMessages';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
 class ViewGame extends Component {
@@ -27,6 +30,10 @@ class ViewGame extends Component {
       <div>title: {game.title}</div>
       <div>scenario: {game.scenario}</div>
       <div>overview: {game.overview}</div>
+
+      <CreateMessage gameId={game.id}></CreateMessage>
+
+      <GamesMessages gameId={game.id}></GamesMessages>
     </div>
 
   };
