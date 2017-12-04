@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
 import { gamesQuery } from '../queries';
+import ApolloLoader from '../../shared/components/ApolloLoader';
+import { compose, pure } from "recompose";
 
 class ListGames extends Component {
 
@@ -11,10 +13,10 @@ class ListGames extends Component {
     const {match} = this.props;
 
     return <div className="games-list">
-      <h1>Campaigns</h1>
+      <h1>Games</h1>
 
       <Link to={`${match.url}/create`}>
-        Create a new Campaign
+        Create a new Game
       </Link>
 
       {this.content()}
@@ -22,21 +24,18 @@ class ListGames extends Component {
   }
 
   content = () => {
-    const { data: { loading, error, campaigns } } = this.props;
+    const { data: { games } } = this.props;
 
-    switch(true) {
-      case loading:
-        return <p>Loading...</p>;
-      case error:
-        return <p>Error!</p>;
-      default:
-        return <ul>
-          {campaigns.map(({ id, title }) => (
-            <li key={id}>{title}</li>
-          ))}
-        </ul>
-    }
+    return <ul>
+      {(games || []).map(({ id, title }) => (
+        <li key={id}>{title}</li>
+      ))}
+    </ul>
   }
 }
 
-export default graphql(gamesQuery)(ListGames);
+export default compose(
+  graphql(gamesQuery),
+  ApolloLoader,
+  pure,
+)(ListGames);

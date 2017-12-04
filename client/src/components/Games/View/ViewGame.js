@@ -36,8 +36,6 @@ class ViewGame extends Component {
 
   gameDetails = () => {
     const { data: { game } } = this.props;
-
-
   };
 
 }

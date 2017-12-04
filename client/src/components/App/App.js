@@ -12,7 +12,7 @@ import Header from '../Header/Header';
 import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
 
-import Games from '../Campaigns/Games'
+import Games from '../Games/Games'
 
 import history from '../../services/Auth/history';
 

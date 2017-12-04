@@ -3,6 +3,8 @@ exports.up = function(knex) {
     table.increments().primary();
 
     table.integer('gameId').unsigned().notNullable();
+    table.foreign('gameId').references('games.id');
+
     table.text('message');
 
     table.timestamp('deleted_at');

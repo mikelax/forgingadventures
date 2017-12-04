@@ -1,5 +1,5 @@
 exports.up = function(knex) {
-  return knex.schema.createTable('campaigns', (table) => {
+  return knex.schema.createTable('games', (table) => {
     table.increments().primary();
 
     table.string('title');
@@ -15,10 +15,11 @@ exports.up = function(knex) {
 
     table.text('notes');
 
+    table.timestamp('deleted_at');
     table.timestamps();
   });
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('campaigns');
+  return knex.schema.dropTable('games');
 };
