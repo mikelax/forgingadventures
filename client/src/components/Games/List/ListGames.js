@@ -1,11 +1,11 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
 import { graphql } from 'react-apollo';
+import { compose, pure } from "recompose";
 
 import { gamesQuery } from '../queries';
 import ApolloLoader from '../../shared/components/ApolloLoader';
-import { compose, pure } from "recompose";
 
 class ListGames extends Component {
 
@@ -24,11 +24,15 @@ class ListGames extends Component {
   }
 
   content = () => {
-    const { data: { games } } = this.props;
+    const { match, data: { games } } = this.props;
 
     return <ul>
-      {(games || []).map(({ id, title }) => (
-        <li key={id}>{title}</li>
+      {_.each(games).map(({ id, title }) => (
+        <li key={id}>
+          <Link to={`${match.url}/${id}`}>
+            {title}
+          </Link>
+        </li>
       ))}
     </ul>
   }

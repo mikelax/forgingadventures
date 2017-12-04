@@ -10,13 +10,12 @@ export const gamesQuery = gql`
 `;
 
 export const gameQuery = gql`
-  query game($id: INT!) {
-    game{
+  query game($id: ID!) {
+    game(id: $id) {
       id
       title
       scenario
       overview
-      gameSettings
     }
   }
 `;

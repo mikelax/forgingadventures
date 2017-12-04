@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
-import { graphql } from 'react-apollo';
+import { graphql } from 'react-apollo/index';
+import { compose, pure } from "recompose";
 
 import { gameQuery } from '../queries';
+import ApolloLoader from '../../shared/components/ApolloLoader';
 
 class ViewGame extends Component {
 
   render() {
-    const {match} = this.props;
-
     return <div className="game">
       <h1>Game</h1>
 
-      <Link to={`${match.url}/list`}>
+      <Link to='/games'>
         Back to Games
       </Link>
 
@@ -22,22 +21,22 @@ class ViewGame extends Component {
   }
 
   content = () => {
-    const { data: { loading, error } } = this.props;
-
-    switch(true) {
-      case loading:
-        return <p>Loading...</p>;
-      case error:
-        return <p>Error!</p>;
-      default:
-        { this.gameDetails() }
-    }
-  };
-
-  gameDetails = () => {
     const { data: { game } } = this.props;
+
+    return <div>
+      <div>title: {game.title}</div>
+      <div>scenario: {game.scenario}</div>
+      <div>overview: {game.overview}</div>
+    </div>
+
   };
 
 }
 
-export default graphql(gameQuery)(ViewGame);
+export default compose(
+  graphql(gameQuery, {
+    options: ( { match: { params: { id } } } ) => ({ variables: { id } })
+  }),
+  ApolloLoader,
+  pure,
+)(ViewGame);

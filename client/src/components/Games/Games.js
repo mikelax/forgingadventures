@@ -21,4 +21,3 @@ export default class Campaigns extends Component {
     )
   }
 }
-
