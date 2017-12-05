@@ -8,7 +8,7 @@ exports.up = function(knex) {
     table.text('message');
 
     table.timestamp('deleted_at');
-    table.timestamps(true);
+    table.timestamps(true, true);
   });
 };
 

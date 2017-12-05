@@ -16,7 +16,7 @@ exports.up = function(knex) {
     table.text('notes');
 
     table.timestamp('deleted_at');
-    table.timestamps();
+    table.timestamps(true, true);
   });
 };
 
