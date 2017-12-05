@@ -103,11 +103,12 @@ const CreateGame = class CreateGame extends Component {
             }
           }
         },
-        update: (store, { data: { createGameMutation } }) => {
+        update: (store, { data: { createGame } }) => {
+        //update: (store, props) => {
           // Read the data from our cache for this query.
           const data = store.readQuery({ query: gamesQuery });
-          // Add our comment from the mutation to the end.
-          data.campaigns.push(createGameMutation);
+          // Add our game from the mutation to the end.
+          data.games.push(createGame);
           // Write our data back to the cache.
           store.writeQuery({ query: gamesQuery, data });
         }
