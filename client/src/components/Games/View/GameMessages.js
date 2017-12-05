@@ -24,7 +24,7 @@ class GameMessages extends Component {
         const newMessage = subscriptionData.data.messageAdded;
 
         return Object.assign({}, prev, {
-          gameMessages: [newMessage, ...prev.gameMessages]
+          gameMessages: [...prev.gameMessages, newMessage]
         });
       }
     })
