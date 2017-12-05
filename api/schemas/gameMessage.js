@@ -1,7 +1,12 @@
 import { makeExecutableSchema } from 'graphql-tools';
+import { withFilter } from 'graphql-subscriptions';
 
 import GameMessage from 'models/gameMessage';
 import schemaScopeGate from 'services/schemaScopeGate';
+
+import pubsub from 'services/pubsub';
+
+export const TOPIC_MESSAGE_ADDED = 'messageAdded';
 
 const typeDefs = `
   type GameMessage {
@@ -13,7 +18,7 @@ const typeDefs = `
   # queries
   type Query {
     message(id: ID!): GameMessage!,
-    gameMessages(gameId: ID!): [GameMessage]
+    gameMessages(gameId: ID!): [GameMessage!]
   }
   
   # mutations
@@ -24,6 +29,11 @@ const typeDefs = `
   input CreateGameMessageInput {
     gameId: ID!,
     message: String!
+  }
+  
+  # subscriptions
+  type Subscription {
+    messageAdded(gameId: ID!): GameMessage!
   }
 `;
 
@@ -43,7 +53,24 @@ const resolvers = {
         GameMessage
           .query()
           .insert(input)
-          .returning('*'))
+          .returning('*')
+          .then((gameMessage) => {
+            pubsub.publish(TOPIC_MESSAGE_ADDED, {
+              messageAdded: gameMessage
+            });
+
+            return gameMessage;
+          })
+      )
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: withFilter(() => pubsub.asyncIterator(TOPIC_MESSAGE_ADDED), (payload, variables) => {
+        console.log('payload', payload)
+        console.log('variables', variables)
+        return payload.gameId === variables.gameId;
+      })
+    }
   }
 };
 

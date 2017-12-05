@@ -4,5 +4,5 @@ import game from 'schemas/game';
 import gameMessage from 'schemas/gameMessage';
 
 export default mergeSchemas({
-  schemas: [game, gameMessage],
+  schemas: [gameMessage, game],
 });

@@ -3,10 +3,37 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
 
-import { gameMessagesQuery, gameQuery } from '../queries';
+import { gameMessagesQuery, onGameMessageAdded } from '../queries';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
 class GameMessages extends Component {
+
+  componentWillMount() {
+    const { gameId, data } = this.props;
+    console.log('this.props', this.props)
+
+    data.subscribeToMore({
+      document: onGameMessageAdded,
+      variables: {
+        gameId
+      },
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log('prev', prev)
+        console.log('ho', subscriptionData)
+        if (!subscriptionData.data) {
+          return prev;
+        }
+
+        const newMessage = subscriptionData.data.messageAdded;
+
+        return Object.assign({}, prev, {
+          entry: {
+            gameMessages: [newMessage, ...prev.entry.gameMessages]
+          }
+        });
+      }
+    })
+  }
 
   render() {
     return <div className="games-messages-container">
@@ -22,7 +49,7 @@ class GameMessages extends Component {
     return <div className='game-messages'>
       {_.each(gameMessages).map(({ id, message }) => (
         <div key={id} className='game-message'>
-          { message }
+          {message}
         </div>
       ))}
     </div>
@@ -31,7 +58,7 @@ class GameMessages extends Component {
 
 export default compose(
   graphql(gameMessagesQuery, {
-    options: ( { gameId } ) => ({ variables: { gameId } })
+    options: ({ gameId }) => ({ variables: { gameId } })
   }),
   ApolloLoader,
   pure,

@@ -46,3 +46,12 @@ export const createGameMessageMutation = gql`
     }
   }
 `;
+
+export const onGameMessageAdded = gql`
+  subscription messageAdded($gameId: ID!){
+    messageAdded(gameId: $gameId){
+      gameId
+      message
+    }
+  }
+`;
