@@ -66,9 +66,7 @@ const resolvers = {
   Subscription: {
     messageAdded: {
       subscribe: withFilter(() => pubsub.asyncIterator(TOPIC_MESSAGE_ADDED), (payload, variables) => {
-        console.log('payload', payload)
-        console.log('variables', variables)
-        return payload.gameId === variables.gameId;
+        return payload.messageAdded.gameId === Number(variables.gameId);
       })
     }
   }

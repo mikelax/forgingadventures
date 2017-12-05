@@ -52,8 +52,6 @@ app.use(compression());
 app.use(cookieParser());
 app.use(cors());
 
-console.log('schema', schema)
-
 // graphql endpoints
 if (config.get('graphql.graphiql')) {
   app.use('/graphql', bodyParser.json(), checkJwtForGraphiql(), graphqlExpress((req, res) => ({
@@ -71,6 +69,7 @@ if (config.get('graphql.graphiql')) {
     context: { req, res }
   })));
 }
+
 
 // set up basic routes
 app.use('/silent', (req, res) => {

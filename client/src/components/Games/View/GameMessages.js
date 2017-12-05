@@ -10,7 +10,6 @@ class GameMessages extends Component {
 
   componentWillMount() {
     const { gameId, data } = this.props;
-    console.log('this.props', this.props)
 
     data.subscribeToMore({
       document: onGameMessageAdded,
@@ -18,8 +17,6 @@ class GameMessages extends Component {
         gameId
       },
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('prev', prev)
-        console.log('ho', subscriptionData)
         if (!subscriptionData.data) {
           return prev;
         }
@@ -27,9 +24,7 @@ class GameMessages extends Component {
         const newMessage = subscriptionData.data.messageAdded;
 
         return Object.assign({}, prev, {
-          entry: {
-            gameMessages: [newMessage, ...prev.entry.gameMessages]
-          }
+          gameMessages: [newMessage, ...prev.gameMessages]
         });
       }
     })

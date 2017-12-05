@@ -2774,9 +2774,9 @@ graphql-subscriptions@^0.4.2:
     es6-promise "^4.0.5"
     iterall "^1.1.1"
 
-graphql-tools@^2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/graphql-tools/-/graphql-tools-2.7.2.tgz#03104a155b15f8441b0e5a7113b12b9512341a9e"
+graphql-tools@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/graphql-tools/-/graphql-tools-2.11.0.tgz#be86d14acfe4ca9411967c6b54bac2eedc0dbb72"
   dependencies:
     apollo-utilities "^1.0.1"
     deprecated-decorator "^0.1.6"
