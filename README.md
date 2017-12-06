@@ -29,6 +29,8 @@ Edit [package.json](./client/package.json) and set `"proxy": "http://localhost:3
 Install [docker](https://www.docker.com/docker-mac)
 NOTE: Config values for some container parameters (ie. db) are set up using [env files](https://docs.docker.com/compose/environment-variables/).
 
+NOTE 2: If you get errors about certain npn libs not building correctly, it coudl be that the node_modules folder from the host machine was copied to a docker container. Delete the `node_modules` folder on the host in the api and client folders and then recreate the containers. 
+
 From the root folder run:
 
 ```shell

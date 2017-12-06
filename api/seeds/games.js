@@ -1,9 +1,9 @@
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
-  return knex('campaigns').del()
+  return knex('games').del()
     .then(() =>
       // Inserts seed entries
-      knex('campaigns').insert([
+      knex('games').insert([
         {
           title: 'FIRST! Campaign',
           scenario: 'looky here',

@@ -1,3 +1,8 @@
-import campaign from 'schemas/campaign';
+import { mergeSchemas } from 'graphql-tools';
 
-export default campaign;
+import game from 'schemas/game';
+import gameMessage from 'schemas/gameMessage';
+
+export default mergeSchemas({
+  schemas: [gameMessage, game],
+});

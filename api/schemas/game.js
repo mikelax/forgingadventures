@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 
-import Campaign from 'models/campaign';
+import Game from 'models/game';
 import schemaScopeGate from 'services/schemaScopeGate';
 
 const typeDefs = `
@@ -11,7 +11,7 @@ const typeDefs = `
     postingFrequency: Int!
   }
   
-  type Campaign {
+  type Game {
     id: ID!,
     title: String!,
     scenario: String!,
@@ -21,16 +21,16 @@ const typeDefs = `
   
   # queries
   type Query {
-    campaigns: [Campaign],
-    campaign(id: ID!): Campaign!
+    games: [Game],
+    game(id: ID!): Game!
   }
   
   # mutations
   type Mutation {
-    createCampaign(input: CreateCampaignInput): Campaign
+    createGame(input: CreateGameInput): Game
   }
   
-  input CreateCampaignInput {
+  input CreateGameInput {
     title: String!,
     scenario: String!,
     overview: String!,
@@ -47,18 +47,18 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    campaign: (obj, { id }, context) =>
+    game: (obj, { id }, context) =>
       schemaScopeGate(['read:messages'], context, () =>
-        Campaign.query().findById(id)),
+        Game.query().findById(id)),
 
-    campaigns: (obj, params, context) =>
+    games: (obj, params, context) =>
       schemaScopeGate(['read:messages'], context, () =>
-        Campaign.query())
+        Game.query())
   },
   Mutation: {
-    createCampaign: (obj, { input }, context) =>
+    createGame: (obj, { input }, context) =>
       schemaScopeGate(['write:messages'], context, () =>
-        Campaign
+        Game
           .query()
           .insert(input)
           .returning('*'))
