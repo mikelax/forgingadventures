@@ -20,7 +20,7 @@ class ViewGame extends Component {
       </Link>
 
       {this.content()}
-    </div>
+    </div>;
   }
 
   content = () => {
@@ -34,8 +34,7 @@ class ViewGame extends Component {
       <CreateMessage gameId={game.id}></CreateMessage>
 
       <GamesMessages gameId={game.id}></GamesMessages>
-    </div>
-
+    </div>;
   };
 
 }

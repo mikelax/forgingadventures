@@ -40,7 +40,7 @@ const CreateGame = class CreateGame extends Component {
           }
         }
       })
-      .then(() => this.setState({ message: '' }))
+      .then(() => this.setState({ message: '' }));
   }
 };
 

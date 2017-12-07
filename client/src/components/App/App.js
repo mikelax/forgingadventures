@@ -12,7 +12,7 @@ import Header from '../Header/Header';
 import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
 
-import Games from '../Games/Games'
+import Games from '../Games/Games';
 
 import history from '../../services/Auth/history';
 
@@ -24,7 +24,7 @@ const handleAuthentication = (nextState, replace) => {
   if (/access_token|id_token|error/.test(nextState.location.hash)) {
     auth.handleAuthentication();
   }
-}
+};
 
 class App extends Component<{}> {
   render() {
@@ -53,7 +53,7 @@ class App extends Component<{}> {
             <Route path="/login" component={Login} />
             <Route path="/callback" render={(props) => {
               handleAuthentication(props);
-              return <Callback {...props} /> 
+              return <Callback {...props} />; 
             }}/>
             <Route path="/games" component={Games} />
           </div>

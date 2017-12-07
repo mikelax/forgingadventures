@@ -27,7 +27,7 @@ class GameMessages extends Component {
           gameMessages: [...prev.gameMessages, newMessage]
         });
       }
-    })
+    });
   }
 
   render() {
@@ -35,7 +35,7 @@ class GameMessages extends Component {
       <h1>Messages</h1>
 
       {this.content()}
-    </div>
+    </div>;
   }
 
   content = () => {
@@ -47,7 +47,7 @@ class GameMessages extends Component {
           {message}
         </div>
       ))}
-    </div>
+    </div>;
   }
 }
 
