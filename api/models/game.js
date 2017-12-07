@@ -1,7 +1,9 @@
-import { Model } from 'objection';
+import { compose, Model } from 'objection';
 
-import GameMessage from 'models/gameMessage';
+import setUpdatedAt from 'models/plugins/setUpdatedAt';
 
-export default class Game extends Model {
+const mixins = compose(setUpdatedAt);
+
+export default class Game extends mixins(Model) {
   static tableName = 'games';
 }
