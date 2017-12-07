@@ -89,7 +89,7 @@ const CreateGame = class CreateGame extends Component {
               <option value="3">Expert/role play master and rules bookworm</option>
             </FormControl>
             
-            <ControlLabel>Posting Frequence</ControlLabel>
+            <ControlLabel>Frequence</ControlLabel>
             <FormControl
               componentClass="select"
               value={this.formValue('gameSettings.postingFrequency')}
@@ -130,8 +130,8 @@ const CreateGame = class CreateGame extends Component {
     const errors = {};
 
     _.isEmpty(this.formValue('title')) && (errors.title = 'Title is required');
-    _.isEmpty(this.formValue('scenario')) && (errors.title = 'Scenario is required');
-    _.isEmpty(this.formValue('overview')) && (errors.title = 'Overview is required');
+    _.isEmpty(this.formValue('scenario')) && (errors.scenario = 'Scenario is required');
+    _.isEmpty(this.formValue('overview')) && (errors.overview = 'Overview is required');
 
 
     this.setState({...this.state, errors});
