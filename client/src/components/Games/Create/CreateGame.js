@@ -114,7 +114,6 @@ const CreateGame = class CreateGame extends Component {
             input: this.state.store
           },
           update: (store, { data: { createGame } }) => {
-            //update: (store, props) => {
             // Read the data from our cache for this query.
             const data = store.readQuery({ query: gamesQuery });
             // Add our game from the mutation to the end.
@@ -123,18 +122,21 @@ const CreateGame = class CreateGame extends Component {
             store.writeQuery({ query: gamesQuery, data });
           }
         })
-        .then(() => this.setState({ saved: true }))
+        .then(() => this.setState({ saved: true }));
     }
   };
 
   valid = () => {
-    this.setState({...this.state, errors: {}});
+    const errors = {};
 
-    this.setError('title', 'Title is required');
-    this.setError('scenario', 'Scenario is required');
-    this.setError('overview', 'Overview is required');
+    _.isEmpty(this.formValue('title')) && (errors.title = 'Title is required');
+    _.isEmpty(this.formValue('scenario')) && (errors.title = 'Scenario is required');
+    _.isEmpty(this.formValue('overview')) && (errors.title = 'Overview is required');
 
-    return _.keys(this.state.errors).length === 0;
+
+    this.setState({...this.state, errors});
+
+    return _.keys(errors).length === 0;
   };
 
   validity = (field) => {
@@ -143,23 +145,13 @@ const CreateGame = class CreateGame extends Component {
     }
   };
 
-  setError = (field, message) => {
-    console.log('this.state.errors', field, _.isEmpty(this.formInput(field)), JSON.stringify(this.state.errors))
-    //_.isEmpty(this.formInput(field)) && (this.state.errors[field] = message);
-    _.isEmpty(this.formInput(field)) && this.setState({...this.state, errors: {
-        ...this.state.errors,
-        [field]: message
-      }});
-  };
-
-
-
   formInput = (stateKey) => {
     return (e) => {
-      _.set(this.state.store, stateKey, e.target.value);
-      //force update since we've mutated the state directly
-      this.forceUpdate();
-    }
+      const { store } = this.state;
+
+      _.set(store, stateKey, e.target.value);
+      this.setState({...this.state, store});
+    };
   };
 
   formValue = (stateKey) => {

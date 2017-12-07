@@ -18,6 +18,6 @@ export default class Campaigns extends Component {
           <Route exact path={`${match.url}`} component={ListGames}/>
         </Switch>
       </div>
-    )
+    );
   }
 }

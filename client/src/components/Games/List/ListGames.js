@@ -20,7 +20,7 @@ class ListGames extends Component {
       </Link>
 
       {this.content()}
-    </div>
+    </div>;
   }
 
   content = () => {
@@ -34,7 +34,7 @@ class ListGames extends Component {
           </Link>
         </li>
       ))}
-    </ul>
+    </ul>;
   }
 }
 
