@@ -89,7 +89,7 @@ const CreateGame = class CreateGame extends Component {
               <option value="3">Expert/role play master and rules bookworm</option>
             </FormControl>
             
-            <ControlLabel>Frequence</ControlLabel>
+            <ControlLabel>Posting Frequency</ControlLabel>
             <FormControl
               componentClass="select"
               value={this.formValue('gameSettings.postingFrequency')}
