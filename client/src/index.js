@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import 'auth0-js/build/auth0.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
+import 'draft-js/dist/Draft.css';
 import './index.css';
 import App from './components/App/App';
 import registerServiceWorker from './registerServiceWorker';
@@ -46,19 +47,6 @@ const link = split(
   wsLink,
   authLink.concat(httpLink),
 );
-
-
-// const link = ApolloLink.split(
-//   hasSubscriptionOperation,
-//   new WebSocketLink({
-//     uri:
-//       'wss://hostname/__path__',
-//     options: { reconnect: true },
-//   }),
-//   new Link({
-//     uri: 'https://hostname/__path__',
-//   }),
-// )
 
 const client = new ApolloClient({
   link,
