@@ -85,7 +85,7 @@ app.use('/api', index);
 server.listen(app.get('port'), () => {
   logger.info(`Find the server at: http://localhost:${app.get('port')}/`);
 
-  new SubscriptionServer({
+  SubscriptionServer.create({
     execute,
     subscribe,
     schema
