@@ -24,7 +24,7 @@ export default class Auth {
   // TODO not sure I like this pattern here
   // but used to simulate static properties
   static get requestedScopes() {
-    return 'openid profile read:messages write:messages create:tags delete:tags';
+    return 'openid profile create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
   }
 
   login = () => {
@@ -37,6 +37,7 @@ export default class Auth {
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
     localStorage.removeItem('scopes');
+    localStorage.removeItem('roles');
 
     // Stop any running renewal timers
     clearTimeout(this.tokenRenewalTimeout);
@@ -60,12 +61,16 @@ export default class Auth {
   setSession = (authResult) => {
     // Set the time that the access token will expire at
     let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
+    // scope attribute will be empty of all scopes are returned, so use scopes defined here to store in browser
     const scopes = authResult.scope || Auth.requestedScopes || '';
+    // Roles claim is namespaced but not unique between environments (tenants)
+    const roles = authResult.idTokenPayload['https://forgingadventures.com/claims/roles'];
 
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);
     localStorage.setItem('scopes', JSON.stringify(scopes));
+    localStorage.setItem('roles', JSON.stringify(roles));
 
     // schedule a token renewal
     this.scheduleRenewal();

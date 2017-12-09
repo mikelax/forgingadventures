@@ -47,17 +47,15 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    game: (obj, { id }, context) =>
-      schemaScopeGate(['read:messages'], context, () =>
-        Game.query().findById(id)),
+    game: (obj, { id }) =>
+      Game.query().findById(id),
 
-    games: (obj, params, context) =>
-      schemaScopeGate(['read:messages'], context, () =>
-        Game.query())
+    games: () =>
+      Game.query()
   },
   Mutation: {
     createGame: (obj, { input }, context) =>
-      schemaScopeGate(['write:messages'], context, () =>
+      schemaScopeGate(['create:games'], context, () =>
         Game
           .query()
           .insert(input)

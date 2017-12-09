@@ -61,7 +61,7 @@ if (config.get('graphql.graphiql')) {
 
   app.use('/graphiql', graphiqlExpress({
     endpointURL: '/graphql',
-    subscriptionsEndpoint: `ws://localhost:3001/subscriptions`
+    subscriptionsEndpoint: 'ws://localhost:3001/subscriptions'
   }));
 } else {
   app.use('/graphql', bodyParser.json(), checkJwt(), graphqlExpress((req, res) => ({
@@ -85,13 +85,13 @@ app.use('/api', index);
 server.listen(app.get('port'), () => {
   logger.info(`Find the server at: http://localhost:${app.get('port')}/`);
 
-  new SubscriptionServer({
+  SubscriptionServer.create({
     execute,
     subscribe,
-    schema,
+    schema
   }, {
     server,
-    path: '/subscriptions',
+    path: '/subscriptions'
   });
 });
 
