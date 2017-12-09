@@ -1,5 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { withFilter } from 'graphql-subscriptions';
+import GraphQLJSON from 'graphql-type-json';
 
 import GameMessage from 'models/gameMessage';
 import schemaScopeGate from 'services/schemaScopeGate';
@@ -9,10 +10,13 @@ import pubsub from 'services/pubsub';
 export const TOPIC_MESSAGE_ADDED = 'messageAdded';
 
 const typeDefs = `
+
+  scalar JSON
+  
   type GameMessage {
     id: ID!,
     gameId: ID!,
-    message: String!
+    message: JSON!
   }
   
   # queries
@@ -28,7 +32,7 @@ const typeDefs = `
   
   input CreateGameMessageInput {
     gameId: ID!,
-    message: String!
+    message: JSON!
   }
   
   # subscriptions
@@ -69,7 +73,8 @@ const resolvers = {
         return payload.messageAdded.gameId === Number(variables.gameId);
       })
     }
-  }
+  },
+  JSON: GraphQLJSON
 };
 
 export default makeExecutableSchema({ typeDefs, resolvers });

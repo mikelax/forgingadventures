@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
+import {Editor, EditorState, convertFromRaw} from 'draft-js';
 
 import { gameMessagesQuery, onGameMessageAdded } from '../queries';
 import ApolloLoader from '../../shared/components/ApolloLoader';
@@ -44,7 +45,9 @@ class GameMessages extends Component {
     return <div className='game-messages'>
       {_.each(gameMessages).map(({ id, message }) => (
         <div key={id} className='game-message'>
-          {message}
+          <Editor
+            editorState={EditorState.createWithContent(convertFromRaw(message))}
+            readOnly={true} />
         </div>
       ))}
     </div>;
