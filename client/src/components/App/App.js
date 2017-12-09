@@ -44,7 +44,7 @@ class App extends Component<{}> {
               )}
             />
             <Route path="/messages/create" render={(props) => (
-              !auth.isAuthenticated() || !auth.userHasScopes(['write:messages']) ? (
+              !auth.isAuthenticated() || !auth.userHasScopes(['create:posts']) ? (
                 <Redirect to="/"/>
               ) : (
                 <CreateMessage auth={auth} {...props} />

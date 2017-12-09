@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, Grid, Jumbotron, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 export default class Header extends Component {
 
@@ -31,7 +31,7 @@ export default class Header extends Component {
                 {isAuthenticated() && (
                   <NavItem href="/profile">Profile</NavItem>
                 )}
-                {isAuthenticated() && userHasScopes(['write:messages']) && (
+                {isAuthenticated() && userHasScopes(['create:posts']) && (
                   <NavItem href="/messages/create">Create Message</NavItem>
                 )}
                 {!isAuthenticated() && (

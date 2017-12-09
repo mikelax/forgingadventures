@@ -12,12 +12,12 @@ export function checkJwt() {
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
-      jwksUri: 'https://forgingadventures.auth0.com/.well-known/jwks.json'
+      jwksUri: `https://${config.get('auth0.domain')}/.well-known/jwks.json`
     }),
 
     // Validate the audience and the issuer.
-    audience: 'https://api.forgingadventures.com',
-    issuer: 'https://forgingadventures.auth0.com/',
+    audience: config.get('auth0.audience'),
+    issuer: `https://${config.get('auth0.domain')}/`,
     algorithms: ['RS256']
   });
 }
