@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Button, ControlLabel, FormGroup } from 'react-bootstrap';
-import {Editor, EditorState, convertToRaw} from 'draft-js';
+
+import GameMessage from '../components/GameMessage/GameMessage';
 
 import { createGameMessageMutation } from '../queries';
 
 const CreateGame = class CreateGame extends Component {
 
   state = {
-    editorState: EditorState.createEmpty()
+    message: null
   };
 
   render() {
@@ -17,9 +18,7 @@ const CreateGame = class CreateGame extends Component {
         <form>
           <FormGroup>
             <ControlLabel>Add Message</ControlLabel>
-            <div className="editor-wrapper">
-              <Editor editorState={this.state.editorState} onChange={this.onEditorChange} />
-            </div>
+            <GameMessage ref={(c) => (this.editor = c)} onChanged={this.setMessage} />
           </FormGroup>
         </form>
 
@@ -28,20 +27,22 @@ const CreateGame = class CreateGame extends Component {
     );
   }
 
-  onEditorChange = (editorState) => this.setState({editorState});
+  setMessage = ({message}) => this.setState({message});
 
   submit = () => {
-    console.log('this.state.editorState', this.state.editorState)
     this.props
       .mutate({
         variables: {
           input: {
             gameId: this.props.gameId,
-            message: convertToRaw(this.state.editorState.getCurrentContent())
+            message: this.state.message
           }
         }
       })
-      .then(() => this.setState({ editorState: EditorState.createEmpty() }));
+      .then(() => {
+        this.setState({ message: null });
+        this.editor.clear();
+      });
   }
 };
 
