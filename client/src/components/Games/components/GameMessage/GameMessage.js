@@ -1,6 +1,7 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
-import {Editor, EditorState, convertToRaw, convertFromRaw, CompositeDecorator, Modifier, Entity} from 'draft-js';
+import React, {Component} from 'react';
+import {CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier} from 'draft-js';
+import {getSelectionEntity} from 'draftjs-utils';
 
 import 'draft-js/dist/Draft.css';
 import './GameMessage.css';
@@ -73,14 +74,16 @@ export default class GamesMessage extends Component {
 /// private implementation details
 
 const ActionControls = (props) => {
-  const currentStyle = props.editorState.getCurrentInlineStyle();
+  const {editorState} = props;
+  const selectionEntity = getSelectionEntity(editorState);
 
   return (
     <div>
       {buttons.map(button =>
         <ActionButton
           key={button.type}
-          active={currentStyle.has(button.type)}
+          entity={button.entity}
+          active={selectionEntity === button.entity}
           label={button.label}
           onToggle={props.onToggle}
           type={button.type}
@@ -94,6 +97,7 @@ class ActionButton extends React.Component {
   render() {
     return (
       <button
+        className={this.props.active ? 'active' : ''}
         type="button"
         title={this.props.type}
         onMouseDown={this._toggle}>
@@ -104,8 +108,8 @@ class ActionButton extends React.Component {
 
   _toggle = (e) => {
     e.preventDefault();
-    this.props.onToggle(this.props.type);
-  }
+    this.props.onToggle(this.props.entity);
+  };
 }
 
 const ThinkSpan = (props) => {
@@ -149,27 +153,28 @@ const decorator = new CompositeDecorator([
 const buttons = [
   {
     label: 'S',
-    type: 'SHOUT'
+    type: 'SHOUT',
+    entity: Entity.create('SHOUT', 'MUTABLE')
   },
   {
     label: 'TH',
-    type: 'THINK'
+    type: 'THINK',
+    entity: Entity.create('THINK', 'MUTABLE')
   },
   {
     label: 'S',
-    type: 'SING'
+    type: 'SING',
+    entity: Entity.create('SING', 'MUTABLE')
   }
 ];
 
 function onEditorChange(editorState) {
-  console.log('onEditorChange', editorState)
-  this.setState({editorState, decorator});
+  this.setState({editorState});
 }
 
-function onToggleAction(action) {
+function onToggleAction(entityKey) {
   const editorState = this.state.editorState;
   const currentContent = editorState.getCurrentContent();
-  const entityKey = Entity.create(action, 'MUTABLE');
   const selection = editorState.getSelection();
   const textWithEntity = Modifier.applyEntity(currentContent, selection, entityKey);
 

@@ -19,3 +19,7 @@
 .game-message span.singing {
     background-color: lightgreen;
 }
+
+.game-message button.active {
+    background-color: red
+}
