@@ -35,7 +35,7 @@ const CreateGame = class CreateGame extends Component {
         variables: {
           input: {
             gameId: this.props.gameId,
-            message: this.state.message
+            message: this.editor.getEditorMessage()
           }
         }
       })
