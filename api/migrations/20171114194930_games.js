@@ -2,7 +2,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('games', (table) => {
     table.increments().primary();
 
-    table.string('title');
+    table.string('title').notNullable();
     table.text('scenario');
     table.text('overview');
 
@@ -11,7 +11,7 @@ exports.up = function(knex) {
     // maxPlayers
     // skillLevel
     // postingFrequency
-    table.jsonb('gameSettings');
+    table.jsonb('gameSettings').notNullable();
 
     table.text('notes');
 
