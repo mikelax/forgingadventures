@@ -6,6 +6,10 @@
 
 There are two tenants, or environments created for FA. `forgingadventures-staging` will be used for the development and testing. `forgingadventures` is the main production environment. They are currently totally isolated, so this means that any config changes made in one, will need to be manually made in the other. 
 
+## Staging Environment
+
+This environment will currently be used as both a test environment and for local development. There will need to be a change made to one of the configuration attributes used in the Rules below. 
+
 ## APIs and Clients
 
 Within the world of Auth0 (and OAuth2), there exists the concepts of APIs and Clients. Both of these must be configured for the application. 
@@ -24,6 +28,8 @@ Access Token (access_token) - a token that can be used to authorize to an API.
 Currently the source for all Rules are checked in here under the Rules folder. 
 Github issue #10 covers the work to integrate automated deployments of Rules based on commits to Github. See [this Auth0 tutorial](https://auth0.com/docs/extensions/github-deploy), one thing to note is that this will require moving the Rules source to a new repo, or moving the folder rules to be a top-level folder.
 
+API_BASE_URL - for local development you can use [localtunnel](https://localtunnel.github.io/www/) to expose your localhost API to Auth0. 
+
 ## auth0-authorization-extension
 
 This Rule is automatically created by enabling and configuring the Auth0 Authorization extension. The basic function is to determine what "extra" attributes will be added to the User context. Currently it is set up to include the `roles` and `permissions` defined for the given User.
@@ -38,3 +44,6 @@ It then gets all the permissions (scopes) assigned to the User based on the Role
 
 This Rule adds the list of Auth0 Authorization Roles the User is a memeber of and adds the array to the *id_token*. This array is also available in the initial callback after a call to auth0.parseHash in the `idTokenPayload` attribute (as are all attributes in the id_token). 
 
+## Update user profile in Database
+
+This rule will make a POST API call to the FA application. It will sync the Auth0 user profile data to a local `users` database table. This will allow the FA db to use a user_id attribute for all foreign key references for objects to link back to a User. 

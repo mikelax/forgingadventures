@@ -3,7 +3,7 @@ import User from 'models/user';
 
 export default function postUsers() {
   return (req, res, next) => {
-    const user = _.pick(req.body, ['auth0UserId', 'userMetadata', 'appMetadata']);
+    const user = _.pick(req.body.data, ['auth0UserId', 'userMetadata', 'appMetadata']);
 
     User
       .query()

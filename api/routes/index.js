@@ -1,5 +1,5 @@
 import knex from 'services/knex';
-import { checkJwt, checkScopes } from 'middleware/security';
+import { checkAuth0Secret, checkJwt, checkScopes } from 'middleware/security';
 import postUsers from './usersImpl';
 
 const router = require('express').Router();
@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   res.send('API Index');
 });
 
-router.post('/users', postUsers());
+router.post('/users', checkAuth0Secret(), postUsers());
 
 // ********* Test Endpoints:  TODO Delete ********* //
 // TODO may consider moving security.checkJwt to app middleware
