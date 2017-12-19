@@ -1,6 +1,7 @@
 {
   "auth0": {
-    "redirectUri": "http://localhost:3000"
+    "redirectUri": "http://localhost:3000",
+    "sharedSecret": "SecretAdventuresInTheDungeon"
   },
   "database": {
     "connection": "postgresql://postgres:docker@db:5432/postgres"

@@ -2,6 +2,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import Game from 'models/game';
 import schemaScopeGate from 'services/schemaScopeGate';
+import getUser from 'services/user';
 
 const typeDefs = `
   type GameSetting {
@@ -55,11 +56,17 @@ const resolvers = {
   },
   Mutation: {
     createGame: (obj, { input }, context) =>
-      schemaScopeGate(['create:games'], context, () =>
-        Game
-          .query()
-          .insert(input)
-          .returning('*'))
+      schemaScopeGate(['create:games'], context, () => {
+        // TODO consider writing function to automaticaly add userId to input
+        return getUser(context.req.user.sub)
+          .then((user) => {
+            input.userId = user.id;
+            return Game
+              .query()
+              .insert(input)
+              .returning('*');
+          });
+      })
   }
 };
 

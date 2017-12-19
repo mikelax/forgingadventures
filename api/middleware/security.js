@@ -57,3 +57,18 @@ export function checkScopes(scopes) {
   };
 }
 
+export function checkAuth0Secret() {
+  return (req, res, next) => {
+    if (_.get(req.body, 'meta.sharedSecret') === config.get('auth0.sharedSecret')) {
+      next();
+    } else {
+      nextError(new Error('Invalid Request'));
+    }
+
+    function nextError(err) {
+      err.status = 401;
+      return next(err);
+    }
+  };
+}
+
