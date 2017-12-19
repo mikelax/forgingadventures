@@ -4,6 +4,7 @@ import { withFilter } from 'graphql-subscriptions';
 import GameMessage from 'models/gameMessage';
 import schemaScopeGate from 'services/schemaScopeGate';
 
+import getUser from 'services/user';
 import pubsub from 'services/pubsub';
 
 export const TOPIC_MESSAGE_ADDED = 'messageAdded';
@@ -49,19 +50,23 @@ const resolvers = {
   },
   Mutation: {
     createGameMessage: (obj, { input }, context) =>
-      schemaScopeGate(['create:posts'], context, () =>
-        GameMessage
-          .query()
-          .insert(input)
-          .returning('*')
-          .then((gameMessage) => {
-            pubsub.publish(TOPIC_MESSAGE_ADDED, {
-              messageAdded: gameMessage
-            });
+      schemaScopeGate(['create:posts'], context, () => {
+        return getUser(context.req.user.sub)
+          .then((user) => {
+            input.userId = user.id;
+            return GameMessage
+              .query()
+              .insert(input)
+              .returning('*')
+              .then((gameMessage) => {
+                pubsub.publish(TOPIC_MESSAGE_ADDED, {
+                  messageAdded: gameMessage
+                });
 
-            return gameMessage;
-          })
-      )
+                return gameMessage;
+              });
+          });
+      })
   },
   Subscription: {
     messageAdded: {
