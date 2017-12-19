@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
+import GameMessage from '../components/GameMessage/GameMessage';
 
 import { gameMessagesQuery, onGameMessageAdded } from '../queries';
 import ApolloLoader from '../../shared/components/ApolloLoader';
@@ -44,7 +45,7 @@ class GameMessages extends Component {
     return <div className='game-messages'>
       {_.each(gameMessages).map(({ id, message }) => (
         <div key={id} className='game-message'>
-          {message}
+          <GameMessage message={message} readOnly={true} />
         </div>
       ))}
     </div>;

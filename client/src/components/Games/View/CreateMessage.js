@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
+import { Button, ControlLabel, FormGroup } from 'react-bootstrap';
+
+import GameMessage from '../components/GameMessage/GameMessage';
 
 import { createGameMessageMutation } from '../queries';
 
@@ -15,13 +17,8 @@ const CreateGame = class CreateGame extends Component {
       <div className="create-message">
         <form>
           <FormGroup>
-            <ControlLabel>Messages</ControlLabel>
-            <FormControl
-              componentClass="textarea"
-              value={this.state.message}
-              placeholder="Enter Message"
-              onChange={e => this.setState({ message: e.target.value })}
-            />
+            <ControlLabel>Add Message</ControlLabel>
+            <GameMessage ref={(c) => (this.editor = c)} onChanged={this.setMessage} />
           </FormGroup>
         </form>
 
@@ -30,17 +27,22 @@ const CreateGame = class CreateGame extends Component {
     );
   }
 
+  setMessage = ({message}) => this.setState({message});
+
   submit = () => {
     this.props
       .mutate({
         variables: {
           input: {
             gameId: this.props.gameId,
-            message: this.state.message
+            message: this.editor.getEditorMessage()
           }
         }
       })
-      .then(() => this.setState({ message: '' }));
+      .then(() => {
+        this.setState({ message: null });
+        this.editor.clear();
+      });
   }
 };
 

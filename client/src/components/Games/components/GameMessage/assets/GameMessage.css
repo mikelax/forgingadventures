@@ -1,0 +1,41 @@
+.game-message {
+    width: 50%;
+    margin: auto;
+}
+
+.game-message .editor-container {
+    border: 1px solid silver;
+    padding: 5px
+}
+
+.game-message span.shouting {
+    color: blue;
+    font-weight: bold;
+}
+
+.game-message span.thinking {
+    color: silver;
+    font-style: italic;
+}
+
+.game-message span.singing {
+    color: green;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.game-message span.singing img {
+    width: 12px;
+    height: 12px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.game-message button.active {
+    background-color: red
+}
+
+.game-message button img{
+    width: 16px;
+    height: 16px;
+}

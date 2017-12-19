@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "author": "Michael Holtzman <mholtzman@gmail.com>",
-  "keywords": ["react", "express", "starter"],
+  "keywords": [
+    "react",
+    "express",
+    "starter"
+  ],
   "scripts": {
     "start": "./node_modules/.bin/concurrently \"yarn server\" \"yarn client\"",
     "server": "cd api && yarn start",
@@ -11,5 +15,16 @@
   },
   "dependencies": {
     "concurrently": "^3.5.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-react-app": "2.0.1",
+    "eslint-import-resolver-webpack": "^0.8.3",
+    "eslint-plugin-flowtype": "^2.39.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.4.0"
   }
 }

@@ -24,7 +24,7 @@ const authLink = setContext((_, { headers }) => {
       ...headers,
       authorization: token ? `Bearer ${token}` : null,
     }
-  }
+  };
 });
 
 const httpLink = new HttpLink();
@@ -46,19 +46,6 @@ const link = split(
   wsLink,
   authLink.concat(httpLink),
 );
-
-
-// const link = ApolloLink.split(
-//   hasSubscriptionOperation,
-//   new WebSocketLink({
-//     uri:
-//       'wss://hostname/__path__',
-//     options: { reconnect: true },
-//   }),
-//   new Link({
-//     uri: 'https://hostname/__path__',
-//   }),
-// )
 
 const client = new ApolloClient({
   link,
