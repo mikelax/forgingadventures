@@ -4,7 +4,7 @@ import {CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, E
 import {getSelectionEntity} from 'draftjs-utils';
 
 import 'draft-js/dist/Draft.css';
-import './assets/GameMessage.css';
+import './assets/GameMessage.styl';
 
 import iconMusic from './assets/icon-music-note.svg';
 
