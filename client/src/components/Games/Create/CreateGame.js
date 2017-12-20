@@ -31,8 +31,8 @@ const CreateGame = class CreateGame extends Component {
     }
 
     return (
-      <div className="create">
-        <h1>Create a New Campaign</h1>
+      <div className="CreateGame">
+        <h1>Create a New Game</h1>
 
         <form>
           <FormGroup validationState={this.validity('title')}>

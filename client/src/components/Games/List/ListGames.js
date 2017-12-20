@@ -12,7 +12,7 @@ class ListGames extends Component {
   render() {
     const {match} = this.props;
 
-    return <div className="games-list">
+    return <div className="ListGames">
       <h1>Games</h1>
 
       <Link to={`${match.url}/create`}>

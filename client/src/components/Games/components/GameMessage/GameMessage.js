@@ -54,7 +54,7 @@ export default class GamesMessage extends Component {
       />;
 
     return (
-      <div className="game-message">
+      <div className="GameMessage">
         {editorControler}
         <div className="editor-container">
           <Editor editorState={this.state.editorState}

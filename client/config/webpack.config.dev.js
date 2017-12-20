@@ -188,8 +188,11 @@ module.exports = {
               },
             ],
           },
-          
+
+          // START - ADDED AFTER EJECTING CRA
           // stylus loader added to ejected create-react-app configs
+          // the stylus loader is a copy of the css loader with the addition
+          // of the 'stylus-loader' at the start of the use loader chain
           {
             test: /\.styl$/,
             use: [
@@ -203,9 +206,7 @@ module.exports = {
               {
                 loader: require.resolve('postcss-loader'),
                 options: {
-                  // Necessary for external CSS imports to work
-                  // https://github.com/facebookincubator/create-react-app/issues/2677
-                  ident: 'postcss',
+                  sourceMap: true,
                   plugins: () => [
                     require('postcss-flexbugs-fixes'),
                     autoprefixer({
@@ -220,10 +221,18 @@ module.exports = {
                   ],
                 },
               },
-              require.resolve('stylus-loader')
+              {
+                loader: 'stylus-loader',
+                options: {
+                  use: [require('rupture')()],
+                  // define global style files - i.e. variables, mixins etc
+                  import: [path.resolve(__dirname, '../src/variables.styl')]
+                }
+              }
             ],
           },
           // end of stylus loader added to ejected create-react-app configs
+          // END - ADDED AFTER EJECTING CRA
 
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
@@ -280,17 +289,6 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
-    // additional configs after CRA eject
-    // stylus support - specify stylus modules, such as rupture, nib, etc here
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        stylus: {
-          use: [require('rupture')()],
-        },
-      },
-    })
-    // end additional configs after CRA eject
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

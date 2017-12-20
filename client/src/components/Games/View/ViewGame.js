@@ -12,7 +12,7 @@ import ApolloLoader from '../../shared/components/ApolloLoader';
 class ViewGame extends Component {
 
   render() {
-    return <div className="game">
+    return <div className="ViewGame">
       <h1>Game</h1>
 
       <Link to='/games'>

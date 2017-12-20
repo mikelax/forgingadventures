@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import './About.css';
+import './About.styl';
 
 export default class About extends Component<{||}> {
   // static propTypes = {}
@@ -11,9 +11,11 @@ export default class About extends Component<{||}> {
   render() {
     return (
       <div className="About">
-        <h1>
-          About
-        </h1>
+        <div className="container">
+          <h1>
+            About
+          </h1>
+        </div>
       </div>
     );
   }
