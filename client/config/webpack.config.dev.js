@@ -226,7 +226,10 @@ module.exports = {
                 options: {
                   use: [require('rupture')()],
                   // define global style files - i.e. variables, mixins etc
-                  import: [path.resolve(__dirname, '../src/variables.styl')]
+                  import: [
+                    path.resolve(__dirname, '../src/variables.styl'),
+                    path.resolve(__dirname, '../src/mixins.styl')
+                  ]
                 }
               }
             ],

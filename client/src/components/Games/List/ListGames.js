@@ -7,6 +7,8 @@ import { compose, pure } from "recompose";
 import { gamesQuery } from '../queries';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
+import './ListGames.styl';
+
 class ListGames extends Component {
 
   render() {
@@ -26,12 +28,10 @@ class ListGames extends Component {
   content = () => {
     const { match, data: { games } } = this.props;
 
-    return <ul>
-      {_.each(games).map(({ id, title }) => (
-        <li key={id}>
-          <Link to={`${match.url}/${id}`}>
-            {title}
-          </Link>
+    return <ul className="list-unstyled">
+      {_.each(games).map((game) => (
+        <li key={game.id} className="game-container">
+          <GameDetails game={game} link={`${match.url}/${game.id}`}/>
         </li>
       ))}
     </ul>;
@@ -43,3 +43,23 @@ export default compose(
   ApolloLoader,
   pure,
 )(ListGames);
+
+const GameDetails = (props) => {
+  const {game} = props;
+  return <div className="game-card">
+    <div className="header">
+      <div className="title">
+        <Link to={props.link}> {game.title}</Link>
+      </div>
+    </div>
+
+    <div className="details">
+      <div className="scenario">
+        {game.scenario}
+      </div>
+      <div className="overview">
+        {game.overview}
+      </div>
+    </div>
+  </div>;
+};

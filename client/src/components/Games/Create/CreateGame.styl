@@ -1,0 +1,49 @@
+// mixins
+
+form-align-labels-inputs()
+  display table
+
+  .form-group
+    display table-row
+    border-bottom solid transparent 10px
+
+    .top
+      vertical-align top
+
+    .control-label, .form-control
+      margin-bottom 10px
+
+    .control-label
+      display table-cell
+      text-align right
+      padding-right 15px
+    .form-control
+      display table-cell
+
+
+.CreateGame
+
+  // large mobile
+  +above($screen-sm)
+    form
+      form-align-labels-inputs()
+      width 100%
+
+  // tablets
+  +above($screen-md)
+    form, .actions
+      width 80%
+      margin auto
+
+    form
+      form-align-labels-inputs()
+
+  // desktop and above
+  +above($screen-md)
+    form, .actions
+      width 60%
+      margin auto
+
+    form
+      form-align-labels-inputs()
+

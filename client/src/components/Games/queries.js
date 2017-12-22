@@ -5,6 +5,14 @@ export const gamesQuery = gql`
     games{
       id
       title
+      scenario
+      overview
+      gameSettings {
+        minPlayers
+        maxPlayers
+        skillLevel
+        postingFrequency
+      }
     }
   }
 `;
