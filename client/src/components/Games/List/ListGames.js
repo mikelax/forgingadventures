@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
 
 import { gamesQuery } from '../queries';
+import { skillLevel, postingFrequency } from '../utils/gameSettings';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
 import './ListGames.styl';
@@ -44,6 +45,8 @@ export default compose(
   pure,
 )(ListGames);
 
+/// private
+
 const GameDetails = (props) => {
   const {game} = props;
   return <div className="game-card">
@@ -59,6 +62,18 @@ const GameDetails = (props) => {
       </div>
       <div className="overview">
         {game.overview}
+      </div>
+    </div>
+
+    <div className="game-settings">
+      <div className="players">
+        Players: { game.gameSettings.minPlayers } / { game.gameSettings.maxPlayers }
+      </div>
+      <div className="skill">
+        Skill: { skillLevel(game.gameSettings.skillLevel) }
+      </div>
+      <div className="frequency">
+        Posting frequency: { postingFrequency(game.gameSettings.postingFrequency) }
       </div>
     </div>
   </div>;

@@ -120,7 +120,7 @@ function onToggleAction(entityKey) {
   }
   // we shouldn't get here!11
   else {
-    throw 'boom! boom!';
+    throw new Error('boom! boom!');
   }
 }
 
@@ -201,9 +201,9 @@ const ShoutSpan = (props) => {
 const SingSpan = (props) => {
   return (
     <span className="singing" data-offset-key={props.offsetkey}>
-      <img src={iconMusic} />
+      <img src={iconMusic} alt="singing"/>
       {props.children}
-      <img src={iconMusic} />
+      <img src={iconMusic} alt="singing"/>
     </span>
   );
 };

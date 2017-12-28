@@ -1,10 +1,11 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
-import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, {Component} from 'react';
+import {graphql} from 'react-apollo';
+import {Button, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Redirect} from 'react-router-dom';
 
-import { createGameMutation, gamesQuery } from '../queries';
+import {skillLevels, postingFrequencies} from '../utils/gameSettings';
+import {createGameMutation, gamesQuery} from '../queries';
 import './CreateGame.styl';
 
 const CreateGame = class CreateGame extends Component {
@@ -88,9 +89,11 @@ const CreateGame = class CreateGame extends Component {
               componentClass="select"
               value={this.formValue('gameSettings.skillLevel')}
               onChange={this.formInput('gameSettings.skillLevel')}>
-              <option value="1">Any/Newbie friendly</option>
-              <option value="2">I’ve rolled dice before</option>
-              <option value="3">Expert/role play master and rules bookworm</option>
+              {
+                _.map(skillLevels, (desc, level) =>
+                  <option value={level}>{desc}</option>
+                )
+              }
             </FormControl>
 
 
@@ -99,9 +102,11 @@ const CreateGame = class CreateGame extends Component {
               componentClass="select"
               value={this.formValue('gameSettings.postingFrequency')}
               onChange={this.formInput('gameSettings.postingFrequency')}>
-              <option value="1">About 1 / day</option>
-              <option value="2">2-3 times / week</option>
-              <option value="3">Hardcore - More than 1 / day</option>
+              {
+                _.map(postingFrequencies, (desc, level) =>
+                  <option value={level}>{desc}</option>
+                )
+              }
             </FormControl>
           </FormGroup>
         </form>

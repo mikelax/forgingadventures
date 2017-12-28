@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo/index';
 import { compose, pure } from "recompose";
 
-import { gameQuery } from '../queries';
-
 import CreateMessage from './CreateMessage';
 import GamesMessages from './GameMessages';
 import ApolloLoader from '../../shared/components/ApolloLoader';
+
+import { gameQuery } from '../queries';
+import './ViewGame.styl';
+
 
 class ViewGame extends Component {
 
@@ -19,23 +21,9 @@ class ViewGame extends Component {
         Back to Games
       </Link>
 
-      {this.content()}
+      {gameDetails.call(this)}
     </div>;
   }
-
-  content = () => {
-    const { data: { game } } = this.props;
-
-    return <div>
-      <div>title: {game.title}</div>
-      <div>scenario: {game.scenario}</div>
-      <div>overview: {game.overview}</div>
-
-      <CreateMessage gameId={game.id}></CreateMessage>
-
-      <GamesMessages gameId={game.id}></GamesMessages>
-    </div>;
-  };
 
 }
 
@@ -46,3 +34,20 @@ export default compose(
   ApolloLoader,
   pure,
 )(ViewGame);
+
+///// private
+
+function gameDetails() {
+  const { data: { game } } = this.props;
+
+  return <div>
+    <h2>{game.title}</h2>
+    <h3 className="scenario">{game.scenario}</h3>
+
+    <div className="overview">{game.overview}</div>
+
+    <CreateMessage gameId={game.id}/>
+
+    <GamesMessages gameId={game.id}/>
+  </div>;
+}
