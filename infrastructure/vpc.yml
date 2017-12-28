@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Environment:
+    Type: String
+    Description: The environment for the VPC
+    Default: test
+  VpcCidrBlock:
+    Type: String
+    Description: VPC CIDR block
+    Default: 10.0.0.0/16
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref VpcCidrBlock
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref VPC
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref VPC
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref VPC
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+  Route:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref RouteTable
+
+  Subnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet1
+      RouteTableId: !Ref RouteTable
+  Subnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet2
+      RouteTableId: !Ref RouteTable
+
+Outputs:
+  VpcId:
+    Description: The VPC Id
+    Value: !Ref VPC
+    Export:
+      Name: !Sub "${AWS::StackName}-VpcId"
+  VpcCidrBlock:
+    Description: Vpc Cidr Block 
+    Value: !GetAtt VPC.CidrBlock
+    Export:
+      Name: !Sub "${AWS::StackName}-VpcCidrBlock"
+  Subnet1:
+    Description: Primary Subnet Id
+    Value: !Ref Subnet1
+    Export:
+      Name: !Sub "${AWS::StackName}-SubnetId1"
+  Subnet2:
+    Description: Secondary Subnet Id
+    Value: !Ref Subnet2
+    Export:
+      Name: !Sub "${AWS::StackName}-SubnetId2"
