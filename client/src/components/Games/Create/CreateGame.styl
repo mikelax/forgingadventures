@@ -1,49 +1,61 @@
-// mixins
-
-form-align-labels-inputs()
-  display table
-
-  .form-group
-    display table-row
-    border-bottom solid transparent 10px
-
-    .top
-      vertical-align top
-
-    .control-label, .form-control
-      margin-bottom 10px
-
-    .control-label
-      display table-cell
-      text-align right
-      padding-right 15px
-    .form-control
-      display table-cell
-
-
 .CreateGame
 
-  // large mobile
+  +below($screen-sm)
+    .options
+      & > input, & > select
+        margin-bottom 15px
+
   +above($screen-sm)
-    form
-      form-align-labels-inputs()
-      width 100%
+    .form-group
+      display grid
+      grid-column-gap 10px
+      grid-row-gap 15px
+      grid-template-columns 1fr 2fr
+      grid-template-areas "label input"
 
-  // tablets
+      label
+        justify-self end
+        align-self center
+
   +above($screen-md)
-    form, .actions
-      width 80%
-      margin auto
+    .options
+      display grid
+      grid-row-gap 5px
+      grid-column-gap 5px
+      grid-template-columns 1fr 1fr 1fr
+      grid-template-rows auto
+      grid-template-areas ". label1 label2" \
+                          ". input1 input2" \
+                          ". label3 label4" \
+                          ". input3 input4"
 
-    form
-      form-align-labels-inputs()
+      label
+        justify-self center
+        &:nth-of-type(1)
+          grid-area label1
+        &:nth-of-type(2)
+          grid-area label2
+        &:nth-of-type(3)
+          grid-area label3
+        &:nth-of-type(4)
+          grid-area label4
 
-  // desktop and above
-  +above($screen-md)
-    form, .actions
-      width 60%
-      margin auto
+      input
+        &:nth-of-type(1)
+          grid-area input1
+        &:nth-of-type(2)
+          grid-area input2
+      select
+        &:nth-of-type(1)
+          grid-area input3
+        &:nth-of-type(2)
+          grid-area input4
 
-    form
-      form-align-labels-inputs()
-
+  +above($screen-lg)
+    .options
+      display grid
+      grid-column-gap 5px
+      grid-template-columns 2fr 1fr 1fr 1fr 1fr
+      grid-template-rows auto
+      grid-template-areas ". label1 label2 label3 label4" \
+                          ". input1 input2 input3 input4"

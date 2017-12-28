@@ -66,7 +66,7 @@ const CreateGame = class CreateGame extends Component {
             />
           </FormGroup>
 
-          <FormGroup>
+          <FormGroup className="options">
             <ControlLabel>Minimum Players</ControlLabel>
             <FormControl
               type="number"
@@ -74,9 +74,7 @@ const CreateGame = class CreateGame extends Component {
               placeholder="Minimum Players"
               onChange={this.formInput('gameSettings.minPlayers')}
             />
-          </FormGroup>
 
-          <FormGroup className="options">
             <ControlLabel>Max Players</ControlLabel>
             <FormControl
               type="number"
@@ -84,9 +82,7 @@ const CreateGame = class CreateGame extends Component {
               placeholder="Maximum Players"
               onChange={this.formInput('gameSettings.maxPlayers')}
             />
-          </FormGroup>
 
-          <FormGroup className="options">
             <ControlLabel>Skill Level</ControlLabel>
             <FormControl
               componentClass="select"
@@ -96,9 +92,8 @@ const CreateGame = class CreateGame extends Component {
               <option value="2">I’ve rolled dice before</option>
               <option value="3">Expert/role play master and rules bookworm</option>
             </FormControl>
-          </FormGroup>
 
-          <FormGroup className="options">
+
             <ControlLabel>Posting Frequency</ControlLabel>
             <FormControl
               componentClass="select"
