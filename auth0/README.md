@@ -30,9 +30,25 @@ Github issue #10 covers the work to integrate automated deployments of Rules bas
 
 API_BASE_URL - for local development you can use [localtunnel](https://localtunnel.github.io/www/) to expose your localhost API to Auth0. 
 
+SHARED_SECRET - symetric shared key to use for calling FA API. It should match the auth0.sharedSecret config attribute.
+
+AUTH_EXT_BASE_URL - The API URL for the Auth0 [authorization extension API](https://auth0.com/docs/api/authorization-extension?http#find-your-extension-url) (US-Wes).
+
+AUTH_EXT_TOKEN_URL - The API URL to get an API Access Token. ie. tenant name /oauth/token
+
+AUTH_EXT_CLIENT_ID - The "Auth Ext" Client ID
+
+AUTH_EXT_CLIENT_SECRET - The "Auth Ext" Client Secret
+
 ## auth0-authorization-extension
 
 This Rule is automatically created by enabling and configuring the Auth0 Authorization extension. The basic function is to determine what "extra" attributes will be added to the User context. Currently it is set up to include the `roles` and `permissions` defined for the given User.
+
+## Configure User After Sign up
+
+This Rule will add the newly signed up User to the correct "User" Role so they have the necessary Permissions once they are redirected back to the application. 
+
+This Rule only performs logic after a Sign up, after a regular login it is a no-op. It makes use of the [authorization extension api](https://auth0.com/docs/api/authorization-extension?http#find-your-extension-url).
 
 ## Validate Access Token Scopes
 
