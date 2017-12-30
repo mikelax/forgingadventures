@@ -8,5 +8,9 @@
   },
   "logging": {
     "console": true
+  },
+  "auth0": {
+    "domain": "forgingadventures.auth0.com",
+    "audience": "https://api.forgingadventures.com"
   }
 }

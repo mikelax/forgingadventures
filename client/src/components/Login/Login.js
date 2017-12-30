@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import Auth from '../../services/Auth/Auth';
 import Auth0Lock from 'auth0-lock';
-import './Login.css';
+
+import Auth from '../../services/Auth/Auth';
+
+import './Login.styl';
 
 export default class Login extends Component {
 
@@ -34,13 +36,15 @@ export default class Login extends Component {
   render() {
     return (
       <div className="Login">
-        <h1>
-          Login
-        </h1>
-        <p>This page uses custom Auth0 Lock widget, as opposed to hosted login page.
-        <br/>If you remove the container attribute it will display as a modal.</p>
+        <div className="container">
+          <h1>
+            Login
+          </h1>
+          <p>This page uses custom Auth0 Lock widget, as opposed to hosted login page.
+            <br/>If you remove the container attribute it will display as a modal.</p>
 
-        <div id="auth0Lock"></div>
+          <div id="auth0Lock"></div>
+        </div>
       </div>
     );
   }

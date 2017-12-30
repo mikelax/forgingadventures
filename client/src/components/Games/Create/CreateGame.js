@@ -1,10 +1,12 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
-import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, {Component} from 'react';
+import {graphql} from 'react-apollo';
+import {Button, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Redirect} from 'react-router-dom';
 
-import { createGameMutation, gamesQuery } from '../queries';
+import {skillLevels, postingFrequencies} from '../utils/gameSettings';
+import {createGameMutation, gamesQuery} from '../queries';
+import './CreateGame.styl';
 
 const CreateGame = class CreateGame extends Component {
 
@@ -31,8 +33,8 @@ const CreateGame = class CreateGame extends Component {
     }
 
     return (
-      <div className="create">
-        <h1>Create a New Campaign</h1>
+      <div className="CreateGame">
+        <h1>Create a New Game</h1>
 
         <form>
           <FormGroup validationState={this.validity('title')}>
@@ -46,6 +48,7 @@ const CreateGame = class CreateGame extends Component {
           </FormGroup>
 
           <FormGroup validationState={this.validity('scenario')}>
+            <ControlLabel className="top">Scenario</ControlLabel>
             <FormControl
               componentClass="textarea"
               value={this.formValue('scenario')}
@@ -55,6 +58,7 @@ const CreateGame = class CreateGame extends Component {
           </FormGroup>
 
           <FormGroup validationState={this.validity('overview')}>
+            <ControlLabel className="top">Overview</ControlLabel>
             <FormControl
               componentClass="textarea"
               value={this.formValue('overview')}
@@ -63,7 +67,7 @@ const CreateGame = class CreateGame extends Component {
             />
           </FormGroup>
 
-          <FormGroup>
+          <FormGroup className="options">
             <ControlLabel>Minimum Players</ControlLabel>
             <FormControl
               type="number"
@@ -71,6 +75,7 @@ const CreateGame = class CreateGame extends Component {
               placeholder="Minimum Players"
               onChange={this.formInput('gameSettings.minPlayers')}
             />
+
             <ControlLabel>Max Players</ControlLabel>
             <FormControl
               type="number"
@@ -78,30 +83,37 @@ const CreateGame = class CreateGame extends Component {
               placeholder="Maximum Players"
               onChange={this.formInput('gameSettings.maxPlayers')}
             />
-            
+
             <ControlLabel>Skill Level</ControlLabel>
             <FormControl
               componentClass="select"
               value={this.formValue('gameSettings.skillLevel')}
               onChange={this.formInput('gameSettings.skillLevel')}>
-              <option value="1">Any/Newbie friendly</option>
-              <option value="2">I’ve rolled dice before</option>
-              <option value="3">Expert/role play master and rules bookworm</option>
+              {
+                _.map(skillLevels, (desc, level) =>
+                  <option value={level}>{desc}</option>
+                )
+              }
             </FormControl>
-            
+
+
             <ControlLabel>Posting Frequency</ControlLabel>
             <FormControl
               componentClass="select"
               value={this.formValue('gameSettings.postingFrequency')}
               onChange={this.formInput('gameSettings.postingFrequency')}>
-              <option value="1">About 1 / day</option>
-              <option value="2">2-3 times / week</option>
-              <option value="3">Hardcore - More than 1 / day</option>
+              {
+                _.map(postingFrequencies, (desc, level) =>
+                  <option value={level}>{desc}</option>
+                )
+              }
             </FormControl>
           </FormGroup>
         </form>
 
-        <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+        <div className="actions text-right">
+          <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+        </div>
       </div>
     );
   };

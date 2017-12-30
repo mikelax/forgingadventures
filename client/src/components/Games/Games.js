@@ -12,11 +12,13 @@ export default class Campaigns extends Component {
 
     return (
       <div className="games">
-        <Switch>
-          <Route exact path={`${match.url}/create`} component={CreateGame}/>
-          <Route exact path={`${match.url}/:id`} component={ViewGame}/>
-          <Route exact path={`${match.url}`} component={ListGames}/>
-        </Switch>
+        <div className="container">
+          <Switch>
+            <Route exact path={`${match.url}/create`} component={CreateGame}/>
+            <Route exact path={`${match.url}/:id`} component={ViewGame}/>
+            <Route exact path={`${match.url}`} component={ListGames}/>
+          </Switch>
+        </div>
       </div>
     );
   }

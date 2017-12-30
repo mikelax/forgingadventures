@@ -1,8 +1,8 @@
 // @flow
 
 import React, { Component } from 'react';
-// import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom';
-import { Router, Redirect, Route } from 'react-router-dom';
+import { Router, Redirect, Route, Switch } from 'react-router-dom';
+
 import Auth from '../../services/Auth/Auth.js';
 import About from '../About/About';
 import Callback from '../Callback/Callback';
@@ -16,7 +16,7 @@ import Games from '../Games/Games';
 
 import history from '../../services/Auth/history';
 
-import './App.css';
+import './App.styl';
 
 const auth = new Auth();
 
@@ -33,29 +33,31 @@ class App extends Component<{}> {
         <div>
           <Header auth={auth}/>
           <div className="App">
-            <Route exact path="/" render={(props) => <Home auth={auth} {...props} />} />
-            <Route path="/about" component={About} />
-            <Route path="/profile" render={(props) => (
+            <Switch>
+              <Route exact path="/" render={(props) => <Home auth={auth} {...props} />} />
+              <Route path="/about" component={About} />
+              <Route path="/profile" render={(props) => (
                 !auth.isAuthenticated() ? (
                   <Redirect to="/"/>
                 ) : (
                   <Profile auth={auth} {...props} />
                 )
               )}
-            />
-            <Route path="/messages/create" render={(props) => (
-              !auth.isAuthenticated() || !auth.userHasScopes(['create:posts']) ? (
-                <Redirect to="/"/>
-              ) : (
-                <CreateMessage auth={auth} {...props} />
-              )
-            )} />
-            <Route path="/login" component={Login} />
-            <Route path="/callback" render={(props) => {
-              handleAuthentication(props);
-              return <Callback {...props} />; 
-            }}/>
-            <Route path="/games" component={Games} />
+              />
+              <Route path="/messages/create" render={(props) => (
+                !auth.isAuthenticated() || !auth.userHasScopes(['create:posts']) ? (
+                  <Redirect to="/"/>
+                ) : (
+                  <CreateMessage auth={auth} {...props} />
+                )
+              )} />
+              <Route path="/login" component={Login} />
+              <Route path="/callback" render={(props) => {
+                handleAuthentication(props);
+                return <Callback {...props} />;
+              }}/>
+              <Route path="/games" component={Games} />
+            </Switch>
           </div>
         </div>
       </Router>
