@@ -4,35 +4,14 @@ import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
 export function checkJwt() {
-  return jwt({
-    // Dynamically provide a signing key
-    // based on the kid in the header and
-    // the singing keys provided by the JWKS endpoint.
-    secret: jwksRsa.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: `https://${config.get('auth0.domain')}/.well-known/jwks.json`
-    }),
-
-    // Validate the audience and the issuer.
-    audience: config.get('auth0.audience'),
-    issuer: `https://${config.get('auth0.domain')}/`,
-    algorithms: ['RS256']
-  });
+  return buildJwt();
 }
 
 export function checkJwtForGraphiql() {
-  return (req, res, next) => {
-    const graphiqlEnabled = config.get('graphql.graphiql');
-    const graphiqlQuery = _.get(req, 'headers.referer', '').match('/graphiql?');
-
-    if (graphiqlEnabled && graphiqlQuery) {
-      next();
-    } else {
-      checkJwt()(req, res, next);
-    }
-  };
+  return buildJwt({
+    credentialsRequired: false,
+    alwaysThrowOnExpiredToken: true
+  });
 }
 
 export function checkScopes(scopes) {
@@ -70,5 +49,29 @@ export function checkAuth0Secret() {
       return next(err);
     }
   };
+}
+
+
+// private
+
+function buildJwt(options) {
+  const jwtOptions = _.merge({}, {
+    // Dynamically provide a signing key
+    // based on the kid in the header and
+    // the singing keys provided by the JWKS endpoint.
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: `https://${config.get('auth0.domain')}/.well-known/jwks.json`
+    }),
+
+    // Validate the audience and the issuer.
+    audience: config.get('auth0.audience'),
+    issuer: `https://${config.get('auth0.domain')}/`,
+    algorithms: ['RS256']
+  }, options);
+
+  return jwt(jwtOptions);
 }
 

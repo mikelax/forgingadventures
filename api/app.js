@@ -54,7 +54,7 @@ app.use(cors());
 
 // graphql endpoints
 if (config.get('graphql.graphiql')) {
-  app.use('/graphql', bodyParser.json(), checkJwtForGraphiql(), graphqlExpress((req, res) => ({
+  app.use('/graphql', checkJwtForGraphiql(), graphqlExpress((req, res) => ({
     schema,
     context: { req, res }
   })));
@@ -64,7 +64,7 @@ if (config.get('graphql.graphiql')) {
     subscriptionsEndpoint: 'ws://localhost:3001/subscriptions'
   }));
 } else {
-  app.use('/graphql', bodyParser.json(), checkJwt(), graphqlExpress((req, res) => ({
+  app.use('/graphql', checkJwt(), graphqlExpress((req, res) => ({
     schema,
     context: { req, res }
   })));
