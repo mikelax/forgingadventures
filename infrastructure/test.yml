@@ -13,6 +13,22 @@ Parameters:
     Type: String
     Description: The S3 bucket name where CFN templates are
     Default: forgingadventures-resources
+  RdsUsername:
+    Type: String
+    Description: The database admin account username
+    Default: postgres
+    MinLength: 1
+    MaxLength: 16
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters
+  RdsPassword:
+    NoEcho: true
+    Type: String
+    Description: The database admin account password
+    MinLength: 8
+    MaxLength: 41
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: Must contain only alphanumeric characters
 
 Resources:
   VPC:
@@ -37,6 +53,28 @@ Resources:
         Environment: !Ref Environment
         VpcId: !GetAtt VPC.Outputs.VpcId
         VpcCidrBlock: !GetAtt VPC.Outputs.VpcCidrBlock
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  Rds:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join [ "/", [ "https://s3.amazonaws.com", !Ref S3TemplateBucket, cfn-templates, rds.yml] ]
+      Parameters:
+        Environment: !Ref Environment
+        HostedZoneId: !Ref HostedZoneId
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.Subnet1, !GetAtt VPC.Outputs.Subnet2] ]
+        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId] ]
+        Username: !Ref RdsUsername
+        Password: !Ref RdsPassword
+        StorageType: standard
+        AllocatedStorage: 5
+        PubliclyAccessible: true
       Tags:
         -
           Key: Environment

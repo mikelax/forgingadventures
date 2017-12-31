@@ -60,5 +60,8 @@ Resources:
 
 Outputs:
   RedisCluster:
-    Description: The redis cluslter name
+    Description: The redis cluster name
     Value: !Ref RedisCache
+  RedisDomain:
+    Description: The redis cluster domain name
+    Value: !Ref RedisDNSRecord

@@ -29,6 +29,7 @@ Resources:
   Subnet1:
     Type: AWS::EC2::Subnet
     Properties:
+      AvailabilityZone: us-east-1a
       CidrBlock: 10.0.0.0/24
       VpcId: !Ref VPC
       Tags:
@@ -42,6 +43,7 @@ Resources:
   Subnet2:
     Type: AWS::EC2::Subnet
     Properties:
+      AvailabilityZone: us-east-1d
       CidrBlock: 10.0.1.0/24
       VpcId: !Ref VPC
       Tags:
