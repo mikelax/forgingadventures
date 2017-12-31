@@ -32,9 +32,6 @@ export default class Header extends Component {
                 <NavItem href="/profile">Profile</NavItem>
               )}
               {isAuthenticated() && userHasScopes(['create:posts']) && (
-                <NavItem href="/messages/create">Create Message</NavItem>
-              )}
-              {isAuthenticated() && userHasScopes(['create:posts']) && (
                 <NavItem href="/games">Games</NavItem>
               )}
               {!isAuthenticated() && (

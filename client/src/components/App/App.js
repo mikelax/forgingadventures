@@ -6,7 +6,6 @@ import { Router, Redirect, Route, Switch } from 'react-router-dom';
 import Auth from '../../services/Auth/Auth.js';
 import About from '../About/About';
 import Callback from '../Callback/Callback';
-import CreateMessage from '../Messages/Create/CreateMessage';
 import Home from '../Home/Home';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
@@ -44,13 +43,6 @@ class App extends Component<{}> {
                 )
               )}
               />
-              <Route path="/messages/create" render={(props) => (
-                !auth.isAuthenticated() || !auth.userHasScopes(['create:posts']) ? (
-                  <Redirect to="/"/>
-                ) : (
-                  <CreateMessage auth={auth} {...props} />
-                )
-              )} />
               <Route path="/login" component={Login} />
               <Route path="/callback" render={(props) => {
                 handleAuthentication(props);

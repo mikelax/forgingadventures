@@ -4,12 +4,25 @@ import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
 export function checkJwt() {
-  return buildJwt();
-}
+  return jwt({
+    // Dynamically provide a signing key
+    // based on the kid in the header and
+    // the singing keys provided by the JWKS endpoint.
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: `https://${config.get('auth0.domain')}/.well-known/jwks.json`
+    }),
 
-export function checkJwtForGraphiql() {
-  return buildJwt({
+    // Validate the audience and the issuer.
+    audience: config.get('auth0.audience'),
+    issuer: `https://${config.get('auth0.domain')}/`,
+    algorithms: ['RS256'],
+
+    // skip JWT checking if no token is available - i.e. read graphQL queries
     credentialsRequired: false,
+    // but check token expiry if it does exist
     alwaysThrowOnExpiredToken: true
   });
 }
@@ -50,28 +63,3 @@ export function checkAuth0Secret() {
     }
   };
 }
-
-
-// private
-
-function buildJwt(options) {
-  const jwtOptions = _.merge({}, {
-    // Dynamically provide a signing key
-    // based on the kid in the header and
-    // the singing keys provided by the JWKS endpoint.
-    secret: jwksRsa.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: `https://${config.get('auth0.domain')}/.well-known/jwks.json`
-    }),
-
-    // Validate the audience and the issuer.
-    audience: config.get('auth0.audience'),
-    issuer: `https://${config.get('auth0.domain')}/`,
-    algorithms: ['RS256']
-  }, options);
-
-  return jwt(jwtOptions);
-}
-

@@ -52,22 +52,20 @@ app.use(compression());
 app.use(cookieParser());
 app.use(cors());
 
-// graphql endpoints
-if (config.get('graphql.graphiql')) {
-  app.use('/graphql', checkJwtForGraphiql(), graphqlExpress((req, res) => ({
-    schema,
-    context: { req, res }
-  })));
+// JWT
+app.use(checkJwt());
 
+// graphql endpoints
+app.use('/graphql', graphqlExpress((req, res) => ({
+  schema,
+  context: { req, res }
+})));
+
+if (config.get('graphql.graphiql')) {
   app.use('/graphiql', graphiqlExpress({
     endpointURL: '/graphql',
     subscriptionsEndpoint: 'ws://localhost:3001/subscriptions'
   }));
-} else {
-  app.use('/graphql', checkJwt(), graphqlExpress((req, res) => ({
-    schema,
-    context: { req, res }
-  })));
 }
 
 
