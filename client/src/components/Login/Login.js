@@ -12,10 +12,16 @@ export default class Login extends Component {
     // https://auth0.com/docs/libraries/lock/v10/configuration#additionalsignupfields-array-
     const lock = new Auth0Lock(process.env.REACT_APP_AUTH0_CLIENT_ID, process.env.REACT_APP_AUTH0_DOMAIN, {
       container: 'auth0Lock',
-      oidcConformant: true,
       initialScreen: 'login',
       theme: {
-        primaryColor: '#985e6d' // default #ea5323
+        logo: 'https://s3.amazonaws.com/forgingadventures-resources/auth0/fa_anvil_rust_logo.png',
+        primaryColor: '#985e6d', // default #ea5323
+        authButtons: {
+          'twitch': {
+            primaryColor: '#6441A4',  // Twitch Purple
+            icon: 'https://s3.amazonaws.com/forgingadventures-resources/auth0/twitch_glitch_wh_logo.svg'
+          }
+        }
       },
       languageDictionary: {
         title: 'Let\'s get started!'
