@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Environment:
+    Type: String
+    Description: The environment for the VPC
+    Default: test
+  HostedZoneId:
+    Type: AWS::Route53::HostedZone::Id
+    Description: The Route 53 Zone ID
+  CacheNodeType:
+    Type: String
+    Description: The type and size of the cache nodes
+    Default: cache.t2.micro
+  NumCacheNodes:
+    Type: Number
+    Description: The number of cache nodes to create
+    Default: 1
+  VpcSubnetList:
+    Type: CommaDelimitedList
+    Description: List of VPC subnets to use for cache subnet group
+  VpcSecurityGroupList:
+    Type: CommaDelimitedList
+    Description: List of VPC security group IDs
+
+Resources:
+  CacheSubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      Description: The subnet group for redis cache
+      SubnetIds: !Ref VpcSubnetList
+
+  RedisCache:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      Engine: redis
+      EngineVersion: 3.2.10
+      Port: 6379
+      NumCacheNodes: !Ref NumCacheNodes
+      CacheNodeType: !Ref CacheNodeType
+      VpcSecurityGroupIds: !Ref VpcSecurityGroupList
+      CacheSubnetGroupName: !Ref CacheSubnetGroup
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  RedisDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Join [ ".", [ redis, !Ref Environment, forgingadventures.com. ] ]
+      Type: CNAME
+      TTL: '900'
+      ResourceRecords:
+        - !GetAtt RedisCache.RedisEndpoint.Address
+
+Outputs:
+  RedisCluster:
+    Description: The redis cluster name
+    Value: !Ref RedisCache
+  RedisDomain:
+    Description: The redis cluster domain name
+    Value: !Ref RedisDNSRecord

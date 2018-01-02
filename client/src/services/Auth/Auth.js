@@ -24,7 +24,7 @@ export default class Auth {
   // TODO not sure I like this pattern here
   // but used to simulate static properties
   static get requestedScopes() {
-    return 'openid profile create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
+    return 'openid profile email create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
   }
 
   login = () => {

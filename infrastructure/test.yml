@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Environment:
+    Type: String
+    Description: The environment
+    Default: test
+  HostedZoneId:
+    Type: AWS::Route53::HostedZone::Id
+    Description: The Route 53 Zone ID
+    Default: Z1ANI7AY159U5Q
+  S3TemplateBucket:
+    Type: String
+    Description: The S3 bucket name where CFN templates are
+    Default: forgingadventures-resources
+  RdsUsername:
+    Type: String
+    Description: The database admin account username
+    Default: postgres
+    MinLength: 1
+    MaxLength: 16
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters
+  RdsPassword:
+    NoEcho: true
+    Type: String
+    Description: The database admin account password
+    MinLength: 8
+    MaxLength: 41
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: Must contain only alphanumeric characters
+
+Resources:
+  VPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join [ "/", [ "https://s3.amazonaws.com", !Ref S3TemplateBucket, cfn-templates, vpc.yml] ]
+      Parameters:
+        Environment: !Ref Environment
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  Security:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join [ "/", [ "https://s3.amazonaws.com", !Ref S3TemplateBucket, cfn-templates, security.yml] ]
+      Parameters:
+        Environment: !Ref Environment
+        VpcId: !GetAtt VPC.Outputs.VpcId
+        VpcCidrBlock: !GetAtt VPC.Outputs.VpcCidrBlock
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  Rds:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join [ "/", [ "https://s3.amazonaws.com", !Ref S3TemplateBucket, cfn-templates, rds.yml] ]
+      Parameters:
+        Environment: !Ref Environment
+        HostedZoneId: !Ref HostedZoneId
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.Subnet1, !GetAtt VPC.Outputs.Subnet2] ]
+        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId] ]
+        Username: !Ref RdsUsername
+        Password: !Ref RdsPassword
+        StorageType: standard
+        AllocatedStorage: 5
+        PubliclyAccessible: true
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  Cache:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join [ "/", [ "https://s3.amazonaws.com", !Ref S3TemplateBucket, cfn-templates, redis.yml] ]
+      Parameters:
+        Environment: !Ref Environment
+        HostedZoneId: !Ref HostedZoneId
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.Subnet1, !GetAtt VPC.Outputs.Subnet2] ]
+        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RedisSecurityGroupId] ]
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Join [ "-", [ forgingadventures, !Ref Environment ] ]

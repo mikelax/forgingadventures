@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Environment:
+    Type: String
+    Description: The environment for the VPC
+    Default: test
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The VPC ID
+  VpcCidrBlock:
+    Type: String
+    Description: VPC CIDR block
+    Default: 10.0.0.0/16
+
+Resources:
+  RedisSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub 'Redis-${AWS::StackName}'
+      GroupDescription: !Join [ " ", [ 'Allow access to redis cache for VPC', !Ref VpcId ] ]
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 6379
+        ToPort: 6379
+        CidrIp: !Ref VpcCidrBlock
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  RdsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub 'Rds-${AWS::StackName}'
+      GroupDescription: !Join [ " ", [ 'Allow access to RDS for VPC', !Ref VpcId ] ]
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 5432
+        ToPort: 5432
+        CidrIp: !Ref VpcCidrBlock
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+Outputs:
+  RedisSecurityGroupId:
+    Description: Redis Security Group ID
+    Value: !Ref RedisSecurityGroup
+  RdsSecurityGroupId:
+    Description: RDS Security Group ID
+    Value: !Ref RdsSecurityGroup

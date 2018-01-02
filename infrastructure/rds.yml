@@ -1,0 +1,145 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Environment:
+    Type: String
+    Description: The environment for the VPC
+    Default: test
+  HostedZoneId:
+    Type: AWS::Route53::HostedZone::Id
+    Description: The Route 53 Zone ID
+  AllocatedStorage:
+    Type: Number
+    Description: The size of the database (Gb)
+    Default: 20
+    MinValue: 5
+    MaxValue: 16000
+    ConstraintDescription: Must be between 5 and 16000Gb
+  StorageType:
+    Type: String
+    Description: Storage type
+    Default: gp2
+    AllowedValues: [ "gp2", "io1", "standard" ]
+    ConstraintDescription: Must be a gp2, io1, or standard
+  StorageIops:
+    Type: Number
+    Description: Storage IOPS
+    Default: 999
+    MinValue: 999
+    MaxValue: 10000
+    ConstraintDescription: Must be a number between 1000 and 10000
+  CreateMultiAzDatabase:
+    Type: String
+    Description: Create a Multi-AZ Amazon RDS database instance
+    Default: false
+    AllowedValues: [ "true", "false" ]
+    ConstraintDescription: Must be either true or false
+  InstanceClass:
+    Default: db.t2.micro
+    Description: Database instance class
+    Type: String
+    AllowedValues:
+      - db.t2.micro
+      - db.t2.small
+      - db.t2.medium
+      - db.t2.large
+      - db.m4.large
+      - db.m4.xlarge
+      - db.m4.2xlarge
+      - db.m4.4xlarge
+      - db.m4.10xlarge
+      - db.m4.16xlarge
+    ConstraintDescription: Must select a valid database instance type
+  EngineVersion:
+    Type: String
+    Description: RDS Engine Version
+    Default: 9.6.5
+  Password:
+    NoEcho: true
+    Type: String
+    Description: The database admin account password
+    MinLength: 8
+    MaxLength: 41
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: Must contain only alphanumeric characters
+  Username:
+    Type: String
+    Description: The database admin account username
+    MinLength: 1
+    MaxLength: 16
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters
+  PubliclyAccessible:
+    Type: String
+    Default: false
+    Description: Make RDS publicly accessible
+    AllowedValues:
+      - true
+      - false
+    ConstraintDescription: Must be either true or false
+  VpcSubnetList:
+    Type: CommaDelimitedList
+    Description: List of VPC subnets to use for cache subnet group
+  VpcSecurityGroupList:
+    Type: CommaDelimitedList
+    Description: List of VPC security group IDs
+
+Conditions:
+  StorageIopsDefined: !Not [ !Equals [ !Ref StorageIops, 999 ] ]
+
+Resources:
+  RdsSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: The subnet group for RDS
+      SubnetIds: !Ref VpcSubnetList
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  PostgresRds:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: postgres
+      EngineVersion: !Ref EngineVersion
+      Port: 5432
+      AllocatedStorage: !Ref AllocatedStorage
+      StorageType: !Ref StorageType
+      Iops: !If [ StorageIopsDefined, !Ref StorageIops, !Ref "AWS::NoValue" ]
+      MultiAZ: !Ref CreateMultiAzDatabase
+      PubliclyAccessible: !Ref PubliclyAccessible
+      MasterUsername: !Ref Username
+      MasterUserPassword: !Ref Password
+      CopyTagsToSnapshot: true
+      DBInstanceClass: !Ref InstanceClass
+      DBSubnetGroupName: !Ref RdsSubnetGroup
+      VPCSecurityGroups: !Ref VpcSecurityGroupList
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  RdsDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Join [ ".", [ postgres, !Ref Environment, forgingadventures.com. ] ]
+      Type: CNAME
+      TTL: '900'
+      ResourceRecords:
+        - !GetAtt PostgresRds.Endpoint.Address
+
+Outputs:
+  RdsCluster:
+    Description: The RDS name
+    Value: !Ref PostgresRds
+  RdsDomain:
+    Description: The RDS domain name
+    Value: !Ref RdsDNSRecord

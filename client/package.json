@@ -1,5 +1,5 @@
 {
-  "name": "react-api-poc",
+  "name": "forging-adventures-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,8 +8,8 @@
     "apollo-link": "^1.0.3",
     "apollo-link-context": "^1.0.1",
     "apollo-link-ws": "^1.0.2",
-    "auth0-js": "^8.10.1",
-    "auth0-lock": "^10.23.1",
+    "auth0-js": "^9.0.2",
+    "auth0-lock": "^11.0.1",
     "axios": "^0.17.0",
     "bootstrap": "3",
     "dotenv": "4.0.0",

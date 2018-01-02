@@ -25,7 +25,8 @@ function (user, context, callback) {
     if (err) return callback(err);
 
     user.app_metadata = user.app_metadata || {};
-    user.app_metadata.faUserId = body.id;
+    // Can't figure out why sometimes response is array or not
+    user.app_metadata.faUserId = body[0].id || body.id;
     auth0.users.updateAppMetadata(user.user_id, user.app_metadata)
       .then(function() {
         // TODO Do we need to resync back to PG or wait until second user login
