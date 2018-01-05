@@ -30,7 +30,7 @@ class ListGames extends Component {
     const { match, data: { games } } = this.props;
 
     return <ul className="list-unstyled">
-      {_.each(games).map((game) => (
+      {_.map(games, (game) => (
         <li key={game.id} className="game-container">
           <GameDetails game={game} link={`${match.url}/${game.id}`}/>
         </li>

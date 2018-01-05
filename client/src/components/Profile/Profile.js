@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Panel, ControlLabel, Glyphicon } from 'react-bootstrap';
 import './Profile.css';
 
-export default class Profile extends Component<{||}> {
+export default class Profile extends Component {
   componentWillMount() {
     this.setState({ profile: {} });
     const { userProfile, getProfile } = this.props.auth;

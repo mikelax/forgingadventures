@@ -23,7 +23,7 @@ import knex from 'services/knex';
 import logger from 'services/logger';
 
 import logging from 'middleware/logging';
-import { checkJwt, checkJwtForGraphiql } from 'middleware/security';
+import { checkJwt } from 'middleware/security';
 
 const app = express();
 const server = createServer(app);

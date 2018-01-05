@@ -1,19 +1,33 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {Button, Nav, Navbar, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-export default class Header extends Component {
+import {login, logout} from '../../actions/auth';
+
+const Header = class extends Component {
+
+  static propTypes = {
+    login: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
+    authorisation: PropTypes.shape({
+      isAuthenticated: PropTypes.bool.isRequired,
+      loading: PropTypes.bool,
+      error: PropTypes.string,
+    }).isRequired
+  };
 
   login = () => {
-    this.props.auth.login();
+    this.props.login();
   };
 
   logout = () => {
-    this.props.auth.logout();
+    this.props.logout();
   };
 
   render() {
-    const {isAuthenticated, userHasScopes} = this.props.auth;
+    const {isAuthenticated, userHasScopes} = this.props.authorisation;
 
     // https://github.com/react-bootstrap/react-router-bootstrap
     // https://reacttraining.com/react-router/web/api/NavLink
@@ -28,19 +42,17 @@ export default class Header extends Component {
           <Navbar.Collapse>
             <Nav>
               <NavItem href="/about">About</NavItem>
-              {isAuthenticated() && (
+              {isAuthenticated && (
                 <NavItem href="/profile">Profile</NavItem>
               )}
-              {isAuthenticated() && userHasScopes(['create:posts']) && (
-                <NavItem href="/games">Games</NavItem>
-              )}
-              {!isAuthenticated() && (
+              <NavItem href="/games">Games</NavItem>
+              {!isAuthenticated && (
                 <NavItem href="/login">Login Page</NavItem>
               )}
             </Nav>
             <Nav pullRight>
               {
-                !isAuthenticated() && (
+                !isAuthenticated && (
                   <NavItem><Button
                     bsStyle="primary"
                     bsSize="xsmall"
@@ -52,7 +64,7 @@ export default class Header extends Component {
                 )
               }
               {
-                isAuthenticated() && (
+                isAuthenticated && (
                   <NavItem><Button
                     bsStyle="primary"
                     bsSize="xsmall"
@@ -69,4 +81,18 @@ export default class Header extends Component {
       </div>
     );
   }
-}
+};
+
+const mapStateToProps = state => ({
+  authorisation: state.authorisation,
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: () => dispatch(login()),
+  logout: () => dispatch(logout())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Header);
