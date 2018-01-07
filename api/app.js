@@ -77,6 +77,7 @@ app.use('/silent', (req, res) => {
     redirectUri: config.get('auth0.redirectUri')
   });
 });
+
 app.use('/api', index);
 
 // Start server

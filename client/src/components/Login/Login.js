@@ -1,45 +1,35 @@
 import React, { Component } from 'react';
-import Auth0Lock from 'auth0-lock';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import {Redirect} from 'react-router-dom';
 
-import Auth from '../../services/Auth/Auth';
+import {showLogin} from '../../services/login';
 
 import './Login.styl';
 
-export default class Login extends Component {
+class Login extends Component {
+
+  static propTypes = {
+    authorisation: PropTypes.shape({
+      isAuthenticated: PropTypes.bool.isRequired
+    }).isRequired
+  };
 
   componentDidMount() {
-    // Config documentation
-    // https://auth0.com/docs/libraries/lock/v10/configuration#additionalsignupfields-array-
-    const lock = new Auth0Lock(process.env.REACT_APP_AUTH0_CLIENT_ID, process.env.REACT_APP_AUTH0_DOMAIN, {
-      container: 'auth0Lock',
-      initialScreen: 'login',
-      theme: {
-        logo: 'https://s3.amazonaws.com/forgingadventures-resources/auth0/fa_anvil_rust_logo.png',
-        primaryColor: '#985e6d', // default #ea5323
-        authButtons: {
-          'twitch': {
-            primaryColor: '#6441A4',  // Twitch Purple
-            icon: 'https://s3.amazonaws.com/forgingadventures-resources/auth0/twitch_glitch_wh_logo.svg'
-          }
-        }
-      },
-      languageDictionary: {
-        title: 'Let\'s get started!'
-      },
-      auth: {
-        redirectUrl: process.env.REACT_APP_AUTH0_REDIRECT_URI,
-        responseType: 'token id_token',
-        audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-        params: {
-          scope: Auth.requestedScopes
-        }
-      }
-    });
+    const {isAuthenticated} = this.props.authorisation;
 
-    lock.show();
+    if (!(isAuthenticated)) {
+      showLogin();
+    }
   }
 
   render() {
+    const {isAuthenticated} = this.props.authorisation;
+
+    if (isAuthenticated) {
+      return <Redirect to="/"/>;
+    }
+
     return (
       <div className="Login">
         <div className="container">
@@ -49,9 +39,17 @@ export default class Login extends Component {
           <p>This page uses custom Auth0 Lock widget, as opposed to hosted login page.
             <br/>If you remove the container attribute it will display as a modal.</p>
 
-          <div id="auth0Lock"></div>
+          <div id="auth0Lock"/>
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  authorisation: state.authorisation,
+});
+
+export default connect(
+  mapStateToProps
+)(Login);

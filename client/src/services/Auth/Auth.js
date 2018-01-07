@@ -118,15 +118,6 @@ export default class Auth {
     );
   }
 
-  scheduleRenewal = () => {
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    const delay = expiresAt - Date.now();
-    if (delay > 0) {
-      this.tokenRenewalTimeout = setTimeout(() => {
-        this.renewToken();
-      }, delay);
-    }
-  }
 
   getProfile = (cb) => {
     let accessToken = this.getAccessToken();

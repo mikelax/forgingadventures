@@ -2,9 +2,12 @@ import Auth0Lock from 'auth0-lock';
 import Bluebird from 'bluebird';
 import history from "./Auth/history";
 
-const requestedScopes = 'openid profile email create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
+import {scheduleRenewal, clearRenewalTimer} from './webAuth';
+
+export const requestedScopes = 'openid profile email create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
 
 const lock = new Auth0Lock(process.env.REACT_APP_AUTH0_CLIENT_ID, process.env.REACT_APP_AUTH0_DOMAIN, {
+  container: 'auth0Lock',
   initialScreen: 'login',
   theme: {
     logo: 'https://s3.amazonaws.com/forgingadventures-resources/auth0/fa_anvil_rust_logo.png',
@@ -29,29 +32,15 @@ const lock = new Auth0Lock(process.env.REACT_APP_AUTH0_CLIENT_ID, process.env.RE
   }
 });
 
-export function authLogin() {
+export function showLogin() {
   return lock.show();
 }
 
 export function processAuth() {
   return new Bluebird((resolve, reject) => {
     lock.on('authenticated', (authResult) => {
-      console.log('authResult', authResult);
-      // Set the time that the access token will expire at
-      let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
-      // scope attribute will be empty of all scopes are returned, so use scopes defined here to store in browser
-      const scopes = authResult.scope || requestedScopes || '';
-      // Roles claim is namespaced but not unique between environments (tenants)
-      const roles = authResult.idTokenPayload['https://forgingadventures.com/claims/roles'];
-
-      localStorage.setItem('access_token', authResult.accessToken);
-      localStorage.setItem('id_token', authResult.idToken);
-      localStorage.setItem('expires_at', expiresAt);
-      localStorage.setItem('scopes', JSON.stringify(scopes));
-      localStorage.setItem('roles', JSON.stringify(roles));
-
-      // todo schedule a token renewal
-      //this.scheduleRenewal();
+      setSession(authResult);
+      scheduleRenewal();
 
       resolve(authResult.accessToken);
     });
@@ -62,11 +51,35 @@ export function processAuth() {
   });
 }
 
+export function setSession(authResult) {
+  // Set the time that the access token will expire at
+  let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
+  // scope attribute will be empty of all scopes are returned, so use scopes defined here to store in browser
+  const scopes = authResult.scope || requestedScopes || '';
+  // Roles claim is namespaced but not unique between environments (tenants)
+  const roles = authResult.idTokenPayload['https://forgingadventures.com/claims/roles'];
+
+  localStorage.setItem('access_token', authResult.accessToken);
+  localStorage.setItem('id_token', authResult.idToken);
+  localStorage.setItem('expires_at', expiresAt);
+  localStorage.setItem('scopes', JSON.stringify(scopes));
+  localStorage.setItem('roles', JSON.stringify(roles));
+}
+
 export function isAuthenticated() {
   // Check whether the current time is past the
   // access token's expiry time
-  let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+  let expiresAt = getAccessTokenExpiresAt();
+
   return new Date().getTime() < expiresAt;
+}
+
+export function getAccessToken() {
+  return localStorage.getItem('access_token');
+}
+
+export function getAccessTokenExpiresAt() {
+  return JSON.parse(localStorage.getItem('expires_at'));
 }
 
 export function authLogout() {
@@ -77,9 +90,8 @@ export function authLogout() {
   localStorage.removeItem('scopes');
   localStorage.removeItem('roles');
 
-  // todo Stop any running renewal timers
-  //clearTimeout(this.tokenRenewalTimeout);
+  clearRenewalTimer();
 
   // navigate to the home route
-  //history.replace('/');
+  history.replace('/');
 }

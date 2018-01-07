@@ -4,13 +4,11 @@ import { connect } from 'react-redux';
 import {Button, Nav, Navbar, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-import {login, logout} from '../../actions/auth';
+import {logout} from '../../actions/auth';
 
 const Header = class extends Component {
 
   static propTypes = {
-    login: PropTypes.func.isRequired,
-    logout: PropTypes.func.isRequired,
     authorisation: PropTypes.shape({
       isAuthenticated: PropTypes.bool.isRequired,
       loading: PropTypes.bool,
@@ -18,16 +16,8 @@ const Header = class extends Component {
     }).isRequired
   };
 
-  login = () => {
-    this.props.login();
-  };
-
-  logout = () => {
-    this.props.logout();
-  };
-
   render() {
-    const {isAuthenticated, userHasScopes} = this.props.authorisation;
+    const {isAuthenticated} = this.props.authorisation;
 
     // https://github.com/react-bootstrap/react-router-bootstrap
     // https://reacttraining.com/react-router/web/api/NavLink
@@ -46,21 +36,11 @@ const Header = class extends Component {
                 <NavItem href="/profile">Profile</NavItem>
               )}
               <NavItem href="/games">Games</NavItem>
-              {!isAuthenticated && (
-                <NavItem href="/login">Login Page</NavItem>
-              )}
             </Nav>
             <Nav pullRight>
               {
                 !isAuthenticated && (
-                  <NavItem><Button
-                    bsStyle="primary"
-                    bsSize="xsmall"
-                    className="btn-margin"
-                    onClick={this.login}
-                  >
-                    Log In
-                  </Button></NavItem>
+                  <NavItem href="/login">Login</NavItem>
                 )
               }
               {
@@ -81,6 +61,11 @@ const Header = class extends Component {
       </div>
     );
   }
+
+  logout = () => {
+    this.props.logout();
+  };
+
 };
 
 const mapStateToProps = state => ({
@@ -88,7 +73,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  login: () => dispatch(login()),
   logout: () => dispatch(logout())
 });
 

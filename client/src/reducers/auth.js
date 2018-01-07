@@ -1,4 +1,4 @@
-import {AUTH_FAILURE, AUTH_PROCESSING, AUTH_SUCCESS, LOGOUT_SUCCESS} from '../actions/auth';
+import {AUTH_FAILURE, AUTH_SUCCESS, LOGOUT_SUCCESS} from '../actions/auth';
 import {isAuthenticated} from '../services/login';
 
 export default function authReducer(state = {
@@ -7,17 +7,12 @@ export default function authReducer(state = {
   error: null,
 }, action) {
   switch (action.type) {
-    case AUTH_PROCESSING:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
     case AUTH_SUCCESS:
       return {
         ...state,
         loading: false,
-        isAuthenticated: true
+        isAuthenticated: true,
+        accessToken: action.accessToken
       };
     case AUTH_FAILURE:
       return {
@@ -29,7 +24,8 @@ export default function authReducer(state = {
     case LOGOUT_SUCCESS:
       return {
         ...state,
-        isAuthenticated: false
+        isAuthenticated: false,
+        accessToken: null
       };
     default:
       return state;
