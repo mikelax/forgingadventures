@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Environment:
+    Type: String
+    Description: The environment
+    Default: test
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The VPC Id
+  VpcSubnetList:
+    Type: CommaDelimitedList
+    Description: List of VPC subnets to use for cache subnet group
+  VpcSecurityGroupList:
+    Type: CommaDelimitedList
+    Description: List of VPC security group IDs
+
+Resources:
+  Elb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: "internet-facing"
+      SecurityGroups: !Ref VpcSecurityGroupList
+      Subnets: !Ref VpcSubnetList
+      Type: "application"
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  ElbTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: "/"
+      HealthCheckPort: 80
+      HealthCheckProtocol: "HTTP"
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 6
+      UnhealthyThresholdCount: 3
+      Port: 80
+      Protocol: "HTTP"
+      VpcId: !Ref VpcId
+      Tags:
+        -
+          Key: Environment
+          Value: !Ref Environment
+        -
+          Key: Name
+          Value: forgingadventures
+
+  ElbHttpListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        -
+          TargetGroupArn: !Ref ElbTargetGroup
+          Type: "forward"
+      LoadBalancerArn: !Ref Elb
+      Port: 80
+      Protocol: "HTTP"
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Join [ "-", [ forgingadventures, !Ref Environment ] ]
+
+
+Outputs:
+  ElbId:
+    Description: "App Load Balancer Id"
+    Value: !Ref Elb
+  ElbUrl:
+    Description: "App Load Balancer URL for the cluster"
+    Value: !Join [ "", [ "http://", !GetAtt Elb.DNSName ] ]
+
+  ClusterName:
+    Description: The ECS Cluster Name
+    Value: !Ref Cluster
