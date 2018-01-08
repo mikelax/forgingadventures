@@ -5,6 +5,8 @@ import CreateGame from './Create/CreateGame';
 import ListGames from './List/ListGames';
 import ViewGame from './View/ViewGame';
 
+import AuthGuard from '../shared/components/AuthGuard';
+
 export default class Campaigns extends Component {
 
   render() {
@@ -14,7 +16,7 @@ export default class Campaigns extends Component {
       <div className="games">
         <div className="container">
           <Switch>
-            <Route exact path={`${match.url}/create`} component={CreateGame}/>
+            <Route exact path={`${match.url}/create`} component={AuthGuard(CreateGame)}/>
             <Route exact path={`${match.url}/:id`} component={ViewGame}/>
             <Route exact path={`${match.url}`} component={ListGames}/>
           </Switch>

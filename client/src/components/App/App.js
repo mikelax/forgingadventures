@@ -10,11 +10,13 @@ import Home from '../Home/Home';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
+import AuthGuard from '../shared/components/AuthGuard';
 
 import {processAuth} from '../../services/login';
 import Games from '../Games';
 import history from '../../services/Auth/history';
 import {authFailure, authSuccess} from "../../actions/auth";
+
 
 import './App.styl';
 
@@ -36,8 +38,6 @@ class App extends Component {
   }
 
   render() {
-    const {isAuthenticated} = this.props.authorisation;
-
     return (
       <Router history={history}>
         <div>
@@ -46,14 +46,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/about" component={About} />
-              <Route path="/profile" render={(props) => (
-                !isAuthenticated ? (
-                  <Redirect to="/"/>
-                ) : (
-                  <Profile/>
-                )
-              )}
-              />
+              <Route path="/profile" component={AuthGuard(Profile)} />
               <Route path="/login" component={Login} />
               <Route path="/games" component={Games} />
             </Switch>
@@ -64,16 +57,12 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  authorisation: state.authorisation,
-});
-
 const mapDispatchToProps = dispatch => ({
   authSuccess: (token) => dispatch(authSuccess(token)),
   authFailure: (e) => dispatch(authFailure(e))
 });
 
 export default connect(
-  mapStateToProps,
+  null, //no mapStateToProps
   mapDispatchToProps,
 )(App);

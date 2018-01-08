@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import _ from 'lodash';
 
 import 'auth0-js/build/auth0.js';
 
@@ -17,6 +18,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 
 import App from './components/App/App';
 import reducers from './reducers';
+import {getAuthorisationHeader, getAccessToken} from './services/login';
 import registerServiceWorker from './registerServiceWorker';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -25,14 +27,10 @@ import './index.css';
 
 
 // apollo client setup
-const token = localStorage.getItem('access_token');
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext((__, { headers }) => {
   return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : null,
-    }
+    headers: _.merge({}, headers, getAuthorisationHeader())
   };
 });
 
@@ -42,7 +40,7 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: token,
+      authToken: getAccessToken(),
     }
   }
 });

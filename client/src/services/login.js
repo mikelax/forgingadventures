@@ -78,6 +78,16 @@ export function getAccessToken() {
   return localStorage.getItem('access_token');
 }
 
+export function getAuthorisationHeader() {
+  const token = getAccessToken();
+
+  if (token) {
+    return {
+      authorisation: `Bearer ${token}`
+    };
+  }
+}
+
 export function getAccessTokenExpiresAt() {
   return JSON.parse(localStorage.getItem('expires_at'));
 }
