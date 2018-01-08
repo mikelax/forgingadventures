@@ -12,5 +12,16 @@
   "auth0": {
     "domain": "forgingadventures.auth0.com",
     "audience": "https://api.forgingadventures.com"
+  },
+  "aws": {
+    "config": {
+      "region": "us-east-1"
+    },
+    "s3": {
+      "userUploadsBucket": "forgingadventures-user-uploads"
+    }
+  },
+  "cloudinary": {
+    "cloudName": "forgingadventures"
   }
 }
