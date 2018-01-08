@@ -6,12 +6,12 @@ import { Router, Route, Switch } from 'react-router-dom';
 import {connect} from "react-redux";
 
 import About from '../About';
+import AuthGuard from '../shared/components/AuthGuard';
 import Callback from '../Callback';
-import Home from '../Home';
 import Header from '../Header';
+import Home from '../Home';
 import Login from '../Login';
 import Profile from '../Profile';
-import AuthGuard from '../shared/components/AuthGuard';
 
 import {processAuth} from '../../services/login';
 import Games from '../Games';
