@@ -15,7 +15,7 @@ import AuthGuard from '../shared/components/AuthGuard';
 
 import {processAuth} from '../../services/login';
 import Games from '../Games';
-import history from '../../services/Auth/history';
+import history from '../../services/history';
 import {authFailure, authSuccess} from "../../actions/auth";
 
 

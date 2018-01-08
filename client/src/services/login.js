@@ -1,6 +1,6 @@
 import Auth0Lock from 'auth0-lock';
 import Bluebird from 'bluebird';
-import history from "./Auth/history";
+import history from "./history";
 
 import {scheduleRenewal, clearRenewalTimer} from './webAuth';
 

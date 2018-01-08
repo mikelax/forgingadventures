@@ -45,6 +45,17 @@ export function clearRenewalTimer() {
   clearTimeout(tokenRenewalTimeout);
 }
 
+export function userHasScopes(scopes) {
+  if (!localStorage.getItem('scopes')) {
+    return false;
+  }
+
+  const grantedScopes = JSON.parse(localStorage.getItem('scopes')).split(' ');
+
+  return scopes.every(scope => grantedScopes.includes(scope));
+}
+
+
 ///// private
 
 function renewToken() {
