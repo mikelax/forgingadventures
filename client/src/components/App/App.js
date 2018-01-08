@@ -2,14 +2,15 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Router, Redirect, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import {connect} from "react-redux";
 
-import About from '../About/About';
-import Home from '../Home/Home';
-import Header from '../Header/Header';
-import Login from '../Login/Login';
-import Profile from '../Profile/Profile';
+import About from '../About';
+import Callback from '../Callback';
+import Home from '../Home';
+import Header from '../Header';
+import Login from '../Login';
+import Profile from '../Profile';
 import AuthGuard from '../shared/components/AuthGuard';
 
 import {processAuth} from '../../services/login';
@@ -48,6 +49,7 @@ class App extends Component {
               <Route path="/about" component={About} />
               <Route path="/profile" component={AuthGuard(Profile)} />
               <Route path="/login" component={Login} />
+              <Route path="/callback" component={Callback} />
               <Route path="/games" component={Games} />
             </Switch>
           </div>

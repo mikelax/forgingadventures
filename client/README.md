@@ -29,4 +29,26 @@ CRA eject also updated [package.json](./package.json) by adding its packages to 
 packages were moved to the `devDependencies` section to separate build/dev from runtime packages.
 These `devDependencies` packages can be updated when updating CRA.
 
+## Global Store using Redux
 
+The Forging client includes two global stores:
+
+1. The Apollo store, which contains and manages the API data
+2. The [Redux](https://redux.js.org/) store, which contains and manages non API data, such as auth0 authorisation status.
+
+All [action creators](https://redux.js.org/docs/basics/Actions.html#action-creators) are stored in 
+the [actions](./src/actions) folder and all [reducers](https://redux.js.org/docs/basics/Reducers.html) are 
+stored in the [reducers](./src/reducers) folder.
+
+In addition, [redux-thunk](https://github.com/gaearon/redux-thunk) is also available to define async action creators.  
+
+### Redux Stores
+
+#### authorisation
+
+The authorisation store holds the state of the current user's auth0 authentication status. The store contains three keys:
+
+1. `isAuthenticated` - is true if the current user is authenticated. This can be used in the UI 
+using `mapStateToProps` and [connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options)
+2. `loading` - user is authenticating
+3. `error` - user authentication has failed

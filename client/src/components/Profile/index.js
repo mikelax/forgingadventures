@@ -42,6 +42,5 @@ export default class Profile extends Component {
     } else {
       return null;
     }
-
   }
 }
