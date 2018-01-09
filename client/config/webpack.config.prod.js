@@ -212,6 +212,73 @@ module.exports = {
             ),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
+
+
+          // START - ADDED AFTER EJECTING CRA
+          // stylus loader added to ejected create-react-app configs
+          // the stylus loader is a copy of the css loader with the addition
+          // of the 'stylus-loader' at the start of the use loader chain
+          {
+            test: /\.styl$/,
+            loader: ExtractTextPlugin.extract(
+              Object.assign(
+                {
+                  fallback: {
+                    loader: require.resolve('style-loader'),
+                    options: {
+                      hmr: false,
+                    },
+                  },
+                  use: [
+                    {
+                      loader: require.resolve('css-loader'),
+                      options: {
+                        importLoaders: 1,
+                        minimize: true,
+                        sourceMap: false,
+                      },
+                    },
+                    {
+                      loader: require.resolve('postcss-loader'),
+                      options: {
+                        // Necessary for external CSS imports to work
+                        // https://github.com/facebookincubator/create-react-app/issues/2677
+                        ident: 'postcss',
+                        plugins: () => [
+                          require('postcss-flexbugs-fixes'),
+                          autoprefixer({
+                            browsers: [
+                              '>1%',
+                              'last 4 versions',
+                              'Firefox ESR',
+                              'not ie < 9', // React doesn't support IE8 anyway
+                            ],
+                            flexbox: 'no-2009',
+                          }),
+                        ],
+                      },
+                    },
+                    {
+                      loader: 'stylus-loader',
+                      options: {
+                        use: [require('rupture')()],
+                        // define global style files - i.e. variables, mixins etc
+                        import: [
+                          path.resolve(__dirname, '../src/variables.styl'),
+                          path.resolve(__dirname, '../src/mixins.styl')
+                        ]
+                      }
+                    }
+                  ],
+                },
+                extractTextPluginOptions
+              )
+            ),
+          },
+
+          // end of stylus loader added to ejected create-react-app configs
+          // END - ADDED AFTER EJECTING CRA
+
           // "file" loader makes sure assets end up in the `build` folder.
           // When you `import` an asset, you get its filename.
           // This loader doesn't use a "test" so it will catch all modules
