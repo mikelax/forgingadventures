@@ -29,7 +29,57 @@ CRA eject also updated [package.json](./package.json) by adding its packages to 
 packages were moved to the `devDependencies` section to separate build/dev from runtime packages.
 These `devDependencies` packages can be updated when updating CRA.
 
-## Global Store using Redux
+## Introducing Redux
+
+Forging utilises [Redux](https://redux.js.org/) in order to manage a global store to store UI view layer states starting with the
+`authorisation` state.
+
+Redux utilises [actions](https://redux.js.org/docs/basics/Actions.html) and [reducers](https://redux.js.org/docs/basics/Reducers.html)
+to update state in a [unidirectional](https://redux.js.org/docs/basics/DataFlow.html) manner.
+
+[react-redux](https://github.com/reactjs/react-redux) is used to hook up Redux with React by providing the
+[connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options)
+HOC function. 
+
+`connect` is used to "inject" state into props into any component no matter where the component is in the DOM tree - i.e. it negates the
+need to pass props down DOM children. In it's most basic form, `connect` requires a `mapStateToProps` function which
+maps a Redux store to props:
+
+```
+const mapStateToProps = state => ({
+  authorisation: state.authorisation,
+});
+
+export default connect(
+  mapStateToProps
+)(Login);
+```
+
+In the above `authorisation: state.authorisation` example, the `mapStateToProps` provides the state, from where
+we can pick which object to pick from the Redux store - in this instance, the `authorisation` object. This then
+becomes available in the wrapped component `Login` as `props.authorisation`.
+
+Additionaly, `connect` takes a second `mapDispatchToProps` function which is used to inject the redux `dispatch` into
+components:
+
+```
+const mapDispatchToProps = dispatch => ({
+  authSuccess: (token) => dispatch(authSuccess(token)),
+  authFailure: (e) => dispatch(authFailure(e))
+});
+
+export default connect(
+  null, //no mapStateToProps
+  mapDispatchToProps,
+)(App);
+```
+
+In the above example, `mapDispatchToProps` is used to define two functions `authSuccess` and `authFailure`, both
+used to dispatch actions. `authSuccess` and `authFailure` then becomes available in the wrapped `App` component
+as `props.authSuccess()` and `props.authFailure()`.
+
+
+### Global Store using Redux
 
 The Forging client includes two global stores:
 
