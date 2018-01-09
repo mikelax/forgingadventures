@@ -11,6 +11,8 @@ services:
     restart: always
     ports: ["6379:6379"]
   api:
+    environment:
+      - NODE_ENV=development
     build: ./api
     depends_on:
       - db
@@ -25,3 +27,5 @@ services:
     ports: ["3000:3000"]
     volumes:
       - ./client:/app:delegated
+
+# override environment using a production.yml as detailed in https://docs.docker.com/compose/production/
