@@ -21,8 +21,6 @@ services:
     volumes:
       - ./api:/app:delegated
   client:
-    environment:
-      - NODE_ENV=development
     build: ./client
     depends_on:
       - api
