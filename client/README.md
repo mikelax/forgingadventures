@@ -31,6 +31,8 @@ These `devDependencies` packages can be updated when updating CRA.
 
 ## Introducing Redux
 
+A good introduction to Redux in React: https://css-tricks.com/learning-react-redux/
+
 Forging utilises [Redux](https://redux.js.org/) in order to manage a global store to store UI view layer states starting with the
 `authorisation` state.
 
