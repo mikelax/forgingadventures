@@ -1,19 +1,23 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {Button, Nav, Navbar, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-export default class Header extends Component {
+import {logout} from '../../actions/auth';
 
-  login = () => {
-    this.props.auth.login();
-  };
+const Header = class extends Component {
 
-  logout = () => {
-    this.props.auth.logout();
+  static propTypes = {
+    authorisation: PropTypes.shape({
+      isAuthenticated: PropTypes.bool.isRequired,
+      loading: PropTypes.bool,
+      error: PropTypes.string,
+    }).isRequired
   };
 
   render() {
-    const {isAuthenticated, userHasScopes} = this.props.auth;
+    const {isAuthenticated} = this.props.authorisation;
 
     // https://github.com/react-bootstrap/react-router-bootstrap
     // https://reacttraining.com/react-router/web/api/NavLink
@@ -28,34 +32,19 @@ export default class Header extends Component {
           <Navbar.Collapse>
             <Nav>
               <NavItem href="/about">About</NavItem>
-              {isAuthenticated() && (
+              {isAuthenticated && (
                 <NavItem href="/profile">Profile</NavItem>
               )}
-              {isAuthenticated() && userHasScopes(['create:posts']) && (
-                <NavItem href="/messages/create">Create Message</NavItem>
-              )}
-              {isAuthenticated() && userHasScopes(['create:posts']) && (
-                <NavItem href="/games">Games</NavItem>
-              )}
-              {!isAuthenticated() && (
-                <NavItem href="/login">Login Page</NavItem>
-              )}
+              <NavItem href="/games">Games</NavItem>
             </Nav>
             <Nav pullRight>
               {
-                !isAuthenticated() && (
-                  <NavItem><Button
-                    bsStyle="primary"
-                    bsSize="xsmall"
-                    className="btn-margin"
-                    onClick={this.login}
-                  >
-                    Log In
-                  </Button></NavItem>
+                !isAuthenticated && (
+                  <NavItem href="/login">Login</NavItem>
                 )
               }
               {
-                isAuthenticated() && (
+                isAuthenticated && (
                   <NavItem><Button
                     bsStyle="primary"
                     bsSize="xsmall"
@@ -72,4 +61,22 @@ export default class Header extends Component {
       </div>
     );
   }
-}
+
+  logout = () => {
+    this.props.logout();
+  };
+
+};
+
+const mapStateToProps = state => ({
+  authorisation: state.authorisation,
+});
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logout())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Header);

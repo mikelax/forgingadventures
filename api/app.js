@@ -23,7 +23,7 @@ import knex from 'services/knex';
 import logger from 'services/logger';
 
 import logging from 'middleware/logging';
-import { checkJwt, checkJwtForGraphiql } from 'middleware/security';
+import { checkJwt } from 'middleware/security';
 
 const app = express();
 const server = createServer(app);
@@ -52,22 +52,20 @@ app.use(compression());
 app.use(cookieParser());
 app.use(cors());
 
-// graphql endpoints
-if (config.get('graphql.graphiql')) {
-  app.use('/graphql', bodyParser.json(), checkJwtForGraphiql(), graphqlExpress((req, res) => ({
-    schema,
-    context: { req, res }
-  })));
+// JWT
+app.use(checkJwt());
 
+// graphql endpoints
+app.use('/graphql', graphqlExpress((req, res) => ({
+  schema,
+  context: { req, res }
+})));
+
+if (config.get('graphql.graphiql')) {
   app.use('/graphiql', graphiqlExpress({
     endpointURL: '/graphql',
     subscriptionsEndpoint: 'ws://localhost:3001/subscriptions'
   }));
-} else {
-  app.use('/graphql', bodyParser.json(), checkJwt(), graphqlExpress((req, res) => ({
-    schema,
-    context: { req, res }
-  })));
 }
 
 
@@ -79,6 +77,7 @@ app.use('/silent', (req, res) => {
     redirectUri: config.get('auth0.redirectUri')
   });
 });
+
 app.use('/api', index);
 
 // Start server

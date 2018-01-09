@@ -10,5 +10,5 @@ const Spinner = () =>
 // wrapped component when props.data.loading is true
 export default branch(
   (props) => props.data.loading,
-  renderComponent(Spinner),
+  renderComponent(Spinner)
 );

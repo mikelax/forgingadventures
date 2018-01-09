@@ -18,21 +18,13 @@ export function checkJwt() {
     // Validate the audience and the issuer.
     audience: config.get('auth0.audience'),
     issuer: `https://${config.get('auth0.domain')}/`,
-    algorithms: ['RS256']
+    algorithms: ['RS256'],
+
+    // skip JWT checking if no token is available - i.e. read graphQL queries
+    credentialsRequired: false,
+    // but check token expiry if it does exist
+    alwaysThrowOnExpiredToken: true
   });
-}
-
-export function checkJwtForGraphiql() {
-  return (req, res, next) => {
-    const graphiqlEnabled = config.get('graphql.graphiql');
-    const graphiqlQuery = _.get(req, 'headers.referer', '').match('/graphiql?');
-
-    if (graphiqlEnabled && graphiqlQuery) {
-      next();
-    } else {
-      checkJwt()(req, res, next);
-    }
-  };
 }
 
 export function checkScopes(scopes) {
@@ -71,4 +63,3 @@ export function checkAuth0Secret() {
     }
   };
 }
-
