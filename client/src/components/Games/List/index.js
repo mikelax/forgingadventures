@@ -1,12 +1,14 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { graphql } from 'react-apollo';
-import { compose, pure } from "recompose";
+import React, {Component} from 'react';
+import {compose, pure} from "recompose";
+import {graphql} from 'react-apollo';
+import {Helmet} from "react-helmet";
+import {Link} from 'react-router-dom';
 
-import { gamesQuery } from '../queries';
-import { skillLevel, postingFrequency } from '../utils/gameSettings';
 import ApolloLoader from '../../shared/components/ApolloLoader';
+import GameSearch from '../components/GameSearch';
+import {gamesQuery} from '../queries';
+import {postingFrequency, skillLevel} from '../utils/gameSettings';
 
 import './ListGames.styl';
 
@@ -16,27 +18,23 @@ class ListGames extends Component {
     const {match} = this.props;
 
     return <div className="ListGames">
-      <h1>Games</h1>
+      <Helmet>
+        <title>Search For RPG Play by Post Games</title>
+      </Helmet>
+
+      <h1>Find a Game, start your Adventure</h1>
+
+      <GameSearch/>
 
       <Link to={`${match.url}/create`}>
         Create a new Game
       </Link>
 
-      {this.content()}
+      {renderGames.call(this)}
+
     </div>;
   }
 
-  content = () => {
-    const { match, data: { games } } = this.props;
-
-    return <ul className="list-unstyled">
-      {_.map(games, (game) => (
-        <li key={game.id} className="game-container">
-          <GameDetails game={game} link={`${match.url}/${game.id}`}/>
-        </li>
-      ))}
-    </ul>;
-  }
 }
 
 export default compose(
@@ -47,8 +45,19 @@ export default compose(
 
 /// private
 
+function renderGames() {
+  const {match, data: {games}} = this.props;
+
+  return <div className="game-container">
+    {_.map(games, (game) => (
+      <GameDetails key={game.id} game={game} link={`${match.url}/${game.id}`}/>
+    ))}
+  </div>;
+}
+
 const GameDetails = (props) => {
   const {game} = props;
+
   return <div className="game-card">
     <div className="header">
       <div className="title">
@@ -67,13 +76,13 @@ const GameDetails = (props) => {
 
     <div className="game-settings">
       <div className="players">
-        Players: { game.gameSettings.minPlayers } / { game.gameSettings.maxPlayers }
+        Players: {game.gameSettings.minPlayers} / {game.gameSettings.maxPlayers}
       </div>
       <div className="skill">
-        Skill: { skillLevel(game.gameSettings.skillLevel) }
+        Skill: {skillLevel(game.gameSettings.skillLevel)}
       </div>
       <div className="frequency">
-        Posting frequency: { postingFrequency(game.gameSettings.postingFrequency) }
+        Posting frequency: {postingFrequency(game.gameSettings.postingFrequency)}
       </div>
     </div>
   </div>;

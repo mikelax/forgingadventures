@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
-import GameMessage from '../components/GameMessage/GameMessage';
+import GameMessage from '../components/GameMessage';
 
 import { gameMessagesQuery, onGameMessageAdded } from '../queries';
 import ApolloLoader from '../../shared/components/ApolloLoader';

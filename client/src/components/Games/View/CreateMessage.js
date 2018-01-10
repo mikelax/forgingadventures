@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Button, ControlLabel, FormGroup } from 'react-bootstrap';
 
-import GameMessage from '../components/GameMessage/GameMessage';
+import GameMessage from '../components/GameMessage/index';
 
 import { createGameMessageMutation } from '../queries';
 
