@@ -4,7 +4,9 @@ import Bluebird from 'bluebird';
 import cloudinary from 'cloudinary';
 import config from 'config';
 
+import serviceUser from 'services/user';
 import User from 'models/user';
+import insertUserUpload from 'services/userUploads';
 
 export function postUsers() {
   return (req, res, next) => {
@@ -17,14 +19,7 @@ export function postUsers() {
       .then((dbUser) => {
         if (dbUser.length) {
           // Patch existing User
-          return User
-            .query()
-            .patch({
-              userMetadata: user.userMetadata,
-              appMetadata: user.appMetadata
-            })
-            .where('auth0UserId', user.auth0UserId)
-            .returning('*');
+          return serviceUser.pathAuth0Metadata(user.auth0UserId, user.userMetadata, user.appMetadata);
         }
 
         // Create new User
@@ -43,41 +38,40 @@ export function postUsers() {
 }
 
 export function uploadUserPicture() {
-  // req.file.
   return (req, res, next) => {
-    // TODO create random filename
-    const fileName = 'somerandomfilename';
+    const fileName = generateFileName(req.file.originalname);
 
     Bluebird.all([
-      new Bluebird((resolve, reject) => {
-        cloudinary.config({
-          cloud_name: config.get('cloudinary.cloudName'),
-          api_key: config.get('cloudinary.apiKey'),
-          api_secret: config.get('cloudinary.apiSecret')
-        });
-
-        cloudinary.v2.uploader.upload_stream({
-          public_id: fileName,
-          resource_type: 'auto',
-          tags: 'profile,user'
-        }, (error, result) => {
-          if (error) {
-            return reject(error);
-          }
-
-          return resolve(result);
-        })
-          .end(req.file.buffer);
-      }),
+      cloudinaryUploadFile(req.file.buffer, fileName),
       s3UploadFile(req.file.buffer, fileName)
     ])
       .spread((cloudinaryResult, s3Result) => {
         console.log(JSON.stringify(cloudinaryResult));
         console.log(JSON.stringify(s3Result));
 
-        // TODO write record to files table in db
+        // TODO Patch user metadata
+        // TODO Call Auth0 API to update User
+        return User
+          .query()
+          .select('id')
+          .where('auth0UserId', req.params.auth0Id)
+          .then((dbUser) => {
+            if (!dbUser.length) {
+              throw new Error('User not found');
+            }
 
-        res.json({ cloudinaryId: cloudinaryResult.public_id });
+            return insertUserUpload(dbUser[0].id, cloudinaryResult.public_id, 'userProfile', req.file)
+              .then((dbResult) => {
+                const response = {
+                  publicId: cloudinaryResult.public_id,
+                  userUploadId: dbResult[0]
+                };
+                return response;
+              });
+          });
+      })
+      .then((responseData) => {
+        res.json(responseData);
       })
       .catch((error) => {
         next(error);
@@ -85,17 +79,49 @@ export function uploadUserPicture() {
   };
 }
 
+/**
+ * Calculate a unique filenaeme to use for the public_id / URLs
+ * @param {string} originalFilename - The original filename
+ */
+function generateFileName(originalFilename) {
+  // TODO generate random filename
+  return 'somerandomfilename1';
+}
+
+
+function cloudinaryUploadFile(fileBuffer, fileName) {
+  return new Bluebird((resolve, reject) => {
+    cloudinary.config({
+      cloud_name: config.get('cloudinary.cloudName'),
+      api_key: config.get('cloudinary.apiKey'),
+      api_secret: config.get('cloudinary.apiSecret')
+    });
+
+    cloudinary.v2.uploader.upload_stream({
+      public_id: fileName,
+      resource_type: 'auto',
+      tags: 'profile,user'
+    }, (error, result) => {
+      if (error) {
+        return reject(error);
+      }
+
+      return resolve(result);
+    })
+      .end(fileBuffer);
+  });
+}
+
 function s3UploadFile(fileBuffer, fileName) {
-  // Only need to set key and secret in dev, othewise will grab from ECS IAM role
   aws.config.setPromisesDependency(Bluebird);
-  console.log(`the env is:  ${process.env.NODE_ENV}`);
-  // TODO should get NODE_ENV env var set
-  // if (process.env.NODE_ENV === 'development') {
+
+  // Only need to set key and secret in dev, othewise will grab from ECS IAM role
+  if (process.env.NODE_ENV === 'development') {
     aws.config.update({
       accessKeyId: config.get('aws.config.accessKeyId'),
       secretAccessKey: config.get('aws.config.secretAccessKey')
     });
-  // }
+  }
   const s3 = new aws.S3();
   const options = {
     Body: fileBuffer,

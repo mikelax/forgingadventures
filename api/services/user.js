@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Bluebird from 'bluebird';
 import User from 'models/user';
 
@@ -20,4 +19,21 @@ export default function getUser(auth0UserId) {
         return dbResult[0];
       });
   });
+}
+
+/**
+ * Patch user to update the Auth0 user and app metadata objects
+ * @param {string} auth0UserId - The Auth0 user id
+ * @param {object} userMetadata - Auth0 user metadata object
+ * @param {object} appMetadata - Auth0 app metadata object
+ */
+export function patchAuth0Metadata(auth0UserId, userMetadata, appMetadata) {
+  return User
+    .query()
+    .patch({
+      userMetadata,
+      appMetadata
+    })
+    .where('auth0UserId', auth0UserId)
+    .returning('*');
 }
