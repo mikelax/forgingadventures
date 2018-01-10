@@ -72,9 +72,9 @@ if (config.get('graphql.graphiql')) {
 // set up basic routes
 app.use('/silent', (req, res) => {
   res.render('pages/silent', {
-    clientID: config.get('auth0.clientId'),
-    domain: config.get('auth0.domain'),
-    redirectUri: config.get('auth0.redirectUri')
+    clientID: config.get('auth0.faClient.clientId'),
+    domain: config.get('auth0.faClient.domain'),
+    redirectUri: config.get('auth0.faClient.redirectUri')
   });
 });
 

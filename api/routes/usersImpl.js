@@ -4,6 +4,7 @@ import Bluebird from 'bluebird';
 import cloudinary from 'cloudinary';
 import config from 'config';
 
+import { getAuth0User, patchAuth0Metadata } from 'services/auth0';
 import serviceUser from 'services/user';
 import User from 'models/user';
 import insertUserUpload from 'services/userUploads';
@@ -19,7 +20,7 @@ export function postUsers() {
       .then((dbUser) => {
         if (dbUser.length) {
           // Patch existing User
-          return serviceUser.pathAuth0Metadata(user.auth0UserId, user.userMetadata, user.appMetadata);
+          return serviceUser.patchAuth0Metadata(user.auth0UserId, user.userMetadata, user.appMetadata);
         }
 
         // Create new User
@@ -62,14 +63,26 @@ export function uploadUserPicture() {
 
             return insertUserUpload(dbUser[0].id, cloudinaryResult.public_id, 'userProfile', req.file)
               .then((dbResult) => {
-                const response = {
+                return {
                   publicId: cloudinaryResult.public_id,
-                  userUploadId: dbResult[0]
+                  cloudinaryVersion: cloudinaryResult.version,
+                  sourceUrl: cloudinaryResult.secure_url,
+                  imageUrl: `https://res.cloudinary.com/${config.get('cloudinary.cloudName')}/image/upload/${cloudinaryResult.version}/${cloudinaryResult.public_id}.png`,
+                  userUploadId: dbResult.id
                 };
-                return response;
               });
           });
       })
+      // .then((response) => {
+      //   return getAuth0User(req.params.auth0Id, 'user_metadata,app_metadata')
+      //     .then((auth0Response) => {
+      //       const { user_metadata: userData, app_metadata: appData } = auth0Response;
+      //       userData.profileImage.publicId = response.publicId;
+      //       userData.profileImage.imageUrl = response.imageUrl;
+      //       return patchAuth0Metadata(req.params.auth0Id, userData, appData);
+      //     })
+      //     .then(() => response);
+      // })
       .then((responseData) => {
         res.json(responseData);
       })
@@ -80,7 +93,7 @@ export function uploadUserPicture() {
 }
 
 /**
- * Calculate a unique filenaeme to use for the public_id / URLs
+ * Calculate a unique filename to use for the public_id / URLs
  * @param {string} originalFilename - The original filename
  */
 function generateFileName(originalFilename) {

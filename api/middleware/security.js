@@ -12,12 +12,12 @@ export function checkJwt() {
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
-      jwksUri: `https://${config.get('auth0.domain')}/.well-known/jwks.json`
+      jwksUri: `https://${config.get('auth0.faClient.domain')}/.well-known/jwks.json`
     }),
 
     // Validate the audience and the issuer.
-    audience: config.get('auth0.audience'),
-    issuer: `https://${config.get('auth0.domain')}/`,
+    audience: config.get('auth0.faClient.audience'),
+    issuer: `https://${config.get('auth0.faClient.domain')}/`,
     algorithms: ['RS256'],
 
     // skip JWT checking if no token is available - i.e. read graphQL queries
@@ -51,7 +51,7 @@ export function checkScopes(scopes) {
 
 export function checkAuth0Secret() {
   return (req, res, next) => {
-    if (_.get(req.body, 'meta.sharedSecret') === config.get('auth0.sharedSecret')) {
+    if (_.get(req.body, 'meta.sharedSecret') === config.get('auth0.faClient.sharedSecret')) {
       next();
     } else {
       nextError(new Error('Invalid Request'));

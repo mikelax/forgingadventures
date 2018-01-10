@@ -28,12 +28,14 @@ export default function getUser(auth0UserId) {
  * @param {object} appMetadata - Auth0 app metadata object
  */
 export function patchAuth0Metadata(auth0UserId, userMetadata, appMetadata) {
-  return User
-    .query()
-    .patch({
-      userMetadata,
-      appMetadata
-    })
-    .where('auth0UserId', auth0UserId)
-    .returning('*');
+  return Bluebird.try(() => {
+    return User
+      .query()
+      .patch({
+        userMetadata,
+        appMetadata
+      })
+      .where('auth0UserId', auth0UserId)
+      .returning('*');
+  });
 }
