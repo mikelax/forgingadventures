@@ -32,7 +32,7 @@ class App extends Component {
   componentWillMount() {
     const {authSuccess, authFailure} = this.props;
 
-    processAuth()
+    return processAuth()
       .then((token) => {
         authSuccess(token);
       })

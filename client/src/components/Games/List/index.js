@@ -24,7 +24,7 @@ class ListGames extends Component {
 
       <h1>Find a Game, start your Adventure</h1>
 
-      <GameSearch/>
+      <GameSearch onSearch={this.searchGames}/>
 
       <Link to={`${match.url}/create`}>
         Create a new Game
@@ -34,6 +34,10 @@ class ListGames extends Component {
 
     </div>;
   }
+
+  searchGames = (searchParams) => {
+
+  };
 
 }
 

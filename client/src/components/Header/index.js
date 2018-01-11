@@ -12,7 +12,7 @@ const Header = class extends Component {
     authorisation: PropTypes.shape({
       isAuthenticated: PropTypes.bool.isRequired,
       loading: PropTypes.bool,
-      error: PropTypes.string,
+      error: PropTypes.object,
     }).isRequired
   };
 
