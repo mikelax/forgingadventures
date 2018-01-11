@@ -6,7 +6,7 @@ import config from 'config';
 import shortid from 'shortid';
 
 import { getAuth0User, patchAuth0Metadata } from 'services/auth0';
-import * as serviceUser from 'services/user';
+import { patchUserAuth0Metadata } from 'services/user';
 import User from 'models/user';
 import insertUserUpload from 'services/userUploads';
 
@@ -21,7 +21,7 @@ export function postUsers() {
       .then((dbUser) => {
         if (dbUser.length) {
           // Patch existing User
-          return serviceUser.patchAuth0Metadata(user.auth0UserId, user.userMetadata, user.appMetadata);
+          return patchUserAuth0Metadata(user.auth0UserId, user.userMetadata, user.appMetadata);
         }
 
         // Create new User
@@ -80,7 +80,7 @@ export function uploadUserPicture() {
             return patchAuth0Metadata(req.params.auth0Id, userData, appData);
           })
           .then((profileMetadata) => {
-            return serviceUser.patchAuth0Metadata(req.params.auth0Id,
+            return patchUserAuth0Metadata(req.params.auth0Id,
               profileMetadata.userMetadata, profileMetadata.appMetadata);
           });
       })

@@ -27,7 +27,7 @@ export default function getUser(auth0UserId) {
  * @param {object} userMetadata - Auth0 user metadata object
  * @param {object} appMetadata - Auth0 app metadata object
  */
-export function patchAuth0Metadata(auth0UserId, userMetadata, appMetadata) {
+export function patchUserAuth0Metadata(auth0UserId, userMetadata, appMetadata) {
   return Bluebird.try(() => {
     return User
       .query()

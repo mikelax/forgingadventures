@@ -29,7 +29,13 @@ Edit [package.json](./client/package.json) and set `"proxy": "http://localhost:3
 Install [docker](https://www.docker.com/docker-mac)
 NOTE: Config values for some container parameters (ie. db) are set up using [env files](https://docs.docker.com/compose/environment-variables/).
 
-NOTE 2: If you get errors about certain npm libs not building correctly, it coudl be that the node_modules folder from the host machine was copied to a docker container. Delete the `node_modules` folder on the host in the api and client folders and then recreate the containers. 
+NOTE 2: If you get errors about certain npm libs not building correctly, it could be that the node_modules folder 
+from the host machine was copied to a docker container. Delete the `node_modules` folder on the host in the api 
+and client folders and then recreate the containers.
+
+NOTE 3: Note that switching branches on the host is prone to crashing the docker services especially if new 
+packages have been added to either the `api` or `client` folders. It is advisable to `docker-compose stop && docker-compose up`
+after switching branches. 
 
 From the root folder run:
 
@@ -94,6 +100,6 @@ This is a basic TODO list of additional libraries and enhancements I want to add
 - [X] Better Handling of ENV variables for multiple environments
 
 
-# Futher Reading
+# Further Reading
 
 - https://auth0.com/docs/architecture-scenarios/application/spa-api
