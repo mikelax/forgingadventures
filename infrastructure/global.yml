@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  S3UserUploads:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: forgingadventures-user-uploads
+      Tags:
+        -
+          Key: Name
+          Value: forgingadventures
+
+  IamDevelopersGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: forgingadventures-developers
+
+  AppPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: forgingadventures-app
+      Groups:
+        - !Ref IamDevelopersGroup
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetObject
+            Resource: "arn:aws:s3:::forgingadventures-user-uploads/*"
+
+
+  ApiRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: api
+
+Outputs:
+  UserUploadsBucket:
+    Description: S3 bucket name for user uploads
+    Value: !Ref S3UserUploads
+
+  ApiRepository:
+    Description: api ECS Repository
+    Value: !Ref ApiRepository

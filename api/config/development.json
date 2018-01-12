@@ -1,7 +1,14 @@
 {
   "auth0": {
-    "redirectUri": "http://localhost:3000",
-    "sharedSecret": "SecretAdventuresInTheDungeon"
+    "faClient": {
+      "redirectUri": "http://localhost:3000",
+      "sharedSecret": "SecretAdventuresInTheDungeon"
+    }
+  },
+  "aws": {
+    "s3": {
+      "userUploadsPrefex": "development"
+    }
   },
   "database": {
     "connection": "postgresql://postgres:docker@db:5432/postgres"

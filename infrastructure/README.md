@@ -6,6 +6,10 @@ This folder contains the Cloudformation scripts to create an environment. Most o
 
 The template files should be updated to an S3 bucket loation before launching a new stack. The tempates for `test.yml` and `production.yml` are the main top-level templates. All others are created as nested stacks. 
 
+## Global Resources
+
+The `global.yml` template creates AWS Objects that are common across environments. Examples of this could be common S3 buckets, ECS Repositories, etc. There should ever only be *ONE* copy of this template created. 
+
 ## Elastic Container Service
 
 The **Repositories** for the various docker containers should be created manually. 
