@@ -21,11 +21,9 @@ export default class GameSearch extends Component {
   render() {
     return <div className="GameSearch">
       <Panel>
-        <Panel.Heading>Search</Panel.Heading>
         <Panel.Body>
-          <Form onSubmit={this.search}>
-            <FormGroup className="options">
-              <ControlLabel>Games</ControlLabel>
+          <Form onSubmit={this.search} className="search-form">
+            <FormGroup className="text-search">
               <FormControl
                 type="text"
                 value={this.formValue('title')}
@@ -34,7 +32,7 @@ export default class GameSearch extends Component {
               />
             </FormGroup>
 
-            <FormGroup>
+            <FormGroup className="skill-level">
               <ControlLabel>Skill Level</ControlLabel>
               <FormControl
                 value={this.formValue('gameSettings.skillLevel')}
@@ -48,7 +46,7 @@ export default class GameSearch extends Component {
               </FormControl>
             </FormGroup>
 
-            <FormGroup>
+            <FormGroup className="posting-frequency">
               <ControlLabel>Posting Frequency</ControlLabel>
               <FormControl
                 value={this.formValue('gameSettings.postingFrequency')}
@@ -63,7 +61,7 @@ export default class GameSearch extends Component {
               </FormControl>
             </FormGroup>
 
-            <FormGroup>
+            <FormGroup className="status">
               <ControlLabel>Status</ControlLabel>
               <FormControl
                 value={this.formValue('gameSettings.gameStatus')}
