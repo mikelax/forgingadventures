@@ -7,13 +7,14 @@
     grid-template-rows auto
     padding-top 20px
 
-    +above($screen-md)
-      grid-template-columns 1fr 1fr 1fr
-    +below($screen-md)
-      grid-template-columns 1fr 1fr
     +below($screen-sm)
       grid-template-columns 1fr
 
+    +above($screen-sm)
+      grid-template-columns 1fr 1fr
+
+    +above($screen-lg)
+      grid-template-columns 1fr 1fr 1fr
 
     .game-card
       min-height 400px

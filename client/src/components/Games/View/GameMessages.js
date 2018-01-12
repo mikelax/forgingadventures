@@ -43,7 +43,7 @@ class GameMessages extends Component {
     const { data: { gameMessages } } = this.props;
 
     return <div className='game-messages'>
-      {_.each(gameMessages).map(({ id, message }) => (
+      {_.map(gameMessages, ({ id, message }) => (
         <div key={id} className='game-message'>
           <GameMessage message={message} readOnly={true} />
         </div>
