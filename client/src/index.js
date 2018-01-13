@@ -18,7 +18,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 
 import App from './components/App/App';
 import reducers from './reducers';
-import {getAuthorisationHeader, getAccessToken} from './services/login';
+import {getAuthorizationHeader, getAccessToken} from './services/login';
 import registerServiceWorker from './registerServiceWorker';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -30,7 +30,7 @@ import './index.css';
 
 const authLink = setContext((__, { headers }) => {
   return {
-    headers: _.merge({}, headers, getAuthorisationHeader())
+    headers: _.merge({}, headers, getAuthorizationHeader())
   };
 });
 

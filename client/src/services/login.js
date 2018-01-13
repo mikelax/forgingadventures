@@ -78,12 +78,12 @@ export function getAccessToken() {
   return localStorage.getItem('access_token');
 }
 
-export function getAuthorisationHeader() {
+export function getAuthorizationHeader() {
   const token = getAccessToken();
 
   if (token) {
     return {
-      authorisation: `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     };
   }
 }
