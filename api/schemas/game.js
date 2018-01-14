@@ -57,7 +57,7 @@ const typeDefs = `
   input gameSettingsSearchOptions {
     skillLevel: Int,
     postingFrequency: Int,
-    status: Int
+    gameStatus: Int
   }
 `;
 

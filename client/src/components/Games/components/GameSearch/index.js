@@ -1,22 +1,22 @@
 import _ from 'lodash';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import {Button, ControlLabel, Form, FormControl, FormGroup, Panel} from 'react-bootstrap';
 import {gameStatus, postingFrequencies, skillLevels} from "../../utils/gameSettings";
 
 import './assets/GameSearch.styl';
 
-export default class GameSearch extends Component {
+class GameSearch extends Component {
 
   static propTypes = {
-    onSearch: PropTypes.func.isRequired
+    onSearch: PropTypes.func.isRequired,
+    gamesSearch: PropTypes.object.isRequired
   };
 
-  state = {
-    store: {
-      gameSettings: {}
-    }
-  };
+  componentWillMount() {
+    this.setState(this.props.gamesSearch);
+  }
 
   render() {
     return <div className="GameSearch">
@@ -38,6 +38,7 @@ export default class GameSearch extends Component {
                 value={this.formValue('gameSettings.skillLevel')}
                 onChange={this.formInput('gameSettings.skillLevel')}
                 componentClass="select">
+                <option value={0}>Any</option>
                 {
                   _.map(skillLevels, (desc, level) =>
                     <option key={level} value={level}>{desc}</option>
@@ -89,21 +90,27 @@ export default class GameSearch extends Component {
 
   formInput = (stateKey) => {
     return (e) => {
-      const { store } = this.state;
-
-      _.set(store, stateKey, e.target.value);
-      this.setState({...this.state, store});
+      this.setState(_.set({}, stateKey, e.target.value));
     };
   };
 
   formValue = (stateKey) => {
-    return _.get(this.state.store, stateKey, '');
+    return _.get(this.state, stateKey, '');
   };
 
   search = (e) => {
     e.preventDefault();
-    this.props.onSearch(this.state.store);
+    this.props.onSearch(this.state);
   };
 
 }
+
+const mapStateToProps = state => ({
+  gamesSearch: state.gamesSearch
+});
+
+export default connect(
+  mapStateToProps
+)(GameSearch);
+
 

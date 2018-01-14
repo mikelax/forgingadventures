@@ -32,7 +32,7 @@ function doFullTextSearch() {
   if (textSearch) {
     const textColumns = "to_tsvector(coalesce(title,'') || ' ' || coalesce(scenario, '') || ' ' || coalesce(overview, ''))"; // eslint-disable-line max-len
 
-    this.gameQuery.where(raw(`${textColumns} @@ to_tsquery(?)`, textSearch));
+    this.gameQuery.where(raw(`${textColumns} @@ plainto_tsquery(?)`, textSearch));
   }
 }
 
@@ -40,6 +40,13 @@ function doGameSettingsSearch() {
   const { gameSettings } = this.searchOptions;
 
   if (!(_.isEmpty(gameSettings))) {
-    this.gameQuery.whereJsonSupersetOf('gameSettings', gameSettings);
+    const { skillLevel, postingFrequency } = gameSettings;
+
+    if (skillLevel) {
+      this.gameQuery.whereJsonSupersetOf('gameSettings', { skillLevel });
+    }
+    if (postingFrequency) {
+      this.gameQuery.whereJsonSupersetOf('gameSettings', { postingFrequency });
+    }
   }
 }

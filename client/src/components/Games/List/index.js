@@ -2,6 +2,8 @@ import _ from 'lodash';
 import React, {Component} from 'react';
 import {compose, pure} from "recompose";
 import {graphql} from 'react-apollo';
+import {withRouter} from 'react-router';
+import {connect} from "react-redux";
 import {Helmet} from "react-helmet";
 import {Link} from 'react-router-dom';
 
@@ -11,8 +13,9 @@ import {gamesQuery} from '../queries';
 import {postingFrequency, skillLevel} from '../utils/gameSettings';
 
 import './ListGames.styl';
+import {search} from "../../../actions/gamesSearch";
 
-class ListGames extends Component {
+class ListGamesView extends Component {
 
   render() {
     const {match} = this.props;
@@ -30,45 +33,33 @@ class ListGames extends Component {
         Create a new Game
       </Link>
 
-      {renderGames.call(this)}
+      <ListGames/>
 
     </div>;
   }
 
   searchGames = (searchParams) => {
-    const {reload} = this.props;
+    const {search} = this.props;
 
-    reload(searchParams);
+    search(searchParams);
   };
 
 }
 
-export default compose(
-  graphql(gamesQuery, {
-    props: ({ data, data: { refetch, fetchMore } }) => ({
-      data,
-      reload: (searchOptions) => {
-        refetch({searchOptions});
-      },
-      loadMore: (searchOptions, page) => {
-        fetchMore({
-          variables:{
-            page,
-            searchOptions
-          },
-          updateQuery: () => {} //fixme - pagination
-        });
-      }
-    }),
-  }),
-  ApolloLoader,
-  pure,
-)(ListGames);
+const mapDispatchToProps = dispatch => ({
+  search: (searchParams) => dispatch(search(searchParams))
+});
+
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ListGamesView);
 
 /// private
 
-function renderGames() {
-  const {match, data: {games}} = this.props;
+function ListGamesPure(props) {
+  const {match, data: {games}} = props;
 
   return <div className="game-container">
     {_.map(games, (game) => (
@@ -76,6 +67,19 @@ function renderGames() {
     ))}
   </div>;
 }
+
+const ListGames = compose(
+  withRouter,
+  connect(
+    (state) => ({gamesSearch: state.gamesSearch})
+  ),
+  graphql(gamesQuery, {
+    options: ({gamesSearch}) => ({variables: {searchOptions: gamesSearch.searchParams}})
+  }),
+  ApolloLoader,
+  pure,
+)(ListGamesPure);
+
 
 const GameDetails = (props) => {
   const {game} = props;
