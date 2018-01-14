@@ -90,7 +90,9 @@ class GameSearch extends Component {
 
   formInput = (stateKey) => {
     return (e) => {
-      this.setState(_.set({}, stateKey, e.target.value));
+      const state = _.merge({}, this.state);
+
+      this.setState(_.set(state, stateKey, e.target.value));
     };
   };
 
