@@ -26,8 +26,8 @@ export default class GameSearch extends Component {
             <FormGroup className="text-search">
               <FormControl
                 type="text"
-                value={this.formValue('title')}
-                onChange={this.formInput('title')}
+                value={this.formValue('textSearch')}
+                onChange={this.formInput('textSearch')}
                 placeholder="Search"
               />
             </FormGroup>

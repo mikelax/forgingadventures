@@ -58,6 +58,7 @@ const resolvers = {
         return getUser(context.req.user.sub)
           .then((user) => {
             input.userId = user.id;
+
             return GameMessage
               .query()
               .insert(input)

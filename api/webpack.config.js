@@ -43,6 +43,7 @@ module.exports = {
       routes: pathToSrc('routes'),
       schemas: pathToSrc('schemas'),
       services: pathToSrc('services'),
+      utils: pathToSrc('utils'),
 
       app: pathToSrc('app.js')
     }

@@ -36,13 +36,31 @@ class ListGames extends Component {
   }
 
   searchGames = (searchParams) => {
+    const {reload} = this.props;
 
+    reload(searchParams);
   };
 
 }
 
 export default compose(
-  graphql(gamesQuery),
+  graphql(gamesQuery, {
+    props: ({ data, data: { refetch, fetchMore } }) => ({
+      data,
+      reload: (searchOptions) => {
+        refetch({searchOptions});
+      },
+      loadMore: (searchOptions, page) => {
+        fetchMore({
+          variables:{
+            page,
+            searchOptions
+          },
+          updateQuery: () => {} //fixme - pagination
+        });
+      }
+    }),
+  }),
   ApolloLoader,
   pure,
 )(ListGames);
