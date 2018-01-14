@@ -12,7 +12,6 @@ function Callback(props) {
     </div>
   </div>;
 
-
   function renderAuthResult() {
     if (isAuthenticated) {
       return <Redirect to="/" />;

@@ -1,5 +1,4 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import GraphQLJSON from 'graphql-type-json';
 
 import Game from 'models/game';
 
@@ -10,8 +9,6 @@ import getUser from 'services/user';
 import serviceExecutor from 'utils/serviceExecutor';
 
 const typeDefs = `
-  scalar JSON
-  
   type GameSetting {
     minPlayers: Int!,
     maxPlayers: Int!,
@@ -29,7 +26,7 @@ const typeDefs = `
   
   # queries
   type Query {
-    games(page: Int, searchOptions: JSON): [Game],
+    games(page: Int, searchOptions: SearchOptions): [Game],
     game(id: ID!): Game!
   }
   
@@ -51,18 +48,23 @@ const typeDefs = `
     skillLevel: Int!,
     postingFrequency: Int!
   }
+  
+  input SearchOptions {
+    textSearch: String,
+    gameSettings: gameSettingsSearchOptions,
+  }
+  
+  input gameSettingsSearchOptions {
+    skillLevel: Int,
+    postingFrequency: Int,
+    status: Int
+  }
 `;
 
 const resolvers = {
   Query: {
-    game: (obj, { id }) =>
-      Game.query().findById(id),
-
-    games: (obj, { page, searchOptions }) => {
-      console.log('page', page);
-      console.log('searchOptions', searchOptions);
-      return serviceExecutor(GetGames, { page, searchOptions });
-    }
+    game: (parent, { id }) => Game.query().findById(id),
+    games: (parent, { page, searchOptions }) => serviceExecutor(GetGames, { page, searchOptions })
   },
   Mutation: {
     createGame: (obj, { input }, context) =>
@@ -77,8 +79,7 @@ const resolvers = {
               .returning('*');
           });
       })
-  },
-  JSON: GraphQLJSON
+  }
 };
 
 export default makeExecutableSchema({ typeDefs, resolvers });

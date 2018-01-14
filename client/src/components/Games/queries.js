@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const gamesQuery = gql`
-  query games($page: Int, $searchOptions: JSON) {
+  query games($page: Int, $searchOptions: SearchOptions) {
     games(page: $page, searchOptions: $searchOptions) {
       id
       title
