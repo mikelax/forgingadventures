@@ -8,12 +8,12 @@ export default class {
   constructor(options) {
     this.perPage = 10;
 
-    this.page = options.page || 0;
+    this.offset = options.offset || 0;
     this.searchOptions = options.searchOptions || {};
   }
 
   execute() {
-    this.gameQuery = Game.query().limit(this.perPage).offset(this.page);
+    this.gameQuery = Game.query().limit(this.perPage).offset(this.offset);
 
     return Bluebird
       .bind(this)

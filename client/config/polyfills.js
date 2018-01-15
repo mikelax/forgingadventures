@@ -20,3 +20,21 @@ Object.assign = require('object-assign');
 if (process.env.NODE_ENV === 'test') {
   require('raf').polyfill(global);
 }
+
+// START - ADDED AFTER EJECTING CRA
+// load intersection-observer polyfil for unsupported browsers (safari at this time)
+
+function supportsIntersectionObserver() {
+  return (
+    'IntersectionObserver' in global &&
+    'IntersectionObserverEntry' in global &&
+    'intersectionRatio' in IntersectionObserverEntry.prototype
+  )
+}
+
+
+if (!supportsIntersectionObserver()) {
+  require('intersection-observer');
+}
+
+// END - ADDED AFTER EJECTING CRA
