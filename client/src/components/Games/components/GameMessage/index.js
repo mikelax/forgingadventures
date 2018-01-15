@@ -21,7 +21,9 @@ export default class GamesMessage extends Component {
   };
 
   componentWillMount() {
-    const {message} = this.props;
+    const {message, readOnly} = this.props;
+
+    this.setState({readOnly});
 
     if (message) {
       this.setState({
@@ -46,22 +48,36 @@ export default class GamesMessage extends Component {
     }
   }
 
+  handleEdit = (editorState) => (e) => {
+    this.setState({readOnly: false});
+  }
+
+  handleSubmit = () => (e) => {
+    
+  }
+
   render() {
-    const editorControler = this.props.readOnly ? '' :
+    const editorController = this.state.readOnly ? '' :
       <ActionControls
         editorState={this.state.editorState}
         onToggle={onToggleAction.bind(this)}
       />;
 
+    const messageFooter = !this.state.readOnly ? '' :
+      <div className="footer-container">
+        <button to={this.props.location} onClick={this.handleEdit(this.state.editorState)}>Edit</button>
+      </div>;
+
     return (
       <div className="GameMessage">
-        {editorControler}
+        {editorController}
         <div className="editor-container">
           <Editor editorState={this.state.editorState}
                   onChange={onEditorChange.bind(this)}
-                  readOnly={this.props.readOnly}
+                  readOnly={this.state.readOnly}
           />
         </div>
+        {messageFooter}
       </div>
     );
   }

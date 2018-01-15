@@ -28,10 +28,11 @@ const typeDefs = `
   
   # mutations
   type Mutation {
-    createGameMessage(input: CreateGameMessageInput): GameMessage
+    createGameMessage(input: GameMessageInput): GameMessage,
+    updateGameMessage(id: ID!, input: GameMessageInput): GameMessage
   }
   
-  input CreateGameMessageInput {
+  input GameMessageInput {
     gameId: ID!,
     message: JSON!
   }
@@ -71,6 +72,14 @@ const resolvers = {
                 return gameMessage;
               });
           });
+      }),
+    updateGameMessage: (obj, { input }, context) =>
+      schemaScopeGate(['create:posts'], context, () => {
+        return GameMessage
+          .query()
+          .patch({ message: input.message })
+          .where('id', '=', input.id)
+          .returning('*');
       })
   },
   Subscription: {
