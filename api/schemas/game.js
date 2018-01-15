@@ -1,8 +1,12 @@
 import { makeExecutableSchema } from 'graphql-tools';
 
 import Game from 'models/game';
+
 import schemaScopeGate from 'services/schemaScopeGate';
+import GetGames from 'services/games/getGames';
 import getUser from 'services/user';
+
+import serviceExecutor from 'utils/serviceExecutor';
 
 const typeDefs = `
   type GameSetting {
@@ -22,7 +26,7 @@ const typeDefs = `
   
   # queries
   type Query {
-    games: [Game],
+    games(page: Int, searchOptions: SearchOptions): [Game],
     game(id: ID!): Game!
   }
   
@@ -44,15 +48,23 @@ const typeDefs = `
     skillLevel: Int!,
     postingFrequency: Int!
   }
+  
+  input SearchOptions {
+    textSearch: String,
+    gameSettings: gameSettingsSearchOptions,
+  }
+  
+  input gameSettingsSearchOptions {
+    skillLevel: Int,
+    postingFrequency: Int,
+    gameStatus: Int
+  }
 `;
 
 const resolvers = {
   Query: {
-    game: (obj, { id }) =>
-      Game.query().findById(id),
-
-    games: () =>
-      Game.query()
+    game: (parent, { id }) => Game.query().findById(id),
+    games: (parent, { page, searchOptions }) => serviceExecutor(GetGames, { page, searchOptions })
   },
   Mutation: {
     createGame: (obj, { input }, context) =>

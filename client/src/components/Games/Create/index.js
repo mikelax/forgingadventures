@@ -71,8 +71,8 @@ const CreateGame = class CreateGame extends Component {
             <ControlLabel>Minimum Players</ControlLabel>
             <FormControl
               type="number"
-              value={this.formValue('gameSettings.minPlayers')}
               placeholder="Minimum Players"
+              value={this.formValue('gameSettings.minPlayers')}
               onChange={this.formInput('gameSettings.minPlayers')}
             />
 

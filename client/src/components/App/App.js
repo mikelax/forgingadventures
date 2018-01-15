@@ -1,9 +1,10 @@
 // @flow
 
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Router, Route, Switch } from 'react-router-dom';
+import React, { Component } from 'react';
 import {connect} from "react-redux";
+import {Helmet} from "react-helmet";
+import {Router, Route, Switch} from 'react-router-dom';
 
 import About from '../About';
 import AuthGuard from '../shared/components/AuthGuard';
@@ -31,7 +32,7 @@ class App extends Component {
   componentWillMount() {
     const {authSuccess, authFailure} = this.props;
 
-    processAuth()
+    return processAuth()
       .then((token) => {
         authSuccess(token);
       })
@@ -42,7 +43,12 @@ class App extends Component {
     return (
       <Router history={history}>
         <div>
+          <Helmet>
+            <title>Forging Adventures</title>
+          </Helmet>
+
           <Header/>
+
           <div className="App">
             <Switch>
               <Route exact path="/" component={Home} />

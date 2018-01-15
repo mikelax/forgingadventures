@@ -8,7 +8,7 @@ import GamesMessages from './GameMessages';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
 import { gameQuery } from '../queries';
-import './ViewGame.styl';
+import './assets/ViewGame.styl';
 
 
 class ViewGame extends Component {

@@ -1,0 +1,9 @@
+# ignore node_modules in lower folders like lambda, etc
+**/node_modules
+
+# generated webpack
+build
+
+# stuff from CRA
+config
+scripts

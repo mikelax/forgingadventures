@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import CreateGame from './Create/CreateGame';
-import ListGames from './List/ListGames';
-import ViewGame from './View/ViewGame';
+import CreateGame from './Create';
+import ListGames from './List';
+import ViewGame from './View';
 
 import AuthGuard from '../shared/components/AuthGuard';
 
