@@ -100,14 +100,13 @@ const ListGames = compose(
   ),
   graphql(gamesQuery, {
     options: ({gamesSearch}) => ({variables: {searchOptions: gamesSearch.searchParams, offset: 0}}),
-    props: ({ data, data: { games, fetchMore } }) => {
+    props: ({ data, data: { fetchMore } }) => {
       return {
         data,
-        games,
         fetchMore() {
           return fetchMore({
             variables: {
-              offset: games.length
+              offset: data.games.length
             },
             updateQuery: (prev, { fetchMoreResult }) => {
               if (_.isEmpty(fetchMoreResult)) { return prev; }
