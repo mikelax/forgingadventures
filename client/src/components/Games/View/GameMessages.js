@@ -45,7 +45,7 @@ class GameMessages extends Component {
     return <div className='game-messages'>
       {_.map(gameMessages, ({ id, message }) => (
         <div key={id} className='game-message'>
-          <GameMessage message={message} readOnly={true} />
+          <GameMessage message={message} id={id} gameId={this.props.gameId} readOnly={true} />
         </div>
       ))}
     </div>;

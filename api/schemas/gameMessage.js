@@ -73,12 +73,13 @@ const resolvers = {
               });
           });
       }),
-    updateGameMessage: (obj, { input }, context) =>
+    updateGameMessage: (obj, { id, input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
         return GameMessage
           .query()
           .patch({ message: input.message })
-          .where('id', '=', input.id)
+          .where('id', id)
+          .first()
           .returning('*');
       })
   },

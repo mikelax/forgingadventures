@@ -1,29 +1,32 @@
 import _ from 'lodash';
 import React, {Component} from 'react';
+import { graphql } from 'react-apollo';
+import { Button } from 'react-bootstrap';
 import {CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier} from 'draft-js';
 import {getSelectionEntity} from 'draftjs-utils';
 
 import 'draft-js/dist/Draft.css';
 import './assets/GameMessage.styl';
 
+import { updateGameMessageMutation } from '../../queries';
 import iconMusic from './assets/icon-music-note.svg';
 
-/*
-GamesMessage is export wrapper component around draft js
-
-This module also contains GamesMessage sub-components - i.e. toolbar and inline and block style definitions
+/**
+ * GamesMessage is export wrapper component around draft js
+ * This module also contains GamesMessage sub-components - i.e. toolbar and inline and block style definitions
  */
-
-export default class GamesMessage extends Component {
+const GamesMessage = class GamesMessage extends Component {
 
   state = {
-    editorState: EditorState.createEmpty(decorator)
+    editorState: EditorState.createEmpty(decorator),
+    editing: false,
+    readOnly: this.props.readOnly
   };
 
   componentWillMount() {
-    const {message, readOnly} = this.props;
+    const {message} = this.props;
 
-    this.setState({readOnly});
+    // this.setState({readOnly});
 
     if (message) {
       this.setState({
@@ -49,11 +52,27 @@ export default class GamesMessage extends Component {
   }
 
   handleEdit = (editorState) => (e) => {
-    this.setState({readOnly: false});
+    this.setState({readOnly: false, editing: true});
+  }
+
+  handleCancel = () => (e) => {
+    this.setState({readOnly: true, editing: false});
   }
 
   handleSubmit = () => (e) => {
-    
+    this.props
+      .mutate({
+        variables: {
+          id: this.props.id,
+          input: {
+            gameId: this.props.gameId,
+            message: this.getEditorMessage()
+          }
+        }
+      })
+      .then(() => {
+        this.setState({readOnly: true, editing: false});
+      });
   }
 
   render() {
@@ -63,10 +82,7 @@ export default class GamesMessage extends Component {
         onToggle={onToggleAction.bind(this)}
       />;
 
-    const messageFooter = !this.state.readOnly ? '' :
-      <div className="footer-container">
-        <button to={this.props.location} onClick={this.handleEdit(this.state.editorState)}>Edit</button>
-      </div>;
+    const messageFooter = this.getFooter(this.state.readOnly);
 
     return (
       <div className="GameMessage">
@@ -82,6 +98,24 @@ export default class GamesMessage extends Component {
     );
   }
 
+  getFooter = () => {
+    const footerContents = this.state.editing === true ?
+        <React.Fragment>
+          <Button bsStyle="primary" onClick={this.handleSubmit()}>Submit</Button>
+          <Button onClick={this.handleCancel()}>Cancel</Button>
+        </React.Fragment>
+      :
+        !this.state.readOnly ? '' : 
+          <button to={this.props.location} onClick={this.handleEdit()}>Edit</button>
+      ;
+
+    return (
+      <div className="footer-container">
+        {footerContents}
+      </div>
+    );
+  };
+
   clear() {
     this.setState({
       editorState: EditorState.createEmpty(decorator)
@@ -91,8 +125,9 @@ export default class GamesMessage extends Component {
   getEditorMessage() {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
-
 };
+
+export default graphql(updateGameMessageMutation)(GamesMessage);
 
 /// private GamesMessage methods - i.e. handlers etc...
 

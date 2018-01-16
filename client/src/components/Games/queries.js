@@ -57,8 +57,8 @@ export const createGameMessageMutation = gql`
 `;
 
 export const updateGameMessageMutation = gql`
-  mutation updateGameMessage(id: $id, input: $input) {
-    updateGameMessage(input: $input) {
+  mutation updateGameMessage($id: ID!, $input: GameMessageInput) {
+    updateGameMessage(id: $id, input: $input) {
       id
       gameId
       message
