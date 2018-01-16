@@ -1,48 +1,28 @@
-import { makeExecutableSchema } from 'graphql-tools';
 import { withFilter } from 'graphql-subscriptions';
-import GraphQLJSON from 'graphql-type-json';
 
 import GameMessage from 'models/gameMessage';
 import schemaScopeGate from 'services/schemaScopeGate';
 
-import getUser from 'services/user';
+import { getUser } from 'services/user';
 import pubsub from 'services/pubsub';
 
 export const TOPIC_MESSAGE_ADDED = 'messageAdded';
 
-const typeDefs = `
+export const gameMessageTypeDefs = `
 
-  scalar JSON
-  
   type GameMessage {
     id: ID!,
     gameId: ID!,
     message: JSON!
   }
   
-  # queries
-  type Query {
-    message(id: ID!): GameMessage!,
-    gameMessages(gameId: ID!): [GameMessage!]
-  }
-  
-  # mutations
-  type Mutation {
-    createGameMessage(input: CreateGameMessageInput): GameMessage
-  }
-  
   input CreateGameMessageInput {
     gameId: ID!,
     message: JSON!
   }
-  
-  # subscriptions
-  type Subscription {
-    messageAdded(gameId: ID!): GameMessage!
-  }
 `;
 
-const resolvers = {
+export const gameMessageResolvers = {
   Query: {
     message: (obj, { id }, context) =>
       schemaScopeGate(['create:posts'], context, () =>
@@ -79,8 +59,5 @@ const resolvers = {
         return payload.messageAdded.gameId === Number(variables.gameId);
       })
     }
-  },
-  JSON: GraphQLJSON
+  }
 };
-
-export default makeExecutableSchema({ typeDefs, resolvers });

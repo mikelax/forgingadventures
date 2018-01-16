@@ -37,6 +37,15 @@ export const gameMessagesQuery = gql`
   }
 `;
 
+export const gameLoungeMessagesQuery = gql`
+  query gameLoungeMessages($gameId: ID!) {
+    gameLoungeMessages(gameId: $gameId) {
+      id
+      message
+    }
+  }
+`;
+
 export const createGameMutation = gql`
   mutation createGame($input: CreateGameInput) {
     createGame(input: $input) {
@@ -56,9 +65,32 @@ export const createGameMessageMutation = gql`
   }
 `;
 
+export const createGameLoungeMessageMutation = gql`
+  mutation createGameLoungeMessage($input: CreateGameLoungeMessageInput) {
+    createGameLoungeMessage(input: $input) {
+      id
+      gameId
+      message
+      user {
+        name
+      }     
+    }
+  }
+`;
+
 export const onGameMessageAdded = gql`
   subscription messageAdded($gameId: ID!){
     messageAdded(gameId: $gameId){
+      id
+      gameId
+      message
+    }
+  }
+`;
+
+export const onGameLoungeMessageAdded = gql`
+  subscription gameLoungeMessageAdded($gameId: ID!){
+    gameLoungeMessageAdded(gameId: $gameId){
       id
       gameId
       message

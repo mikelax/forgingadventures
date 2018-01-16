@@ -1,11 +1,13 @@
+import _ from 'lodash';
 import Bluebird from 'bluebird';
 import User from 'models/user';
+import { getAuth0User } from './auth0';
 
 /**
  * Get an FA User object by Auth0 sub attribute
  * @param {string} auth0UserId - The Auth0 sub attribute
  */
-export default function getUser(auth0UserId) {
+export function getUser(auth0UserId) {
   return Bluebird.try(() => {
     return User
       .query()
@@ -14,6 +16,41 @@ export default function getUser(auth0UserId) {
       .then((dbResult) => {
         if (!dbResult.length) {
           throw new Error('User not found');
+        }
+
+        return dbResult[0];
+      });
+  });
+}
+
+export function getOrCreateUserByAuth0Id(auth0UserId) {
+  return Bluebird.try(() => {
+    return User
+      .query()
+      .where('auth0UserId', auth0UserId)
+      .then((dbResult) => {
+        if (!dbResult.length) {
+          return getAuth0User(auth0UserId, 'user_metadata,app_metadata,name,picture')
+            .then((auth0Response) => {
+              const {
+                name, picture, user_metadata = {}, app_metadata = {} // eslint-disable-line camelcase
+              } = auth0Response.data;
+              const userMetadata = _.merge(user_metadata, {
+                profileImage: {
+                  imageUrl: picture
+                }
+              });
+
+              return User
+                .query()
+                .insert({
+                  name,
+                  auth0UserId,
+                  userMetadata,
+                  appMetadata: app_metadata
+                })
+                .returning('*');
+            });
         }
 
         return dbResult[0];

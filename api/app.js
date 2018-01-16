@@ -16,7 +16,7 @@ import { Model } from 'objection';
 
 import schema from 'schemas';
 
-import index from 'routes/index';
+import routes from 'routes';
 
 import knex from 'services/knex';
 
@@ -78,7 +78,7 @@ app.use('/silent', (req, res) => {
   });
 });
 
-app.use('/api', index);
+app.use('/api', routes);
 
 // Start server
 server.listen(app.get('port'), () => {

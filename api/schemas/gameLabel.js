@@ -1,8 +1,6 @@
-import { makeExecutableSchema } from 'graphql-tools';
-
 import GameLabel from 'models/gameLabel';
 
-const typeDefs = `
+export const gameLabelTypeDefs = `
   type GameLabel {
     id: ID!,
     displayName: String!,
@@ -10,14 +8,9 @@ const typeDefs = `
     aliases: [String],
     displayOrder: Int!
   }
-
-  type Query {
-    gameLabels: [GameLabel],
-    gameLabel(id: ID!): GameLabel!
-  }
 `;
 
-const resolvers = {
+export const gameLabelResolvers = {
   Query: {
     gameLabel: (obj, { id }) =>
       GameLabel.query().findById(id),
@@ -26,5 +19,3 @@ const resolvers = {
       GameLabel.query()
   }
 };
-
-export default makeExecutableSchema({ typeDefs, resolvers });

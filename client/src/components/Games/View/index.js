@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo/index';
 import { compose, pure } from "recompose";
+import {Tab, Tabs} from 'react-bootstrap';
 
 import CreateMessage from './CreateMessage';
+import CreateLoungeMessage from './CreateLoungeMessage';
 import GamesMessages from './GameMessages';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
@@ -46,8 +48,16 @@ function gameDetails() {
 
     <div className="overview">{game.overview}</div>
 
-    <CreateMessage gameId={game.id}/>
+    <Tabs defaultActiveKey={1} animation={false} id="game-tabs">
+      <Tab eventKey={1} title="Game Messages">
+        <CreateMessage gameId={game.id}/>
+        <GamesMessages gameId={game.id}/>
+      </Tab>
 
-    <GamesMessages gameId={game.id}/>
+      <Tab eventKey={2} title="Game Lounge">
+        <CreateLoungeMessage gameId={game.id}/>
+      </Tab>
+    </Tabs>
+
   </div>;
 }

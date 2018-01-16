@@ -6,7 +6,7 @@ import GameMessage from '../components/GameMessage';
 
 import { createGameMessageMutation } from '../queries';
 
-const CreateGame = class CreateGame extends Component {
+class CreateGameMessage extends Component {
 
   state = {
     message: null
@@ -44,6 +44,6 @@ const CreateGame = class CreateGame extends Component {
         this.editor.clear();
       });
   }
-};
+}
 
-export default graphql(createGameMessageMutation)(CreateGame);
+export default graphql(createGameMessageMutation)(CreateGameMessage);
