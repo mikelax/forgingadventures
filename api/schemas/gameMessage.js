@@ -6,7 +6,7 @@ import schemaScopeGate from 'services/schemaScopeGate';
 import { getUser } from 'services/user';
 import pubsub from 'services/pubsub';
 
-export const TOPIC_MESSAGE_ADDED = 'messageAdded';
+export const TOPIC_MESSAGE_ADDED = 'topic_message_added';
 
 export const gameMessageTypeDefs = `
 
@@ -43,12 +43,11 @@ export const gameMessageResolvers = {
               .query()
               .insert(input)
               .returning('*')
-              .then((gameMessage) => {
+              .execute()
+              .tap((gameMessage) => {
                 pubsub.publish(TOPIC_MESSAGE_ADDED, {
                   messageAdded: gameMessage
                 });
-
-                return gameMessage;
               });
           });
       })

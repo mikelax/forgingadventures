@@ -7,6 +7,7 @@ import {Tab, Tabs} from 'react-bootstrap';
 import CreateMessage from './CreateMessage';
 import CreateLoungeMessage from './CreateLoungeMessage';
 import GamesMessages from './GameMessages';
+import GameLoungeMessages from './GameLoungeMessages';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
 import { gameQuery } from '../queries';
@@ -48,7 +49,7 @@ function gameDetails() {
 
     <div className="overview">{game.overview}</div>
 
-    <Tabs defaultActiveKey={1} animation={false} id="game-tabs">
+    <Tabs defaultActiveKey={2} animation={false} id="game-tabs">
       <Tab eventKey={1} title="Game Messages">
         <CreateMessage gameId={game.id}/>
         <GamesMessages gameId={game.id}/>
@@ -56,6 +57,7 @@ function gameDetails() {
 
       <Tab eventKey={2} title="Game Lounge">
         <CreateLoungeMessage gameId={game.id}/>
+        <GameLoungeMessages gameId={game.id}/>
       </Tab>
     </Tabs>
 

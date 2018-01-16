@@ -8,7 +8,7 @@ import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id } from 'services/user';
 import pubsub from 'services/pubsub';
 
-export const LOUNGE_MESSAGE_ADDED = 'loungeMessageAdded';
+export const LOUNGE_MESSAGE_ADDED = 'lounge_message_added';
 
 export const gameLoungeTypeDefs = `
 
@@ -32,7 +32,7 @@ export const gameLoungeResolvers = {
   },
   Query: {
     gameLoungeMessage: (obj, { id }) => GameLounge.query().findById(id),
-    gameLoungeMessages: (obj, { gameId }) => GameLounge.query().where({ gameId }),
+    gameLoungeMessages: (obj, { gameId }) => GameLounge.query().where({ gameId })
   },
   Mutation: {
     createGameLoungeMessage: (obj, { input }, context) =>
@@ -45,11 +45,11 @@ export const gameLoungeResolvers = {
               .query()
               .insert(input)
               .returning('*')
-              .then((loungeMessage) => {
+              .execute()
+              .tap((loungeMessage) => {
                 pubsub.publish(LOUNGE_MESSAGE_ADDED, {
-                  messageAdded: loungeMessage
+                  gameLoungeMessageAdded: loungeMessage
                 });
-                return loungeMessage;
               });
           });
       })
@@ -57,7 +57,10 @@ export const gameLoungeResolvers = {
   Subscription: {
     gameLoungeMessageAdded: {
       subscribe: withFilter(() => pubsub.asyncIterator(LOUNGE_MESSAGE_ADDED), (payload, variables) => {
-        return payload.messageAdded.gameId === Number(variables.gameId);
+        const { gameLoungeMessageAdded } = payload;
+        const { gameId } = variables;
+
+        return gameLoungeMessageAdded.gameId === Number(gameId);
       })
     }
   }

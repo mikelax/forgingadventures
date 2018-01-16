@@ -92,7 +92,6 @@ export const onGameLoungeMessageAdded = gql`
   subscription gameLoungeMessageAdded($gameId: ID!){
     gameLoungeMessageAdded(gameId: $gameId){
       id
-      gameId
       message
     }
   }

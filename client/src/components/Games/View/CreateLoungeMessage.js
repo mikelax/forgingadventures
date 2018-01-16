@@ -1,15 +1,12 @@
-import _ from 'lodash';
 import React, {Component} from 'react';
 import {graphql} from 'react-apollo';
-import {Button, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Button, ControlLabel, FormGroup} from 'react-bootstrap';
+
+import GameLoungeMessage from '../components/GameLoungeMessage';
 
 import {createGameLoungeMessageMutation} from '../queries';
 
 class CreateGameLoungeMessage extends Component {
-
-  state = {
-    message: ''
-  };
 
   render() {
     return (
@@ -17,46 +14,28 @@ class CreateGameLoungeMessage extends Component {
         <form>
           <FormGroup>
             <ControlLabel>Add Message</ControlLabel>
-            <FormControl componentClass="textarea" placeholder="textarea"
-                         value={this.formValue('message')}
-                         onChange={this.formInput('message')}
-            />
+            <GameLoungeMessage ref={(c) => (this.editor = c)}/>
           </FormGroup>
         </form>
 
-        <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+        <Button bsStyle="primary" onClick={this._submit}>Submit</Button>
       </div>
     );
   }
 
-  //setMessage = ({message}) => this.setState({message});
-
-  formInput = (stateKey) => {
-    return (e) => {
-      const state = _.merge({}, this.state);
-
-      this.setState(_.set(state, stateKey, e.target.value));
-    };
-  };
-
-  formValue = (stateKey) => {
-    return _.get(this.state, stateKey, '');
-  };
-
-  submit = () => {
+  _submit = () => {
     const {mutate} = this.props;
 
     mutate({
       variables: {
         input: {
           gameId: this.props.gameId,
-          message: {message: this.state.message}
+          message: this.editor.getEditorMessage()
         }
       }
     })
       .then(() => {
-        this.setState({message: ''});
-        //this.editor.clear();
+        this.editor.clear();
       });
   };
 }

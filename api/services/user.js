@@ -35,11 +35,12 @@ export function getOrCreateUserByAuth0Id(auth0UserId) {
               const {
                 name, picture, user_metadata = {}, app_metadata = {} // eslint-disable-line camelcase
               } = auth0Response.data;
-              const userMetadata = _.merge(user_metadata, {
+
+              const userMetadata = _.merge({
                 profileImage: {
                   imageUrl: picture
                 }
-              });
+              }, user_metadata);
 
               return User
                 .query()
