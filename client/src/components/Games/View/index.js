@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo/index';
 import { compose, pure } from "recompose";
 
-import CreateMessage from './CreateMessage';
-import GamesMessages from './GameMessages';
+import CreateMessage from './components/CreateMessage';
+import GamesMessages from './components/GameMessages';
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
 import { gameQuery } from '../queries';

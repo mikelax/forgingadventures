@@ -47,7 +47,7 @@ export const createGameMutation = gql`
 `;
 
 export const createGameMessageMutation = gql`
-  mutation createGameMessage($input: GameMessageInput) {
+  mutation createGameMessage($input: CreateGameMessageInput) {
     createGameMessage(input: $input) {
       id
       gameId
@@ -57,7 +57,7 @@ export const createGameMessageMutation = gql`
 `;
 
 export const updateGameMessageMutation = gql`
-  mutation updateGameMessage($id: ID!, $input: GameMessageInput) {
+  mutation updateGameMessage($id: ID!, $input: UpdateGameMessageInput) {
     updateGameMessage(id: $id, input: $input) {
       id
       gameId
@@ -69,6 +69,16 @@ export const updateGameMessageMutation = gql`
 export const onGameMessageAdded = gql`
   subscription messageAdded($gameId: ID!){
     messageAdded(gameId: $gameId){
+      id
+      gameId
+      message
+    }
+  }
+`;
+
+export const onGameMessageUpdated = gql`
+  subscription messageUpdated($gameId: ID!){
+    messageUpdated(gameId: $gameId){
       id
       gameId
       message

@@ -28,12 +28,16 @@ const typeDefs = `
   
   # mutations
   type Mutation {
-    createGameMessage(input: GameMessageInput): GameMessage,
-    updateGameMessage(id: ID!, input: GameMessageInput): GameMessage
+    createGameMessage(input: CreateGameMessageInput): GameMessage,
+    updateGameMessage(id: ID!, input: UpdateGameMessageInput): GameMessage
   }
   
-  input GameMessageInput {
+  input CreateGameMessageInput {
     gameId: ID!,
+    message: JSON!
+  }
+  
+  input UpdateGameMessageInput {
     message: JSON!
   }
   

@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Button, ControlLabel, FormGroup } from 'react-bootstrap';
 
-import GameMessage from '../components/GameMessage';
+import GameMessage from '../../components/GameMessage/index';
 
-import { createGameMessageMutation } from '../queries';
+import { createGameMessageMutation } from '../../queries';
 
-const CreateGame = class CreateGame extends Component {
-
-  state = {
-    message: null
-  };
+class CreateGame extends Component {
 
   render() {
     return (
@@ -18,7 +14,7 @@ const CreateGame = class CreateGame extends Component {
         <form>
           <FormGroup>
             <ControlLabel>Add Message</ControlLabel>
-            <GameMessage ref={(c) => (this.editor = c)} onChanged={this.setMessage} />
+            <GameMessage ref={(c) => (this.editor = c)} />
           </FormGroup>
         </form>
 
@@ -26,8 +22,6 @@ const CreateGame = class CreateGame extends Component {
       </div>
     );
   }
-
-  setMessage = ({message}) => this.setState({message});
 
   submit = () => {
     this.props
@@ -40,10 +34,9 @@ const CreateGame = class CreateGame extends Component {
         }
       })
       .then(() => {
-        this.setState({ message: null });
         this.editor.clear();
       });
   }
-};
+}
 
 export default graphql(createGameMessageMutation)(CreateGame);
