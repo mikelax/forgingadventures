@@ -26,8 +26,6 @@ const GamesMessage = class GamesMessage extends Component {
   componentWillMount() {
     const {message} = this.props;
 
-    // this.setState({readOnly});
-
     if (message) {
       this.setState({
         editorState: EditorState.createWithContent(convertFromRaw(message), decorator)
@@ -82,7 +80,7 @@ const GamesMessage = class GamesMessage extends Component {
         onToggle={onToggleAction.bind(this)}
       />;
 
-    const messageFooter = this.getFooter(this.state.readOnly);
+    const messageFooter = this.getFooter();
 
     return (
       <div className="GameMessage">
