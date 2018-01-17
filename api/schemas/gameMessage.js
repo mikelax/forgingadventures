@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { withFilter } from 'graphql-subscriptions';
 import GraphQLJSON from 'graphql-type-json';
+import { raw } from 'objection';
 
 import GameMessage from 'models/gameMessage';
 import schemaScopeGate from 'services/schemaScopeGate';
@@ -9,6 +10,7 @@ import getUser from 'services/user';
 import pubsub from 'services/pubsub';
 
 export const TOPIC_MESSAGE_ADDED = 'messageAdded';
+export const TOPIC_MESSAGE_UPDATED = 'messageUpdated';
 
 const typeDefs = `
 
@@ -17,7 +19,8 @@ const typeDefs = `
   type GameMessage {
     id: ID!,
     gameId: ID!,
-    message: JSON!
+    message: JSON!,
+    numberEdits: Int!
   }
   
   # queries
@@ -28,7 +31,8 @@ const typeDefs = `
   
   # mutations
   type Mutation {
-    createGameMessage(input: CreateGameMessageInput): GameMessage
+    createGameMessage(input: CreateGameMessageInput): GameMessage,
+    updateGameMessage(id: ID!, input: UpdateGameMessageInput): GameMessage
   }
   
   input CreateGameMessageInput {
@@ -36,9 +40,14 @@ const typeDefs = `
     message: JSON!
   }
   
+  input UpdateGameMessageInput {
+    message: JSON!
+  }
+  
   # subscriptions
   type Subscription {
     messageAdded(gameId: ID!): GameMessage!
+    messageUpdated(gameId: ID!): GameMessage!
   }
 `;
 
@@ -50,7 +59,7 @@ const resolvers = {
 
     gameMessages: (obj, { gameId }, context) =>
       schemaScopeGate(['create:posts'], context, () =>
-        GameMessage.query().where({ gameId }))
+        GameMessage.query().where({ gameId })).orderBy('created_at')
   },
   Mutation: {
     createGameMessage: (obj, { input }, context) =>
@@ -63,13 +72,30 @@ const resolvers = {
               .query()
               .insert(input)
               .returning('*')
-              .then((gameMessage) => {
+              .execute()
+              .tap((gameMessage) => {
                 pubsub.publish(TOPIC_MESSAGE_ADDED, {
                   messageAdded: gameMessage
                 });
-
-                return gameMessage;
               });
+          });
+      }),
+    updateGameMessage: (obj, { id, input }, context) =>
+      schemaScopeGate(['create:posts'], context, () => {
+        return GameMessage
+          .query()
+          .patch({
+            message: input.message,
+            numberEdits: raw('"numberEdits" + 1')
+          })
+          .where('id', id)
+          .first()
+          .returning('*')
+          .execute()
+          .tap((gameMessage) => {
+            pubsub.publish(TOPIC_MESSAGE_UPDATED, {
+              messageUpdated: gameMessage
+            });
           });
       })
   },
@@ -77,6 +103,11 @@ const resolvers = {
     messageAdded: {
       subscribe: withFilter(() => pubsub.asyncIterator(TOPIC_MESSAGE_ADDED), (payload, variables) => {
         return payload.messageAdded.gameId === Number(variables.gameId);
+      })
+    },
+    messageUpdated: {
+      subscribe: withFilter(() => pubsub.asyncIterator(TOPIC_MESSAGE_UPDATED), (payload, variables) => {
+        return payload.messageUpdated.gameId === Number(variables.gameId);
       })
     }
   },

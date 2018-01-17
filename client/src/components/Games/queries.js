@@ -33,6 +33,7 @@ export const gameMessagesQuery = gql`
     gameMessages(gameId: $gameId) {
       id
       message
+      numberEdits
     }
   }
 `;
@@ -56,12 +57,34 @@ export const createGameMessageMutation = gql`
   }
 `;
 
+export const updateGameMessageMutation = gql`
+  mutation updateGameMessage($id: ID!, $input: UpdateGameMessageInput) {
+    updateGameMessage(id: $id, input: $input) {
+      id
+      gameId
+      message
+    }
+  }
+`;
+
 export const onGameMessageAdded = gql`
   subscription messageAdded($gameId: ID!){
     messageAdded(gameId: $gameId){
       id
       gameId
       message
+      numberEdits
+    }
+  }
+`;
+
+export const onGameMessageUpdated = gql`
+  subscription messageUpdated($gameId: ID!){
+    messageUpdated(gameId: $gameId){
+      id
+      gameId
+      message
+      numberEdits
     }
   }
 `;
