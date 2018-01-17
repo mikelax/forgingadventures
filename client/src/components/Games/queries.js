@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+// games
+
 export const gameQuery = gql`
   query game($id: ID!) {
     game(id: $id) {
@@ -29,30 +31,24 @@ export const gamesQuery = gql`
   }
 `;
 
+export const createGameMutation = gql`
+  mutation createGame($input: CreateGameInput) {
+    createGame(input: $input) {
+      id
+      title
+    }
+  }
+`;
+
+
+// game messages
+
 export const gameMessagesQuery = gql`
   query gameMessages($gameId: ID!) {
     gameMessages(gameId: $gameId) {
       id
       message
       numberEdits
-    }
-  }
-`;
-
-export const gameLoungeMessagesQuery = gql`
-  query gameLoungeMessages($gameId: ID!) {
-    gameLoungeMessages(gameId: $gameId) {
-      id
-      message
-    }
-  }
-`;
-
-export const createGameMutation = gql`
-  mutation createGame($input: CreateGameInput) {
-    createGame(input: $input) {
-      id
-      title
     }
   }
 `;
@@ -65,19 +61,6 @@ export const createGameMessageMutation = gql`
       message
     }
   }
-`;
-
-export const createGameLoungeMessageMutation = gql`
-  mutation createGameLoungeMessage($input: CreateGameLoungeMessageInput) {
-    createGameLoungeMessage(input: $input) {
-      id
-      gameId
-      message
-      user {
-        name
-      } 
-    }      
-  }    
 `;
 
 export const updateGameMessageMutation = gql`
@@ -101,6 +84,55 @@ export const onGameMessageAdded = gql`
   }
 `;
 
+export const onGameMessageUpdated = gql`
+  subscription messageUpdated($gameId: ID!){
+    messageUpdated(gameId: $gameId){
+      id
+      gameId
+      message
+      numberEdits
+    }
+  }
+`;
+
+// game lounge messages
+
+export const gameLoungeMessagesQuery = gql`
+  query gameLoungeMessages($gameId: ID!) {
+    gameLoungeMessages(gameId: $gameId) {
+      id
+      message
+      numberEdits
+    }
+  }
+`;
+
+export const createGameLoungeMessageMutation = gql`
+  mutation createGameLoungeMessage($input: CreateGameLoungeMessageInput) {
+    createGameLoungeMessage(input: $input) {
+      id
+      gameId
+      message
+      user {
+        name
+      } 
+    }      
+  }    
+`;
+
+export const updateGameLoungeMessageMutation = gql`
+  mutation updateGameLoungeMessage($input: UpdateGameLoungeMessageInput) {
+    updateGameLoungeMessage(input: $input) {
+      id
+      gameId
+      message
+      user {
+        name
+      } 
+    }      
+  }    
+`;
+
 
 export const onGameLoungeMessageAdded = gql`
   subscription gameLoungeMessageAdded($gameId: ID!){
@@ -111,13 +143,11 @@ export const onGameLoungeMessageAdded = gql`
   }
 `;
 
-export const onGameMessageUpdated = gql`
-  subscription messageUpdated($gameId: ID!){
-    messageUpdated(gameId: $gameId){
+export const onGameLoungeMessageUpdated = gql`
+  subscription gameLoungeMessageUpdated($gameId: ID!){
+    gameLoungeMessageUpdated(gameId: $gameId){
       id
-      gameId
       message
-      numberEdits
     }
   }
 `;

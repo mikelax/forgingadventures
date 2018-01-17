@@ -6,6 +6,7 @@ import schemaScopeGate from 'services/schemaScopeGate';
 
 import { getUser } from 'services/user';
 import pubsub from 'services/pubsub';
+import User from '../models/user';
 
 export const TOPIC_MESSAGE_ADDED = 'topic_message_added';
 export const TOPIC_MESSAGE_UPDATED = 'topic_message_updated';
@@ -15,8 +16,11 @@ export const gameMessageTypeDefs = `
   type GameMessage {
     id: ID!,
     gameId: ID!,
+    user: User!,
     message: JSON!,
-    numberEdits: Int!
+    numberEdits: Int!,
+    updated_at: GraphQLDateTime,
+    created_at: GraphQLDateTime
   }
   
   input CreateGameMessageInput {
@@ -30,6 +34,9 @@ export const gameMessageTypeDefs = `
 `;
 
 export const gameMessageResolvers = {
+  GameMessage: {
+    user: gameMessage => User.query().findById(gameMessage.userId)
+  },
   Query: {
     gameMessage: (obj, { id }, context) =>
       schemaScopeGate(['create:posts'], context, () =>
