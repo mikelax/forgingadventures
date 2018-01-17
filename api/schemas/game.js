@@ -51,7 +51,7 @@ export const gameTypeDefs = `
 export const gameResolvers = {
   Query: {
     game: (parent, { id }) => Game.query().findById(id),
-    games: (parent, { page, searchOptions }) => serviceExecutor(GetGames, { page, searchOptions })
+    games: (parent, { offset, searchOptions }) => serviceExecutor(GetGames, { offset, searchOptions })
   },
   Mutation: {
     createGame: (obj, { input }, context) =>

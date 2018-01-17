@@ -6,7 +6,7 @@ const queries = `
     gameLoungeMessage(id: ID!): GameLoungeMessage!,
     gameLoungeMessages(gameId: ID!): [GameLoungeMessage!]
     gameMessages(gameId: ID!): [GameMessage!]
-    games(page: Int, searchOptions: SearchOptions): [Game],
+    games(offset: Int, searchOptions: SearchOptions): [Game],
     message(id: ID!): GameMessage!,
     user(id: ID!): User!
   }

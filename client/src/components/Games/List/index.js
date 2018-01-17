@@ -6,6 +6,7 @@ import {withRouter} from 'react-router';
 import {connect} from "react-redux";
 import {Helmet} from "react-helmet";
 import {Link} from 'react-router-dom';
+import Observer from 'react-intersection-observer';
 
 import ApolloLoader from '../../shared/components/ApolloLoader';
 import GameSearch from '../components/GameSearch';
@@ -58,14 +59,38 @@ export default connect(
 
 /// private
 
-function ListGamesPure(props) {
-  const {match, data: {games}} = props;
+class ListGamesPure extends Component {
 
-  return <div className="game-container">
-    {_.map(games, (game) => (
-      <GameDetails key={game.id} game={game} link={`${match.url}/${game.id}`}/>
-    ))}
-  </div>;
+  canPage = true;
+
+  render() {
+    const {match, data: {games}} = this.props;
+
+    return <div className="game-container">
+      <div className="games">
+        {_.map(games, (game) => (
+          <GameDetails key={game.id} game={game} link={`${match.url}/${game.id}`}/>
+        ))}
+      </div>
+
+      <Observer onChange={this.loadMore}>
+        <div className="in-view">&nbsp;</div>
+      </Observer>
+    </div>;
+  }
+
+  loadMore = (inView) => {
+    const {fetchMore} = this.props;
+
+    if (this.canPage && inView) {
+      fetchMore()
+        .then(({data: {games}}) => {
+          if (_.isEmpty(games)) {
+            this.canPage = false;
+          }
+        });
+    }
+  }
 }
 
 const ListGames = compose(
@@ -74,7 +99,26 @@ const ListGames = compose(
     (state) => ({gamesSearch: state.gamesSearch})
   ),
   graphql(gamesQuery, {
-    options: ({gamesSearch}) => ({variables: {searchOptions: gamesSearch.searchParams}})
+    options: ({gamesSearch}) => ({variables: {searchOptions: gamesSearch.searchParams, offset: 0}}),
+    props: ({ data, data: { fetchMore } }) => {
+      return {
+        data,
+        fetchMore() {
+          return fetchMore({
+            variables: {
+              offset: data.games.length
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              if (_.isEmpty(fetchMoreResult)) { return prev; }
+
+              return Object.assign({}, prev, {
+                games: [...prev.games, ...fetchMoreResult.games],
+              });
+            },
+          });
+        }
+      };
+    }
   }),
   ApolloLoader,
   pure,
