@@ -25,7 +25,8 @@ export default class GamesMessage extends Component {
   state = {
     editorState: EditorState.createEmpty(decorator),
     editing: false,
-    readOnly: this.props.readOnly
+    readOnly: this.props.readOnly,
+    numberEdits: this.props.numberEdits
   };
 
   componentWillMount() {
@@ -88,7 +89,11 @@ export default class GamesMessage extends Component {
   }
 
   getFooter = () => {
-    const footerContents = this.state.editing === true ?
+    const footerMessage = this.state.numberEdits > 0 ? 
+        <span>Number of Edits: {this.state.numberEdits}</span>
+      : '';
+
+    const footerButtons = this.state.editing === true ?
         <React.Fragment>
           <Button bsStyle="primary" onClick={this.handleSubmit}>Submit</Button>
           <Button onClick={this.handleCancel}>Cancel</Button>
@@ -100,7 +105,8 @@ export default class GamesMessage extends Component {
 
     return (
       <div className="footer-container">
-        {footerContents}
+        {footerMessage}
+        <div className="footer-buttons">{footerButtons}</div>
       </div>
     );
   };

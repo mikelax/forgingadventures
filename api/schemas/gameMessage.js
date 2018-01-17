@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { withFilter } from 'graphql-subscriptions';
 import GraphQLJSON from 'graphql-type-json';
+import { raw } from 'objection';
 
 import GameMessage from 'models/gameMessage';
 import schemaScopeGate from 'services/schemaScopeGate';
@@ -17,7 +18,8 @@ const typeDefs = `
   type GameMessage {
     id: ID!,
     gameId: ID!,
-    message: JSON!
+    message: JSON!,
+    numberEdits: Int!
   }
   
   # queries
@@ -55,7 +57,7 @@ const resolvers = {
 
     gameMessages: (obj, { gameId }, context) =>
       schemaScopeGate(['create:posts'], context, () =>
-        GameMessage.query().where({ gameId }))
+        GameMessage.query().where({ gameId })).orderBy('created_at')
   },
   Mutation: {
     createGameMessage: (obj, { input }, context) =>
@@ -81,7 +83,10 @@ const resolvers = {
       schemaScopeGate(['create:posts'], context, () => {
         return GameMessage
           .query()
-          .patch({ message: input.message })
+          .patch({
+            message: input.message,
+            numberEdits: raw('"numberEdits" + 1')
+          })
           .where('id', id)
           .first()
           .returning('*');

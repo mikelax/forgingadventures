@@ -33,6 +33,7 @@ export const gameMessagesQuery = gql`
     gameMessages(gameId: $gameId) {
       id
       message
+      numberEdits
     }
   }
 `;

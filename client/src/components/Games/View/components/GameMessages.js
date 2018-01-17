@@ -32,9 +32,9 @@ class GameMessageBase extends Component {
     const { data: { gameMessages } } = this.props;
 
     return <div className='game-messages'>
-      {_.map(gameMessages, ({ id, message }) => (
+      {_.map(gameMessages, ({ id, message, numberEdits }) => (
         <div key={id} className='game-message'>
-          <GameMessage message={message} readOnly={true} onChanged={this._setMessage(id)} />
+          <GameMessage message={message} numberEdits={numberEdits} readOnly={true} onChanged={this._setMessage(id)} />
         </div>
       ))}
     </div>;
