@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import { Button } from 'react-bootstrap';
 import {CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier} from 'draft-js';
 import {getSelectionEntity} from 'draftjs-utils';
 
@@ -8,16 +10,22 @@ import './assets/GameMessage.styl';
 
 import iconMusic from './assets/icon-music-note.svg';
 
-/*
-GamesMessage is export wrapper component around draft js
-
-This module also contains GamesMessage sub-components - i.e. toolbar and inline and block style definitions
+/**
+ * GamesMessage is export wrapper component around draft js
+ * This module also contains GamesMessage sub-components - i.e. toolbar and inline and block style definitions
  */
-
 export default class GamesMessage extends Component {
 
+  static propTypes = {
+    message: PropTypes.object,
+    readOnly: PropTypes.bool,
+    onChanged: PropTypes.func
+  };
+
   state = {
-    editorState: EditorState.createEmpty(decorator)
+    editorState: EditorState.createEmpty(decorator),
+    editing: false,
+    readOnly: this.props.readOnly
   };
 
   componentWillMount() {
@@ -47,21 +55,24 @@ export default class GamesMessage extends Component {
   }
 
   render() {
-    const editorControler = this.props.readOnly ? '' :
+    const editorController = this.state.readOnly ? '' :
       <ActionControls
         editorState={this.state.editorState}
         onToggle={onToggleAction.bind(this)}
       />;
 
+    const messageFooter = this.getFooter();
+
     return (
       <div className="GameMessage">
-        {editorControler}
+        {editorController}
         <div className="editor-container">
           <Editor editorState={this.state.editorState}
                   onChange={onEditorChange.bind(this)}
-                  readOnly={this.props.readOnly}
+                  readOnly={this.state.readOnly}
           />
         </div>
+        {messageFooter}
       </div>
     );
   }
@@ -76,7 +87,54 @@ export default class GamesMessage extends Component {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
 
-};
+  getFooter = () => {
+    const footerMessage = this.props.numberEdits > 0 ?
+        <span>Number of Edits: {this.props.numberEdits}</span>
+      : '';
+
+    const footerButtons = this.state.editing === true ?
+        <React.Fragment>
+          <Button bsStyle="primary" onClick={this.handleSubmit}>Submit</Button>
+          <Button onClick={this.handleCancel}>Cancel</Button>
+        </React.Fragment>
+      :
+        !this.state.readOnly ? '' : 
+          <button onClick={this.handleEdit}>Edit</button>
+      ;
+
+    return (
+      <div className="footer-container">
+        {footerMessage}
+        <div className="footer-buttons">{footerButtons}</div>
+      </div>
+    );
+  };
+
+  handleEdit = (e) => {
+    this.setState({readOnly: false, editing: true});
+  };
+
+  handleCancel = (e) => {
+    this.setState({
+      readOnly: true,
+      editing: false,
+      editorState: EditorState.createWithContent(convertFromRaw(this.props.message), decorator)
+    });
+  };
+
+  handleSubmit = (e) => {
+    const {onChanged} = this.props;
+
+    onChanged({
+      message: convertToRaw(this.state.editorState.getCurrentContent())
+    });
+
+    this.setState({
+      readOnly: true,
+      editing: false
+    });
+  };
+}
 
 /// private GamesMessage methods - i.e. handlers etc...
 

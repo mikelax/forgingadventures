@@ -33,6 +33,7 @@ export const gameMessagesQuery = gql`
     gameMessages(gameId: $gameId) {
       id
       message
+      numberEdits
     }
   }
 `;
@@ -74,6 +75,14 @@ export const createGameLoungeMessageMutation = gql`
       user {
         name
       }     
+`;
+
+export const updateGameMessageMutation = gql`
+  mutation updateGameMessage($id: ID!, $input: UpdateGameMessageInput) {
+    updateGameMessage(id: $id, input: $input) {
+      id
+      gameId
+      message
     }
   }
 `;
@@ -84,15 +93,28 @@ export const onGameMessageAdded = gql`
       id
       gameId
       message
+      numberEdits
     }
   }
 `;
+
 
 export const onGameLoungeMessageAdded = gql`
   subscription gameLoungeMessageAdded($gameId: ID!){
     gameLoungeMessageAdded(gameId: $gameId){
       id
       message
+    }
+  }
+`;
+
+export const onGameMessageUpdated = gql`
+  subscription messageUpdated($gameId: ID!){
+    messageUpdated(gameId: $gameId){
+      id
+      gameId
+      message
+      numberEdits
     }
   }
 `;

@@ -4,10 +4,11 @@ import { graphql } from 'react-apollo/index';
 import { compose, pure } from "recompose";
 import {Tab, Tabs} from 'react-bootstrap';
 
-import CreateMessage from './CreateMessage';
 import CreateLoungeMessage from './CreateLoungeMessage';
-import GamesMessages from './GameMessages';
 import GameLoungeMessages from './GameLoungeMessages';
+import CreateMessage from './components/CreateMessage';
+import GamesMessages from './components/GameMessages';
+
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
 import { gameQuery } from '../queries';
