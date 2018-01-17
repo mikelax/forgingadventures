@@ -3458,6 +3458,10 @@ interpret@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.1.0.tgz#7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614"
 
+intersection-observer@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.5.0.tgz#9fe8bee3953c755b1485c38efd9633d535775ea6"
+
 invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.1, invariant@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
@@ -5526,6 +5530,10 @@ react-helmet@^5.2.0:
     object-assign "^4.1.1"
     prop-types "^15.5.4"
     react-side-effect "^1.1.0"
+
+react-intersection-observer@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-3.0.2.tgz#942476b2019f17ba9358d5c65bb5554262d9890b"
 
 react-overlays@^0.8.0:
   version "0.8.3"

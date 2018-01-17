@@ -26,7 +26,7 @@ const typeDefs = `
   
   # queries
   type Query {
-    games(page: Int, searchOptions: SearchOptions): [Game],
+    games(offset: Int, searchOptions: SearchOptions): [Game],
     game(id: ID!): Game!
   }
   
@@ -64,7 +64,7 @@ const typeDefs = `
 const resolvers = {
   Query: {
     game: (parent, { id }) => Game.query().findById(id),
-    games: (parent, { page, searchOptions }) => serviceExecutor(GetGames, { page, searchOptions })
+    games: (parent, { offset, searchOptions }) => serviceExecutor(GetGames, { offset, searchOptions })
   },
   Mutation: {
     createGame: (obj, { input }, context) =>
