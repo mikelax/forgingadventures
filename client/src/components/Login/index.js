@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {Helmet} from "react-helmet";
 import { connect } from 'react-redux';
 import {Redirect} from 'react-router-dom';
 
@@ -31,17 +32,22 @@ class Login extends Component {
     }
 
     return (
-      <div className="Login">
-        <div className="container">
-          <h1>
-            Login
-          </h1>
-          <p>This page uses custom Auth0 Lock widget, as opposed to hosted login page.
-            <br/>If you remove the container attribute it will display as a modal.</p>
+      <React.Fragment>
+        <Helmet>
+          <title>Log in or Sign up to Forging Adventures</title>
+        </Helmet>
+        <div className="Login">
+          <div className="container">
+            <h1>
+              Log In
+            </h1>
+            <p>This page uses custom Auth0 Lock widget, as opposed to hosted login page.
+              <br/>If you remove the container attribute it will display as a modal.</p>
 
-          <div id="auth0Lock"/>
+            <div id="auth0Lock"/>
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

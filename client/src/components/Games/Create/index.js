@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, {Component} from 'react';
 import {graphql} from 'react-apollo';
 import {Button, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 import {Redirect} from 'react-router-dom';
 
 import {skillLevels, postingFrequencies} from '../utils/gameSettings';
@@ -33,88 +34,94 @@ const CreateGame = class CreateGame extends Component {
     }
 
     return (
-      <div className="CreateGame">
-        <h1>Create a New Game</h1>
+      <React.Fragment>
+        <Helmet>
+          <title>Create new Game on Forging Adventures</title>
+        </Helmet>
 
-        <form>
-          <FormGroup validationState={this.validity('title')}>
-            <ControlLabel>Campaign Name</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.formValue('title')}
-              placeholder="Enter Campaign Name"
-              onChange={this.formInput('title')}
-            />
-          </FormGroup>
+        <div className="CreateGame">
+          <h1>Create a New Game</h1>
 
-          <FormGroup validationState={this.validity('scenario')}>
-            <ControlLabel className="top">Scenario</ControlLabel>
-            <FormControl
-              componentClass="textarea"
-              value={this.formValue('scenario')}
-              placeholder="Enter Scenario"
-              onChange={this.formInput('scenario')}
-            />
-          </FormGroup>
+          <form>
+            <FormGroup validationState={this.validity('title')}>
+              <ControlLabel>Campaign Name</ControlLabel>
+              <FormControl
+                type="text"
+                value={this.formValue('title')}
+                placeholder="Enter Campaign Name"
+                onChange={this.formInput('title')}
+              />
+            </FormGroup>
 
-          <FormGroup validationState={this.validity('overview')}>
-            <ControlLabel className="top">Overview</ControlLabel>
-            <FormControl
-              componentClass="textarea"
-              value={this.formValue('overview')}
-              placeholder="Enter Overview"
-              onChange={this.formInput('overview')}
-            />
-          </FormGroup>
+            <FormGroup validationState={this.validity('scenario')}>
+              <ControlLabel className="top">Scenario</ControlLabel>
+              <FormControl
+                componentClass="textarea"
+                value={this.formValue('scenario')}
+                placeholder="Enter Scenario"
+                onChange={this.formInput('scenario')}
+              />
+            </FormGroup>
 
-          <FormGroup className="options">
-            <ControlLabel>Minimum Players</ControlLabel>
-            <FormControl
-              type="number"
-              placeholder="Minimum Players"
-              value={this.formValue('gameSettings.minPlayers')}
-              onChange={this.formInput('gameSettings.minPlayers')}
-            />
+            <FormGroup validationState={this.validity('overview')}>
+              <ControlLabel className="top">Overview</ControlLabel>
+              <FormControl
+                componentClass="textarea"
+                value={this.formValue('overview')}
+                placeholder="Enter Overview"
+                onChange={this.formInput('overview')}
+              />
+            </FormGroup>
 
-            <ControlLabel>Max Players</ControlLabel>
-            <FormControl
-              type="number"
-              value={this.formValue('gameSettings.maxPlayers')}
-              placeholder="Maximum Players"
-              onChange={this.formInput('gameSettings.maxPlayers')}
-            />
+            <FormGroup className="options">
+              <ControlLabel>Minimum Players</ControlLabel>
+              <FormControl
+                type="number"
+                placeholder="Minimum Players"
+                value={this.formValue('gameSettings.minPlayers')}
+                onChange={this.formInput('gameSettings.minPlayers')}
+              />
 
-            <ControlLabel>Skill Level</ControlLabel>
-            <FormControl
-              componentClass="select"
-              value={this.formValue('gameSettings.skillLevel')}
-              onChange={this.formInput('gameSettings.skillLevel')}>
-              {
-                _.map(skillLevels, (desc, level) =>
-                  <option value={level}>{desc}</option>
-                )
-              }
-            </FormControl>
+              <ControlLabel>Max Players</ControlLabel>
+              <FormControl
+                type="number"
+                value={this.formValue('gameSettings.maxPlayers')}
+                placeholder="Maximum Players"
+                onChange={this.formInput('gameSettings.maxPlayers')}
+              />
+
+              <ControlLabel>Skill Level</ControlLabel>
+              <FormControl
+                componentClass="select"
+                value={this.formValue('gameSettings.skillLevel')}
+                onChange={this.formInput('gameSettings.skillLevel')}>
+                {
+                  _.map(skillLevels, (desc, level) =>
+                    <option value={level}>{desc}</option>
+                  )
+                }
+              </FormControl>
 
 
-            <ControlLabel>Posting Frequency</ControlLabel>
-            <FormControl
-              componentClass="select"
-              value={this.formValue('gameSettings.postingFrequency')}
-              onChange={this.formInput('gameSettings.postingFrequency')}>
-              {
-                _.map(postingFrequencies, (desc, level) =>
-                  <option value={level}>{desc}</option>
-                )
-              }
-            </FormControl>
-          </FormGroup>
-        </form>
+              <ControlLabel>Posting Frequency</ControlLabel>
+              <FormControl
+                componentClass="select"
+                value={this.formValue('gameSettings.postingFrequency')}
+                onChange={this.formInput('gameSettings.postingFrequency')}>
+                {
+                  _.map(postingFrequencies, (desc, level) =>
+                    <option value={level}>{desc}</option>
+                  )
+                }
+              </FormControl>
+            </FormGroup>
+          </form>
 
-        <div className="actions text-right">
-          <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+          <div className="actions text-right">
+            <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   };
 
