@@ -1,5 +1,17 @@
 import gql from 'graphql-tag';
 
+export const gameQuery = gql`
+  query game($id: ID!) {
+    game(id: $id) {
+      id
+      title
+      scenario
+      overview
+    }
+  }
+`;
+
+
 export const gamesQuery = gql`
   query games($offset: Int, $searchOptions: SearchOptions) {
     games(offset: $offset, searchOptions: $searchOptions) {
@@ -13,17 +25,6 @@ export const gamesQuery = gql`
         skillLevel
         postingFrequency
       }
-    }
-  }
-`;
-
-export const gameQuery = gql`
-  query game($id: ID!) {
-    game(id: $id) {
-      id
-      title
-      scenario
-      overview
     }
   }
 `;

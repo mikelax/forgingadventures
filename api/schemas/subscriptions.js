@@ -1,8 +1,11 @@
 const subscriptions = `
   type Subscription {
-    gameLoungeMessageAdded(gameId: ID!): GameLoungeMessage!
+    # game messages
     messageAdded(gameId: ID!): GameMessage!
     messageUpdated(gameId: ID!): GameMessage!
+
+    # game lounge messages
+    gameLoungeMessageAdded(gameId: ID!): GameLoungeMessage!
   }
 `;
 

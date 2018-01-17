@@ -31,7 +31,7 @@ export const gameMessageTypeDefs = `
 
 export const gameMessageResolvers = {
   Query: {
-    message: (obj, { id }, context) =>
+    gameMessage: (obj, { id }, context) =>
       schemaScopeGate(['create:posts'], context, () =>
         GameMessage.query().findById(id)),
 
