@@ -1,8 +1,14 @@
 const mutations = `
   type Mutation {
+    # games
     createGame(input: CreateGameInput): Game
-    createGameLoungeMessage(input: CreateGameLoungeMessageInput): GameLoungeMessage
+    
+    # game_messages
     createGameMessage(input: CreateGameMessageInput): GameMessage
+    updateGameMessage(id: ID!, input: UpdateGameMessageInput): GameMessage
+    
+    # game_lounges
+    createGameLoungeMessage(input: CreateGameLoungeMessageInput): GameLoungeMessage
   }
 `;
 

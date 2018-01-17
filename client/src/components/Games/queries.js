@@ -74,7 +74,9 @@ export const createGameLoungeMessageMutation = gql`
       message
       user {
         name
-      }     
+      } 
+    }      
+  }    
 `;
 
 export const updateGameMessageMutation = gql`

@@ -2,10 +2,10 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
-import GameLoungeMessage from '../components/GameLoungeMessage';
+import GameLoungeMessage from '../../components/GameLoungeMessage/index';
 
-import { gameLoungeMessagesQuery, onGameLoungeMessageAdded } from '../queries';
-import ApolloLoader from '../../shared/components/ApolloLoader';
+import { gameLoungeMessagesQuery, onGameLoungeMessageAdded } from '../../queries';
+import ApolloLoader from '../../../shared/components/ApolloLoader';
 
 class GameLoungeMessages extends Component {
 
