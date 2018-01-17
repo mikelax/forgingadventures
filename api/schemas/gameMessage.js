@@ -10,6 +10,7 @@ import getUser from 'services/user';
 import pubsub from 'services/pubsub';
 
 export const TOPIC_MESSAGE_ADDED = 'messageAdded';
+export const TOPIC_MESSAGE_UPDATED = 'messageUpdated';
 
 const typeDefs = `
 
@@ -46,6 +47,7 @@ const typeDefs = `
   # subscriptions
   type Subscription {
     messageAdded(gameId: ID!): GameMessage!
+    messageUpdated(gameId: ID!): GameMessage!
   }
 `;
 
@@ -70,12 +72,11 @@ const resolvers = {
               .query()
               .insert(input)
               .returning('*')
-              .then((gameMessage) => {
+              .execute()
+              .tap((gameMessage) => {
                 pubsub.publish(TOPIC_MESSAGE_ADDED, {
                   messageAdded: gameMessage
                 });
-
-                return gameMessage;
               });
           });
       }),
@@ -89,13 +90,24 @@ const resolvers = {
           })
           .where('id', id)
           .first()
-          .returning('*');
+          .returning('*')
+          .execute()
+          .tap((gameMessage) => {
+            pubsub.publish(TOPIC_MESSAGE_UPDATED, {
+              messageUpdated: gameMessage
+            });
+          });
       })
   },
   Subscription: {
     messageAdded: {
       subscribe: withFilter(() => pubsub.asyncIterator(TOPIC_MESSAGE_ADDED), (payload, variables) => {
         return payload.messageAdded.gameId === Number(variables.gameId);
+      })
+    },
+    messageUpdated: {
+      subscribe: withFilter(() => pubsub.asyncIterator(TOPIC_MESSAGE_UPDATED), (payload, variables) => {
+        return payload.messageUpdated.gameId === Number(variables.gameId);
       })
     }
   },

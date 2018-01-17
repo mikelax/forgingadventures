@@ -73,6 +73,7 @@ export const onGameMessageAdded = gql`
       id
       gameId
       message
+      numberEdits
     }
   }
 `;
@@ -83,6 +84,7 @@ export const onGameMessageUpdated = gql`
       id
       gameId
       message
+      numberEdits
     }
   }
 `;

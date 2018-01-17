@@ -4,7 +4,7 @@ import {graphql} from 'react-apollo';
 import {compose, pure} from "recompose";
 import GameMessage from '../../components/GameMessage/index';
 
-import {gameMessagesQuery, updateGameMessageMutation, onGameMessageAdded} from '../../queries';
+import {gameMessagesQuery, updateGameMessageMutation, onGameMessageAdded, onGameMessageUpdated} from '../../queries';
 
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
@@ -40,6 +40,19 @@ class GameMessageBase extends Component {
     </div>;
   }
 
+  _setMessage = (messageId) => ({message}) => {
+    const {updateMessage} = this.props;
+
+    return updateMessage({
+      variables: {
+        id: messageId,
+        input: {
+          message
+        }
+      }
+    });
+  };
+
   _setupSubscriptions() {
     const { gameId, data } = this.props;
 
@@ -61,21 +74,29 @@ class GameMessageBase extends Component {
       }
     });
 
-    // TODO subscribe to message updated message
-
-  }
-
-  _setMessage = (messageId) => ({message}) => {
-    const {updateMessage} = this.props;
-
-    return updateMessage({
+    data.subscribeToMore({
+      document: onGameMessageUpdated,
       variables: {
-        id: messageId,
-        input: {
-          message
+        gameId
+      },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
         }
+
+        const {messageUpdated} = subscriptionData.data;
+
+        _.chain(prev.gameMessages)
+          .find({id: messageUpdated.id})
+          .merge(messageUpdated)
+          .value();
+
+        return Object.assign({}, prev, {
+          gameMessages: prev.gameMessages
+        });
       }
     });
+
   }
 
 }

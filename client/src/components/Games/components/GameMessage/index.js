@@ -25,8 +25,7 @@ export default class GamesMessage extends Component {
   state = {
     editorState: EditorState.createEmpty(decorator),
     editing: false,
-    readOnly: this.props.readOnly,
-    numberEdits: this.props.numberEdits
+    readOnly: this.props.readOnly
   };
 
   componentWillMount() {
@@ -89,8 +88,8 @@ export default class GamesMessage extends Component {
   }
 
   getFooter = () => {
-    const footerMessage = this.state.numberEdits > 0 ? 
-        <span>Number of Edits: {this.state.numberEdits}</span>
+    const footerMessage = this.props.numberEdits > 0 ?
+        <span>Number of Edits: {this.props.numberEdits}</span>
       : '';
 
     const footerButtons = this.state.editing === true ?
@@ -128,8 +127,7 @@ export default class GamesMessage extends Component {
 
     this.setState({
       readOnly: true,
-      editing: false,
-      editorState: EditorState.createEmpty(decorator)
+      editing: false
     });
   };
 }
