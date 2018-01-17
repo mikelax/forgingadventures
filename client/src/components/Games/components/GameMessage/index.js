@@ -115,7 +115,11 @@ export default class GamesMessage extends Component {
   };
 
   handleCancel = (e) => {
-    this.setState({readOnly: true, editing: false});
+    this.setState({
+      readOnly: true,
+      editing: false,
+      editorState: EditorState.createWithContent(convertFromRaw(this.props.message), decorator)
+    });
   };
 
   handleSubmit = (e) => {
