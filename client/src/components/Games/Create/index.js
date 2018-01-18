@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, {Component} from 'react';
 import {graphql} from 'react-apollo';
 import {Button, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 import {Redirect} from 'react-router-dom';
 
 import {skillLevels, postingFrequencies} from '../utils/gameSettings';
@@ -34,6 +35,10 @@ const CreateGame = class CreateGame extends Component {
 
     return (
       <div className="CreateGame">
+        <Helmet>
+          <title>Create new Game on Forging Adventures</title>
+        </Helmet>
+
         <h1>Create a New Game</h1>
 
         <form>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Helmet} from "react-helmet";
 import { compose, pure } from "recompose";
 import { graphql } from 'react-apollo/index';
 import { Link } from 'react-router-dom';
@@ -18,15 +19,21 @@ import './assets/ViewGame.styl';
 class ViewGame extends Component {
 
   render() {
-    return <div className="ViewGame">
-      <h1>Game</h1>
+    return (
+      <div className="ViewGame">
+        <Helmet>
+          <title>{this.props.data.game.title} on Forging Adventures</title>
+        </Helmet>
 
-      <Link to='/games'>
-        Back to Games
-      </Link>
+        <h1>Game</h1>
 
-      {gameDetails.call(this)}
-    </div>;
+        <Link to='/games'>
+          Back to Games
+        </Link>
+
+        {gameDetails.call(this)}
+      </div>
+    );
   }
 
 }

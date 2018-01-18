@@ -23,7 +23,7 @@ class ListGamesView extends Component {
 
     return <div className="ListGames">
       <Helmet>
-        <title>Search For RPG Play by Post Games</title>
+        <title>Search For RPG Play by Post Games on Forging Adventures</title>
       </Helmet>
 
       <h1>Find a Game, start your Adventure</h1>

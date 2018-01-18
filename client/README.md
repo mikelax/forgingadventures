@@ -29,6 +29,14 @@ CRA eject also updated [package.json](./package.json) by adding its packages to 
 packages were moved to the `devDependencies` section to separate build/dev from runtime packages.
 These `devDependencies` packages can be updated when updating CRA.
 
+## Application Library Notes
+
+### Helmet
+
+This app uses [react-helmet](https://github.com/nfl/react-helmet) to handle managing page metadata such as title, meta, etc. The main `Helmet` element can be added to any component. Currently it is mainly used for "Page Level" components, but can be used for specific detail pages such as "Viewing a Game". 
+
+When SSR is introduced there are [special hooks](https://github.com/nfl/react-helmet#server-usage) that can be called for helmet to work in that use case. 
+
 ## Introducing Redux
 
 A good introduction to Redux in React: https://css-tricks.com/learning-react-redux/
