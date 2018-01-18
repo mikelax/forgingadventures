@@ -1,5 +1,20 @@
 import gql from 'graphql-tag';
 
+// fragments
+
+// users
+
+export const userMetadataFields = `
+  fragment userMetadataFields on UserMetadata {
+    profileImage {
+      imageUrl
+    }
+  }
+`;
+
+// queries
+
+
 // games
 
 export const gameQuery = gql`
@@ -103,32 +118,41 @@ export const gameLoungeMessagesQuery = gql`
       id
       message
       numberEdits
+      created_at
+      updated_at
+      user {
+        name
+        userMetadata { ...userMetadataFields }
+      }
     }
   }
+  ${userMetadataFields}
 `;
 
 export const createGameLoungeMessageMutation = gql`
   mutation createGameLoungeMessage($input: CreateGameLoungeMessageInput) {
     createGameLoungeMessage(input: $input) {
       id
-      gameId
       message
+      numberEdits
+      created_at
+      updated_at
       user {
         name
-      } 
+        userMetadata { ...userMetadataFields }
+      }
     }      
-  }    
+  }
+  ${userMetadataFields}    
 `;
 
 export const updateGameLoungeMessageMutation = gql`
-  mutation updateGameLoungeMessage($input: UpdateGameLoungeMessageInput) {
-    updateGameLoungeMessage(input: $input) {
+  mutation updateGameLoungeMessage($id: ID!, $input: UpdateGameLoungeMessageInput) {
+    updateGameLoungeMessage(id: $id, input: $input) {
       id
-      gameId
       message
-      user {
-        name
-      } 
+      numberEdits
+      updated_at
     }      
   }    
 `;
@@ -148,6 +172,8 @@ export const onGameLoungeMessageUpdated = gql`
     gameLoungeMessageUpdated(gameId: $gameId){
       id
       message
+      numberEdits
+      updated_at
     }
   }
 `;

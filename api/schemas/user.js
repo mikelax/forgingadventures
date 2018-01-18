@@ -5,16 +5,16 @@ export const userTypeDefs = `
   type User {
     id: ID!,
     name: String!,
-    userMetaData: UserMetaData!
+    userMetadata: UserMetadata
   }
   
-  type UserMetaData {
-    profileImage: ProfileImage!
+  type UserMetadata {
+    profileImage: ProfileImage
   }
   
   type ProfileImage {
     publicId: String,
-    imageUrl: String!
+    imageUrl: String
   }  
 `;
 

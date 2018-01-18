@@ -9,7 +9,7 @@ const mutations = `
     
     # game_lounges
     createGameLoungeMessage(input: CreateGameLoungeMessageInput): GameLoungeMessage
-    updateGameLoungeMessage(input: UpdateGameLoungeMessageInput): GameLoungeMessage
+    updateGameLoungeMessage(id: ID!, input: UpdateGameLoungeMessageInput): GameLoungeMessage
   }
 `;
 

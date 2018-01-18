@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {convertFromRaw, convertToRaw, Editor, EditorState, RichUtils} from 'draft-js';
 import React, {Component} from 'react';
 
@@ -22,13 +21,9 @@ export default class RichEditorExample extends Component {
 
   componentWillReceiveProps(nextProp) {
     if (nextProp.message) {
-      const messageChanged = !(_.isEqual(this.props.message, nextProp.message));
-
-      if (messageChanged) {
-        this.setState({
-          editorState: EditorState.createWithContent(convertFromRaw(nextProp.message))
-        });
-      }
+      this.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(nextProp.message))
+      });
     } else {
       this.setState({
         message: EditorState.createEmpty()
