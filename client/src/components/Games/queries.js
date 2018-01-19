@@ -64,6 +64,8 @@ export const gameMessagesQuery = gql`
       id
       message
       numberEdits
+      created_at
+      updated_at
     }
   }
 `;
@@ -74,6 +76,7 @@ export const createGameMessageMutation = gql`
       id
       gameId
       message
+      created_at
     }
   }
 `;
@@ -82,8 +85,8 @@ export const updateGameMessageMutation = gql`
   mutation updateGameMessage($id: ID!, $input: UpdateGameMessageInput) {
     updateGameMessage(id: $id, input: $input) {
       id
-      gameId
       message
+      updated_at      
     }
   }
 `;
@@ -95,6 +98,7 @@ export const onGameMessageAdded = gql`
       gameId
       message
       numberEdits
+      created_at
     }
   }
 `;
@@ -103,9 +107,9 @@ export const onGameMessageUpdated = gql`
   subscription messageUpdated($gameId: ID!){
     messageUpdated(gameId: $gameId){
       id
-      gameId
       message
       numberEdits
+      updated_at      
     }
   }
 `;
@@ -116,6 +120,7 @@ export const gameLoungeMessagesQuery = gql`
   query gameLoungeMessages($gameId: ID!) {
     gameLoungeMessages(gameId: $gameId) {
       id
+      gameId
       message
       numberEdits
       created_at
@@ -133,6 +138,7 @@ export const createGameLoungeMessageMutation = gql`
   mutation createGameLoungeMessage($input: CreateGameLoungeMessageInput) {
     createGameLoungeMessage(input: $input) {
       id
+      gameId
       message
       numberEdits
       created_at
@@ -162,9 +168,18 @@ export const onGameLoungeMessageAdded = gql`
   subscription gameLoungeMessageAdded($gameId: ID!){
     gameLoungeMessageAdded(gameId: $gameId){
       id
+      gameId
       message
+      numberEdits
+      created_at
+      updated_at
+      user {
+        name
+        userMetadata { ...userMetadataFields }
+      }
     }
   }
+  ${userMetadataFields}  
 `;
 
 export const onGameLoungeMessageUpdated = gql`

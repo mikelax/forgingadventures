@@ -12,6 +12,7 @@ import {
   onGameLoungeMessageAdded,
   onGameLoungeMessageUpdated
 } from '../../queries';
+
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
 import './assets/GameLoungeMessages.styl';
@@ -36,7 +37,7 @@ class GameLoungeMessages extends Component {
     return <div>
       {_.map(gameLoungeMessages, (loungeMessage) => (
         <div key={loungeMessage.id} className='game-lounge-message-container'>
-          <GameLoungeMessageContainerData loungeMessage={loungeMessage} />
+          <GameLoungeMessageContainer loungeMessage={loungeMessage} />
         </div>
       ))}
     </div>;
@@ -99,7 +100,7 @@ export default compose(
 
 // private
 
-class GameLoungeMessageContainer extends Component {
+class GameLoungeMessageContainerBase extends Component {
 
   state = {
     editing: false
@@ -215,13 +216,13 @@ class GameLoungeMessageContainer extends Component {
     const dateDisplayRelative = dateObject.fromNow();
     const dateDisplayActual = dateObject.format('LLL');
 
-    return <span  className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
+    return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
   };
 }
 
-const GameLoungeMessageContainerData = compose(
+const GameLoungeMessageContainer = compose(
   graphql(updateGameLoungeMessageMutation, {
     name: 'updateLoungeMessage'
   }),
   pure,
-)(GameLoungeMessageContainer);
+)(GameLoungeMessageContainerBase);
