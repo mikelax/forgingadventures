@@ -14,7 +14,7 @@ import {
 } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
-import './assets/GameLoungeMessages.js.styl';
+import './assets/GameLoungeMessages.styl';
 
 class GameLoungeMessages extends Component {
 

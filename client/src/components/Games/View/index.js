@@ -58,14 +58,14 @@ function gameDetails() {
     <div className="overview">{game.overview}</div>
 
     <Tabs defaultActiveKey={1} animation={false} id="game-tabs">
-      <Tab eventKey={1} title="Game Messages">
-        <CreateMessage gameId={game.id}/>
-        <GamesMessages gameId={game.id}/>
-      </Tab>
-
-      <Tab eventKey={2} title="Game Lounge">
+      <Tab eventKey={1} title="Game Lounge">
         <CreateLoungeMessage gameId={game.id}/>
         <GameLoungeMessages gameId={game.id}/>
+      </Tab>
+
+      <Tab eventKey={2} title="Game Messages">
+        <CreateMessage gameId={game.id}/>
+        <GamesMessages gameId={game.id}/>
       </Tab>
     </Tabs>
 

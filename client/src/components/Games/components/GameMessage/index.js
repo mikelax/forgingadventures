@@ -55,7 +55,7 @@ export default class GamesMessage extends Component {
   }
 
   render() {
-    const editorControlls = this.state.readOnly ? '' :
+    const editorControls = this.state.readOnly ? '' :
       <ActionControls
         editorState={this.state.editorState}
         onToggle={onToggleAction.bind(this)}
@@ -65,7 +65,7 @@ export default class GamesMessage extends Component {
 
     return (
       <div className="GameMessage">
-        {editorControlls}
+        {editorControls}
         <div className="editor-container">
           <Editor editorState={this.state.editorState}
                   onChange={onEditorChange.bind(this)}
