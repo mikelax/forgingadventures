@@ -117,9 +117,13 @@ class GameLoungeMessageContainer extends Component {
             {this._userProfileImage()}
           </div>
           <div className="stats">
-            <div className="message-info">
-              Posted by {user.name}
-            </div>
+            {
+              user.name ? (
+                <div className="message-info">
+                  Posted by {user.name}
+                </div>
+              ) : null
+            }
             <div className="message-stats">
               <div>Posted {this._relativeDate(loungeMessage.created_at)}</div>
               {this._lastEdited()}

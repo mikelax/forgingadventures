@@ -4,7 +4,7 @@ export const userTypeDefs = `
 
   type User {
     id: ID!,
-    name: String!,
+    name: String,
     userMetadata: UserMetadata
   }
   
