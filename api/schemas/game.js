@@ -1,14 +1,12 @@
-import { makeExecutableSchema } from 'graphql-tools';
-
 import Game from 'models/game';
 
 import schemaScopeGate from 'services/schemaScopeGate';
 import GetGames from 'services/games/getGames';
-import getUser from 'services/user';
+import { getUser } from 'services/user';
 
 import serviceExecutor from 'utils/serviceExecutor';
 
-const typeDefs = `
+export const gameTypeDefs = `
   type GameSetting {
     minPlayers: Int!,
     maxPlayers: Int!,
@@ -22,17 +20,6 @@ const typeDefs = `
     scenario: String!,
     overview: String!,
     gameSettings: GameSetting!
-  }
-  
-  # queries
-  type Query {
-    games(offset: Int, searchOptions: SearchOptions): [Game],
-    game(id: ID!): Game!
-  }
-  
-  # mutations
-  type Mutation {
-    createGame(input: CreateGameInput): Game
   }
   
   input CreateGameInput {
@@ -61,7 +48,7 @@ const typeDefs = `
   }
 `;
 
-const resolvers = {
+export const gameResolvers = {
   Query: {
     game: (parent, { id }) => Game.query().findById(id),
     games: (parent, { offset, searchOptions }) => serviceExecutor(GetGames, { offset, searchOptions })
@@ -81,5 +68,3 @@ const resolvers = {
       })
   }
 };
-
-export default makeExecutableSchema({ typeDefs, resolvers });

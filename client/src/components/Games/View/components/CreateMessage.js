@@ -6,7 +6,7 @@ import GameMessage from '../../components/GameMessage/index';
 
 import { createGameMessageMutation } from '../../queries';
 
-class CreateGame extends Component {
+class CreateMessage extends Component {
 
   render() {
     return (
@@ -39,4 +39,4 @@ class CreateGame extends Component {
   }
 }
 
-export default graphql(createGameMessageMutation)(CreateGame);
+export default graphql(createGameMessageMutation)(CreateMessage);

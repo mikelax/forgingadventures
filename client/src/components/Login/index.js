@@ -36,7 +36,9 @@ class Login extends Component {
         <Helmet>
           <title>Log in or Sign up to Forging Adventures</title>
         </Helmet>
+
         <div className="Login">
+
           <div className="container">
             <h1>
               Log In
@@ -47,6 +49,7 @@ class Login extends Component {
             <div id="auth0Lock"/>
           </div>
         </div>
+
       </React.Fragment>
     );
   }

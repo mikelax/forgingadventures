@@ -1,38 +1,26 @@
-import { makeExecutableSchema } from 'graphql-tools';
 import { withFilter } from 'graphql-subscriptions';
-import GraphQLJSON from 'graphql-type-json';
 import { raw } from 'objection';
 
 import GameMessage from 'models/gameMessage';
 import schemaScopeGate from 'services/schemaScopeGate';
 
-import getUser from 'services/user';
+import { getUser } from 'services/user';
 import pubsub from 'services/pubsub';
+import User from '../models/user';
 
-export const TOPIC_MESSAGE_ADDED = 'messageAdded';
-export const TOPIC_MESSAGE_UPDATED = 'messageUpdated';
+export const TOPIC_MESSAGE_ADDED = 'topic_message_added';
+export const TOPIC_MESSAGE_UPDATED = 'topic_message_updated';
 
-const typeDefs = `
+export const gameMessageTypeDefs = `
 
-  scalar JSON
-  
   type GameMessage {
     id: ID!,
     gameId: ID!,
+    user: User!,
     message: JSON!,
-    numberEdits: Int!
-  }
-  
-  # queries
-  type Query {
-    message(id: ID!): GameMessage!,
-    gameMessages(gameId: ID!): [GameMessage!]
-  }
-  
-  # mutations
-  type Mutation {
-    createGameMessage(input: CreateGameMessageInput): GameMessage,
-    updateGameMessage(id: ID!, input: UpdateGameMessageInput): GameMessage
+    numberEdits: Int!,
+    updated_at: GraphQLDateTime,
+    created_at: GraphQLDateTime
   }
   
   input CreateGameMessageInput {
@@ -43,17 +31,14 @@ const typeDefs = `
   input UpdateGameMessageInput {
     message: JSON!
   }
-  
-  # subscriptions
-  type Subscription {
-    messageAdded(gameId: ID!): GameMessage!
-    messageUpdated(gameId: ID!): GameMessage!
-  }
 `;
 
-const resolvers = {
+export const gameMessageResolvers = {
+  GameMessage: {
+    user: gameMessage => User.query().findById(gameMessage.userId)
+  },
   Query: {
-    message: (obj, { id }, context) =>
+    gameMessage: (obj, { id }, context) =>
       schemaScopeGate(['create:posts'], context, () =>
         GameMessage.query().findById(id)),
 
@@ -110,8 +95,5 @@ const resolvers = {
         return payload.messageUpdated.gameId === Number(variables.gameId);
       })
     }
-  },
-  JSON: GraphQLJSON
+  }
 };
-
-export default makeExecutableSchema({ typeDefs, resolvers });

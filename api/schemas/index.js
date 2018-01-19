@@ -1,9 +1,48 @@
-import { mergeSchemas } from 'graphql-tools';
+import _ from 'lodash';
+import { makeExecutableSchema } from 'graphql-tools';
 
-import game from 'schemas/game';
-import gameLabel from 'schemas/gameLabel';
-import gameMessage from 'schemas/gameMessage';
+import GraphQLJSON from 'graphql-type-json';
+import { GraphQLDateTime } from 'graphql-iso-date';
 
-export default mergeSchemas({
-  schemas: [gameMessage, gameLabel, game]
+import { gameTypeDefs, gameResolvers } from 'schemas/game';
+import { gameLabelTypeDefs, gameLabelResolvers } from 'schemas/gameLabel';
+import { gameLoungeTypeDefs, gameLoungeResolvers } from 'schemas/gameLounge';
+import { gameMessageTypeDefs, gameMessageResolvers } from 'schemas/gameMessage';
+import { userTypeDefs, userResolvers } from 'schemas/user';
+
+import queries from 'schemas/queries';
+import mutations from 'schemas/mutations';
+import subscriptions from 'schemas/subscriptions';
+
+const scalars = `
+  scalar JSON
+  scalar GraphQLDateTime
+`;
+
+const ScalerResolvers = {
+  JSON: GraphQLJSON,
+  GraphQLDateTime
+};
+
+export default makeExecutableSchema({
+  typeDefs: [
+    gameTypeDefs,
+    gameLabelTypeDefs,
+    gameLoungeTypeDefs,
+    gameMessageTypeDefs,
+    userTypeDefs,
+    queries,
+    mutations,
+    subscriptions,
+    scalars
+  ],
+  resolvers: _.merge(
+    ScalerResolvers,
+    gameResolvers,
+    gameLabelResolvers,
+    gameLoungeResolvers,
+    gameMessageResolvers,
+    userResolvers
+  )
 });
+

@@ -40,6 +40,7 @@ const CreateGame = class CreateGame extends Component {
         </Helmet>
 
         <div className="CreateGame">
+
           <h1>Create a New Game</h1>
 
           <form>
@@ -122,6 +123,7 @@ const CreateGame = class CreateGame extends Component {
           </div>
         </div>
       </React.Fragment>
+
     );
   };
 

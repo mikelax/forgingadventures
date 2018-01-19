@@ -55,17 +55,17 @@ export default class GamesMessage extends Component {
   }
 
   render() {
-    const editorController = this.state.readOnly ? '' :
+    const editorControls = this.state.readOnly ? '' :
       <ActionControls
         editorState={this.state.editorState}
         onToggle={onToggleAction.bind(this)}
       />;
 
-    const messageFooter = this.getFooter();
+    const messageFooter = this._getFooter();
 
     return (
       <div className="GameMessage">
-        {editorController}
+        {editorControls}
         <div className="editor-container">
           <Editor editorState={this.state.editorState}
                   onChange={onEditorChange.bind(this)}
@@ -87,19 +87,19 @@ export default class GamesMessage extends Component {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
 
-  getFooter = () => {
+  _getFooter = () => {
     const footerMessage = this.props.numberEdits > 0 ?
         <span>Number of Edits: {this.props.numberEdits}</span>
       : '';
 
     const footerButtons = this.state.editing === true ?
         <React.Fragment>
-          <Button bsStyle="primary" onClick={this.handleSubmit}>Submit</Button>
-          <Button onClick={this.handleCancel}>Cancel</Button>
+          <Button bsStyle="primary" onClick={this._handleSubmit}>Submit</Button>
+          <Button onClick={this._handleCancel}>Cancel</Button>
         </React.Fragment>
       :
         !this.state.readOnly ? '' : 
-          <button onClick={this.handleEdit}>Edit</button>
+          <button onClick={this._handleEdit}>Edit</button>
       ;
 
     return (
@@ -110,11 +110,11 @@ export default class GamesMessage extends Component {
     );
   };
 
-  handleEdit = (e) => {
+  _handleEdit = (e) => {
     this.setState({readOnly: false, editing: true});
   };
 
-  handleCancel = (e) => {
+  _handleCancel = (e) => {
     this.setState({
       readOnly: true,
       editing: false,
@@ -122,7 +122,7 @@ export default class GamesMessage extends Component {
     });
   };
 
-  handleSubmit = (e) => {
+  _handleSubmit = (e) => {
     const {onChanged} = this.props;
 
     onChanged({
