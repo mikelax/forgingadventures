@@ -37,7 +37,7 @@ class GameLoungeMessages extends Component {
     return <div>
       {_.map(gameLoungeMessages, (loungeMessage) => (
         <div key={loungeMessage.id} className='game-lounge-message-container'>
-          <GameLoungeMessageContainer loungeMessage={loungeMessage} />
+          <GameLoungeMessageContainerData loungeMessage={loungeMessage} />
         </div>
       ))}
     </div>;
@@ -100,7 +100,7 @@ export default compose(
 
 // private
 
-class GameLoungeMessageContainerBase extends Component {
+class GameLoungeMessageContainer extends Component {
 
   state = {
     editing: false
@@ -216,13 +216,13 @@ class GameLoungeMessageContainerBase extends Component {
     const dateDisplayRelative = dateObject.fromNow();
     const dateDisplayActual = dateObject.format('LLL');
 
-    return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
+    return <span  className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
   };
 }
 
-const GameLoungeMessageContainer = compose(
+const GameLoungeMessageContainerData = compose(
   graphql(updateGameLoungeMessageMutation, {
     name: 'updateLoungeMessage'
   }),
   pure,
-)(GameLoungeMessageContainerBase);
+)(GameLoungeMessageContainer);
