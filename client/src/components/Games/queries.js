@@ -12,6 +12,36 @@ export const userMetadataFields = `
   }
 `;
 
+// game messages
+
+export const gameMessageFields = `
+  fragment gameMessagesFields on GameMessage {
+    id
+    gameId
+    message
+    numberEdits
+    created_at
+    updated_at
+  }
+`;
+
+// game lounge messages
+
+export const gameLoungeMessageFields = `
+  fragment gameLoungeMessagesFields on GameLoungeMessage {
+    id
+    message
+    numberEdits
+    created_at
+    updated_at
+    user {
+      name
+      userMetadata { ...userMetadataFields }
+    }
+  }
+  ${userMetadataFields}
+`;
+
 // queries
 
 
@@ -61,24 +91,19 @@ export const createGameMutation = gql`
 export const gameMessagesQuery = gql`
   query gameMessages($gameId: ID!) {
     gameMessages(gameId: $gameId) {
-      id
-      message
-      numberEdits
-      created_at
-      updated_at
+      ...gameMessagesFields
     }
   }
+  ${gameMessageFields}
 `;
 
 export const createGameMessageMutation = gql`
   mutation createGameMessage($input: CreateGameMessageInput) {
     createGameMessage(input: $input) {
-      id
-      gameId
-      message
-      created_at
+      ...gameMessagesFields
     }
   }
+  ${gameMessageFields}
 `;
 
 export const updateGameMessageMutation = gql`
@@ -94,13 +119,10 @@ export const updateGameMessageMutation = gql`
 export const onGameMessageAdded = gql`
   subscription messageAdded($gameId: ID!){
     messageAdded(gameId: $gameId){
-      id
-      gameId
-      message
-      numberEdits
-      created_at
+      ...gameMessagesFields
     }
   }
+  ${gameMessageFields}
 `;
 
 export const onGameMessageUpdated = gql`
@@ -119,35 +141,19 @@ export const onGameMessageUpdated = gql`
 export const gameLoungeMessagesQuery = gql`
   query gameLoungeMessages($gameId: ID!) {
     gameLoungeMessages(gameId: $gameId) {
-      id
-      message
-      numberEdits
-      created_at
-      updated_at
-      user {
-        name
-        userMetadata { ...userMetadataFields }
-      }
+      ...gameLoungeMessagesFields
     }
   }
-  ${userMetadataFields}
+  ${gameLoungeMessageFields}
 `;
 
 export const createGameLoungeMessageMutation = gql`
   mutation createGameLoungeMessage($input: CreateGameLoungeMessageInput) {
     createGameLoungeMessage(input: $input) {
-      id
-      message
-      numberEdits
-      created_at
-      updated_at
-      user {
-        name
-        userMetadata { ...userMetadataFields }
-      }
+      ...gameLoungeMessagesFields
     }      
   }
-  ${userMetadataFields}    
+  ${gameLoungeMessageFields}    
 `;
 
 export const updateGameLoungeMessageMutation = gql`
@@ -165,10 +171,10 @@ export const updateGameLoungeMessageMutation = gql`
 export const onGameLoungeMessageAdded = gql`
   subscription gameLoungeMessageAdded($gameId: ID!){
     gameLoungeMessageAdded(gameId: $gameId){
-      id
-      message
+      ...gameLoungeMessagesFields
     }
   }
+  ${gameLoungeMessageFields} 
 `;
 
 export const onGameLoungeMessageUpdated = gql`

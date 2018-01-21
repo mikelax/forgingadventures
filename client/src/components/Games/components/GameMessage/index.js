@@ -35,13 +35,9 @@ export default class GamesMessage extends Component {
 
   componentWillReceiveProps(nextProp) {
     if (nextProp.message) {
-      const messageChanged = !(_.isEqual(this.props.message, nextProp.message));
-
-      if (messageChanged) {
-        this.setState({
-          editorState: EditorState.createWithContent(convertFromRaw(nextProp.message), decorator)
-        });
-      }
+      this.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(nextProp.message), decorator)
+      });
     } else {
       this.setState({
         message: EditorState.createEmpty(decorator)
