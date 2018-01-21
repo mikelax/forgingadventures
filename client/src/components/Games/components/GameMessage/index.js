@@ -1,7 +1,5 @@
-import _ from 'lodash';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
 import {CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier} from 'draft-js';
 import {getSelectionEntity} from 'draftjs-utils';
 
@@ -18,14 +16,11 @@ export default class GamesMessage extends Component {
 
   static propTypes = {
     message: PropTypes.object,
-    readOnly: PropTypes.bool,
-    onChanged: PropTypes.func
+    readOnly: PropTypes.bool
   };
 
   state = {
-    editorState: EditorState.createEmpty(decorator),
-    editing: false,
-    readOnly: this.props.readOnly
+    editorState: EditorState.createEmpty(decorator)
   };
 
   componentWillMount() {
@@ -40,13 +35,9 @@ export default class GamesMessage extends Component {
 
   componentWillReceiveProps(nextProp) {
     if (nextProp.message) {
-      const messageChanged = !(_.isEqual(this.props.message, nextProp.message));
-
-      if (messageChanged) {
-        this.setState({
-          editorState: EditorState.createWithContent(convertFromRaw(nextProp.message), decorator)
-        });
-      }
+      this.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(nextProp.message), decorator)
+      });
     } else {
       this.setState({
         message: EditorState.createEmpty(decorator)
@@ -55,24 +46,23 @@ export default class GamesMessage extends Component {
   }
 
   render() {
-    const editorControls = this.state.readOnly ? '' :
+    const {editorState} = this.state;
+    const {readOnly} = this.props;
+
+    const editorControls = readOnly ? null :
       <ActionControls
-        editorState={this.state.editorState}
+        editorState={editorState}
         onToggle={onToggleAction.bind(this)}
       />;
-
-    const messageFooter = this._getFooter();
 
     return (
       <div className="GameMessage">
         {editorControls}
         <div className="editor-container">
-          <Editor editorState={this.state.editorState}
+          <Editor editorState={editorState}
                   onChange={onEditorChange.bind(this)}
-                  readOnly={this.state.readOnly}
-          />
+                  readOnly={readOnly} />
         </div>
-        {messageFooter}
       </div>
     );
   }
@@ -86,54 +76,6 @@ export default class GamesMessage extends Component {
   getEditorMessage() {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
-
-  _getFooter = () => {
-    const footerMessage = this.props.numberEdits > 0 ?
-        <span>Number of Edits: {this.props.numberEdits}</span>
-      : '';
-
-    const footerButtons = this.state.editing === true ?
-        <React.Fragment>
-          <Button bsStyle="primary" onClick={this._handleSubmit}>Submit</Button>
-          <Button onClick={this._handleCancel}>Cancel</Button>
-        </React.Fragment>
-      :
-        !this.state.readOnly ? '' : 
-          <button onClick={this._handleEdit}>Edit</button>
-      ;
-
-    return (
-      <div className="footer-container">
-        {footerMessage}
-        <div className="footer-buttons">{footerButtons}</div>
-      </div>
-    );
-  };
-
-  _handleEdit = (e) => {
-    this.setState({readOnly: false, editing: true});
-  };
-
-  _handleCancel = (e) => {
-    this.setState({
-      readOnly: true,
-      editing: false,
-      editorState: EditorState.createWithContent(convertFromRaw(this.props.message), decorator)
-    });
-  };
-
-  _handleSubmit = (e) => {
-    const {onChanged} = this.props;
-
-    onChanged({
-      message: convertToRaw(this.state.editorState.getCurrentContent())
-    });
-
-    this.setState({
-      readOnly: true,
-      editing: false
-    });
-  };
 }
 
 /// private GamesMessage methods - i.e. handlers etc...

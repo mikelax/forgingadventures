@@ -1,28 +1,20 @@
 import _ from 'lodash';
+import moment from "moment";
 import React, {Component} from 'react';
 import {graphql} from 'react-apollo';
 import {compose, pure} from "recompose";
-import GameMessage from '../../components/GameMessage/index';
+import {Button} from 'react-bootstrap';
 
-import {gameMessagesQuery, updateGameMessageMutation, onGameMessageAdded, onGameMessageUpdated} from '../../queries';
+import GameMessage from '../../components/GameMessage';
+
+import {
+  gameMessagesQuery, updateGameMessageMutation,
+  onGameMessageAdded, onGameMessageUpdated
+} from '../../queries';
 
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
-export default class GameMessagesView extends Component {
-
-  render() {
-    const {gameId} = this.props;
-
-    return <div className="games-messages-container">
-      <h1>Messages</h1>
-
-      <GameMessages gameId={gameId}/>
-    </div>;
-  }
-
-}
-
-class GameMessageBase extends Component {
+class GameMessages extends Component {
 
   componentWillMount() {
     this._setupSubscriptions();
@@ -32,26 +24,15 @@ class GameMessageBase extends Component {
     const { data: { gameMessages } } = this.props;
 
     return <div className='game-messages'>
-      {_.map(gameMessages, ({ id, message, numberEdits }) => (
-        <div key={id} className='game-message'>
-          <GameMessage message={message} numberEdits={numberEdits} readOnly={true} onChanged={this._setMessage(id)} />
+      <h1>Messages</h1>
+
+      {_.map(gameMessages, (gameMessage) => (
+        <div key={gameMessage.id} className='game-message'>
+          <GameMessageContainer gameMessage={gameMessage} />
         </div>
       ))}
     </div>;
   }
-
-  _setMessage = (messageId) => ({message}) => {
-    const {updateMessage} = this.props;
-
-    return updateMessage({
-      variables: {
-        id: messageId,
-        input: {
-          message
-        }
-      }
-    });
-  };
 
   _setupSubscriptions() {
     const { gameId, data } = this.props;
@@ -92,7 +73,7 @@ class GameMessageBase extends Component {
           .value();
 
         return Object.assign({}, prev, {
-          gameMessages: prev.gameMessages
+          gameMessages: [...prev.gameMessages]
         });
       }
     });
@@ -101,13 +82,119 @@ class GameMessageBase extends Component {
 
 }
 
-const GameMessages = compose(
+export default compose(
   graphql(gameMessagesQuery, {
     options: ({ gameId }) => ({ variables: { gameId } })
   }),
+  ApolloLoader,
+  pure,
+)(GameMessages);
+
+/// private
+
+class GameMessageContainerBase extends Component {
+
+  state = {
+    editing: false
+  };
+
+  render() {
+    const {gameMessage} = this.props;
+    const {editing} = this.state;
+
+    return (
+      <div className="game-message">
+        <div className="header">
+          <div className="stats">
+            <div className="message-stats">
+              <div>Posted {this._relativeDate(gameMessage.created_at)}</div>
+              {this._lastEdited()}
+            </div>
+          </div>
+        </div>
+
+        <div className="game-message-content">
+          <GameMessage message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+        </div>
+
+        <div className="editor-controls text-right">
+          {this._messageControls()}
+        </div>
+
+      </div>
+    );
+  }
+
+  ////// private
+
+  _messageControls = () => {
+    const {editing} = this.state;
+
+    return editing ? this._editingControls() : this._viewingControls();
+  };
+
+  _viewingControls = () => {
+    return <Button bsStyle="default" bsSize="xsmall" onClick={this._handleEdit}>edit</Button>;
+  };
+
+  _editingControls = () => {
+    return <React.Fragment>
+      <Button bsStyle="primary" onClick={this._handleSubmit}>Submit</Button>
+      <Button onClick={this._handleCancel}>Cancel</Button>
+    </React.Fragment>;
+  };
+
+  _handleEdit = () => {
+    this.setState({editing: true});
+  };
+
+  _handleSubmit = () => {
+    const {updateMessage, gameMessage} = this.props;
+
+    return updateMessage({
+      variables: {
+        id: gameMessage.id,
+        input: {
+          message: this.editor.getEditorMessage()
+        }
+      }
+    })
+      .then(() => this.setState({editing: false}));
+  };
+
+  _handleCancel = () => {
+    this.setState({editing: false});
+  };
+
+  _lastEdited = () => {
+    const {gameMessage} = this.props;
+
+    if (gameMessage.numberEdits) {
+      return (
+        <div className="edited">
+          <div className="number-edits">Edits: {gameMessage.numberEdits}</div>
+          <div className="last-edited">Updated {this._relativeDate(gameMessage.updated_at)}</div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  _relativeDate = (date) => {
+    const dateObject = moment(date);
+    const dateDisplayRelative = dateObject.fromNow();
+    const dateDisplayActual = dateObject.format('LLL');
+
+    return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
+  };
+
+}
+
+const GameMessageContainer = compose(
   graphql(updateGameMessageMutation, {
     name: 'updateMessage'
   }),
-  ApolloLoader,
   pure,
-)(GameMessageBase);
+)(GameMessageContainerBase);
+

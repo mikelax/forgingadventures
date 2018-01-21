@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 import { compose, pure } from "recompose";
-import { graphql } from 'react-apollo/index';
+import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
 import {Tab, Tabs} from 'react-bootstrap';
 

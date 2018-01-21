@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
 import {Button} from 'react-bootstrap';
-import GameLoungeMessage from '../../components/GameLoungeMessage/index';
+import GameLoungeMessage from '../../components/GameLoungeMessage';
 
 import {
   gameLoungeMessagesQuery,
@@ -12,6 +12,7 @@ import {
   onGameLoungeMessageAdded,
   onGameLoungeMessageUpdated
 } from '../../queries';
+
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
 import './assets/GameLoungeMessages.styl';

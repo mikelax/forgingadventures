@@ -1,9 +1,15 @@
 import {convertFromRaw, convertToRaw, Editor, EditorState, RichUtils} from 'draft-js';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import './assets/GameLoungeMessage.styl';
 
 export default class RichEditorExample extends Component {
+
+  static propTypes = {
+    message: PropTypes.object,
+    readOnly: PropTypes.bool
+  };
 
   state = {
     editorState: EditorState.createEmpty()
@@ -33,6 +39,7 @@ export default class RichEditorExample extends Component {
 
   render() {
     const {editorState} = this.state;
+    const {readOnly} = this.props;
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -58,7 +65,7 @@ export default class RichEditorExample extends Component {
             placeholder="What's on your mind..."
             ref="editor"
             spellCheck={true}
-            readOnly={this.props.readOnly}
+            readOnly={readOnly}
           />
         </div>
       </div>
