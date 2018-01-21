@@ -20,19 +20,21 @@ class ViewGame extends Component {
 
   render() {
     return (
-      <div className="ViewGame">
+      <React.Fragment>
         <Helmet>
           <title>{this.props.data.game.title} on Forging Adventures</title>
         </Helmet>
 
-        <h1>Game</h1>
+        <div className="ViewGame">
+          <h1>Game</h1>
 
-        <Link to='/games'>
-          Back to Games
-        </Link>
+          <Link to='/games'>
+            Back to Games
+          </Link>
 
-        {gameDetails.call(this)}
-      </div>
+          {gameDetails.call(this)}
+        </div>
+      </React.Fragment>
     );
   }
 
