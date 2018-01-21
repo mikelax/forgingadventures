@@ -81,7 +81,6 @@ export default class GamesMessage extends Component {
 /// private GamesMessage methods - i.e. handlers etc...
 
 function onEditorChange(editorState) {
-  console.log('onEditorChange')
   this.setState({editorState});
 }
 
@@ -91,7 +90,7 @@ function onToggleAction(entityKey) {
   const selection = editorState.getSelection();
   const selectionEntity = getSelectionEntity(editorState);
   const collapsed = selection.isCollapsed();
-  console.log('onToggleAction', entityKey)
+
   // many many many options here
   // 1. caret is selecting a range with no entity - apply entity
   if (!collapsed && !selectionEntity) {
@@ -133,7 +132,7 @@ function onToggleAction(entityKey) {
 const ActionControls = (props) => {
   const {editorState} = props;
   const selectionEntity = getSelectionEntity(editorState);
-  console.log('actioncontrols selectionEntity', selectionEntity)
+
   return (
     <div>
       {buttons.map(button =>
