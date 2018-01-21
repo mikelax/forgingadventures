@@ -5,7 +5,7 @@ import {graphql} from 'react-apollo';
 import {compose, pure} from "recompose";
 import {Button} from 'react-bootstrap';
 
-import GameMessage from '../../components/GameMessage/index';
+import GameMessage from '../../components/GameMessage';
 
 import {
   gameMessagesQuery, updateGameMessageMutation,

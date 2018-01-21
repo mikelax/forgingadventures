@@ -129,9 +129,9 @@ export const onGameMessageUpdated = gql`
   subscription messageUpdated($gameId: ID!){
     messageUpdated(gameId: $gameId){
       id
-      gameId
       message
       numberEdits
+      updated_at
     }
   }
 `;
