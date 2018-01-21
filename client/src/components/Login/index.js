@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Helmet} from "react-helmet";
 import { connect } from 'react-redux';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import {showLogin} from '../../services/login';
 
@@ -38,7 +38,6 @@ class Login extends Component {
         </Helmet>
 
         <div className="Login">
-
           <div className="container">
             <h1>
               Log In
@@ -49,7 +48,6 @@ class Login extends Component {
             <div id="auth0Lock"/>
           </div>
         </div>
-
       </React.Fragment>
     );
   }

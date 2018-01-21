@@ -15,6 +15,7 @@ import Login from '../Login';
 import Profile from '../Profile';
 
 import {processAuth} from '../../services/login';
+import AlmostFinished from '../Login/AlmostFinished';
 import Games from '../Games';
 import history from '../../services/history';
 import {authFailure, authSuccess} from "../../actions/auth";
@@ -54,6 +55,7 @@ class App extends Component {
               <Route exact path="/" component={Home} />
               <Route path="/about" component={About} />
               <Route path="/profile" component={AuthGuard(Profile)} />
+              <Route path="/login/almost-finished" component={AuthGuard(AlmostFinished)}/>
               <Route path="/login" component={Login} />
               <Route path="/callback" component={Callback} />
               <Route path="/games" component={Games} />

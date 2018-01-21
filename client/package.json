@@ -24,6 +24,7 @@
     "react": "^16.2.0",
     "react-apollo": "^2.0.1",
     "react-bootstrap": "^0.32.0",
+    "react-bootstrap-timezone-picker": "^1.0.12",
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
     "react-intersection-observer": "^3.0.2",
