@@ -16,6 +16,7 @@ export const gameTypeDefs = `
   
   type Game {
     id: ID!,
+    labelId: ID!,
     title: String!,
     scenario: String!,
     overview: String!,
@@ -60,6 +61,8 @@ export const gameResolvers = {
         return getUser(context.req.user.sub)
           .then((user) => {
             input.userId = user.id;
+            // TODO Remove when label is added to create screen
+            input.labelId = 1;
             return Game
               .query()
               .insert(input)
