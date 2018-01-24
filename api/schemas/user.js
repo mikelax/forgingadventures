@@ -1,25 +1,44 @@
-import User from 'models/user';
+import { getUser } from 'services/user';
 
 export const userTypeDefs = `
 
   type User {
-    id: ID!,
+    id: Int!,
     name: String,
-    userMetadata: UserMetadata
+    userMetadata: UserMetadata,
+    appMetadata: AppMetadata
   }
   
   type UserMetadata {
-    profileImage: ProfileImage
+    profileImage: String,
+    username: String,
   }
   
-  type ProfileImage {
-    publicId: String,
-    imageUrl: String
-  }  
+  type AppMetadata {
+    faUserId: Int,
+    signupCompleted: Boolean
+  }
+  
+  
+  input UserMetadataInput {
+    profileImage: String,
+    username: String!,
+  }
+  
+  input UpdateUserDetailsInput {
+    name: String!,
+    userMetadata: UserMetadataInput
+  }
+  
 `;
 
 export const userResolvers = {
   Query: {
-    user: (obj, { id }) => User.query().findById(id)
+    me: (obj, obj2, context) => getUser(context.req.user.sub)
+  },
+  Mutation: {
+    updateMe: (obj, { input }, context ) => {
+
+    }
   }
 };

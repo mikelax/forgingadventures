@@ -1,10 +1,13 @@
+import _ from 'lodash';
 import React from 'react';
 import {connect} from "react-redux";
 import {Alert} from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 function Callback(props) {
-  const {isAuthenticated, loading, error} = props.authorisation;
+  const {loading, error} = props.authorisation;
+  const singupCompleted = _.get(props, 'me.appMetaData.singupCompleted');
+  const me = _.get(props, 'me.me');
 
   return <div className="Callback">
     <div className="container">
@@ -13,8 +16,12 @@ function Callback(props) {
   </div>;
 
   function renderAuthResult() {
-    if (isAuthenticated) {
-      return <Redirect to="/" />;
+    if (me) {
+      if (!(singupCompleted)) {
+        return <Redirect to="/login/almost-finished" />;
+      } else {
+        return <Redirect to="/" />;
+      }
     } else if (loading) {
       return <div className="text-center">
         Authorizing
@@ -34,6 +41,7 @@ function Callback(props) {
 
 const mapStateToProps = state => ({
   authorisation: state.authorisation,
+  me: state.me
 });
 
 export default connect(

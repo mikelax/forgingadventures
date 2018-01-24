@@ -18,7 +18,8 @@ import {processAuth} from '../../services/login';
 import AlmostFinished from '../Login/AlmostFinished';
 import Games from '../Games';
 import history from '../../services/history';
-import {authFailure, authSuccess} from "../../actions/auth";
+import {authFailure, authSuccess} from '../../actions/auth';
+import {getMyDetails} from '../../actions/user';
 
 
 import './App.styl';
@@ -31,13 +32,12 @@ class App extends Component {
   };
 
   componentWillMount() {
-    const {authSuccess, authFailure} = this.props;
+    const {authSuccess, authFailure, getMyDetails} = this.props;
 
     return processAuth()
-      .then((token) => {
-        authSuccess(token);
-      })
-      .catch(e => authFailure(e));
+      .then((token) => authSuccess(token))
+      .tapCatch(e => authFailure(e))
+      .then(() => getMyDetails());
   }
 
   render() {
@@ -69,7 +69,8 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => ({
   authSuccess: (token) => dispatch(authSuccess(token)),
-  authFailure: (e) => dispatch(authFailure(e))
+  authFailure: (e) => dispatch(authFailure(e)),
+  getMyDetails: () => dispatch(getMyDetails())
 });
 
 export default connect(

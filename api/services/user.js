@@ -11,7 +11,6 @@ export function getUser(auth0UserId) {
   return Bluebird.try(() => {
     return User
       .query()
-      .select('*')
       .where('auth0UserId', auth0UserId)
       .then((dbResult) => {
         if (!dbResult.length) {

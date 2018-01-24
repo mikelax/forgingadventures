@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 // fragments
 
 // users
-
+// fixme - move this to /shared/queries/user.js
 export const userMetadataFields = `
   fragment userMetadataFields on UserMetadata {
     profileImage {

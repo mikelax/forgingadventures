@@ -12,12 +12,14 @@ class AlmostFinished extends Component {
   state = {
     // the form control state
     store: {
-      username: '',
-      name: ''
+      username: _.get(this.props, 'me.me.userMetadata.username') || '',
+      name: _.get(this.props, 'me.me.name'),
+      timezone: ''
     },
     // the form validity state
     errors: {}
-  }
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -31,37 +33,41 @@ class AlmostFinished extends Component {
             <h2>But first, you must finish completing your Profile</h2>
 
             <form>
-              <FormGroup validationState={this.validity('username')}>
+              <FormGroup validationState={this._validity('username')}>
                 <ControlLabel>Unique Username</ControlLabel>
                 <FormControl
                   type="text"
-                  value={this.formValue('username')}
                   placeholder="Enter Your Username"
-                  onChange={this.formInput('username')}
+                  value={this._formValue('username')}
+                  onChange={this._formInput('username')}
                 />
               </FormGroup>
 
-              <FormGroup validationState={this.validity('name')}>
+              <FormGroup validationState={this._validity('name')}>
                 <ControlLabel>Name</ControlLabel>
                 <FormControl
                   type="text"
-                  value={this.formValue('name')}
                   placeholder="Enter Your Name"
-                  onChange={this.formInput('name')}
+                  value={this._formValue('name')}
+                  onChange={this._formInput('name')}
                 />
               </FormGroup>
 
-              <FormGroup validationState={this.validity('timezone')}>
+              <FormGroup>
                 <ControlLabel>Location</ControlLabel>
                 <TimezonePicker
                   absolute={false}
                   placeholder="Select timezone..."
+                  value={this._formValue('timezone')}
+                  overflow="false"
+                  onChange={this._setTimezone}
                 />
               </FormGroup>
+
             </form>
 
             <div className="actions text-right">
-              <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+              <Button bsStyle="primary" onClick={this._submit}>Submit</Button>
             </div>
           </div>
         </div>
@@ -69,11 +75,11 @@ class AlmostFinished extends Component {
     );
   };
 
-  valid = () => {
+  _valid = () => {
     const errors = {};
 
-    _.isEmpty(this.formValue('username')) && (errors.username = 'Username is required');
-    _.isEmpty(this.formValue('name')) && (errors.name = 'Name is required');
+    _.isEmpty(this._formValue('username')) && (errors.username = 'Username is required');
+    _.isEmpty(this._formValue('name')) && (errors.name = 'Name is required');
 
 
     this.setState({...this.state, errors});
@@ -81,13 +87,13 @@ class AlmostFinished extends Component {
     return _.keys(errors).length === 0;
   };
 
-  validity = (field) => {
+  _validity = (field) => {
     if (this.state.errors[field]) {
       return 'error';
     }
   };
 
-  formInput = (stateKey) => {
+  _formInput = (stateKey) => {
     return (e) => {
       const { store } = this.state;
 
@@ -96,13 +102,23 @@ class AlmostFinished extends Component {
     };
   };
 
-  formValue = (stateKey) => {
+  _setTimezone = (timezone) => {
+    const { store } = this.state;
+    _.set(store, 'timezone', timezone);
+    this.setState({...this.state, store});
+  };
+
+  _formValue = (stateKey) => {
     return _.get(this.state.store, stateKey, '');
+  };
+
+  _submit = (e) => {
+
   };
 }
 
 const mapStateToProps = state => ({
-  authorisation: state.authorisation,
+  me: state.me,
 });
 
 export default connect(
