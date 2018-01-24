@@ -15,6 +15,10 @@ const queries = `
     # game lounge message
     gameLoungeMessage(id: ID!): GameLoungeMessage!
     gameLoungeMessages(gameId: ID!): [GameLoungeMessage!]
+
+    # game players
+    gamePlayer(id: ID!): GamePlayer!,
+    gamePlayers(gameId: ID!): [GamePlayer!]
     
     # users
     me: User!

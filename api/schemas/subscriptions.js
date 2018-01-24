@@ -7,6 +7,10 @@ const subscriptions = `
     # game lounge messages
     gameLoungeMessageAdded(gameId: ID!): GameLoungeMessage!
     gameLoungeMessageUpdated(gameId: ID!): GameLoungeMessage!
+
+    # game players
+    gamePlayerAdded(gameId: ID!): GamePlayer!
+    gamePlayerUpdated(gameId: ID!): GamePlayer!
   }
 `;
 
