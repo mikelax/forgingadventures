@@ -1,6 +1,7 @@
 import { withFilter } from 'graphql-subscriptions';
 
 import GamePlayer from 'models/gamePlayer';
+import User from 'models/user';
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id } from 'services/user';
 import pubsub from 'services/pubsub';
@@ -31,11 +32,14 @@ export const gamePlayerTypeDefs = `
 
 export const gamePlayerResolvers = {
   GamePlayer: {
-    user: gameLoungeMessage => User.query().findById(gameLoungeMessage.userId)
+    user: gamePlayer => User.query().findById(gamePlayer.userId)
   },
   Query: {
     gamePlayer: (obj, { id }) => GamePlayer.query().findById(id),
-    gamePlayers: (obj, { gameId }) => GamePlayer.query().where({ gameId }).orderBy('created_at')
+    gamePlayers: (obj, { gameId, status = ['pending', 'accepted'] }) => GamePlayer.query()
+      .where({ gameId })
+      .whereIn('status', status)
+      .orderBy('created_at')
   },
   Mutation: {
     createGamePlayer: (obj, { input }, context) =>

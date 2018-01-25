@@ -33,6 +33,18 @@ export const gameLoungeMessageFields = `
   }
 `;
 
+// game polayers
+
+export const gamePlayerFields = `
+  fragment gamePlayerFields on GamePlayer {
+    id
+    user {
+      name
+    }
+    status
+  }
+`;
+
 // queries
 
 
@@ -125,6 +137,17 @@ export const onGameMessageUpdated = gql`
       updated_at
     }
   }
+`;
+
+// game players
+
+export const gamePlayersQuery = gql`
+  query gamePlayers($gameId: ID!) {
+    gamePlayers(gameId: $gameId) {
+      ...gamePlayerFields
+    }
+  }
+  ${gamePlayerFields}
 `;
 
 // game lounge messages
