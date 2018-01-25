@@ -42,6 +42,7 @@ export function postUsers() {
 export function uploadUserPicture() {
   return (req, res, next) => {
     const fileName = shortid.generate();
+    const auth0Id = req.user.sub;
 
     Bluebird.all([
       cloudinaryUploadFile(req.file.buffer, fileName),
@@ -52,13 +53,14 @@ export function uploadUserPicture() {
         return User
           .query()
           .select('id')
-          .where('auth0UserId', req.params.auth0Id)
+          .where('auth0UserId', auth0Id)
+          .first()
           .then((dbUser) => {
-            if (!dbUser.length) {
+            if (!(dbUser)) {
               throw new Error('User not found');
             }
 
-            return insertUserUpload(dbUser[0].id, cloudinaryResult.public_id, 'userProfile', req.file)
+            return insertUserUpload(dbUser.id, cloudinaryResult.public_id, 'userProfile', req.file)
               .then((dbResult) => {
                 const imageUrlTransformations = 'c_scale,w_600';
                 return {
@@ -72,15 +74,15 @@ export function uploadUserPicture() {
           });
       })
       .tap((response) => {
-        return getAuth0User(req.params.auth0Id, 'user_metadata,app_metadata')
+        return getAuth0User(auth0Id, 'user_metadata,app_metadata')
           .then((auth0Response) => {
             const { user_metadata: userData = {}, app_metadata: appData = {} } = auth0Response.data;
             _.set(userData, 'profileImage.publicId', response.publicId);
             _.set(userData, 'profileImage.imageUrl', response.imageUrl);
-            return patchAuth0Metadata(req.params.auth0Id, userData, appData);
+            return patchAuth0Metadata(auth0Id, userData, appData);
           })
           .then((profileMetadata) => {
-            return patchUserAuth0Metadata(req.params.auth0Id,
+            return patchUserAuth0Metadata(auth0Id,
               profileMetadata.userMetadata, profileMetadata.appMetadata);
           });
       })

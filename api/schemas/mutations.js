@@ -13,6 +13,7 @@ const mutations = `
     
     # user
     updateMe(input: UpdateUserDetailsInput): User!
+    validUsername(username: String!): Boolean
   }
 `;
 

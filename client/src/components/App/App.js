@@ -19,7 +19,7 @@ import AlmostFinished from '../Login/AlmostFinished';
 import Games from '../Games';
 import history from '../../services/history';
 import {authFailure, authSuccess} from '../../actions/auth';
-import {getMyDetails} from '../../actions/user';
+import {getMyDetails} from '../../actions/me';
 
 
 import './App.styl';

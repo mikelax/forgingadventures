@@ -6,8 +6,8 @@ import { Redirect } from 'react-router-dom';
 
 function Callback(props) {
   const {loading, error} = props.authorisation;
-  const singupCompleted = _.get(props, 'me.appMetaData.singupCompleted');
   const me = _.get(props, 'me.me');
+  const completedAt = _.get(me, 'completedAt');
 
   return <div className="Callback">
     <div className="container">
@@ -17,7 +17,7 @@ function Callback(props) {
 
   function renderAuthResult() {
     if (me) {
-      if (!(singupCompleted)) {
+      if (!(completedAt)) {
         return <Redirect to="/login/almost-finished" />;
       } else {
         return <Redirect to="/" />;

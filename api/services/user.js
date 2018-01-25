@@ -12,12 +12,13 @@ export function getUser(auth0UserId) {
     return User
       .query()
       .where('auth0UserId', auth0UserId)
+      .first()
       .then((dbResult) => {
-        if (!dbResult.length) {
+        if (!(dbResult)) {
           throw new Error('User not found');
         }
 
-        return dbResult[0];
+        return dbResult;
       });
   });
 }
@@ -27,33 +28,28 @@ export function getOrCreateUserByAuth0Id(auth0UserId) {
     return User
       .query()
       .where('auth0UserId', auth0UserId)
+      .first()
       .then((dbResult) => {
-        if (!dbResult.length) {
-          return getAuth0User(auth0UserId, 'user_metadata,app_metadata,name,picture')
+        if (!(dbResult)) {
+          return getAuth0User(auth0UserId, 'name,picture')
             .then((auth0Response) => {
-              const {
-                name, picture, user_metadata = {}, app_metadata = {} // eslint-disable-line camelcase
-              } = auth0Response.data;
-
-              const userMetadata = _.merge({
-                profileImage: {
-                  imageUrl: picture
-                }
-              }, user_metadata);
+              const { name, picture } = auth0Response.data;
+              const profileImage = {
+                url: picture
+              };
 
               return User
                 .query()
                 .insert({
                   name,
                   auth0UserId,
-                  userMetadata,
-                  appMetadata: app_metadata
+                  profileImage
                 })
                 .returning('*');
             });
         }
 
-        return dbResult[0];
+        return dbResult;
       });
   });
 }

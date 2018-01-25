@@ -1,4 +1,4 @@
-import {GET_MY_DETAILS_SUCCESS, GET_MY_DETAILS_FAILURE} from '../actions/user';
+import {GET_MY_DETAILS_SUCCESS, GET_MY_DETAILS_FAILURE} from '../actions/me';
 
 export default function authReducer(state = {
   loading: true,

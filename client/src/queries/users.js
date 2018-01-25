@@ -3,15 +3,15 @@ import gql from 'graphql-tag';
 export const userFields = `
   fragment userFields on User {
     name
-    
-    userMetadata {
-      username
-      profileImage
+    username
+    profileImage {
+      url
+      publicId
     }
+    completedAt
+    timezone
     
-    appMetadata {
-      signupCompleted
-    }
+    updated_at
   }
 `;
 
@@ -23,3 +23,19 @@ export const meQuery = gql`
   }
   ${userFields}
 `;
+
+export const validUsernameQuery = gql`
+  mutation validUsername($username: String!) {
+    validUsername(username: $username)
+  }
+`;
+
+export const updateMeMutation = gql`
+  mutation updateMe($input: UpdateUserDetailsInput) {
+    updateMe(input: $input) {
+      ...userFields
+    }
+  }
+  ${userFields}
+`;
+

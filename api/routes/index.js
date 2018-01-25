@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/users', checkAuth0Secret(), postUsers());
-router.post('/users/:auth0Id/profile/image', uploader.single('picture'), uploadUserPicture());
+router.post('/users/profile/image', uploader.single('picture'), uploadUserPicture());
 
 
 export default router;
