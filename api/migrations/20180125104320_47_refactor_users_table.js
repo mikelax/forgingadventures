@@ -21,7 +21,7 @@ exports.down = function(knex) {
 
     table.dropColumn('username');
     table.dropColumn('timezone');
-    table.dropColumn('jsonb');
+    table.dropColumn('profileImage');
     table.dropColumn('completedAt');
   });
 };
