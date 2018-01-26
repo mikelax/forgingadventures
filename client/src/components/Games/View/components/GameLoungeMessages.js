@@ -191,7 +191,7 @@ class GameLoungeMessageContainer extends Component {
     const imageUrl = _.get(user, 'profileImage.url');
 
     if (imageUrl) {
-      return <img src={user.profileImage.url} alt=""/>;
+      return <img src={imageUrl} alt=""/>;
     } else {
       return <span className="glyphicon glyphicon glyphicon-user" aria-hidden="true"/>;
     }
