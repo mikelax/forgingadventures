@@ -25,7 +25,7 @@ class GamePlayers extends Component {
 
 export default compose(
   graphql(gamePlayersQuery, {
-    options: ({ gameId }) => ({ variables: { gameId, status: ['accepted'] } })
+    options: ({ gameId }) => ({ variables: { gameId, status: ['pending', 'accepted'] } })
   }),
   ApolloLoader,
   pure,

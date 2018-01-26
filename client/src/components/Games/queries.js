@@ -142,8 +142,8 @@ export const onGameMessageUpdated = gql`
 // game players
 
 export const gamePlayersQuery = gql`
-  query gamePlayers($gameId: ID!) {
-    gamePlayers(gameId: $gameId) {
+  query gamePlayers($gameId: ID!, $status: [String]) {
+    gamePlayers(gameId: $gameId, status: $status) {
       ...gamePlayerFields
     }
   }
