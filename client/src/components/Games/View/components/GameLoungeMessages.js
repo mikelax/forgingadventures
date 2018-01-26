@@ -188,10 +188,10 @@ class GameLoungeMessageContainer extends Component {
 
   _userProfileImage = () => {
     const {loungeMessage: {user}} = this.props;
-    const imageUrl = _.get(user, 'userMetadata.profileImage.imageUrl');
+    const imageUrl = _.get(user, 'profileImage.url');
 
     if (imageUrl) {
-      return <img src={user.userMetadata.profileImage.imageUrl} alt=""/>;
+      return <img src={user.profileImage.url} alt=""/>;
     } else {
       return <span className="glyphicon glyphicon glyphicon-user" aria-hidden="true"/>;
     }
