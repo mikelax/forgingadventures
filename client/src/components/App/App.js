@@ -41,6 +41,7 @@ class App extends Component {
   }
 
   render() {
+    // todo - consolidate /callback as /login/callback and /login/almost-finished under the /login view
     return (
       <Router history={history}>
         <div>
