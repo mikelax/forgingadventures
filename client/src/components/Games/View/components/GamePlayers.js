@@ -14,7 +14,7 @@ class GamePlayers extends Component {
         <div className="GamePlayers">
           {_.map(gamePlayers, (player) => (
             <div key={player.id}>
-              {player.user.name} - {player.status}
+              {player.user.name} - {_.startCase(player.status)}
             </div>
           ))}
         </div>
@@ -25,7 +25,7 @@ class GamePlayers extends Component {
 
 export default compose(
   graphql(gamePlayersQuery, {
-    options: ({ gameId }) => ({ variables: { gameId, status: ['pending', 'accepted'] } })
+    options: ({ gameId }) => ({ variables: { gameId, status: ['game-master', 'pending', 'accepted'] } })
   }),
   ApolloLoader,
   pure,

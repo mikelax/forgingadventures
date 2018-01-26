@@ -16,7 +16,7 @@ exports.up = function(knex) {
         table.foreign('userId').references('users.id');
         table.integer('gameId').notNullable();
         table.foreign('gameId').references('games.id');
-        table.enu('status', ['pending', 'accepted', 'rejected', 'quit', 'kicked']).notNullable();
+        table.enu('status', ['game-master', 'pending', 'accepted', 'rejected', 'quit', 'kicked']).notNullable();
 
         table.timestamp('deleted_at');
         table.timestamps(true, true);

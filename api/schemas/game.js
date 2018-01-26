@@ -1,4 +1,5 @@
 import Game from 'models/game';
+import GamePlayer from 'models/gamePlayer';
 
 import schemaScopeGate from 'services/schemaScopeGate';
 import GetGames from 'services/games/getGames';
@@ -67,6 +68,16 @@ export const gameResolvers = {
               .query()
               .insert(input)
               .returning('*');
+          })
+          .then((gameResponse) => {
+            const playerInput = {
+              gameId: gameResponse.id,
+              userId: gameResponse.userId,
+              status: 'game-master'
+            };
+            return GamePlayer.query()
+              .insert(playerInput)
+              .then(() => gameResponse);
           });
       })
   }
