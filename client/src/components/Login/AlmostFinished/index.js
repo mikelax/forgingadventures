@@ -11,7 +11,8 @@ import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min
 import './AlmostFinished.styl';
 import {compose} from "recompose";
 import ApolloLoader from "../../shared/components/ApolloLoader";
-import {updateMeMutation, meQuery, validUsernameQuery} from "../../../queries/users";
+import {updateMeMutation, meQuery, validUsernameQuery} from '../../../queries/users';
+import {getAccessToken} from '../../../services/login';
 
 class AlmostFinished extends Component {
   state = {
@@ -102,7 +103,9 @@ class AlmostFinished extends Component {
             </form>
 
             <div className="actions text-right">
-              <Button bsStyle="primary" onClick={this._submit}>Submit</Button>
+              <Button bsStyle="primary" disabled={this.state.saving} onClick={this._submit}>
+                { this.state.saving ? 'Submitting' : 'Submit' }
+              </Button>
             </div>
           </div>
         </div>
@@ -186,24 +189,58 @@ class AlmostFinished extends Component {
     return this._valid()
       .then((valid) => {
         if (valid) {
-          //upload image
+          const {store} = this.state;
+
+          this.setState({saving: true});
+
+          return this._uploadImage()
+            .then((imageDetails) => {
+              const payload = {
+                name: store.name,
+                username: store.username,
+                timezone: store.timezone
+              };
+
+              if (imageDetails) {
+                payload.profileImage = {
+                  publicId: _.get(imageDetails, 'publicId'),
+                  userUploadId: _.get(imageDetails, 'userUploadId'),
+                  url: _.get(imageDetails, 'imageUrl') || this.store.profileImageUrl
+                };
+              }
+
+              const {updateMe} = this.props;
+
+              return updateMe({
+                variables: {
+                  input: payload
+                }
+              })
+                .then(() => this.setState({saving: false}))
+                .then(() => this.props.history.replace('/games'));
+            });
         }
       });
   };
 
   _uploadImage = () => {
-    return axios.post('',
-      {
-        params: {
-          fields
-        },
-        headers: {
-          'content-type': 'application/json',
-          Authorization: `Bearer ${accessToken}`
-        },
-        responseType: 'json'
-      });
+    return Bluebird.try(() => {
+      const data = new FormData();
+      const {file} = this.state;
 
+      if (file) {
+        data.append('picture', this.state.file);
+
+        // fixme - might need to add baseUrl to configs depending on API url when deploying
+        // todo - setup an axios interceptor to automatically inject the Authorisation header
+        return axios.post('/api/users/profile-image', data, {
+          headers: {
+            Authorization: `Bearer ${getAccessToken()}`
+          }
+        })
+          .then(res => res.data);
+      }
+    });
   }
 }
 

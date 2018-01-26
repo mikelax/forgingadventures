@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Bluebird from 'bluebird';
 import User from 'models/user';
-import { getAuth0User } from './auth0';
+import { getAuth0User, patchAuth0Metadata } from './auth0';
 
 /**
  * Get an FA User object by Auth0 sub attribute
@@ -54,21 +54,32 @@ export function getOrCreateUserByAuth0Id(auth0UserId) {
   });
 }
 
-/**
- * Patch user to update the Auth0 user and app metadata objects
- * @param {string} auth0UserId - The Auth0 user id
- * @param {object} userMetadata - Auth0 user metadata object
- * @param {object} appMetadata - Auth0 app metadata object
- */
-export function patchUserAuth0Metadata(auth0UserId, userMetadata, appMetadata) {
-  return Bluebird.try(() => {
-    return User
-      .query()
-      .patch({
-        userMetadata,
-        appMetadata
-      })
-      .where('auth0UserId', auth0UserId)
-      .returning('*');
-  });
+export function updateUserAndAuth0(updatePayload, auth0UserId) {
+  return getUser(auth0UserId)
+    .then((user) => {
+      if (!(user.completedAt)) {
+        updatePayload.completedAt = new Date();
+      }
+
+      return User
+        .query()
+        .patch(updatePayload)
+        .where({ auth0UserId })
+        .first()
+        .returning('*');
+    })
+    .tap((user) => {
+      const userMetadata = {
+        name: user.name,
+        username: user.username,
+        profileImage: _.get(user, 'profileImage.url')
+      };
+
+      const appMetadata = {
+        faUserId: user.id,
+        signupCompleted: user.completedAt
+      };
+
+      return patchAuth0Metadata(auth0UserId, userMetadata, appMetadata);
+    });
 }

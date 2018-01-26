@@ -30,8 +30,6 @@ Github issue #10 covers the work to integrate automated deployments of Rules bas
 
 API_BASE_URL - for local development you can use [localtunnel](https://localtunnel.github.io/www/) to expose your localhost API to Auth0. 
 
-SHARED_SECRET - symetric shared key to use for calling FA API. It should match the auth0.sharedSecret config attribute.
-
 AUTH_EXT_BASE_URL - The API URL for the Auth0 [authorization extension API](https://auth0.com/docs/api/authorization-extension?http#find-your-extension-url) (US-Wes).
 
 AUTH_EXT_TOKEN_URL - The API URL to get an API Access Token. ie. tenant name /oauth/token

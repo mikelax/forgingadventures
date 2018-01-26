@@ -7,6 +7,7 @@ import { Redirect } from 'react-router-dom';
 function Callback(props) {
   const {loading, error} = props.authorisation;
   const me = _.get(props, 'me.me');
+  const meLoading = _.get(props, 'me.loading');
   const completedAt = _.get(me, 'completedAt');
 
   return <div className="Callback">
@@ -22,7 +23,7 @@ function Callback(props) {
       } else {
         return <Redirect to="/" />;
       }
-    } else if (loading) {
+    } else if (loading || meLoading) {
       return <div className="text-center">
         Authorizing
       </div>;

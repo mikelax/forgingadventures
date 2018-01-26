@@ -1,4 +1,4 @@
-import { getOrCreateUserByAuth0Id } from 'services/user';
+import { getOrCreateUserByAuth0Id, updateUserAndAuth0 } from 'services/user';
 import User from '../models/user';
 
 export const userTypeDefs = `
@@ -20,11 +20,17 @@ export const userTypeDefs = `
     userUploadsId: Int
   }
   
+  input ProfileImageInput {
+    publicId: String,
+    userUploadId: Int,
+    url: String
+  }
+  
   input UpdateUserDetailsInput {
     name: String!,
     username: String,
     timezone: String,
-    profileImageUrl: String
+    profileImage: ProfileImageInput
   }
   
 `;
@@ -34,14 +40,13 @@ export const userResolvers = {
     me: (obj, obj2, context) => getOrCreateUserByAuth0Id(context.req.user.sub)
   },
   Mutation: {
-    updateMe: (obj, { input }, context) => {
-
-    },
-    validUsername: (obj, { username }) => {
+    updateMe: (obj, { input }, context) => updateUserAndAuth0(input, context.req.user.sub),
+    validUsername: (obj, { username }, context) => {
       return User
         .query()
         .count('username')
         .where({ username })
+        .where('auth0UserId', '!=', context.req.user.sub)
         .first()
         .then(res => Number(res.count) === 0);
     }

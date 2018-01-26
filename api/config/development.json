@@ -1,8 +1,7 @@
 {
   "auth0": {
     "faClient": {
-      "redirectUri": "http://localhost:3000",
-      "sharedSecret": "SecretAdventuresInTheDungeon"
+      "redirectUri": "http://localhost:3000"
     }
   },
   "aws": {
