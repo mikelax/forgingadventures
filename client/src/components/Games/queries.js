@@ -2,6 +2,23 @@ import gql from 'graphql-tag';
 
 // fragments
 
+// game
+
+export const gameFields = `
+fragment gameFields on Game {
+  id
+  title
+  scenario
+  overview
+  gameSettings {
+    minPlayers
+    maxPlayers
+    skillLevel
+    postingFrequency
+  }
+}
+`;
+
 // game messages
 
 export const gameMessageFields = `
@@ -53,39 +70,29 @@ export const gamePlayerFields = `
 export const gameQuery = gql`
   query game($id: ID!) {
     game(id: $id) {
-      id
-      title
-      scenario
-      overview
+      ...gameFields
     }
   }
+  ${gameFields}
 `;
 
 
 export const gamesQuery = gql`
   query games($offset: Int, $searchOptions: SearchOptions) {
     games(offset: $offset, searchOptions: $searchOptions) {
-      id
-      title
-      scenario
-      overview
-      gameSettings {
-        minPlayers
-        maxPlayers
-        skillLevel
-        postingFrequency
-      }
+      ...gameFields
     }
   }
+  ${gameFields}
 `;
 
 export const createGameMutation = gql`
   mutation createGame($input: CreateGameInput) {
     createGame(input: $input) {
-      id
-      title
+      ...gameFields
     }
   }
+  ${gameFields}
 `;
 
 

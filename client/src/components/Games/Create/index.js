@@ -44,33 +44,33 @@ const CreateGame = class CreateGame extends Component {
           <h1>Create a New Game</h1>
 
           <form>
-            <FormGroup validationState={this.validity('title')}>
+            <FormGroup validationState={this._validity('title')}>
               <ControlLabel>Campaign Name</ControlLabel>
               <FormControl
                 type="text"
-                value={this.formValue('title')}
+                value={this._formValue('title')}
                 placeholder="Enter Campaign Name"
-                onChange={this.formInput('title')}
+                onChange={this._formInput('title')}
               />
             </FormGroup>
 
-            <FormGroup validationState={this.validity('scenario')}>
+            <FormGroup validationState={this._validity('scenario')}>
               <ControlLabel className="top">Scenario</ControlLabel>
               <FormControl
                 componentClass="textarea"
-                value={this.formValue('scenario')}
+                value={this._formValue('scenario')}
                 placeholder="Enter Scenario"
-                onChange={this.formInput('scenario')}
+                onChange={this._formInput('scenario')}
               />
             </FormGroup>
 
-            <FormGroup validationState={this.validity('overview')}>
+            <FormGroup validationState={this._validity('overview')}>
               <ControlLabel className="top">Overview</ControlLabel>
               <FormControl
                 componentClass="textarea"
-                value={this.formValue('overview')}
+                value={this._formValue('overview')}
                 placeholder="Enter Overview"
-                onChange={this.formInput('overview')}
+                onChange={this._formInput('overview')}
               />
             </FormGroup>
 
@@ -79,26 +79,26 @@ const CreateGame = class CreateGame extends Component {
               <FormControl
                 type="number"
                 placeholder="Minimum Players"
-                value={this.formValue('gameSettings.minPlayers')}
-                onChange={this.formInput('gameSettings.minPlayers')}
+                value={this._formValue('gameSettings.minPlayers')}
+                onChange={this._formInput('gameSettings.minPlayers')}
               />
 
               <ControlLabel>Max Players</ControlLabel>
               <FormControl
                 type="number"
-                value={this.formValue('gameSettings.maxPlayers')}
+                value={this._formValue('gameSettings.maxPlayers')}
                 placeholder="Maximum Players"
-                onChange={this.formInput('gameSettings.maxPlayers')}
+                onChange={this._formInput('gameSettings.maxPlayers')}
               />
 
               <ControlLabel>Skill Level</ControlLabel>
               <FormControl
                 componentClass="select"
-                value={this.formValue('gameSettings.skillLevel')}
-                onChange={this.formInput('gameSettings.skillLevel')}>
+                value={this._formValue('gameSettings.skillLevel')}
+                onChange={this._formInput('gameSettings.skillLevel')}>
                 {
                   _.map(skillLevels, (desc, level) =>
-                    <option value={level}>{desc}</option>
+                    <option key={level} value={level}>{desc}</option>
                   )
                 }
               </FormControl>
@@ -107,11 +107,11 @@ const CreateGame = class CreateGame extends Component {
               <ControlLabel>Posting Frequency</ControlLabel>
               <FormControl
                 componentClass="select"
-                value={this.formValue('gameSettings.postingFrequency')}
-                onChange={this.formInput('gameSettings.postingFrequency')}>
+                value={this._formValue('gameSettings.postingFrequency')}
+                onChange={this._formInput('gameSettings.postingFrequency')}>
                 {
                   _.map(postingFrequencies, (desc, level) =>
-                    <option value={level}>{desc}</option>
+                    <option key={level} value={level}>{desc}</option>
                   )
                 }
               </FormControl>
@@ -119,7 +119,7 @@ const CreateGame = class CreateGame extends Component {
           </form>
 
           <div className="actions text-right">
-            <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+            <Button bsStyle="primary" onClick={this._submit}>Submit</Button>
           </div>
         </div>
       </React.Fragment>
@@ -127,32 +127,28 @@ const CreateGame = class CreateGame extends Component {
     );
   };
 
-  submit = () => {
-    if (this.valid()) {
+  _submit = () => {
+    if (this._valid()) {
       this.props
         .mutate({
           variables: {
             input: this.state.store
           },
-          update: (store, { data: { createGame } }) => {
-            // Read the data from our cache for this query.
-            const data = store.readQuery({ query: gamesQuery });
-            // Add our game from the mutation to the end.
-            data.games.push(createGame);
-            // Write our data back to the cache.
-            store.writeQuery({ query: gamesQuery, data });
-          }
+          refetchQueries: [{
+            query: gamesQuery,
+            variables: {offset: 0}
+          }]
         })
         .then(() => this.setState({ saved: true }));
     }
   };
 
-  valid = () => {
+  _valid = () => {
     const errors = {};
 
-    _.isEmpty(this.formValue('title')) && (errors.title = 'Title is required');
-    _.isEmpty(this.formValue('scenario')) && (errors.scenario = 'Scenario is required');
-    _.isEmpty(this.formValue('overview')) && (errors.overview = 'Overview is required');
+    _.isEmpty(this._formValue('title')) && (errors.title = 'Title is required');
+    _.isEmpty(this._formValue('scenario')) && (errors.scenario = 'Scenario is required');
+    _.isEmpty(this._formValue('overview')) && (errors.overview = 'Overview is required');
 
 
     this.setState({...this.state, errors});
@@ -160,13 +156,13 @@ const CreateGame = class CreateGame extends Component {
     return _.keys(errors).length === 0;
   };
 
-  validity = (field) => {
+  _validity = (field) => {
     if (this.state.errors[field]) {
       return 'error';
     }
   };
 
-  formInput = (stateKey) => {
+  _formInput = (stateKey) => {
     return (e) => {
       const { store } = this.state;
 
@@ -175,7 +171,7 @@ const CreateGame = class CreateGame extends Component {
     };
   };
 
-  formValue = (stateKey) => {
+  _formValue = (stateKey) => {
     return _.get(this.state.store, stateKey, '');
   };
 };
