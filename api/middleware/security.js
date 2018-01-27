@@ -3,6 +3,8 @@ import config from 'config';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
+import { getUser } from '../services/user';
+
 export function checkJwt() {
   return jwt({
     // Dynamically provide a signing key
@@ -49,17 +51,13 @@ export function checkScopes(scopes) {
   };
 }
 
-export function checkAuth0Secret() {
-  return (req, res, next) => {
-    if (_.get(req.body, 'meta.sharedSecret') === config.get('auth0.faClient.sharedSecret')) {
-      next();
-    } else {
-      nextError(new Error('Invalid Request'));
-    }
+export function setDbUserByToken(req, res, next) {
+  const token = req.user.sub;
 
-    function nextError(err) {
-      err.status = 401;
-      return next(err);
-    }
-  };
+  return getUser(token)
+    .then((user) => {
+      req.dbUser = user;
+      next();
+    })
+    .catch(err => next(err));
 }

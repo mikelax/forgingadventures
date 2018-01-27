@@ -1,7 +1,7 @@
 import multer from 'multer';
 
-import { checkAuth0Secret } from 'middleware/security';
-import { postUsers, uploadUserPicture } from './usersImpl';
+import { uploadUserPicture } from './usersImpl';
+import { setDbUserByToken } from '../middleware/security';
 
 const router = require('express').Router();
 
@@ -14,8 +14,7 @@ router.get('/', (req, res) => {
   res.send('API Index');
 });
 
-router.post('/users', checkAuth0Secret(), postUsers());
-router.post('/users/:auth0Id/profile/image', uploader.single('picture'), uploadUserPicture());
+router.post('/users/profile-image', uploader.single('picture'), setDbUserByToken, uploadUserPicture);
 
 
 export default router;

@@ -37,18 +37,24 @@ export function showLogin() {
 }
 
 export function processAuth() {
-  return new Bluebird((resolve, reject) => {
-    lock.on('authenticated', (authResult) => {
-      setSession(authResult);
-      scheduleRenewal();
+  return Bluebird.try(() => {
+    if (isAuthenticated()) {
+      return getAccessToken();
+    } else {
+      return new Bluebird((resolve, reject) => {
+        lock.on('authenticated', (authResult) => {
+          setSession(authResult);
 
-      resolve(authResult.accessToken);
-    });
+          resolve(authResult.accessToken);
+        });
 
-    lock.on('authorization_error', (e) => {
-      reject(e);
-    });
-  });
+        lock.on('authorization_error', (e) => {
+          reject(e);
+        });
+      });
+    }
+  })
+    .tap(() => scheduleRenewal());
 }
 
 export function setSession(authResult) {

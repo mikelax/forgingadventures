@@ -61,8 +61,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-// redux setup
-const createStoreWithMiddleware = applyMiddleware(thunkMiddleware)(createStore);
+// redux setup - make ApolloClient available to action creators to call graphQL queries
+const createStoreWithMiddleware = applyMiddleware(thunkMiddleware.withExtraArgument(client))(createStore);
 const store = createStoreWithMiddleware(reducers);
 
 

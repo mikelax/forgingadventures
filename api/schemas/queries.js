@@ -2,22 +2,22 @@ const queries = `
   type Query {
     # games
     game(id: ID!): Game!
-    games(offset: Int, searchOptions: SearchOptions): [Game],
+    games(offset: Int, searchOptions: SearchOptions): [Game]
 
     # game labels
     gameLabel(id: ID!): GameLabel!
-    gameLabels: [GameLabel],
+    gameLabels: [GameLabel]
     
     # game messages
-    gameMessage(id: ID!): GameMessage!,
+    gameMessage(id: ID!): GameMessage!
     gameMessages(gameId: ID!): [GameMessage!]
     
     # game lounge message
-    gameLoungeMessage(id: ID!): GameLoungeMessage!,
+    gameLoungeMessage(id: ID!): GameLoungeMessage!
     gameLoungeMessages(gameId: ID!): [GameLoungeMessage!]
     
     # users
-    user(id: ID!): User!
+    me: User!
   }
 `;
 

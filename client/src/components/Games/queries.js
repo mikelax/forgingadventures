@@ -2,16 +2,6 @@ import gql from 'graphql-tag';
 
 // fragments
 
-// users
-
-export const userMetadataFields = `
-  fragment userMetadataFields on UserMetadata {
-    profileImage {
-      imageUrl
-    }
-  }
-`;
-
 // game messages
 
 export const gameMessageFields = `
@@ -36,10 +26,11 @@ export const gameLoungeMessageFields = `
     updated_at
     user {
       name
-      userMetadata { ...userMetadataFields }
+      profileImage {
+        url 
+      }
     }
   }
-  ${userMetadataFields}
 `;
 
 // queries

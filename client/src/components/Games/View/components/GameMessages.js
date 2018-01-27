@@ -66,7 +66,8 @@ class GameMessages extends Component {
         }
 
         const {messageUpdated} = subscriptionData.data;
-
+        // fixme - this mutates the existing object. refactor
+        // fixme - https://redux.js.org/docs/recipes/reducers/ImmutableUpdatePatterns.html#updating-an-item-in-an-array
         _.chain(prev.gameMessages)
           .find({id: messageUpdated.id})
           .merge(messageUpdated)

@@ -1,25 +1,54 @@
-import User from 'models/user';
+import { getOrCreateUserByAuth0Id, updateUserAndAuth0 } from 'services/user';
+import User from '../models/user';
 
 export const userTypeDefs = `
 
   type User {
-    id: ID!,
+    id: Int!,
     name: String,
-    userMetadata: UserMetadata
-  }
-  
-  type UserMetadata {
-    profileImage: ProfileImage
+    username: String,
+    timezone: String,
+    completedAt: GraphQLDateTime,
+    profileImage: ProfileImage,
+    created_at: GraphQLDateTime,
+    updated_at: GraphQLDateTime
   }
   
   type ProfileImage {
+    url: String,
     publicId: String,
-    imageUrl: String
-  }  
+    userUploadsId: Int
+  }
+  
+  input ProfileImageInput {
+    publicId: String,
+    userUploadId: Int,
+    url: String
+  }
+  
+  input UpdateUserDetailsInput {
+    name: String!,
+    username: String,
+    timezone: String,
+    profileImage: ProfileImageInput
+  }
+  
 `;
 
 export const userResolvers = {
   Query: {
-    user: (obj, { id }) => User.query().findById(id)
+    me: (obj, obj2, context) => getOrCreateUserByAuth0Id(context.req.user.sub)
+  },
+  Mutation: {
+    updateMe: (obj, { input }, context) => updateUserAndAuth0(input, context.req.user.sub),
+    validUsername: (obj, { username }, context) => {
+      return User
+        .query()
+        .count('username')
+        .where({ username })
+        .where('auth0UserId', '!=', context.req.user.sub)
+        .first()
+        .then(res => Number(res.count) === 0);
+    }
   }
 };

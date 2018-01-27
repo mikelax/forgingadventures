@@ -5468,6 +5468,13 @@ react-apollo@^2.0.1:
     lodash.pick "^4.4.0"
     prop-types "^15.5.8"
 
+react-bootstrap-timezone-picker@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-timezone-picker/-/react-bootstrap-timezone-picker-1.0.12.tgz#8d43b018aa94c481892cbfcba3b7061739dd67fc"
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.5.10"
+
 react-bootstrap@^0.32.0:
   version "0.32.0"
   resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-0.32.0.tgz#7f656be7b0f88e4bdda819135956bad10d3f167e"

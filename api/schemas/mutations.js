@@ -10,6 +10,10 @@ const mutations = `
     # game_lounges
     createGameLoungeMessage(input: CreateGameLoungeMessageInput): GameLoungeMessage
     updateGameLoungeMessage(id: ID!, input: UpdateGameLoungeMessageInput): GameLoungeMessage
+    
+    # user
+    updateMe(input: UpdateUserDetailsInput): User!
+    validUsername(username: String!): Boolean
   }
 `;
 

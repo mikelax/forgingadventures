@@ -20,6 +20,6 @@ The project uses the [node-config](https://github.com/lorenwest/node-config) pac
 
 There are two attributes defined under the main `auth0` object within the config json files. 
 
-The first attirbute is named `faClient`. This contains properties that are used for security and validation of the main FA Client and API. This contains keys for the Auth0 Client `Forging Adventures` such as the clientId, domain, audience, and redirectUri. It also contains an attirbute for `sharedSecret`. this is used by the [Update user Rule](../auth0/rules/update-user-profile-in-database.js). It allows the Rule to make a POST to /users to sync the user_metadata and app_metadata from Auth0 to the fa database.
+The first attirbute is named `faClient`. This contains properties that are used for security and validation of the main FA Client and API. This contains keys for the Auth0 Client `Forging Adventures` such as the clientId, domain, audience, and redirectUri.
 
 The second attribute is named `managementClient`. This is uses to allow the api project to make API calls to the [Auth0 Management API](https://auth0.com/docs/api/management/v2). *NOTE* this Management API is totally separate from the regular Auth0 Authorization API. Management is used for "admin level" functionality. It uses a [client_credentials token type](https://auth0.com/docs/api/management/v2/tokens#automate-the-process) to allow server-to-server communication.

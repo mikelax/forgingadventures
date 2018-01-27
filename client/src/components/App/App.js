@@ -15,9 +15,11 @@ import Login from '../Login';
 import Profile from '../Profile';
 
 import {processAuth} from '../../services/login';
+import AlmostFinished from '../Login/AlmostFinished';
 import Games from '../Games';
 import history from '../../services/history';
-import {authFailure, authSuccess} from "../../actions/auth";
+import {authFailure, authSuccess} from '../../actions/auth';
+import {getMyDetails} from '../../actions/me';
 
 
 import './App.styl';
@@ -30,16 +32,16 @@ class App extends Component {
   };
 
   componentWillMount() {
-    const {authSuccess, authFailure} = this.props;
+    const {authSuccess, authFailure, getMyDetails} = this.props;
 
     return processAuth()
-      .then((token) => {
-        authSuccess(token);
-      })
-      .catch(e => authFailure(e));
+      .then((token) => authSuccess(token))
+      .tapCatch(e => authFailure(e))
+      .then(() => getMyDetails());
   }
 
   render() {
+    // todo - consolidate /callback as /login/callback and /login/almost-finished under the /login view
     return (
       <Router history={history}>
         <div>
@@ -54,6 +56,7 @@ class App extends Component {
               <Route exact path="/" component={Home} />
               <Route path="/about" component={About} />
               <Route path="/profile" component={AuthGuard(Profile)} />
+              <Route path="/login/almost-finished" component={AuthGuard(AlmostFinished)}/>
               <Route path="/login" component={Login} />
               <Route path="/callback" component={Callback} />
               <Route path="/games" component={Games} />
@@ -67,7 +70,8 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => ({
   authSuccess: (token) => dispatch(authSuccess(token)),
-  authFailure: (e) => dispatch(authFailure(e))
+  authFailure: (e) => dispatch(authFailure(e)),
+  getMyDetails: () => dispatch(getMyDetails())
 });
 
 export default connect(
