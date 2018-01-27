@@ -9,6 +9,7 @@ import CreateLoungeMessage from './components/CreateLoungeMessage';
 import CreateMessage from './components/CreateMessage';
 import GameLoungeMessages from './components/GameLoungeMessages';
 import GamesMessages from './components/GameMessages';
+import GamePlayers from './components/GamePlayers';
 
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
@@ -65,7 +66,11 @@ function gameDetails() {
         <GameLoungeMessages gameId={game.id}/>
       </Tab>
 
-      <Tab eventKey={2} title="Game Messages">
+      <Tab eventKey={2} title="Players">
+        <GamePlayers gameId={game.id}/>
+      </Tab>
+
+      <Tab eventKey={3} title="Game Messages">
         <CreateMessage gameId={game.id}/>
         <GamesMessages gameId={game.id}/>
       </Tab>

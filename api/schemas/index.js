@@ -8,6 +8,7 @@ import { gameTypeDefs, gameResolvers } from 'schemas/game';
 import { gameLabelTypeDefs, gameLabelResolvers } from 'schemas/gameLabel';
 import { gameLoungeTypeDefs, gameLoungeResolvers } from 'schemas/gameLounge';
 import { gameMessageTypeDefs, gameMessageResolvers } from 'schemas/gameMessage';
+import { gamePlayerTypeDefs, gamePlayerResolvers } from 'schemas/gamePlayer';
 import { userTypeDefs, userResolvers } from 'schemas/user';
 
 import queries from 'schemas/queries';
@@ -30,6 +31,7 @@ export default makeExecutableSchema({
     gameLabelTypeDefs,
     gameLoungeTypeDefs,
     gameMessageTypeDefs,
+    gamePlayerTypeDefs,
     userTypeDefs,
     queries,
     mutations,
@@ -42,6 +44,7 @@ export default makeExecutableSchema({
     gameLabelResolvers,
     gameLoungeResolvers,
     gameMessageResolvers,
+    gamePlayerResolvers,
     userResolvers
   )
 });

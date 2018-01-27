@@ -1,4 +1,6 @@
 import Game from 'models/game';
+import GameLabel from 'models/gameLabel';
+import GamePlayer from 'models/gamePlayer';
 
 import schemaScopeGate from 'services/schemaScopeGate';
 import GetGames from 'services/games/getGames';
@@ -16,6 +18,7 @@ export const gameTypeDefs = `
   
   type Game {
     id: ID!,
+    label: GameLabel!,
     title: String!,
     scenario: String!,
     overview: String!,
@@ -49,6 +52,9 @@ export const gameTypeDefs = `
 `;
 
 export const gameResolvers = {
+  Game: {
+    label: game => GameLabel.query().findById(game.labelId)
+  },
   Query: {
     game: (parent, { id }) => Game.query().findById(id),
     games: (parent, { offset, searchOptions }) => serviceExecutor(GetGames, { offset, searchOptions })
@@ -60,10 +66,21 @@ export const gameResolvers = {
         return getUser(context.req.user.sub)
           .then((user) => {
             input.userId = user.id;
+            // TODO Remove when label is added to create screen
+            input.labelId = 1;
             return Game
               .query()
               .insert(input)
               .returning('*');
+          })
+          .tap((gameResponse) => {
+            const playerInput = {
+              gameId: gameResponse.id,
+              userId: gameResponse.userId,
+              status: 'game-master'
+            };
+            return GamePlayer.query()
+              .insert(playerInput);
           });
       })
   }
