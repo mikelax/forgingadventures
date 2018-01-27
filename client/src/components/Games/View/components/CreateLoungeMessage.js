@@ -33,8 +33,9 @@ class CreateGameLoungeMessage extends Component {
 
   _submit = () => {
     const {mutate} = this.props;
+    const {hasContent} = this.state;
 
-    mutate({
+    hasContent && mutate({
       variables: {
         input: {
           gameId: this.props.gameId,

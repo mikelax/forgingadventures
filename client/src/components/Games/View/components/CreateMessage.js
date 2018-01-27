@@ -35,20 +35,18 @@ class CreateMessage extends Component {
     const {hasContent} = this.state;
     const {mutate} = this.props;
 
-    if (hasContent) {
-      mutate({
-        variables: {
-          input: {
-            gameId: this.props.gameId,
-            message: this.editor.getEditorMessage()
-          }
+    hasContent && mutate({
+      variables: {
+        input: {
+          gameId: this.props.gameId,
+          message: this.editor.getEditorMessage()
         }
-      })
-      .then(() => {
-        this.editor.clear();
-      });
-    }
-  }
+      }
+    })
+    .then(() => {
+      this.editor.clear();
+    });
+}
 }
 
 export default graphql(createGameMessageMutation)(CreateMessage);
