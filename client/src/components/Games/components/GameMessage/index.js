@@ -16,7 +16,8 @@ export default class GamesMessage extends Component {
 
   static propTypes = {
     message: PropTypes.object,
-    readOnly: PropTypes.bool
+    readOnly: PropTypes.bool,
+    onChange: PropTypes.func
   };
 
   state = {
@@ -76,12 +77,21 @@ export default class GamesMessage extends Component {
   getEditorMessage() {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
+
 }
 
 /// private GamesMessage methods - i.e. handlers etc...
 
 function onEditorChange(editorState) {
+  const content = editorState.getCurrentContent();
+  const {onChange} = this.props;
+
   this.setState({editorState});
+
+  onChange && onChange({
+    hasContent: content.hasText()
+  });    
+
 }
 
 function onToggleAction(entityKey) {

@@ -8,7 +8,8 @@ export default class RichEditorExample extends Component {
 
   static propTypes = {
     message: PropTypes.object,
-    readOnly: PropTypes.bool
+    readOnly: PropTypes.bool,
+    onChange: PropTypes.func
   };
 
   state = {
@@ -107,7 +108,16 @@ export default class RichEditorExample extends Component {
 
   _focus = () => this.refs.editor.focus();
 
-  _onChange = (editorState) => this.setState({editorState});
+  _onChange = (editorState) => {
+    const content = editorState.getCurrentContent();
+    const {onChange} = this.props;
+
+    this.setState({editorState});
+
+    onChange && onChange({
+      hasContent: content.hasText()
+    });    
+  }
 
   _handleKeyCommand = (command) => {
     const {editorState} = this.state;
