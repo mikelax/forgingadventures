@@ -58,9 +58,9 @@ It then gets all the permissions (scopes) assigned to the User based on the Role
 
 This Rule adds the list of Auth0 Authorization Roles the User is a memeber of and adds the array to the *id_token*. This array is also available in the initial callback after a call to auth0.parseHash in the `idTokenPayload` attribute (as are all attributes in the id_token). 
 
-## Update Profile with Custom Profile Image
+## Update Profile with Custom Profile
 
-This looks checks to see if the User has uploaded a custom profile image. The standard `picture` attribute can only be changed in a Rule, the data must be stored in the `user_metadata` object. This rules looks for a value here indicating a custom profile image, and if found set its value for the user.picture attribute. 
+This rule looks at the `user_metadata` field for any custom attributes. If found it will overwrite attributes in the `id_token` with these custom values. These values will be updated within the FA app, either after sign up or by editing the user profile. The current list of fields is:  username, name, profileImage. 
 
 ## Update user profile in Database
 
