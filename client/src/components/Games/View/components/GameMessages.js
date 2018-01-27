@@ -184,7 +184,7 @@ class GameMessageContainerBase extends Component {
 
   _relativeDate = (date) => {
     const dateObject = moment(date);
-    const dateDisplayRelative = dateObject.fromNow();
+    const dateDisplayRelative = dateObject.subtract(20,'s').fromNow(); //addresses possible db time skew
     const dateDisplayActual = dateObject.format('LLL');
 
     return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;

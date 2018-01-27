@@ -8,24 +8,35 @@ import { createGameMessageMutation } from '../../queries';
 
 class CreateMessage extends Component {
 
+  state = {
+    hasContent: false
+  }
+
   render() {
     return (
       <div className="create-message">
         <form>
           <FormGroup>
             <ControlLabel>Add Message</ControlLabel>
-            <GameMessage ref={(c) => (this.editor = c)} />
+            <GameMessage ref={(c) => (this.editor = c)} onChange={this._handeOnChange}/>
           </FormGroup>
         </form>
 
-        <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+        <Button bsStyle="primary" onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
       </div>
     );
   }
 
-  submit = () => {
-    this.props
-      .mutate({
+  _handeOnChange = (data) => {
+    this.setState({hasContent: data.hasContent}); 
+  }
+
+  _submit = () => {
+    const {hasContent} = this.state;
+    const {mutate} = this.props;
+
+    if (hasContent) {
+      mutate({
         variables: {
           input: {
             gameId: this.props.gameId,
@@ -36,6 +47,7 @@ class CreateMessage extends Component {
       .then(() => {
         this.editor.clear();
       });
+    }
   }
 }
 
