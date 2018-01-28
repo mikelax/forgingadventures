@@ -55,10 +55,13 @@ export const gameLoungeMessageFields = `
 export const gamePlayerFields = `
   fragment gamePlayerFields on GamePlayer {
     id
+    status
     user {
       name
+      profileImage {
+        url 
+      }
     }
-    status
   }
 `;
 
