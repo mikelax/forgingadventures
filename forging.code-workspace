@@ -13,6 +13,7 @@
 		"files.associations": {
 			"**/api/**/*.js": "javascript",
 			"**/client/**/*.js": "javascriptreact"
-		}
+		},
+		"languageStylus.useSeparator": false
 	}
 }
