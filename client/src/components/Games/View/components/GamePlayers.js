@@ -38,7 +38,7 @@ class GamePlayers extends Component {
     if (imageUrl) {
       return <img src={imageUrl} alt=""/>;
     } else {
-      return <span className="glyphicon glyphicon glyphicon-user" aria-hidden="true"/>;
+      return <span className="glyphicon glyphicon-user" aria-hidden="true"/>;
     }
   };
 }
