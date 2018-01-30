@@ -21,8 +21,8 @@ import reducers from './reducers';
 import {getAuthorizationHeader, getAccessToken} from './services/login';
 import registerServiceWorker from './registerServiceWorker';
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
+// import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap-theme.css';
 import 'semantic-ui-css/semantic.min.css';
 import './index.css';
 
