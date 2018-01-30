@@ -50,7 +50,7 @@ export const gameLoungeMessageFields = `
   }
 `;
 
-// game polayers
+// game players
 
 export const gamePlayerFields = `
   fragment gamePlayerFields on GamePlayer {
@@ -63,6 +63,15 @@ export const gamePlayerFields = `
       }
     }
   }
+`;
+
+export const createGamePlayerMutation = gql`
+  mutation createGamePlayer($input: CreateGamePlayerInput) {
+    createGamePlayer(input: $input) {
+      ...gamePlayerFields
+    }
+  }
+  ${gamePlayerFields}
 `;
 
 // queries

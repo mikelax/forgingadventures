@@ -3,7 +3,7 @@ import {Helmet} from "react-helmet";
 import { compose, pure } from "recompose";
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
-import {Tab, Tabs} from 'react-bootstrap';
+import {Button, Tab, Tabs} from 'react-bootstrap';
 
 import CreateLoungeMessage from './components/CreateLoungeMessage';
 import CreateMessage from './components/CreateMessage';
@@ -60,6 +60,8 @@ function gameDetails() {
 
     <div className="overview">{game.overview}</div>
 
+    <div className="joinGame">{joinGame.call(this)}</div>
+
     <Tabs defaultActiveKey={1} animation={false} id="game-tabs">
       <Tab eventKey={1} title="Game Lounge">
         <CreateLoungeMessage gameId={game.id}/>
@@ -77,4 +79,14 @@ function gameDetails() {
     </Tabs>
 
   </div>;
+}
+
+function joinGame() {
+  const buttonLabel = 'Join Game';
+
+  return (
+    <Button href={`${this.props.match.url}/join`} game={this.props.data.game} className="btn btn-primary text-right" type="submit">
+      {buttonLabel}
+    </Button>
+  );
 }
