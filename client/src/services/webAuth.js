@@ -68,6 +68,7 @@ function renewToken() {
         console.log(err);
       } else {
         setSession(result);
+        scheduleRenewal();
       }
     }
   );
