@@ -3,7 +3,8 @@ import { graphql } from 'react-apollo';
 import { Helmet } from "react-helmet";
 import { Button, ControlLabel, FormGroup, FormControl } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import { createGamePlayerMutation } from '../../queries';
+import {gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation} from '../../queries';
+import {compose} from 'recompose';
 
 const JoinGame = class JoinGame extends Component {
 
@@ -16,7 +17,8 @@ const JoinGame = class JoinGame extends Component {
 
   render() {
     if (this.state.saved) {
-      return <Redirect to="/games"/>;
+      const { match: { params: { id } } } = this.props;
+      return <Redirect to={`/games/${id}`} />;
     }
 
     return (
@@ -44,16 +46,19 @@ const JoinGame = class JoinGame extends Component {
   };
 
   _submit = () => {
+    const { match: { params: { id } } } = this.props;
+    const { createGamePlayer } = this.props;
+
     if (this._valid()) {
-      this.props
-        .mutate({
+      createGamePlayer(({
           variables: {
             input: {
-              gameId: 10, // TODO change to props gameId
+              gameId: id,
               status: 'pending'
             }
           }
         })
+      )
         .then(() => this.setState({ saved: true }));
     }
   };
@@ -63,4 +68,15 @@ const JoinGame = class JoinGame extends Component {
   }
 };
 
-export default graphql(createGamePlayerMutation)(JoinGame);
+export default compose(
+  graphql(gameQuery, {
+    options: ( { match: { params: { id } } } ) => ({ variables: { id } })
+  }),
+  graphql(createGamePlayerMutation, {
+    name: 'createGamePlayer'
+  }),
+  // todo - need to figure out how to create a draftJS message json packet before we can call this mutation
+  graphql(createGameLoungeMessageMutation, {
+    name: 'createGameLoungeMessage'
+  }),
+)(JoinGame);

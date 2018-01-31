@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 export const userFields = `
   fragment userFields on User {
+    id
     name
     username
     profileImage {
