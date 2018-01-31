@@ -1,9 +1,10 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 import { compose, pure } from "recompose";
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
-import {Tab, Tabs} from 'react-bootstrap';
+import {Button, Tab, Tabs} from 'react-bootstrap';
 
 import CreateLoungeMessage from './components/CreateLoungeMessage';
 import CreateMessage from './components/CreateMessage';
@@ -13,7 +14,9 @@ import GamePlayers from './components/GamePlayers';
 
 import ApolloLoader from '../../shared/components/ApolloLoader';
 
-import { gameQuery } from '../queries';
+import { gameQuery, myGamePlayerQuery } from '../queries';
+import { meQuery } from '../../../queries/users';
+
 import './assets/ViewGame.styl';
 
 
@@ -45,6 +48,13 @@ export default compose(
   graphql(gameQuery, {
     options: ( { match: { params: { id } } } ) => ({ variables: { id } })
   }),
+  graphql(meQuery, {
+    name: 'meQuery'
+  }),
+  graphql(myGamePlayerQuery, {
+    name: 'myGamePlayerQuery',
+    options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id } })
+  }),
   ApolloLoader,
   pure,
 )(ViewGame);
@@ -59,6 +69,8 @@ function gameDetails() {
     <h3 className="scenario">{game.scenario}</h3>
 
     <div className="overview">{game.overview}</div>
+
+    <div className="joinGame">{joinGame.call(this)}</div>
 
     <Tabs defaultActiveKey={1} animation={false} id="game-tabs">
       <Tab eventKey={1} title="Game Lounge">
@@ -77,4 +89,22 @@ function gameDetails() {
     </Tabs>
 
   </div>;
+}
+
+function joinGame() {
+  const canJoin = canJoinGame.call(this);
+
+  if (canJoin) {
+    return (
+      <Button href={`${this.props.match.url}/join`}
+              className="btn btn-primary text-right" type="submit">
+        Join Game
+      </Button>
+    );
+  }
+}
+
+function canJoinGame() {
+  const myGamePlayer = _.get(this.props, 'myGamePlayerQuery.myGamePlayer');
+  return _.isEmpty(myGamePlayer);
 }
