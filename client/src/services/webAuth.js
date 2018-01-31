@@ -35,6 +35,7 @@ export function scheduleRenewal() {
   const delay = expiresAt - Date.now();
 
   if (delay > 0) {
+    clearRenewalTimer();
     tokenRenewalTimeout = setTimeout(() => {
       renewToken();
     }, delay);
@@ -59,16 +60,15 @@ export function userHasScopes(scopes) {
 ///// private
 
 function renewToken() {
-  webAuth.renewAuth(
+  webAuth.checkSession(
     {
-      audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-      redirectUri: process.env.REACT_APP_AUTH0_RENEWAL_REDIRECT_URI,
-      usePostMessage: true
+      scope: requestedScopes
     }, (err, result) => {
       if (err) {
         console.log(err);
       } else {
         setSession(result);
+        scheduleRenewal();
       }
     }
   );

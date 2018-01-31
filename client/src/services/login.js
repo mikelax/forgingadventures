@@ -85,12 +85,14 @@ export function getAccessToken() {
 }
 
 export function getAuthorizationHeader() {
-  const token = getAccessToken();
+  if (isAuthenticated()) {
+    const token = getAccessToken();
 
-  if (token) {
-    return {
-      Authorization: `Bearer ${token}`
-    };
+    if (token) {
+      return {
+        Authorization: `Bearer ${token}`
+      };
+    }
   }
 }
 
