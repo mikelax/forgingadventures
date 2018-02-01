@@ -4,6 +4,7 @@ import Bluebird from 'bluebird';
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import { Button, ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
+import { Container } from 'semantic-ui-react';
 import TimezonePicker from 'react-bootstrap-timezone-picker';
 import { Helmet } from "react-helmet";
 
@@ -48,7 +49,7 @@ class AlmostFinished extends Component {
         </Helmet>
 
         <div className="AlmostFinished">
-          <div className="container">
+          <Container>
             <h1>You're mere steps away from starting your Adventure</h1>
             <h2>But first, you must finish completing your Profile</h2>
 
@@ -107,7 +108,7 @@ class AlmostFinished extends Component {
                 { this.state.saving ? 'Submitting' : 'Submit' }
               </Button>
             </div>
-          </div>
+          </Container>
         </div>
       </React.Fragment>
     );

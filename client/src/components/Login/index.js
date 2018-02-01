@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Helmet} from "react-helmet";
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
 
 import {showLogin} from '../../services/login';
 
@@ -38,7 +39,7 @@ class Login extends Component {
         </Helmet>
 
         <div className="Login">
-          <div className="container">
+          <Container>
             <h1>
               Log In
             </h1>
@@ -46,7 +47,7 @@ class Login extends Component {
               <br/>If you remove the container attribute it will display as a modal.</p>
 
             <div id="auth0Lock"/>
-          </div>
+          </Container>
         </div>
       </React.Fragment>
     );

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
 
 import CreateGame from './Create';
 import JoinGame from './View/Join';
@@ -15,14 +16,14 @@ export default class Campaigns extends Component {
 
     return (
       <div className="games">
-        <div className="container">
+        <Container>
           <Switch>
             <Route exact path={`${match.url}/create`} component={AuthGuard(CreateGame)}/>
             <Route exact path={`${match.url}/:id/join`} component={JoinGame}/>
             <Route exact path={`${match.url}/:id`} component={ViewGame}/>
             <Route exact path={`${match.url}`} component={ListGames}/>
           </Switch>
-        </div>
+        </Container>
       </div>
     );
   }

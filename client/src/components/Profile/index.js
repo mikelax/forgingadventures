@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { Panel, ControlLabel, Glyphicon } from 'react-bootstrap';
+import { Container } from 'semantic-ui-react';
 
 import {getProfile} from '../../services/webAuth';
 
@@ -25,7 +26,7 @@ export default class Profile extends Component {
 
     if (profile) {
       return (
-        <div className="container">
+        <Container>
           <div className="profile-area">
             <h1>{profile.name}</h1>
             <Panel header="Profile">
@@ -37,7 +38,7 @@ export default class Profile extends Component {
               <pre>{JSON.stringify(profile, null, 2)}</pre>
             </Panel>
           </div>
-        </div>
+        </Container>
       );
     } else {
       return null;

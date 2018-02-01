@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import {connect} from "react-redux";
 import {Alert} from 'react-bootstrap';
+import { Container } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 
 function Callback(props) {
@@ -11,9 +12,9 @@ function Callback(props) {
   const completedAt = _.get(me, 'completedAt');
 
   return <div className="Callback">
-    <div className="container">
+    <Container>
       {renderAuthResult()}
-    </div>
+    </Container>
   </div>;
 
   function renderAuthResult() {

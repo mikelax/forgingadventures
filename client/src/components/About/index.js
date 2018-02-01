@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
+import { Container } from 'semantic-ui-react';
 import './About.styl';
 
 export default class About extends Component<{||}> {
@@ -11,11 +12,11 @@ export default class About extends Component<{||}> {
   render() {
     return (
       <div className="About">
-        <div className="container">
+        <Container>
           <h1>
             About
           </h1>
-        </div>
+        </Container>
       </div>
     );
   }
