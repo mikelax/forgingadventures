@@ -1,38 +1,51 @@
 import _ from 'lodash';
-import React, {Component} from 'react';
-import {compose, pure} from "recompose";
-import {graphql} from 'react-apollo';
-import {withRouter} from 'react-router';
-import {connect} from "react-redux";
-import {Helmet} from "react-helmet";
-import {Link} from 'react-router-dom';
+import React, { Component } from 'react';
+import { compose, pure } from "recompose";
+import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router';
+import { connect } from "react-redux";
+import { Helmet } from "react-helmet";
+import { Link } from 'react-router-dom';
+import { Card, Header, Icon, Image } from 'semantic-ui-react';
 import Observer from 'react-intersection-observer';
 
 import ApolloLoader from '../../shared/components/ApolloLoader';
 import GameSearch from '../components/GameSearch';
-import {gamesQuery} from '../queries';
-import {postingFrequency, skillLevel} from '../utils/gameSettings';
+import { gamesQuery } from '../queries';
+import { postingFrequency, skillLevel } from '../utils/gameSettings';
 
-import './ListGames.styl';
-import {search} from "../../../actions/gamesSearch";
+import { search } from "../../../actions/gamesSearch";
+import dragons from './dragons.jpg';
 
 class ListGamesView extends Component {
 
   render() {
-    const {match} = this.props;
+    const { match } = this.props;
 
     return <div className="ListGames">
       <Helmet>
         <title>Search For RPG Play by Post Games on Forging Adventures</title>
       </Helmet>
 
-      <h1>Find a Game, start your Adventure</h1>
+      <Header
+        as='h1'
+        content='Find a Game, start your Adventure'
+      />
 
       <GameSearch onSearch={this.searchGames}/>
 
-      <Link to={`${match.url}/create`}>
-        Create a new Game
-      </Link>
+      <Header as='h2'>
+        <Icon name='add'/>
+        <Header.Content>
+          <Link to={`${match.url}/create`}>
+            Create a new Game
+          </Link>
+        </Header.Content>
+      </Header>
+
+      <Header as='h3' dividing>
+        Existing Games
+      </Header>
 
       <ListGames/>
 
@@ -40,7 +53,7 @@ class ListGamesView extends Component {
   }
 
   searchGames = (searchParams) => {
-    const {search} = this.props;
+    const { search } = this.props;
 
     search(searchParams);
   };
@@ -64,14 +77,14 @@ class ListGamesPure extends Component {
   canPage = true;
 
   render() {
-    const {match, data: {games}} = this.props;
+    const { match, data: { games } } = this.props;
 
-    return <div className="game-container">
-      <div className="games">
+    return <div>
+      <Card.Group stackable={true}>
         {_.map(games, (game) => (
           <GameDetails key={game.id} game={game} link={`${match.url}/${game.id}`}/>
         ))}
-      </div>
+      </Card.Group>
 
       <Observer onChange={this.loadMore}>
         <div className="in-view">&nbsp;</div>
@@ -80,26 +93,26 @@ class ListGamesPure extends Component {
   }
 
   loadMore = (inView) => {
-    const {fetchMore} = this.props;
+    const { fetchMore } = this.props;
 
     if (this.canPage && inView) {
       fetchMore()
-        .then(({data: {games}}) => {
+        .then(({ data: { games } }) => {
           if (_.isEmpty(games)) {
             this.canPage = false;
           }
         });
     }
-  }
+  };
 }
 
 const ListGames = compose(
   withRouter,
   connect(
-    (state) => ({gamesSearch: state.gamesSearch})
+    (state) => ({ gamesSearch: state.gamesSearch })
   ),
   graphql(gamesQuery, {
-    options: ({gamesSearch}) => ({variables: {searchOptions: gamesSearch.searchParams, offset: 0}}),
+    options: ({ gamesSearch }) => ({ variables: { searchOptions: gamesSearch.searchParams, offset: 0 } }),
     props: ({ data, data: { fetchMore } }) => {
       return {
         data,
@@ -109,7 +122,9 @@ const ListGames = compose(
               offset: data.games.length
             },
             updateQuery: (prev, { fetchMoreResult }) => {
-              if (_.isEmpty(fetchMoreResult)) { return prev; }
+              if (_.isEmpty(fetchMoreResult)) {
+                return prev;
+              }
 
               return Object.assign({}, prev, {
                 games: [...prev.games, ...fetchMoreResult.games],
@@ -126,34 +141,36 @@ const ListGames = compose(
 
 
 const GameDetails = (props) => {
-  const {game} = props;
+  const { game } = props;
 
-  return <div className="game-card">
-    <div className="header">
-      <div className="title">
-        <Link to={props.link}> {game.title}</Link>
-      </div>
-    </div>
-
-    <div className="details">
-      <div className="scenario">
-        {game.scenario}
-      </div>
-      <div className="overview">
-        {game.overview}
-      </div>
-    </div>
-
-    <div className="game-settings">
-      <div className="players">
-        Players: {game.gameSettings.minPlayers} / {game.gameSettings.maxPlayers}
-      </div>
-      <div className="skill">
-        Skill: {skillLevel(game.gameSettings.skillLevel)}
-      </div>
-      <div className="frequency">
-        Posting frequency: {postingFrequency(game.gameSettings.postingFrequency)}
-      </div>
-    </div>
-  </div>;
+  return (
+    <Card>
+      <Image src={dragons} />
+      <Card.Content>
+        <Card.Header>
+          <Link to={props.link}> {game.title}</Link>
+        </Card.Header>
+        <Card.Meta>
+          {game.scenario}
+        </Card.Meta>
+        <Card.Description>
+          {game.overview}
+        </Card.Description>
+      </Card.Content>
+      <Card.Content extra>
+        <div>
+          <Icon name='group'/>
+          {game.gameSettings.minPlayers} to {game.gameSettings.maxPlayers} players
+        </div>
+        <div>
+          <Icon name='student'/>
+          {skillLevel(game.gameSettings.skillLevel)}
+        </div>
+        <div>
+          <Icon name='clock'/>
+          {postingFrequency(game.gameSettings.postingFrequency)}
+        </div>
+      </Card.Content>
+    </Card>
+  );
 };
