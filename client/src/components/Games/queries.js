@@ -50,16 +50,29 @@ export const gameLoungeMessageFields = `
   }
 `;
 
-// game polayers
+// game players
 
 export const gamePlayerFields = `
   fragment gamePlayerFields on GamePlayer {
     id
-    user {
-      name
-    }
     status
+    user {
+      id
+      name
+      profileImage {
+        url 
+      }
+    }
   }
+`;
+
+export const createGamePlayerMutation = gql`
+  mutation createGamePlayer($input: CreateGamePlayerInput) {
+    createGamePlayer(input: $input) {
+      ...gamePlayerFields
+    }
+  }
+  ${gamePlayerFields}
 `;
 
 // queries
@@ -151,6 +164,15 @@ export const onGameMessageUpdated = gql`
 export const gamePlayersQuery = gql`
   query gamePlayers($gameId: ID!, $status: [String]) {
     gamePlayers(gameId: $gameId, status: $status) {
+      ...gamePlayerFields
+    }
+  }
+  ${gamePlayerFields}
+`;
+
+export const myGamePlayerQuery = gql`
+  query myGamePlayer($gameId: ID!) {
+    myGamePlayer(gameId: $gameId) {
       ...gamePlayerFields
     }
   }

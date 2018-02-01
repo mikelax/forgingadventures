@@ -30,8 +30,6 @@ const server = createServer(app);
 
 app.set('port', process.env.PORT || 3001);
 
-// set the view engine to ejs
-app.set('view engine', 'ejs');
 // wire up express morgan with central logging system
 app.use(logging());
 // set up helmet, basic security checklist
@@ -41,7 +39,6 @@ app.use(helmet({
 }));
 
 // wire misc things together
-
 
 Model.knex(knex);
 
@@ -67,16 +64,6 @@ if (config.get('graphql.graphiql')) {
     subscriptionsEndpoint: 'ws://localhost:3001/subscriptions'
   }));
 }
-
-
-// set up basic routes
-app.use('/silent', (req, res) => {
-  res.render('pages/silent', {
-    clientID: config.get('auth0.faClient.clientId'),
-    domain: config.get('auth0.faClient.domain'),
-    redirectUri: config.get('auth0.faClient.redirectUri')
-  });
-});
 
 app.use('/api', routes);
 

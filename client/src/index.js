@@ -18,7 +18,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 
 import App from './components/App/App';
 import reducers from './reducers';
-import {getAuthorizationHeader, getAccessToken} from './services/login';
+import {getAuthorizationHeader, getAccessToken, isAuthenticated} from './services/login';
 import registerServiceWorker from './registerServiceWorker';
 
 // import 'bootstrap/dist/css/bootstrap.css';
@@ -41,7 +41,7 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: getAccessToken(),
+      authToken: isAuthenticated() ? getAccessToken() : void(0)
     }
   }
 });

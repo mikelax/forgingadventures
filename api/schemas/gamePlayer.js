@@ -41,7 +41,15 @@ export const gamePlayerResolvers = {
     gamePlayers: (obj, { gameId, status = ['pending', 'accepted'] }) => GamePlayer.query()
       .where({ gameId })
       .whereIn('status', status)
-      .orderBy('created_at')
+      .orderBy('created_at'),
+    myGamePlayer: (obj, { gameId }, context) => {
+      return getOrCreateUserByAuth0Id(context.req.user.sub)
+        .then((user) => {
+          return GamePlayer
+            .query()
+            .where({ gameId, userId: user.id });
+        });
+    }
   },
   Mutation: {
     createGamePlayer: (obj, { input }, context) =>
