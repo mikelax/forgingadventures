@@ -40,7 +40,7 @@ class AlmostFinished extends Component {
 
   render() {
     const { profileImageUrl } = this.state.store;
-    console.log('this._validity', this._validity('username'))
+
     return (
       <React.Fragment>
         <Helmet>
