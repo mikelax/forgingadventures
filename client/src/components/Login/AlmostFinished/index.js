@@ -2,18 +2,17 @@ import _ from 'lodash';
 import axios from 'axios';
 import Bluebird from 'bluebird';
 import React, { Component } from 'react';
-import {graphql} from 'react-apollo';
-import { Button, ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
-import { Container } from 'semantic-ui-react';
+import { graphql } from 'react-apollo';
+import { Button, Container, Form, Message } from 'semantic-ui-react';
 import TimezonePicker from 'react-bootstrap-timezone-picker';
 import { Helmet } from "react-helmet";
 
 import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css';
 import './AlmostFinished.styl';
-import {compose} from "recompose";
+import { compose } from "recompose";
 import ApolloLoader from "../../shared/components/ApolloLoader";
-import {updateMeMutation, meQuery, validUsernameQuery} from '../../../queries/users';
-import {getAccessToken} from '../../../services/login';
+import { meQuery, updateMeMutation, validUsernameQuery } from '../../../queries/users';
+import { getAccessToken } from '../../../services/login';
 
 class AlmostFinished extends Component {
   state = {
@@ -40,8 +39,8 @@ class AlmostFinished extends Component {
   }
 
   render() {
-    const {profileImageUrl} = this.state.store;
-
+    const { profileImageUrl } = this.state.store;
+    console.log('this._validity', this._validity('username'))
     return (
       <React.Fragment>
         <Helmet>
@@ -53,45 +52,47 @@ class AlmostFinished extends Component {
             <h1>You're mere steps away from starting your Adventure</h1>
             <h2>But first, you must finish completing your Profile</h2>
 
-            <form>
-              <FormGroup validationState={this._validity('username')}>
-                <ControlLabel>Unique Username</ControlLabel>
-                <FormControl
-                  type="text"
+            <Form>
+              <Form.Field required>
+                <label>Unique Username</label>
+                <Form.Input
+                  error={this._validity('username')}
                   placeholder="Enter Your Username"
                   value={this._formValue('username')}
                   onChange={this._formInput('username')}
                 />
-                <HelpBlock>{_.get(this.state, 'errors.username')}</HelpBlock>
-              </FormGroup>
+                <Message error visible={this._validity('username')} size="small">
+                  Sorry, That Username is taken.
+                </Message>
+              </Form.Field>
 
-              <FormGroup validationState={this._validity('name')}>
-                <ControlLabel>Name</ControlLabel>
-                <FormControl
-                  type="text"
+              <Form.Field required>
+                <label>Name</label>
+                <Form.Input
+                  required
+                  error={this._validity('name')}
                   placeholder="Enter Your Name"
                   value={this._formValue('name')}
                   onChange={this._formInput('name')}
                 />
-                <HelpBlock>{_.get(this.state, 'errors.name')}</HelpBlock>
-              </FormGroup>
+              </Form.Field>
 
-              <FormGroup>
-                <ControlLabel>Profile Image</ControlLabel>
+              <Form.Field>
+                <label>Profile Image</label>
                 {
                   profileImageUrl ? (
                     <div className="profile-image"><img src={profileImageUrl} alt=""/></div>
                   ) : null
                 }
-                <FormControl
+                <Form.Input
                   type="file"
                   placeholder="Select profile image"
                   onChange={this._handleImage}
                 />
-              </FormGroup>
+              </Form.Field>
 
-              <FormGroup>
-                <ControlLabel>Location</ControlLabel>
+              <Form.Field>
+                <label>Location</label>
                 <TimezonePicker
                   absolute={false}
                   placeholder="Select timezone..."
@@ -99,15 +100,16 @@ class AlmostFinished extends Component {
                   overflow="false"
                   onChange={this._setTimezone}
                 />
-              </FormGroup>
+              </Form.Field>
 
-            </form>
+              <div className="actions text-right">
+                <Button primary disabled={this.state.saving} loading={this.state.saving} onClick={this._submit}>
+                  {this.state.saving ? 'Submitting' : 'Submit'}
+                </Button>
+              </div>
 
-            <div className="actions text-right">
-              <Button bsStyle="primary" disabled={this.state.saving} onClick={this._submit}>
-                { this.state.saving ? 'Submitting' : 'Submit' }
-              </Button>
-            </div>
+            </Form>
+
           </Container>
         </div>
       </React.Fragment>
@@ -121,12 +123,12 @@ class AlmostFinished extends Component {
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      const {store} = this.state;
+      const { store } = this.state;
 
       store.profileImageUrl = reader.result;
 
-      this.setState({...this.state, store});
-      this.setState({file});
+      this.setState({ ...this.state, store });
+      this.setState({ file });
     };
 
     reader.readAsDataURL(file);
@@ -136,11 +138,11 @@ class AlmostFinished extends Component {
     const errors = {};
 
     return Bluebird.try(() => {
-      const {validUsername} = this.props;
+      const { validUsername } = this.props;
       const username = this._formValue('username');
 
-      _.isEmpty(username) && (errors.username = 'Username is required');
-      _.isEmpty(this._formValue('name')) && (errors.name = 'Name is required');
+      errors.username = _.isEmpty(username);
+      errors.name = _.isEmpty(this._formValue('name'));
 
       if (username) {
         return validUsername({
@@ -149,22 +151,18 @@ class AlmostFinished extends Component {
           }
         })
           .then((res) => {
-            const {validUsername} = res.data;
+            const { validUsername } = res.data;
 
-            if (!(validUsername)) {
-              errors.username = 'Username is taken';
-            }
+            errors.username = !(validUsername);
           });
       }
     })
-      .then(() => _.keys(errors).length === 0)
-      .tap(() => this.setState({...this.state, errors}));
+      .then(() => _(errors).values().sumBy(v => v) === 0)
+      .tap(() => this.setState({ errors }));
   };
 
   _validity = (field) => {
-    if (this.state.errors[field]) {
-      return 'error';
-    }
+    return this.state.errors[field] === true;
   };
 
   _formInput = (stateKey) => {
@@ -172,14 +170,14 @@ class AlmostFinished extends Component {
       const { store } = this.state;
 
       _.set(store, stateKey, e.target.value);
-      this.setState({...this.state, store});
+      this.setState({ ...this.state, store });
     };
   };
 
   _setTimezone = (timezone) => {
     const { store } = this.state;
     _.set(store, 'timezone', timezone);
-    this.setState({...this.state, store});
+    this.setState({ ...this.state, store });
   };
 
   _formValue = (stateKey) => {
@@ -190,9 +188,9 @@ class AlmostFinished extends Component {
     return this._valid()
       .then((valid) => {
         if (valid) {
-          const {store} = this.state;
+          const { store } = this.state;
 
-          this.setState({saving: true});
+          this.setState({ saving: true });
 
           return this._uploadImage()
             .then((imageDetails) => {
@@ -210,14 +208,14 @@ class AlmostFinished extends Component {
                 };
               }
 
-              const {updateMe} = this.props;
+              const { updateMe } = this.props;
 
               return updateMe({
                 variables: {
                   input: payload
                 }
               })
-                .then(() => this.setState({saving: false}))
+                .then(() => this.setState({ saving: false }))
                 .then(() => this.props.history.replace('/games'));
             });
         }
@@ -227,7 +225,7 @@ class AlmostFinished extends Component {
   _uploadImage = () => {
     return Bluebird.try(() => {
       const data = new FormData();
-      const {file} = this.state;
+      const { file } = this.state;
 
       if (file) {
         data.append('picture', this.state.file);
@@ -242,7 +240,7 @@ class AlmostFinished extends Component {
           .then(res => res.data);
       }
     });
-  }
+  };
 }
 
 export default compose(

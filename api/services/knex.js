@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import config from 'config';
 
 import logger from 'services/logger';
@@ -27,8 +28,9 @@ knex
     const { startTime } = times[uid];
     const endTime = Date.now();
     const elapsedTime = endTime - startTime;
+    const bindings = _(query.bindings).map(b => _.isObject(b) ? JSON.stringify(b) : b).join(',');
 
-    logger.info(query.sql, `- [${query.bindings ? query.bindings.join(',') : ''}] - ${elapsedTime.toFixed(3)} ms`);
+    logger.info(query.sql, `- [${bindings}] - ${elapsedTime.toFixed(3)} ms`);
 
     delete times[uid];
   });
