@@ -4,7 +4,7 @@ import {Button, ControlLabel, FormGroup} from 'react-bootstrap';
 
 import GameLoungeMessage from '../../components/GameLoungeMessage';
 
-import {createGameLoungeMessageMutation} from '../../queries';
+import {createGameLoungeMessageMutation} from '../../queries'; 
 
 class CreateGameLoungeMessage extends Component {
 
