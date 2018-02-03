@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, {Component} from 'react';
 import {graphql} from 'react-apollo';
 import {compose, pure} from "recompose";
-import { Button, Image, List, Popup, Grid, Header } from 'semantic-ui-react';
+import { Button, Image, List, Popup, Icon } from 'semantic-ui-react';
 
 import { gamePlayersQuery } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
@@ -40,7 +40,7 @@ class GamePlayers extends Component {
   _gmActions = () => {
     return (
       <Popup
-        trigger={<Button>GM Action</Button>}
+        trigger={<Button icon><Icon name="setting" /></Button>}
         flowing
         hoverable
       >
