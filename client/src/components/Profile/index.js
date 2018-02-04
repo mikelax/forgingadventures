@@ -1,8 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Panel, ControlLabel, Glyphicon } from 'react-bootstrap';
-import { Container } from 'semantic-ui-react';
+import { Container, Item } from 'semantic-ui-react';
 
 import {getProfile} from '../../services/webAuth';
 
@@ -27,17 +26,15 @@ export default class Profile extends Component {
     if (profile) {
       return (
         <Container>
-          <div className="profile-area">
-            <h1>{profile.name}</h1>
-            <Panel header="Profile">
-              <img src={profile.picture} alt="profile" />
-              <div>
-                <ControlLabel><Glyphicon glyph="user" /> Nickname</ControlLabel>
-                <h3>{profile.nickname}</h3>
-              </div>
-              <pre>{JSON.stringify(profile, null, 2)}</pre>
-            </Panel>
-          </div>
+          <Item>
+            <Item.Image src={profile.picture} />
+            <Item.Content>
+              <Item.Header as='h1'>{profile.name}</Item.Header>
+              <Item.Meta>{profile.nickname}</Item.Meta>
+              <Item.Description><pre>{JSON.stringify(profile, null, 2)}</pre></Item.Description>
+            </Item.Content>
+
+          </Item>
         </Container>
       );
     } else {

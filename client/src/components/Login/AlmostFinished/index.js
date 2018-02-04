@@ -6,13 +6,15 @@ import { graphql } from 'react-apollo';
 import { Button, Container, Form, Message } from 'semantic-ui-react';
 import TimezonePicker from 'react-bootstrap-timezone-picker';
 import { Helmet } from "react-helmet";
+import { compose } from "recompose";
 
 import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css';
-import './AlmostFinished.styl';
-import { compose } from "recompose";
 import ApolloLoader from "../../shared/components/ApolloLoader";
 import { meQuery, updateMeMutation, validUsernameQuery } from '../../../queries/users';
 import { getAccessToken } from '../../../services/login';
+
+import './AlmostFinished.styl';
+
 
 class AlmostFinished extends Component {
   state = {

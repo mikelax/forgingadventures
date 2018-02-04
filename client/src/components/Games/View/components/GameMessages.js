@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import moment from "moment";
 import React, {Component} from 'react';
-import {graphql} from 'react-apollo';
-import {compose, pure} from "recompose";
-import {Button} from 'react-bootstrap';
+import { graphql } from 'react-apollo';
+import { compose, pure } from "recompose";
+import { Header,  Comment, Icon } from 'semantic-ui-react';
 
 import GameMessage from '../../components/GameMessage';
 
@@ -24,13 +24,15 @@ class GameMessages extends Component {
     const { data: { gameMessages } } = this.props;
 
     return <div className='game-messages'>
-      <h1>Messages</h1>
+      <Header as="h1">Messages</Header>
 
-      {_.map(gameMessages, (gameMessage) => (
-        <div key={gameMessage.id} className='game-message'>
-          <GameMessageContainer gameMessage={gameMessage} />
-        </div>
-      ))}
+      <Comment.Group>
+        {_.map(gameMessages, (gameMessage) => (
+          <div key={gameMessage.id} className='game-message'>
+            <GameMessageContainer gameMessage={gameMessage} />
+          </div>
+        ))}
+      </Comment.Group>
     </div>;
   }
 
@@ -104,25 +106,45 @@ class GameMessageContainerBase extends Component {
     const {editing} = this.state;
 
     return (
-      <div className="game-message">
-        <div className="header">
-          <div className="stats">
-            <div className="message-stats">
-              <div>Posted {this._relativeDate(gameMessage.created_at)}</div>
-              {this._lastEdited()}
+      <Comment>
+        <Comment.Avatar><Icon name="user" /></Comment.Avatar>
+        <Comment.Content>
+          <Comment.Author>Character name</Comment.Author>
+          <Comment.Metadata>
+            <div>
+              Posted {this._relativeDate(gameMessage.created_at)}
             </div>
-          </div>
-        </div>
+            {this._lastEdited()}
+          </Comment.Metadata>
+          <Comment.Text>
+            <GameMessage message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+          </Comment.Text>
+          <Comment.Actions>
+            {this._messageControls()}
+          </Comment.Actions>
+        </Comment.Content>
+      </Comment>
 
-        <div className="game-message-content">
-          <GameMessage message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
-        </div>
 
-        <div className="editor-controls text-right">
-          {this._messageControls()}
-        </div>
-
-      </div>
+      // <div className="game-message">
+      //   <div className="header">
+      //     <div className="stats">
+      //       <div className="message-stats">
+      //         <div>Posted {this._relativeDate(gameMessage.created_at)}</div>
+      //         {this._lastEdited()}
+      //       </div>
+      //     </div>
+      //   </div>
+      //
+      //   <div className="game-message-content">
+      //     <GameMessage message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+      //   </div>
+      //
+      //   <div className="editor-controls text-right">
+      //     {this._messageControls()}
+      //   </div>
+      //
+      // </div>
     );
   }
 
@@ -134,16 +156,16 @@ class GameMessageContainerBase extends Component {
     return editing ? this._editingControls() : this._viewingControls();
   };
 
-  _viewingControls = () => {
-    return <Button bsStyle="default" bsSize="xsmall" onClick={this._handleEdit}>edit</Button>;
-  };
+  _viewingControls = () => (
+    <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action>
+);
 
-  _editingControls = () => {
-    return <React.Fragment>
-      <Button bsStyle="primary" onClick={this._handleSubmit}>Submit</Button>
-      <Button onClick={this._handleCancel}>Cancel</Button>
-    </React.Fragment>;
-  };
+  _editingControls = () => (
+    <React.Fragment>
+      <Comment.Action onClick={this._handleSubmit}>Update</Comment.Action>
+      <Comment.Action onClick={this._handleCancel}>Cancel</Comment.Action>
+    </React.Fragment>
+  );
 
   _handleEdit = () => {
     this.setState({editing: true});

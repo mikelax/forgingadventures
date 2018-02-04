@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier} from 'draft-js';
-import {getSelectionEntity} from 'draftjs-utils';
+import { CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier } from 'draft-js';
+import { getSelectionEntity } from 'draftjs-utils';
 
 import 'draft-js/dist/Draft.css';
 import './assets/GameMessage.styl';
@@ -25,7 +25,7 @@ export default class GamesMessage extends Component {
   };
 
   componentWillMount() {
-    const {message} = this.props;
+    const { message } = this.props;
 
     if (message) {
       this.setState({
@@ -47,8 +47,8 @@ export default class GamesMessage extends Component {
   }
 
   render() {
-    const {editorState} = this.state;
-    const {readOnly} = this.props;
+    const { editorState } = this.state;
+    const { readOnly } = this.props;
 
     const editorControls = readOnly ? null :
       <ActionControls
@@ -57,12 +57,13 @@ export default class GamesMessage extends Component {
       />;
 
     return (
-      <div className="GameMessage">
+      <div className="GameMessage" onClick={this._focus}>
         {editorControls}
         <div className="editor-container">
           <Editor editorState={editorState}
                   onChange={onEditorChange.bind(this)}
-                  readOnly={readOnly} />
+                  ref="editor"
+                  readOnly={readOnly}/>
         </div>
       </div>
     );
@@ -78,19 +79,21 @@ export default class GamesMessage extends Component {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
 
+  _focus = () => this.refs.editor.focus();
+
 }
 
 /// private GamesMessage methods - i.e. handlers etc...
 
 function onEditorChange(editorState) {
   const content = editorState.getCurrentContent();
-  const {onChange} = this.props;
+  const { onChange } = this.props;
 
-  this.setState({editorState});
+  this.setState({ editorState });
 
   onChange && onChange({
     hasContent: content.hasText()
-  });    
+  });
 
 }
 
@@ -140,7 +143,7 @@ function onToggleAction(entityKey) {
  */
 
 const ActionControls = (props) => {
-  const {editorState} = props;
+  const { editorState } = props;
   const selectionEntity = getSelectionEntity(editorState);
 
   return (

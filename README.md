@@ -73,7 +73,7 @@ schemas in the [schemas](./api/schemas) folder.
 - Server API powered by Express
 - [Auth0](https://auth0.com/docs/quickstart/spa/react)
 - [React Router](https://reacttraining.com/react-router/web/guides/philosophy) v4
-- [React Bootstrap](https://react-bootstrap.github.io/)
+- [React Semantic UI](https://react.semantic-ui.com)
 - [Docker](https://www.docker.com/)
 - [Postgres 9.6](https://www.postgresql.org/docs/9.6/static/index.html)
 - [Webpack3](https://webpack.js.org/) with [babel](https://babeljs.io/) on the API for ES6/ES7 language features

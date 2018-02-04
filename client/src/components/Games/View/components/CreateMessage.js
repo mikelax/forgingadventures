@@ -10,7 +10,7 @@ class CreateMessage extends Component {
 
   state = {
     hasContent: false
-  }
+  };
 
   render() {
     return (
@@ -28,12 +28,12 @@ class CreateMessage extends Component {
   }
 
   _handeOnChange = (data) => {
-    this.setState({hasContent: data.hasContent}); 
-  }
+    this.setState({ hasContent: data.hasContent });
+  };
 
   _submit = () => {
-    const {hasContent} = this.state;
-    const {mutate} = this.props;
+    const { hasContent } = this.state;
+    const { mutate } = this.props;
 
     hasContent && mutate({
       variables: {
@@ -43,10 +43,10 @@ class CreateMessage extends Component {
         }
       }
     })
-    .then(() => {
-      this.editor.clear();
-    });
-}
+      .then(() => {
+        this.editor.clear();
+      });
+  };
 }
 
 export default graphql(createGameMessageMutation)(CreateMessage);

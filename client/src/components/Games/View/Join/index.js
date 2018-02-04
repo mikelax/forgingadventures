@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from "react-helmet";
-import { Button, ControlLabel, FormGroup, FormControl } from 'react-bootstrap';
+import { Button, Form, Header } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
+
 import {gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation} from '../../queries';
 import {compose} from 'recompose';
 
@@ -28,18 +29,19 @@ const JoinGame = class JoinGame extends Component {
         </Helmet>
 
         <div className="JoinGame">
-          <h1>You're one step away from the Adventure</h1>
+          <Header as="h1">You're one step away from the Adventure</Header>
 
-          <form>
-            <FormGroup controlId="formControlsTextarea">
-              <ControlLabel>Replace with Rich Editor</ControlLabel>
-              <FormControl componentClass="textarea" placeholder="textarea" />
-            </FormGroup>
-          </form>
+          <Form>
+            <Form.Field>
+              <label>Replace with Rich Editor</label>
+              <Form.TextArea placeholder="placeholder here" />
+            </Form.Field>
 
-          <div className="actions text-right">
-            <Button bsStyle="primary" onClick={this._submit}>Submit</Button>
-          </div>
+            <div>
+              <Button primary onClick={this._submit}>Submit</Button>
+            </div>
+          </Form>
+
         </div>
       </React.Fragment>
     );
