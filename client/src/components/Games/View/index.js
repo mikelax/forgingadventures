@@ -35,7 +35,7 @@ class ViewGame extends Component {
               <Breadcrumb.Section as={Link} to="/">Home</Breadcrumb.Section>
               <Breadcrumb.Divider icon='right chevron' />
               <Breadcrumb.Section as={Link} to="/games">Games</Breadcrumb.Section>
-              <Breadcrumb.Divider icon='right arrow' />
+              <Breadcrumb.Divider icon='right chevron' />
               <Breadcrumb.Section active>{this.props.data.game.title}</Breadcrumb.Section>
             </Breadcrumb>
           </Segment>

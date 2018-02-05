@@ -19,7 +19,7 @@ class GamePlayers extends Component {
           {_.map(gamePlayers, (player) => (
             <List.Item key={player.id}>
               <List.Content floated='right'>
-                {this._gmActions()}
+                {this._gmActions(player.status)}
               </List.Content>
               <Image avatar src={_.get(player, 'user.profileImage.url')} />
               <List.Content>
@@ -37,20 +37,22 @@ class GamePlayers extends Component {
 
   ////// private
 
-  _gmActions = () => {
-    return (
-      <Popup
-        trigger={<Button icon><Icon name="setting" /></Button>}
-        flowing
-        hoverable
-      >
-        <Button.Group>
-          <Button positive>Approve</Button>
-          <Button.Or />
-          <Button negative>Reject</Button>
-        </Button.Group>
-      </Popup>
-    );
+  _gmActions = (status) => {
+    if (status === 'pending') {
+      return (
+        <Popup
+          trigger={<Button icon><Icon name="setting" /></Button>}
+          flowing
+          hoverable
+        >
+          <Button.Group>
+            <Button positive>Approve</Button>
+            <Button.Or />
+            <Button negative>Reject</Button>
+          </Button.Group>
+        </Popup>
+      );
+    }
   };
 
   _userProfileImage = (player) => {
