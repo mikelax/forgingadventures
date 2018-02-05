@@ -4,8 +4,8 @@ import { Helmet } from "react-helmet";
 import { Button, Form, Header } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 
-import {gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation} from '../../queries';
-import {compose} from 'recompose';
+import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
+import { compose } from 'recompose';
 
 const JoinGame = class JoinGame extends Component {
 

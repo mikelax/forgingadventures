@@ -1,5 +1,5 @@
-import {AUTH_FAILURE, AUTH_SUCCESS, LOGOUT_SUCCESS} from '../actions/auth';
-import {isAuthenticated} from '../services/login';
+import { AUTH_FAILURE, AUTH_SUCCESS, LOGOUT_SUCCESS } from '../actions/auth';
+import { isAuthenticated } from '../services/login';
 
 export default function authReducer(state = {
   isAuthenticated: isAuthenticated(),

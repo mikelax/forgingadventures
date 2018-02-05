@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import React, {Component} from 'react';
-import {graphql} from 'react-apollo';
-import {compose, pure} from "recompose";
+import React, { Component } from 'react';
+import { graphql } from 'react-apollo';
+import { compose, pure } from "recompose";
 import { Button, Image, List, Popup, Icon } from 'semantic-ui-react';
 
 import { gamePlayersQuery } from '../../queries';

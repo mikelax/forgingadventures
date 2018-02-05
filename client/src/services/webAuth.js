@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js';
 import Bluebird from 'bluebird';
 
-import {requestedScopes, getAccessToken, getAccessTokenExpiresAt, setSession} from './login';
+import { requestedScopes, getAccessToken, getAccessTokenExpiresAt, setSession } from './login';
 
 const webAuth = new auth0.WebAuth({
   domain: process.env.REACT_APP_AUTH0_DOMAIN,

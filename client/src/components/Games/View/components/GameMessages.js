@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from "moment";
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
 import { Header,  Comment, Icon } from 'semantic-ui-react';
@@ -67,11 +67,11 @@ class GameMessages extends Component {
           return prev;
         }
 
-        const {messageUpdated} = subscriptionData.data;
+        const { messageUpdated } = subscriptionData.data;
         // fixme - this mutates the existing object. refactor
         // fixme - https://redux.js.org/docs/recipes/reducers/ImmutableUpdatePatterns.html#updating-an-item-in-an-array
         _.chain(prev.gameMessages)
-          .find({id: messageUpdated.id})
+          .find({ id: messageUpdated.id })
           .merge(messageUpdated)
           .value();
 
@@ -102,8 +102,8 @@ class GameMessageContainerBase extends Component {
   };
 
   render() {
-    const {gameMessage} = this.props;
-    const {editing} = this.state;
+    const { gameMessage } = this.props;
+    const { editing } = this.state;
 
     return (
       <Comment>
@@ -151,7 +151,7 @@ class GameMessageContainerBase extends Component {
   ////// private
 
   _messageControls = () => {
-    const {editing} = this.state;
+    const { editing } = this.state;
 
     return editing ? this._editingControls() : this._viewingControls();
   };
@@ -168,11 +168,11 @@ class GameMessageContainerBase extends Component {
   );
 
   _handleEdit = () => {
-    this.setState({editing: true});
+    this.setState({ editing: true });
   };
 
   _handleSubmit = () => {
-    const {updateMessage, gameMessage} = this.props;
+    const { updateMessage, gameMessage } = this.props;
 
     return updateMessage({
       variables: {
@@ -182,15 +182,15 @@ class GameMessageContainerBase extends Component {
         }
       }
     })
-      .then(() => this.setState({editing: false}));
+      .then(() => this.setState({ editing: false }));
   };
 
   _handleCancel = () => {
-    this.setState({editing: false});
+    this.setState({ editing: false });
   };
 
   _lastEdited = () => {
-    const {gameMessage} = this.props;
+    const { gameMessage } = this.props;
 
     if (gameMessage.numberEdits) {
       return (

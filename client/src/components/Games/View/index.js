@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import { compose, pure } from "recompose";
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
@@ -98,7 +98,7 @@ function gameDetails() {
 
     <div className="joinGame">{joinGame.call(this)}</div>
 
-    <Tab menu={{pointing: true}} panes={panes}/>
+    <Tab menu={{ pointing: true }} panes={panes}/>
   </div>;
 }
 

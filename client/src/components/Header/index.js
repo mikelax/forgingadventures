@@ -1,13 +1,13 @@
-import React, {Component} from "react";
-import {Link, NavLink} from 'react-router-dom';
-import {connect} from 'react-redux';
+import React, { Component } from "react";
+import { Link, NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import logo from './logo.png';
 import './Header.styl';
 
-import {Container, Icon, Image, Menu, Responsive} from "semantic-ui-react";
+import { Container, Icon, Image, Menu, Responsive } from "semantic-ui-react";
 
-import {logout} from '../../actions/auth';
+import { logout } from '../../actions/auth';
 
 const NavBarDesktop = () => (
     <Menu inverted>
@@ -31,7 +31,7 @@ class NavBarMobile extends Component {
   };
 
   render() {
-    const {visible} = this.state;
+    const { visible } = this.state;
 
     return (
       <React.Fragment>
@@ -64,12 +64,12 @@ class NavBarMobile extends Component {
   }
 
   _toggleMenu = () => {
-    this.setState({visible: !this.state.visible});
+    this.setState({ visible: !this.state.visible });
   };
 
 }
 
-const LeftMenuItemsBase = ({authorisation: {isAuthenticated}}) => {
+const LeftMenuItemsBase = ({ authorisation: { isAuthenticated } }) => {
   return (
     <React.Fragment>
       <Menu.Item as={NavLink} name="Home" exact to="/"/>
@@ -82,7 +82,7 @@ const LeftMenuItemsBase = ({authorisation: {isAuthenticated}}) => {
   );
 };
 
-const RightMenuItemsBase = ({authorisation: {isAuthenticated}, logout}) => {
+const RightMenuItemsBase = ({ authorisation: { isAuthenticated }, logout }) => {
   return (
     <React.Fragment>
       {
@@ -105,12 +105,12 @@ const mapStateToProps = state => ({
 });
 
 const LeftMenuItems = connect(
-  mapStateToProps, null, null, {pure: false}
+  mapStateToProps, null, null, { pure: false }
 )(LeftMenuItemsBase);
 
 const RightMenuItems = connect(
   mapStateToProps,
-  mapDispatchToProps, null, {pure: false}
+  mapDispatchToProps, null, { pure: false }
 )(RightMenuItemsBase);
 
 export default class Header extends Component {

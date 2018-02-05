@@ -2,7 +2,7 @@ import Auth0Lock from 'auth0-lock';
 import Bluebird from 'bluebird';
 import history from "./history";
 
-import {scheduleRenewal, clearRenewalTimer} from './webAuth';
+import { scheduleRenewal, clearRenewalTimer } from './webAuth';
 
 export const requestedScopes = 'openid profile email create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
 

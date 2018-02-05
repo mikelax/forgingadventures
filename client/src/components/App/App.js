@@ -2,9 +2,9 @@
 
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import {connect} from "react-redux";
-import {Helmet} from "react-helmet";
-import {Router, Route, Switch} from 'react-router-dom';
+import { connect } from "react-redux";
+import { Helmet } from "react-helmet";
+import { Router, Route, Switch } from 'react-router-dom';
 
 import About from '../About';
 import AuthGuard from '../shared/components/AuthGuard';
@@ -14,12 +14,12 @@ import Home from '../Home';
 import Login from '../Login';
 import Profile from '../Profile';
 
-import {processAuth} from '../../services/login';
+import { processAuth } from '../../services/login';
 import AlmostFinished from '../Login/AlmostFinished';
 import Games from '../Games';
 import history from '../../services/history';
-import {authFailure, authSuccess} from '../../actions/auth';
-import {getMyDetails} from '../../actions/me';
+import { authFailure, authSuccess } from '../../actions/auth';
+import { getMyDetails } from '../../actions/me';
 
 
 import './App.styl';
@@ -32,7 +32,7 @@ class App extends Component {
   };
 
   componentWillMount() {
-    const {authSuccess, authFailure, getMyDetails} = this.props;
+    const { authSuccess, authFailure, getMyDetails } = this.props;
 
     return processAuth()
       .then((token) => authSuccess(token))

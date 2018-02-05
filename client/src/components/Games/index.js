@@ -12,7 +12,7 @@ import AuthGuard from '../shared/components/AuthGuard';
 export default class Campaigns extends Component {
 
   render() {
-    const {match} = this.props;
+    const { match } = this.props;
 
     return (
       <div className="games">

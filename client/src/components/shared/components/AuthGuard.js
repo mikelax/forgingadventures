@@ -1,7 +1,7 @@
 import React from 'react';
-import {compose, pure, branch, renderComponent} from 'recompose';
+import { compose, pure, branch, renderComponent } from 'recompose';
 import { Redirect } from 'react-router-dom';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 export default function(ProtectedComponent) {
   return compose(

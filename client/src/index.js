@@ -18,7 +18,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 
 import App from './components/App/App';
 import reducers from './reducers';
-import {getAuthorizationHeader, getAccessToken, isAuthenticated} from './services/login';
+import { getAuthorizationHeader, getAccessToken, isAuthenticated } from './services/login';
 import registerServiceWorker from './registerServiceWorker';
 
 import 'semantic-ui-css/semantic.min.css';

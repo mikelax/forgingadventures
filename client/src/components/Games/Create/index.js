@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import React, {Component} from 'react';
-import {graphql} from 'react-apollo';
+import React, { Component } from 'react';
+import { graphql } from 'react-apollo';
 import { Form, Button } from 'semantic-ui-react';
-import {Helmet} from "react-helmet";
-import {Redirect} from 'react-router-dom';
+import { Helmet } from "react-helmet";
+import { Redirect } from 'react-router-dom';
 
-import {skillLevels, postingFrequencies} from '../utils/gameSettings';
-import {createGameMutation, gamesQuery} from '../queries';
+import { skillLevels, postingFrequencies } from '../utils/gameSettings';
+import { createGameMutation, gamesQuery } from '../queries';
 
 const CreateGame = class CreateGame extends Component {
 
@@ -146,7 +146,7 @@ const CreateGame = class CreateGame extends Component {
           },
           refetchQueries: [{
             query: gamesQuery,
-            variables: {offset: 0}
+            variables: { offset: 0 }
           }]
         })
         .then(() => this.setState({ saved: true }));
@@ -160,7 +160,7 @@ const CreateGame = class CreateGame extends Component {
     errors.scenario = _.isEmpty(this._formValue('scenario'));
     errors.overview = _.isEmpty(this._formValue('overview'));
 
-    this.setState({errors});
+    this.setState({ errors });
 
     return _(errors).values().sumBy(v => v) === 0;
   };
@@ -174,7 +174,7 @@ const CreateGame = class CreateGame extends Component {
       const { store } = this.state;
 
       _.set(store, stateKey, e.target.value);
-      this.setState({...this.state, store});
+      this.setState({ ...this.state, store });
     };
   };
 

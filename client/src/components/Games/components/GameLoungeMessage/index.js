@@ -1,5 +1,5 @@
-import {convertFromRaw, convertToRaw, Editor, EditorState, RichUtils} from 'draft-js';
-import React, {Component} from 'react';
+import { convertFromRaw, convertToRaw, Editor, EditorState, RichUtils } from 'draft-js';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import './assets/GameLoungeMessage.styl';
@@ -17,7 +17,7 @@ export default class RichEditorExample extends Component {
   };
 
   componentWillMount() {
-    const {message} = this.props;
+    const { message } = this.props;
 
     if (message) {
       this.setState({
@@ -39,8 +39,8 @@ export default class RichEditorExample extends Component {
   }
 
   render() {
-    const {editorState} = this.state;
-    const {readOnly} = this.props;
+    const { editorState } = this.state;
+    const { readOnly } = this.props;
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
@@ -84,8 +84,8 @@ export default class RichEditorExample extends Component {
   }
 
   _renderToolbar = () => {
-    const {editorState} = this.state;
-    const {readOnly} = this.props;
+    const { editorState } = this.state;
+    const { readOnly } = this.props;
 
     if (!(readOnly)) {
       return (
@@ -110,9 +110,9 @@ export default class RichEditorExample extends Component {
 
   _onChange = (editorState) => {
     const content = editorState.getCurrentContent();
-    const {onChange} = this.props;
+    const { onChange } = this.props;
 
-    this.setState({editorState});
+    this.setState({ editorState });
 
     onChange && onChange({
       hasContent: content.hasText()
@@ -120,7 +120,7 @@ export default class RichEditorExample extends Component {
   };
 
   _handleKeyCommand = (command) => {
-    const {editorState} = this.state;
+    const { editorState } = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this._onChange(newState);
@@ -189,19 +189,19 @@ class StyleButton extends React.Component {
 }
 
 const BLOCK_TYPES = [
-  {label: 'H1', style: 'header-one'},
-  {label: 'H2', style: 'header-two'},
-  {label: 'H3', style: 'header-three'},
-  {label: 'H4', style: 'header-four'},
-  {label: 'H5', style: 'header-five'},
-  {label: 'H6', style: 'header-six'},
-  {label: 'Blockquote', style: 'blockquote'},
-  {label: 'UL', style: 'unordered-list-item'},
-  {label: 'OL', style: 'ordered-list-item'}
+  { label: 'H1', style: 'header-one' },
+  { label: 'H2', style: 'header-two' },
+  { label: 'H3', style: 'header-three' },
+  { label: 'H4', style: 'header-four' },
+  { label: 'H5', style: 'header-five' },
+  { label: 'H6', style: 'header-six' },
+  { label: 'Blockquote', style: 'blockquote' },
+  { label: 'UL', style: 'unordered-list-item' },
+  { label: 'OL', style: 'ordered-list-item' }
 ];
 
 const BlockStyleControls = (props) => {
-  const {editorState} = props;
+  const { editorState } = props;
   const selection = editorState.getSelection();
   const blockType = editorState
     .getCurrentContent()
@@ -224,9 +224,9 @@ const BlockStyleControls = (props) => {
 };
 
 const INLINE_STYLES = [
-  {label: 'Bold', style: 'BOLD'},
-  {label: 'Italic', style: 'ITALIC'},
-  {label: 'Underline', style: 'UNDERLINE'}
+  { label: 'Bold', style: 'BOLD' },
+  { label: 'Italic', style: 'ITALIC' },
+  { label: 'Underline', style: 'UNDERLINE' }
 ];
 
 const InlineStyleControls = (props) => {

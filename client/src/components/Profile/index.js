@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { Container, Item } from 'semantic-ui-react';
 
-import {getProfile} from '../../services/webAuth';
+import { getProfile } from '../../services/webAuth';
 
 import './Profile.css';
 
@@ -16,7 +16,7 @@ export default class Profile extends Component {
   componentWillMount() {
     return getProfile()
       .then(profile => {
-        this.setState({profile});
+        this.setState({ profile });
       });
   }
 

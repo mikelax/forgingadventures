@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {graphql} from 'react-apollo';
+import React, { Component } from 'react';
+import { graphql } from 'react-apollo';
 import { Form, Button } from 'semantic-ui-react';
 
 import GameLoungeMessage from '../../components/GameLoungeMessage';
 
-import {createGameLoungeMessageMutation} from '../../queries'; 
+import { createGameLoungeMessageMutation } from '../../queries'; 
 
 class CreateGameLoungeMessage extends Component {
 
@@ -29,12 +29,12 @@ class CreateGameLoungeMessage extends Component {
   }
 
   _handeOnChange = (data) => {
-    this.setState({hasContent: data.hasContent}); 
+    this.setState({ hasContent: data.hasContent }); 
   };
 
   _submit = () => {
-    const {mutate} = this.props;
-    const {hasContent} = this.state;
+    const { mutate } = this.props;
+    const { hasContent } = this.state;
 
     hasContent && mutate({
       variables: {

@@ -1,4 +1,4 @@
-import {SEARCH} from '../actions/gamesSearch';
+import { SEARCH } from '../actions/gamesSearch';
 
 export default function gameSearchReducer(state = {
   gameSettings: {}

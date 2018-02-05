@@ -78,11 +78,11 @@ class GameLoungeMessages extends Component {
           return prev;
         }
 
-        const {gameLoungeMessageUpdated} = subscriptionData.data;
+        const { gameLoungeMessageUpdated } = subscriptionData.data;
         // fixme - this mutates the existing object. refactor
         // fixme - https://redux.js.org/docs/recipes/reducers/ImmutableUpdatePatterns.html#updating-an-item-in-an-array
         _.chain(prev.gameLoungeMessages)
-          .find({id: gameLoungeMessageUpdated.id})
+          .find({ id: gameLoungeMessageUpdated.id })
           .merge(gameLoungeMessageUpdated)
           .value();
 
@@ -112,9 +112,9 @@ class GameLoungeMessageContainer extends Component {
   };
 
   render() {
-    const {loungeMessage} = this.props;
-    const {user} = loungeMessage;
-    const {editing} = this.state;
+    const { loungeMessage } = this.props;
+    const { user } = loungeMessage;
+    const { editing } = this.state;
 
     return (
       <Comment>
@@ -141,7 +141,7 @@ class GameLoungeMessageContainer extends Component {
   ////// private
 
   _messageControls = () => {
-    const {editing} = this.state;
+    const { editing } = this.state;
 
     return editing ? this._editingControls() : this._viewingControls();
   };
@@ -158,11 +158,11 @@ class GameLoungeMessageContainer extends Component {
   );
 
   _handleEdit = () => {
-    this.setState({editing: true});
+    this.setState({ editing: true });
   };
 
   _handleSubmit = () => {
-    const {updateLoungeMessage, loungeMessage} = this.props;
+    const { updateLoungeMessage, loungeMessage } = this.props;
 
     return updateLoungeMessage({
       variables: {
@@ -172,15 +172,15 @@ class GameLoungeMessageContainer extends Component {
         }
       }
     })
-      .then(() => this.setState({editing: false}));
+      .then(() => this.setState({ editing: false }));
   };
 
   _handleCancel = () => {
-    this.setState({editing: false});
+    this.setState({ editing: false });
   };
 
   _userProfileImage = () => {
-    const {loungeMessage: {user}} = this.props;
+    const { loungeMessage: { user } } = this.props;
     const imageUrl = _.get(user, 'profileImage.url');
 
     if (imageUrl) {
@@ -191,7 +191,7 @@ class GameLoungeMessageContainer extends Component {
   };
 
   _lastEdited = () => {
-    const {loungeMessage} = this.props;
+    const { loungeMessage } = this.props;
 
     if (loungeMessage.numberEdits) {
       return (
