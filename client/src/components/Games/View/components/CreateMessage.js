@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Button, ControlLabel, FormGroup } from 'react-bootstrap';
+import { Form, Button } from 'semantic-ui-react';
 
 import GameMessage from '../../components/GameMessage';
 
@@ -10,30 +10,30 @@ class CreateMessage extends Component {
 
   state = {
     hasContent: false
-  }
+  };
 
   render() {
     return (
       <div className="create-message">
-        <form>
-          <FormGroup>
-            <ControlLabel>Add Message</ControlLabel>
+        <Form>
+          <Form.Field>
+            <label>Add Message</label>
             <GameMessage ref={(c) => (this.editor = c)} onChange={this._handeOnChange}/>
-          </FormGroup>
-        </form>
+          </Form.Field>
+        </Form>
 
-        <Button bsStyle="primary" onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
+        <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
       </div>
     );
   }
 
   _handeOnChange = (data) => {
-    this.setState({hasContent: data.hasContent}); 
-  }
+    this.setState({ hasContent: data.hasContent });
+  };
 
   _submit = () => {
-    const {hasContent} = this.state;
-    const {mutate} = this.props;
+    const { hasContent } = this.state;
+    const { mutate } = this.props;
 
     hasContent && mutate({
       variables: {
@@ -43,10 +43,10 @@ class CreateMessage extends Component {
         }
       }
     })
-    .then(() => {
-      this.editor.clear();
-    });
-}
+      .then(() => {
+        this.editor.clear();
+      });
+  };
 }
 
 export default graphql(createGameMessageMutation)(CreateMessage);

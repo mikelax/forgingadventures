@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "api",
+			"name": "API Server"
+		},
+		{
+			"path": "client",
+			"name": "React Client"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"**/api/**/*.js": "javascript",
+			"**/client/**/*.js": "javascriptreact"
+		},
+		"languageStylus.useSeparator": false
+	}
+}

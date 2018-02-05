@@ -58,7 +58,7 @@ export function userHasScopes(scopes) {
 
 
 ///// private
-
+// todo - promisify this function so that scheduleRenewal() can be called after completion and independently
 function renewToken() {
   webAuth.checkSession(
     {

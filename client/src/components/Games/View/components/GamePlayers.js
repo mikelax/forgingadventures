@@ -2,6 +2,8 @@ import _ from 'lodash';
 import React, {Component} from 'react';
 import {graphql} from 'react-apollo';
 import {compose, pure} from "recompose";
+import { Button, Image, List, Popup, Icon } from 'semantic-ui-react';
+
 import { gamePlayersQuery } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
@@ -12,25 +14,46 @@ class GamePlayers extends Component {
     const { data: { gamePlayers } } = this.props;
 
     return (
-      <React.Fragment>
-        <div className="GamePlayers">
+      <div className="GamePlayers">
+        <List divided verticalAlign='middle'>
           {_.map(gamePlayers, (player) => (
-            <div key={player.id} className="game-player">
-              <div className="user-image">
-                {this._userProfileImage(player)}
-                {player.user.name}
-              </div>
-              <div className="user-stats">
-                {_.startCase(player.status)}
-              </div>
-            </div>
+            <List.Item key={player.id}>
+              <List.Content floated='right'>
+                {this._gmActions(player.status)}
+              </List.Content>
+              <Image avatar src={_.get(player, 'user.profileImage.url')} />
+              <List.Content>
+                <List.Header as='a'>{player.user.name}</List.Header>
+                <List.Description>
+                  {_.startCase(player.status)}
+                </List.Description>
+              </List.Content>
+            </List.Item>
           ))}
-        </div>
-      </React.Fragment>
+        </List>
+      </div>
     );
   }
 
   ////// private
+
+  _gmActions = (status) => {
+    if (status === 'pending') {
+      return (
+        <Popup
+          trigger={<Button icon><Icon name="setting" /></Button>}
+          flowing
+          hoverable
+        >
+          <Button.Group>
+            <Button positive>Approve</Button>
+            <Button.Or />
+            <Button negative>Reject</Button>
+          </Button.Group>
+        </Popup>
+      );
+    }
+  };
 
   _userProfileImage = (player) => {
     const imageUrl = _.get(player, 'user.profileImage.url');

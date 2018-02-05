@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
-import {Button} from 'react-bootstrap';
+import { Comment, Header, Icon } from 'semantic-ui-react';
 import GameLoungeMessage from '../../components/GameLoungeMessage';
 
 import {
@@ -15,8 +15,6 @@ import {
 
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
-import './assets/GameLoungeMessages.styl';
-
 class GameLoungeMessages extends Component {
 
   componentWillMount() {
@@ -24,23 +22,29 @@ class GameLoungeMessages extends Component {
   }
 
   render() {
-    return <div className="game-lounge-messages">
-      <h2>Lounge Messages</h2>
+    const { data: { gameLoungeMessages } } = this.props;
 
-      {this.content()}
-    </div>;
+    if (_.get(gameLoungeMessages, 'length')) {
+      return <div className="game-lounge-messages">
+        <Header as="h2" dividing>Lounge Messages</Header>
+        {this.content()}
+      </div>;
+    } else {
+      return null;
+    }
+
   }
 
   content = () => {
     const { data: { gameLoungeMessages } } = this.props;
 
-    return <div>
-      {_.map(gameLoungeMessages, (loungeMessage) => (
-        <div key={loungeMessage.id} className='game-lounge-message-container'>
-          <GameLoungeMessageContainerData loungeMessage={loungeMessage} />
-        </div>
-      ))}
-    </div>;
+    return (  
+      <Comment.Group>
+        {_.map(gameLoungeMessages, (loungeMessage) => (
+            <GameLoungeMessageContainerData key={loungeMessage.id} loungeMessage={loungeMessage} />
+        ))}
+      </Comment.Group>
+    );
   };
 
   _setupSubscriptions = () => {
@@ -113,35 +117,24 @@ class GameLoungeMessageContainer extends Component {
     const {editing} = this.state;
 
     return (
-      <div className="game-lounge-message">
-        <div className="header">
-          <div className="user-image">
-            {this._userProfileImage()}
-          </div>
-          <div className="stats">
-            {
-              user.name ? (
-                <div className="message-info">
-                  Posted by {user.name}
-                </div>
-              ) : null
-            }
-            <div className="message-stats">
-              <div>Posted {this._relativeDate(loungeMessage.created_at)}</div>
-              {this._lastEdited()}
+      <Comment>
+        {this._userProfileImage()}
+        <Comment.Content>
+          <Comment.Author>{user.name}</Comment.Author>
+          <Comment.Metadata>
+            <div>
+              Posted {this._relativeDate(loungeMessage.created_at)}
             </div>
-          </div>
-        </div>
-
-        <div className="game-lounge-message-content">
-          <GameLoungeMessage message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
-        </div>
-
-        <div className="editor-controls text-right">
-          {this._messageControls()}
-        </div>
-
-      </div>
+            {this._lastEdited()}
+          </Comment.Metadata>
+          <Comment.Text>
+            <GameLoungeMessage message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+          </Comment.Text>
+          <Comment.Actions>
+            {this._messageControls()}
+          </Comment.Actions>
+        </Comment.Content>
+      </Comment>
     );
   }
 
@@ -153,16 +146,16 @@ class GameLoungeMessageContainer extends Component {
     return editing ? this._editingControls() : this._viewingControls();
   };
 
-  _viewingControls = () => {
-    return <Button bsStyle="default" bsSize="xsmall" onClick={this._handleEdit}>edit</Button>;
-  };
+  _viewingControls = () => (
+    <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> 
+  );
 
-  _editingControls = () => {
-    return <React.Fragment>
-      <Button bsStyle="primary" onClick={this._handleSubmit}>Submit</Button>
-      <Button onClick={this._handleCancel}>Cancel</Button>
-    </React.Fragment>;
-  };
+  _editingControls = () => (
+    <React.Fragment>
+      <Comment.Action onClick={this._handleSubmit}>Update</Comment.Action>
+      <Comment.Action onClick={this._handleCancel}>Cancel</Comment.Action>
+    </React.Fragment>
+  );
 
   _handleEdit = () => {
     this.setState({editing: true});
@@ -191,9 +184,9 @@ class GameLoungeMessageContainer extends Component {
     const imageUrl = _.get(user, 'profileImage.url');
 
     if (imageUrl) {
-      return <img src={imageUrl} alt=""/>;
+      return <Comment.Avatar src={imageUrl} />;
     } else {
-      return <span className="glyphicon glyphicon glyphicon-user" aria-hidden="true"/>;
+      return <Comment.Avatar><Icon name="user" /></Comment.Avatar>;
     }
   };
 

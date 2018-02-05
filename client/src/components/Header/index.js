@@ -1,82 +1,134 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import {Button, Nav, Navbar, NavItem} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import React, {Component} from "react";
+import {Link, NavLink} from 'react-router-dom';
+import {connect} from 'react-redux';
+
+import logo from './logo.png';
+import './Header.styl';
+
+import {Container, Icon, Image, Menu, Responsive} from "semantic-ui-react";
 
 import {logout} from '../../actions/auth';
 
-const Header = class extends Component {
+const NavBarDesktop = () => (
+    <Menu inverted>
+      <Menu.Item>
+        <Link to="/">
+          <Image size="mini" src={logo}/>
+        </Link>
+      </Menu.Item>
 
-  static propTypes = {
-    authorisation: PropTypes.shape({
-      isAuthenticated: PropTypes.bool.isRequired,
-      loading: PropTypes.bool,
-      error: PropTypes.object,
-    }).isRequired
+      <LeftMenuItems/>
+      <Menu.Menu position="right">
+        <RightMenuItems/>
+      </Menu.Menu>
+    </Menu>
+  )
+;
+
+class NavBarMobile extends Component {
+  state = {
+    visible: false
   };
 
   render() {
-    const {isAuthenticated} = this.props.authorisation;
+    const {visible} = this.state;
 
-    // https://github.com/react-bootstrap/react-router-bootstrap
-    // https://reacttraining.com/react-router/web/api/NavLink
-    // https://auth0.com/docs/quickstart/spa/react
     return (
-      <div>
-        <Navbar inverse fixedTop>
-          <Navbar.Header>
-            <Navbar.Brand><Link to="/">Home</Link></Navbar.Brand>
-            <Navbar.Toggle/>
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav>
-              <NavItem href="/about">About</NavItem>
-              {isAuthenticated && (
-                <NavItem href="/profile">Profile</NavItem>
-              )}
-              <NavItem href="/games">Games</NavItem>
-            </Nav>
-            <Nav pullRight>
-              {
-                !isAuthenticated && (
-                  <NavItem href="/login">Login</NavItem>
-                )
-              }
-              {
-                isAuthenticated && (
-                  <NavItem><Button
-                    bsStyle="primary"
-                    bsSize="xsmall"
-                    className="btn-margin"
-                    onClick={this.logout}
-                  >
-                    Log Out
-                  </Button></NavItem>
-                )
-              }
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-      </div>
+      <React.Fragment>
+        <Menu inverted>
+          <Menu.Item>
+            <Link to="/">
+              <Image size="mini" src={logo}/>
+            </Link>
+          </Menu.Item>
+
+          <Menu.Menu position="right">
+            <Menu.Item onClick={this._toggleMenu}>
+              <Icon name="bars"/>
+            </Menu.Item>
+          </Menu.Menu>
+        </Menu>
+
+        {
+          visible && (
+            <Menu inverted vertical fluid>
+              <LeftMenuItems/>
+              <RightMenuItems/>
+            </Menu>
+          )
+        }
+
+      </React.Fragment>
+
     );
   }
 
-  logout = () => {
-    this.props.logout();
+  _toggleMenu = () => {
+    this.setState({visible: !this.state.visible});
   };
 
+}
+
+const LeftMenuItemsBase = ({authorisation: {isAuthenticated}}) => {
+  return (
+    <React.Fragment>
+      <Menu.Item as={NavLink} name="Home" exact to="/"/>
+      <Menu.Item as={NavLink} name="About" to="/about"/>
+      {
+        isAuthenticated && <Menu.Item as={NavLink} name="Profile" to="/profile"/>
+      }
+      <Menu.Item as={NavLink} name="Games" to="/games"/>
+    </React.Fragment>
+  );
 };
 
-const mapStateToProps = state => ({
-  authorisation: state.authorisation,
-});
+const RightMenuItemsBase = ({authorisation: {isAuthenticated}, logout}) => {
+  return (
+    <React.Fragment>
+      {
+        !(isAuthenticated) && <Menu.Item as={Link} name="Login" to="/login"/>
+      }
+      {
+        isAuthenticated && <Menu.Item as="a" name="Logout" onClick={logout}/>
+      }
+    </React.Fragment>
+  );
+};
+
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout())
 });
 
-export default connect(
+const mapStateToProps = state => ({
+  authorisation: state.authorisation,
+});
+
+const LeftMenuItems = connect(
+  mapStateToProps, null, null, {pure: false}
+)(LeftMenuItemsBase);
+
+const RightMenuItems = connect(
   mapStateToProps,
-  mapDispatchToProps,
-)(Header);
+  mapDispatchToProps, null, {pure: false}
+)(RightMenuItemsBase);
+
+export default class Header extends Component {
+  render() {
+    return (
+      <div className="navbar">
+        <Container>
+          <Responsive {...Responsive.onlyMobile}>
+            <NavBarMobile/>
+          </Responsive>
+
+          <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+            <NavBarDesktop/>
+          </Responsive>
+        </Container>
+      </div>
+    );
+  }
+}
+
+

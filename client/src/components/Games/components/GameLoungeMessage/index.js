@@ -117,7 +117,7 @@ export default class RichEditorExample extends Component {
     onChange && onChange({
       hasContent: content.hasText()
     });    
-  }
+  };
 
   _handleKeyCommand = (command) => {
     const {editorState} = this.state;

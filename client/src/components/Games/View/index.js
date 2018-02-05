@@ -4,7 +4,7 @@ import {Helmet} from "react-helmet";
 import { compose, pure } from "recompose";
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
-import {Button, Tab, Tabs} from 'react-bootstrap';
+import { Button, Breadcrumb, Tab, Segment, Header, Container, Message } from 'semantic-ui-react';
 
 import CreateLoungeMessage from './components/CreateLoungeMessage';
 import CreateMessage from './components/CreateMessage';
@@ -30,11 +30,15 @@ class ViewGame extends Component {
         </Helmet>
 
         <div className="ViewGame">
-          <h1>Game</h1>
-
-          <Link to='/games'>
-            Back to Games
-          </Link>
+          <Segment>
+            <Breadcrumb>
+              <Breadcrumb.Section as={Link} to="/">Home</Breadcrumb.Section>
+              <Breadcrumb.Divider icon='right chevron' />
+              <Breadcrumb.Section as={Link} to="/games">Games</Breadcrumb.Section>
+              <Breadcrumb.Divider icon='right chevron' />
+              <Breadcrumb.Section active>{this.props.data.game.title}</Breadcrumb.Section>
+            </Breadcrumb>
+          </Segment>
 
           {gameDetails.call(this)}
         </div>
@@ -63,31 +67,38 @@ export default compose(
 
 function gameDetails() {
   const { data: { game } } = this.props;
+  const panes = [
+    { menuItem: 'Game Lounge', render: () => <Tab.Pane>
+        <CreateLoungeMessage gameId={game.id}/>
+        <GameLoungeMessages gameId={game.id}/>
+      </Tab.Pane> },
+    { menuItem: 'Players', render: () => <Tab.Pane>
+        <GamePlayers gameId={game.id}/>
+      </Tab.Pane> },
+    { menuItem: 'Game Messages', render: () => <Tab.Pane>
+        <CreateMessage gameId={game.id}/>
+        <GamesMessages gameId={game.id}/>
+      </Tab.Pane> }
+  ];
 
   return <div>
-    <h2>{game.title}</h2>
-    <h3 className="scenario">{game.scenario}</h3>
+    <Header as='h2' dividing>
+      Scenario
+      <Header.Subheader>
+        {game.scenario}
+      </Header.Subheader>
+    </Header>
 
-    <div className="overview">{game.overview}</div>
+    <Header as='h2' dividing>
+      Overview
+      <Header.Subheader>
+        {game.overview}
+      </Header.Subheader>
+    </Header>
 
     <div className="joinGame">{joinGame.call(this)}</div>
 
-    <Tabs defaultActiveKey={1} animation={false} id="game-tabs">
-      <Tab eventKey={1} title="Game Lounge">
-        <CreateLoungeMessage gameId={game.id}/>
-        <GameLoungeMessages gameId={game.id}/>
-      </Tab>
-
-      <Tab eventKey={2} title="Players">
-        <GamePlayers gameId={game.id}/>
-      </Tab>
-
-      <Tab eventKey={3} title="Game Messages">
-        <CreateMessage gameId={game.id}/>
-        <GamesMessages gameId={game.id}/>
-      </Tab>
-    </Tabs>
-
+    <Tab menu={{pointing: true}} panes={panes}/>
   </div>;
 }
 
@@ -96,10 +107,17 @@ function joinGame() {
 
   if (canJoin) {
     return (
-      <Button href={`${this.props.match.url}/join`}
-              className="btn btn-primary text-right" type="submit">
-        Join Game
-      </Button>
+      <Container textAlign='right'>
+        <Button primary href={`${this.props.match.url}/join`}>
+          Join Game
+        </Button>
+      </Container>
+    );
+  } else {
+    return (
+      <Message info>
+        You've Joined this game.
+      </Message>
     );
   }
 }
