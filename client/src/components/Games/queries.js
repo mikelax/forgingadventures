@@ -16,6 +16,10 @@ fragment gameFields on Game {
     skillLevel
     postingFrequency
   }
+  gameImage {
+    url
+    publicId
+  }
 }
 `;
 

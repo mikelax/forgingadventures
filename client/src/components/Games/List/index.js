@@ -80,7 +80,7 @@ class ListGamesPure extends Component {
     const { match, data: { games } } = this.props;
 
     return <div>
-      <Card.Group stackable={true}>
+      <Card.Group stackable={true} itemsPerRow={4}>
         {_.map(games, (game) => (
           <GameDetails key={game.id} game={game} link={`${match.url}/${game.id}`}/>
         ))}
@@ -142,10 +142,11 @@ const ListGames = compose(
 
 const GameDetails = (props) => {
   const { game } = props;
+  const imageSrc = _.get(game, 'gameImage.url') || dragons;
 
   return (
     <Card>
-      <Image src={dragons} />
+      <Image src={imageSrc} />
       <Card.Content>
         <Card.Header>
           <Link to={props.link}> {game.title}</Link>

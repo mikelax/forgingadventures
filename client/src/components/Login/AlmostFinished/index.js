@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import axios from 'axios';
 import Bluebird from 'bluebird';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
@@ -11,7 +10,7 @@ import { compose } from "recompose";
 import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css';
 import ApolloLoader from "../../shared/components/ApolloLoader";
 import { meQuery, updateMeMutation, validUsernameQuery } from '../../../queries/users';
-import { getAccessToken } from '../../../services/login';
+import { uploadImage } from '../../../services/image';
 
 import './AlmostFinished.styl';
 
@@ -191,10 +190,11 @@ class AlmostFinished extends Component {
       .then((valid) => {
         if (valid) {
           const { store } = this.state;
+          const { file } = this.state;
 
           this.setState({ saving: true });
 
-          return this._uploadImage()
+          return uploadImage(file, 'userProfile')
             .then((imageDetails) => {
               const payload = {
                 name: store.name,
@@ -222,26 +222,6 @@ class AlmostFinished extends Component {
             });
         }
       });
-  };
-
-  _uploadImage = () => {
-    return Bluebird.try(() => {
-      const data = new FormData();
-      const { file } = this.state;
-
-      if (file) {
-        data.append('picture', this.state.file);
-
-        // fixme - might need to add baseUrl to configs depending on API url when deploying
-        // todo - setup an axios interceptor to automatically inject the Authorisation header
-        return axios.post('/api/users/profile-image', data, {
-          headers: {
-            Authorization: `Bearer ${getAccessToken()}`
-          }
-        })
-          .then(res => res.data);
-      }
-    });
   };
 }
 
