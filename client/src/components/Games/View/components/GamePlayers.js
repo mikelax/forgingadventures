@@ -4,14 +4,15 @@ import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
 import { Button, Image, List, Popup, Icon } from 'semantic-ui-react';
 
-import { gamePlayersQuery } from '../../queries';
+import { gamePlayersQuery, myGamePlayerQuery } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
 import './assets/GamePlayers.styl';
 
 class GamePlayers extends Component {
   render() {
-    const { data: { gamePlayers } } = this.props;
+    const { data: { gamePlayers }, myGamePlayer } = this.props;
+    const isGm = _.some(myGamePlayer.myGamePlayer, ['status', 'game-master']);
 
     return (
       <div className="GamePlayers">
@@ -19,7 +20,7 @@ class GamePlayers extends Component {
           {_.map(gamePlayers, (player) => (
             <List.Item key={player.id}>
               <List.Content floated='right'>
-                {this._gmActions(player.status)}
+                { isGm ? this._gmActions(player.id, player.status) : null }
               </List.Content>
               <Image avatar src={_.get(player, 'user.profileImage.url')} />
               <List.Content>
@@ -37,8 +38,8 @@ class GamePlayers extends Component {
 
   ////// private
 
-  _gmActions = (status) => {
-    if (status === 'pending') {
+  _gmActions = (playerId, playerStatus) => {
+    if (playerStatus === 'pending') {
       return (
         <Popup
           trigger={<Button icon><Icon name="setting" /></Button>}
@@ -67,6 +68,10 @@ class GamePlayers extends Component {
 }
 
 export default compose(
+  graphql(myGamePlayerQuery, {
+    name: 'myGamePlayer',
+    options: ({ gameId }) => ({ variables: { gameId } })
+  }),
   graphql(gamePlayersQuery, {
     options: ({ gameId }) => ({ variables: { gameId, status: ['game-master', 'pending', 'accepted'] } })
   }),
