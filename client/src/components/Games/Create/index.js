@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Form, Button } from 'semantic-ui-react';
 import { Helmet } from "react-helmet";
-import { Redirect } from 'react-router-dom';
 
 import { skillLevels, postingFrequencies } from '../utils/gameSettings';
 import { createGameMutation, gamesQuery } from '../queries';
+import { uploadImage } from '../../../services/image';
 
 const CreateGame = class CreateGame extends Component {
 
@@ -28,9 +28,7 @@ const CreateGame = class CreateGame extends Component {
   };
 
   render() {
-    if (this.state.saved) {
-      return <Redirect to="/games"/>;
-    }
+    const { gameImageUrl } = this.state;
 
     return (
       <React.Fragment>
@@ -126,8 +124,22 @@ const CreateGame = class CreateGame extends Component {
 
             </Form.Group>
 
+            <Form.Field>
+              <label>Game Image</label>
+              {
+                gameImageUrl ? (
+                  <div className="game-image"><img src={gameImageUrl} alt=""/></div>
+                ) : null
+              }
+              <Form.Input
+                type="file"
+                placeholder="Select a game image"
+                onChange={this._handleImage}
+              />
+            </Form.Field>
+
             <div className="actions text-right">
-              <Button primary onClick={this._submit}>Submit</Button>
+              <Button primary onClick={this._submit} disabled={this.state.saving} loading={this.state.saving}>Submit</Button>
             </div>
           </Form>
 
@@ -139,17 +151,35 @@ const CreateGame = class CreateGame extends Component {
 
   _submit = () => {
     if (this._valid()) {
-      this.props
-        .mutate({
-          variables: {
-            input: this.state.store
-          },
-          refetchQueries: [{
-            query: gamesQuery,
-            variables: { offset: 0 }
-          }]
-        })
-        .then(() => this.setState({ saved: true }));
+      const { file } = this.state;
+
+      this.setState({ saving: true });
+
+      return uploadImage(file, 'gameImage')
+        .then((gameImage) => {
+          const payload = _.merge({}, this.state.store);
+
+          if (gameImage) {
+            payload.gameImage = {
+              publicId: _.get(gameImage, 'publicId'),
+              userUploadId: _.get(gameImage, 'userUploadId'),
+              url: _.get(gameImage, 'imageUrl')
+            };
+          }
+
+          return this.props
+            .mutate({
+              variables: {
+                input: payload
+              },
+              refetchQueries: [{
+                query: gamesQuery,
+                variables: { offset: 0 }
+              }]
+            })
+            .then(() => this.setState({ saving: false }))
+            .then(() => this.props.history.replace('/games'));
+        });
     }
   };
 
@@ -180,6 +210,21 @@ const CreateGame = class CreateGame extends Component {
 
   _formValue = (stateKey) => {
     return _.get(this.state.store, stateKey, '');
+  };
+
+  _handleImage = (e) => {
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      const gameImageUrl = reader.result;
+
+      this.setState({ file, gameImageUrl });
+    };
+
+    reader.readAsDataURL(file);
   };
 };
 
