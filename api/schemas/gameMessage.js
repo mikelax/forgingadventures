@@ -38,13 +38,11 @@ export const gameMessageResolvers = {
     user: gameMessage => User.query().findById(gameMessage.userId)
   },
   Query: {
-    gameMessage: (obj, { id }, context) =>
-      schemaScopeGate(['create:posts'], context, () =>
-        GameMessage.query().findById(id)),
+    gameMessage: (obj, { id }) =>
+      GameMessage.query().findById(id),
 
-    gameMessages: (obj, { gameId }, context) =>
-      schemaScopeGate(['create:posts'], context, () =>
-        GameMessage.query().where({ gameId })).orderBy('created_at')
+    gameMessages: (obj, { gameId }) =>
+      GameMessage.query().where({ gameId }).orderBy('created_at')
   },
   Mutation: {
     createGameMessage: (obj, { input }, context) =>

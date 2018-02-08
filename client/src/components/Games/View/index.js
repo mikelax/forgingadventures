@@ -67,6 +67,7 @@ export default compose(
 
 function gameDetails() {
   const { data: { game } } = this.props;
+  const myGamePlayer = _.get(this.props, 'myGamePlayerQuery.myGamePlayer');
   const panes = [
     { menuItem: 'Game Lounge', render: () => <Tab.Pane>
         <CreateLoungeMessage gameId={game.id}/>
@@ -75,31 +76,48 @@ function gameDetails() {
     { menuItem: 'Players', render: () => <Tab.Pane>
         <GamePlayers gameId={game.id}/>
       </Tab.Pane> },
-    { menuItem: 'Game Messages', render: () => <Tab.Pane>
-        <CreateMessage gameId={game.id}/>
-        <GamesMessages gameId={game.id}/>
-      </Tab.Pane> }
+    { menuItem: 'Game Messages', render: () => {
+      const playerOrGm = !_.isEmpty(myGamePlayer) && _.every(myGamePlayer, (value) => {
+        return _.includes(['game-master', 'accepted'], value.status);
+      });
+      const editorBlock = playerOrGm ? 
+      <CreateMessage gameId={game.id}/> :
+        <Message info
+          header='Please Login or Join Game to Post'
+          content='While games are viewable by everyone, only players are able to post game messages. Try posting a message in the Lounge, or searching for another open game.'
+        />
+       ;
+
+      return (
+        <Tab.Pane>
+          {editorBlock}
+          <GamesMessages gameId={game.id}/>
+        </Tab.Pane> 
+      );
+    } }
   ];
 
-  return <div>
-    <Header as='h2' dividing>
-      Scenario
-      <Header.Subheader>
-        {game.scenario}
-      </Header.Subheader>
-    </Header>
+  return (
+    <React.Fragment>
+      <Header as='h2' dividing>
+        Scenario
+        <Header.Subheader>
+          {game.scenario}
+        </Header.Subheader>
+      </Header>
 
-    <Header as='h2' dividing>
-      Overview
-      <Header.Subheader>
-        {game.overview}
-      </Header.Subheader>
-    </Header>
+      <Header as='h2' dividing>
+        Overview
+        <Header.Subheader>
+          {game.overview}
+        </Header.Subheader>
+      </Header>
 
-    <div className="joinGame">{joinGame.call(this)}</div>
+      <div className="joinGame">{joinGame.call(this)}</div>
 
-    <Tab menu={{ pointing: true }} panes={panes}/>
-  </div>;
+      <Tab menu={{ pointing: true }} panes={panes}/>
+    </React.Fragment>
+  );
 }
 
 function joinGame() {
@@ -124,5 +142,10 @@ function joinGame() {
 
 function canJoinGame() {
   const myGamePlayer = _.get(this.props, 'myGamePlayerQuery.myGamePlayer');
-  return _.isEmpty(myGamePlayer);
+  // check if player was previously in game but left for some reason, allow option to join again
+  const canRejoin = _.every(myGamePlayer, (value) => {
+    return _.includes(['rejected', 'quit', 'kicked'], value.status);
+  });
+
+  return _.isEmpty(myGamePlayer) || canRejoin;
 }
