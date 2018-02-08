@@ -1,10 +1,11 @@
 import { convertFromRaw, convertToRaw, Editor, EditorState, RichUtils } from 'draft-js';
 import React, { Component } from 'react';
+import { Button, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 import './assets/GameLoungeMessage.styl';
 
-export default class RichEditorExample extends Component {
+export default class RichEditor extends Component {
 
   static propTypes = {
     message: PropTypes.object,
@@ -94,6 +95,7 @@ export default class RichEditorExample extends Component {
             editorState={editorState}
             onToggle={this._toggleBlockType}
           />
+          &nbsp;
           <InlineStyleControls
             editorState={editorState}
             onToggle={this._toggleInlineStyle}
@@ -166,38 +168,26 @@ function getBlockStyle(block) {
 }
 
 class StyleButton extends React.Component {
-  constructor() {
-    super();
-    this.onToggle = (e) => {
-      e.preventDefault();
-      this.props.onToggle(this.props.style);
-    };
-  }
-
   render() {
-    let className = 'RichEditor-styleButton';
-    if (this.props.active) {
-      className += ' RichEditor-activeButton';
-    }
-
     return (
-      <span className={className} onMouseDown={this.onToggle}>
-        {this.props.label}
-      </span>
+      <Button size="mini" icon active={this.props.active} onClick={this._onToggle}>
+        <Icon name={this.props.label}/>
+      </Button>
     );
   }
+
+  _onToggle = (e) => {
+    e.preventDefault();
+    this.props.onToggle(this.props.style);
+  };
+
 }
 
 const BLOCK_TYPES = [
-  { label: 'H1', style: 'header-one' },
-  { label: 'H2', style: 'header-two' },
-  { label: 'H3', style: 'header-three' },
-  { label: 'H4', style: 'header-four' },
-  { label: 'H5', style: 'header-five' },
-  { label: 'H6', style: 'header-six' },
-  { label: 'Blockquote', style: 'blockquote' },
-  { label: 'UL', style: 'unordered-list-item' },
-  { label: 'OL', style: 'ordered-list-item' }
+  { label: 'header', style: 'header-three' },
+  { label: 'quote left', style: 'blockquote' },
+  { label: 'unordered list', style: 'unordered-list-item' },
+  { label: 'ordered list', style: 'ordered-list-item' }
 ];
 
 const BlockStyleControls = (props) => {
@@ -209,7 +199,7 @@ const BlockStyleControls = (props) => {
     .getType();
 
   return (
-    <div className="RichEditor-controls">
+    <Button.Group>
       {BLOCK_TYPES.map((type) =>
         <StyleButton
           key={type.label}
@@ -219,21 +209,21 @@ const BlockStyleControls = (props) => {
           style={type.style}
         />
       )}
-    </div>
+    </Button.Group>
   );
 };
 
 const INLINE_STYLES = [
-  { label: 'Bold', style: 'BOLD' },
-  { label: 'Italic', style: 'ITALIC' },
-  { label: 'Underline', style: 'UNDERLINE' }
+  { label: 'bold', style: 'BOLD' },
+  { label: 'italic', style: 'ITALIC' },
+  { label: 'underline', style: 'UNDERLINE' }
 ];
 
 const InlineStyleControls = (props) => {
   const currentStyle = props.editorState.getCurrentInlineStyle();
 
   return (
-    <div className="RichEditor-controls">
+    <Button.Group>
       {INLINE_STYLES.map(type =>
         <StyleButton
           key={type.label}
@@ -243,6 +233,6 @@ const InlineStyleControls = (props) => {
           style={type.style}
         />
       )}
-    </div>
+    </Button.Group>
   );
 };

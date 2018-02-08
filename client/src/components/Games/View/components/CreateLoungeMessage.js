@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Form, Button } from 'semantic-ui-react';
 
-import GameLoungeMessage from '../../components/GameLoungeMessage';
+import RichEditor from '../../../shared/components/RichEditor';
 
 import { createGameLoungeMessageMutation } from '../../queries'; 
 
@@ -18,7 +18,7 @@ class CreateGameLoungeMessage extends Component {
         <Form>
           <Form.Field>
             <label>Add Message</label>
-            <GameLoungeMessage ref={(c) => (this.editor = c)} onChange={this._handeOnChange}/>
+            <RichEditor ref={(c) => (this.editor = c)} onChange={this._handeOnChange}/>
           </Form.Field>
 
           <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>

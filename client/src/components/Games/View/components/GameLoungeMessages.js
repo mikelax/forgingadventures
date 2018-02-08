@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
 import { Comment, Header, Icon } from 'semantic-ui-react';
-import GameLoungeMessage from '../../components/GameLoungeMessage';
+import RichEditor from '../../../shared/components/RichEditor';
 
 import {
   gameLoungeMessagesQuery,
@@ -128,7 +128,7 @@ class GameLoungeMessageContainer extends Component {
             {this._lastEdited()}
           </Comment.Metadata>
           <Comment.Text>
-            <GameLoungeMessage message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+            <RichEditor message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
             {this._messageControls()}
