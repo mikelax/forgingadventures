@@ -12,6 +12,7 @@ import {
   onGameLoungeMessageAdded,
   onGameLoungeMessageUpdated
 } from '../../queries';
+import { meQuery } from '../../../../queries/users';
 
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
@@ -131,7 +132,7 @@ class GameLoungeMessageContainer extends Component {
             <GameLoungeMessage message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
-            {this._messageControls()}
+            {this._messageControls(user.id)}
           </Comment.Actions>
         </Comment.Content>
       </Comment>
@@ -140,15 +141,21 @@ class GameLoungeMessageContainer extends Component {
 
   ////// private
 
-  _messageControls = () => {
+  _messageControls = (messageUserId) => {
     const { editing } = this.state;
 
-    return editing ? this._editingControls() : this._viewingControls();
+    return editing ? this._editingControls() : this._viewingControls(messageUserId);
   };
 
-  _viewingControls = () => (
-    <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> 
-  );
+  _viewingControls = (messageUserId) => {
+    const canEdit = _.eq(messageUserId, _.get(this.props.meQuery, 'me.id'));
+
+    if (canEdit) {
+      return (
+        <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> 
+      );
+    }
+  };
 
   _editingControls = () => (
     <React.Fragment>
@@ -218,5 +225,6 @@ const GameLoungeMessageContainerData = compose(
   graphql(updateGameLoungeMessageMutation, {
     name: 'updateLoungeMessage'
   }),
+  graphql(meQuery, { name: 'meQuery' }),
   pure,
 )(GameLoungeMessageContainer);

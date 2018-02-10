@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { withFilter } from 'graphql-subscriptions';
 import { raw } from 'objection';
 
@@ -65,20 +66,35 @@ export const gameMessageResolvers = {
       }),
     updateGameMessage: (obj, { id, input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
-        return GameMessage
-          .query()
-          .patch({
-            message: input.message,
-            numberEdits: raw('"numberEdits" + 1')
+        return getUser(context.req.user.sub)
+          .then((user) => {
+            return GameMessage
+              .query()
+              .count('*')
+              .where('id', id)
+              .where('userId', user.id) // May refactor to consider allowing admin or GM to edit
+              .first()
+              .execute();
           })
-          .where('id', id)
-          .first()
-          .returning('*')
-          .execute()
-          .tap((gameMessage) => {
-            pubsub.publish(TOPIC_MESSAGE_UPDATED, {
-              messageUpdated: gameMessage
-            });
+          .then((rowCount) => {
+            // In PG count returns as String from knex
+            if (_.eq(rowCount.count, '1')) {
+              return GameMessage
+                .query()
+                .patch({
+                  message: input.message,
+                  numberEdits: raw('"numberEdits" + 1')
+                })
+                .where('id', id)
+                .first()
+                .returning('*')
+                .execute()
+                .tap((gameMessage) => {
+                  pubsub.publish(TOPIC_MESSAGE_UPDATED, {
+                    messageUpdated: gameMessage
+                  });
+                });
+            }
           });
       })
   },

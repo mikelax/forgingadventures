@@ -11,6 +11,7 @@ import {
   gameMessagesQuery, updateGameMessageMutation,
   onGameMessageAdded, onGameMessageUpdated
 } from '../../queries';
+import { meQuery } from '../../../../queries/users';
 
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
@@ -120,7 +121,7 @@ class GameMessageContainerBase extends Component {
             <GameMessage message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
-            {this._messageControls()}
+            {this._messageControls(gameMessage.user.id)}
           </Comment.Actions>
         </Comment.Content>
       </Comment>
@@ -150,15 +151,21 @@ class GameMessageContainerBase extends Component {
 
   ////// private
 
-  _messageControls = () => {
+  _messageControls = (messageUserId) => {
     const { editing } = this.state;
 
-    return editing ? this._editingControls() : this._viewingControls();
+    return editing ? this._editingControls() : this._viewingControls(messageUserId);
   };
 
-  _viewingControls = () => (
-    <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action>
-);
+  _viewingControls = (messageUserId) => {
+    const canEdit = _.eq(messageUserId, _.get(this.props.meQuery, 'me.id'));
+
+    if (canEdit) {
+      return (
+        <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action>
+      );
+    }
+  };
 
   _editingControls = () => (
     <React.Fragment>
@@ -218,6 +225,7 @@ const GameMessageContainer = compose(
   graphql(updateGameMessageMutation, {
     name: 'updateMessage'
   }),
+  graphql(meQuery, { name: 'meQuery' }),
   pure,
 )(GameMessageContainerBase);
 
