@@ -1,6 +1,6 @@
 import multer from 'multer';
 
-import { uploadUserPicture } from './usersImpl';
+import { uploadUserPicture } from './imageUploadImpl';
 import { setDbUserByToken } from '../middleware/security';
 
 const router = require('express').Router();
@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
   res.send('API Index');
 });
 
-router.post('/users/profile-image', uploader.single('picture'), setDbUserByToken, uploadUserPicture);
+router.post('/upload-image', uploader.single('picture'), setDbUserByToken, uploadUserPicture);
 
 
 export default router;

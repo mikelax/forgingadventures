@@ -22,14 +22,16 @@ export const gameTypeDefs = `
     title: String!,
     scenario: String!,
     overview: String!,
-    gameSettings: GameSetting!
+    gameSettings: GameSetting!,
+    gameImage: ProfileImage
   }
   
   input CreateGameInput {
     title: String!,
     scenario: String!,
     overview: String!,
-    gameSettings: GameSettingInput!
+    gameSettings: GameSettingInput!,
+    gameImage: ProfileImageInput
   }
   
   input GameSettingInput {
