@@ -68,8 +68,6 @@ export const gameLoungeResolvers = {
       schemaScopeGate(['create:posts'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
           .then((user) => {
-            input.userId = user.id;
-
             return GameLounge
               .query()
               .count('*')
