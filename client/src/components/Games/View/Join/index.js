@@ -3,9 +3,10 @@ import { graphql } from 'react-apollo';
 import { Helmet } from "react-helmet";
 import { Button, Form, Header } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
-
-import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
 import { compose } from 'recompose';
+
+import RichEditor from '../../../shared/components/RichEditor';
+import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
 
 const JoinGame = class JoinGame extends Component {
 
@@ -33,8 +34,8 @@ const JoinGame = class JoinGame extends Component {
 
           <Form>
             <Form.Field>
-              <label>Replace with Rich Editor</label>
-              <Form.TextArea placeholder="placeholder here" />
+              <label>Introduce yourself</label>
+              <RichEditor ref={this._getEditorAndInsertText} onChange={this._handleOnChange}/>
             </Form.Field>
 
             <div>
@@ -45,6 +46,11 @@ const JoinGame = class JoinGame extends Component {
         </div>
       </React.Fragment>
     );
+  };
+
+  _getEditorAndInsertText = (ref) => {
+    this.editor = ref;
+    this.editor.addQuoteBlock('this is a test');
   };
 
   _submit = () => {

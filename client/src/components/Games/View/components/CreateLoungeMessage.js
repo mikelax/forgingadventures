@@ -4,12 +4,12 @@ import { Form, Button } from 'semantic-ui-react';
 
 import RichEditor from '../../../shared/components/RichEditor';
 
-import { createGameLoungeMessageMutation } from '../../queries'; 
+import { createGameLoungeMessageMutation } from '../../queries';
 
 class CreateGameLoungeMessage extends Component {
 
   state = {
-    hasContent: false 
+    hasContent: false
   };
 
   render() {
@@ -18,7 +18,7 @@ class CreateGameLoungeMessage extends Component {
         <Form>
           <Form.Field>
             <label>Add Message</label>
-            <RichEditor ref={(c) => (this.editor = c)} onChange={this._handeOnChange}/>
+            <RichEditor ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
           </Form.Field>
 
           <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
@@ -28,8 +28,8 @@ class CreateGameLoungeMessage extends Component {
     );
   }
 
-  _handeOnChange = (data) => {
-    this.setState({ hasContent: data.hasContent }); 
+  _handleOnChange = (data) => {
+    this.setState({ hasContent: data.hasContent });
   };
 
   _submit = () => {

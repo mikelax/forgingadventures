@@ -1,4 +1,5 @@
-import { convertFromRaw, convertToRaw, Editor, EditorState, RichUtils } from 'draft-js';
+import { convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, Modifier } from 'draft-js';
+import { OrderedSet } from 'immutable';
 import React, { Component } from 'react';
 import { Button, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
@@ -84,6 +85,21 @@ export default class RichEditor extends Component {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
 
+  addQuoteBlock(text) {
+    const { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const selection = editorState.getSelection();
+    const textWithEntity = Modifier.insertText(contentState, selection, text, OrderedSet.of('ITALIC'));
+
+    const newState = EditorState.push(
+      editorState,
+      textWithEntity,
+      'insert-characters'
+    );
+
+    this._onChange(newState);
+  };
+
   _renderToolbar = () => {
     const { editorState } = this.state;
     const { readOnly } = this.props;
@@ -118,7 +134,7 @@ export default class RichEditor extends Component {
 
     onChange && onChange({
       hasContent: content.hasText()
-    });    
+    });
   };
 
   _handleKeyCommand = (command) => {
@@ -221,7 +237,7 @@ const INLINE_STYLES = [
 
 const InlineStyleControls = (props) => {
   const currentStyle = props.editorState.getCurrentInlineStyle();
-
+  console.log('currentStyle', currentStyle)
   return (
     <Button.Group>
       {INLINE_STYLES.map(type =>
