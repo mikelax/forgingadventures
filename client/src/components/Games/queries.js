@@ -33,6 +33,9 @@ export const gameMessageFields = `
     numberEdits
     created_at
     updated_at
+    user {
+      id
+    }
   }
 `;
 
@@ -47,6 +50,7 @@ export const gameLoungeMessageFields = `
     created_at
     updated_at
     user {
+      id
       name
       profileImage {
         url 

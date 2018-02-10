@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { withFilter } from 'graphql-subscriptions';
 import { raw } from 'objection';
 
@@ -67,23 +68,33 @@ export const gameLoungeResolvers = {
       schemaScopeGate(['create:posts'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
           .then((user) => {
-            input.userId = user.id;
-
             return GameLounge
               .query()
-              .patch({
-                message: input.message,
-                numberEdits: raw('"numberEdits" + 1')
-              })
+              .count('*')
               .where('id', id)
+              .where('userId', user.id) // May refactor to consider allowing admin or GM to edit
               .first()
-              .returning('*')
-              .execute()
-              .tap((gameMessage) => {
-                pubsub.publish(LOUNGE_MESSAGE_UPDATED, {
-                  gameLoungeMessageUpdated: gameMessage
+              .execute();
+          })
+          .then((rowCount) => {
+            // In PG count returns as String from knex
+            if (_.eq(rowCount.count, '1')) {
+              return GameLounge
+                .query()
+                .patch({
+                  message: input.message,
+                  numberEdits: raw('"numberEdits" + 1')
+                })
+                .where('id', id)
+                .first()
+                .returning('*')
+                .execute()
+                .tap((gameMessage) => {
+                  pubsub.publish(LOUNGE_MESSAGE_UPDATED, {
+                    gameLoungeMessageUpdated: gameMessage
+                  });
                 });
-              });
+            }
           });
       })
   },
