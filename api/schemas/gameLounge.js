@@ -21,13 +21,15 @@ export const gameLoungeTypeDefs = `
     gameId: ID!,
     message: JSON!,
     numberEdits: Int!,
+    meta: String,
     updated_at: GraphQLDateTime,
     created_at: GraphQLDateTime
   }
   
   input CreateGameLoungeMessageInput {
     gameId: ID!,
-    message: JSON!
+    message: JSON!,
+    meta: String
   }
   
   input UpdateGameLoungeMessageInput {
