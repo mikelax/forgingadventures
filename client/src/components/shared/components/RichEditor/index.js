@@ -46,27 +46,23 @@ export default class RichEditor extends Component {
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
-    let className = 'RichEditor-editor';
     const contentState = editorState.getCurrentContent();
-
-    if (!contentState.hasText()) {
-      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-        className += ' RichEditor-hidePlaceholder';
-      }
-    }
+    const className = 'RichEditor-editor';
+    const hasTextClass = contentState.hasText() ? 'RichEditor-hidePlaceholder' : '';
+    const editingClass = readOnly ? '' : 'editing';
 
     return (
-      <div className="RichEditor-root">
+      <div className={`RichEditor-root ${editingClass}`}>
         {this._renderToolbar()}
-        <div className={className} onClick={this._focus}>
+        <div className={`${className} ${hasTextClass}`} onClick={this._focus}>
           <Editor
             blockStyleFn={getBlockStyle}
             editorState={editorState}
             handleKeyCommand={this._handleKeyCommand}
             onChange={this._onChange}
             onTab={this._onTab}
-            placeholder="What's on your mind..."
-            ref="editor"
+            placeholder={this.props.placeholder || "What's on your mind..."}
+            ref='editor'
             spellCheck={true}
             readOnly={readOnly}
           />
@@ -85,7 +81,7 @@ export default class RichEditor extends Component {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
 
-  addQuoteBlock(text) {
+  addItalicText(text) {
     const { editorState } = this.state;
     const contentState = editorState.getCurrentContent();
     const selection = editorState.getSelection();
@@ -237,7 +233,7 @@ const INLINE_STYLES = [
 
 const InlineStyleControls = (props) => {
   const currentStyle = props.editorState.getCurrentInlineStyle();
-  console.log('currentStyle', currentStyle)
+
   return (
     <Button.Group>
       {INLINE_STYLES.map(type =>
