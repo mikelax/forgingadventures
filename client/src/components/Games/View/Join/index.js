@@ -88,7 +88,7 @@ const JoinGame = class JoinGame extends Component {
             }
           });
         })
-        .then(() => history.replace('/games'))
+        .then(() => history.replace(`/games/${id}`))
         .finally(() => this.setState({ saving: false }));
         
     }
