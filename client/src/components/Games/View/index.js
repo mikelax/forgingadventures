@@ -77,7 +77,7 @@ function gameDetails() {
         <GamePlayers gameId={game.id}/>
       </Tab.Pane> },
     { menuItem: 'Game Messages', render: () => {
-      const playerOrGm = !_.isEmpty(myGamePlayer) && _.every(myGamePlayer, (value) => {
+      const playerOrGm = !_.isEmpty(myGamePlayer) && _.some(myGamePlayer, (value) => {
         return _.includes(['game-master', 'accepted'], value.status);
       });
       const editorBlock = playerOrGm ? 
