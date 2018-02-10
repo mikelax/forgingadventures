@@ -1,10 +1,12 @@
-import { convertFromRaw, convertToRaw, Editor, EditorState, RichUtils } from 'draft-js';
+import { convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, Modifier } from 'draft-js';
+import { OrderedSet } from 'immutable';
 import React, { Component } from 'react';
+import { Button, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 import './assets/GameLoungeMessage.styl';
 
-export default class RichEditorExample extends Component {
+export default class RichEditor extends Component {
 
   static propTypes = {
     message: PropTypes.object,
@@ -44,27 +46,23 @@ export default class RichEditorExample extends Component {
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
-    let className = 'RichEditor-editor';
     const contentState = editorState.getCurrentContent();
-
-    if (!contentState.hasText()) {
-      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-        className += ' RichEditor-hidePlaceholder';
-      }
-    }
+    const className = 'RichEditor-editor';
+    const hasTextClass = contentState.hasText() ? 'RichEditor-hidePlaceholder' : '';
+    const editingClass = readOnly ? '' : 'editing';
 
     return (
-      <div className="RichEditor-root">
+      <div className={`RichEditor-root ${editingClass}`}>
         {this._renderToolbar()}
-        <div className={className} onClick={this._focus}>
+        <div className={`${className} ${hasTextClass}`} onClick={this._focus}>
           <Editor
             blockStyleFn={getBlockStyle}
             editorState={editorState}
             handleKeyCommand={this._handleKeyCommand}
             onChange={this._onChange}
             onTab={this._onTab}
-            placeholder="What's on your mind..."
-            ref="editor"
+            placeholder={this.props.placeholder || "What's on your mind..."}
+            ref='editor'
             spellCheck={true}
             readOnly={readOnly}
           />
@@ -83,6 +81,21 @@ export default class RichEditorExample extends Component {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
 
+  addItalicText(text) {
+    const { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const selection = editorState.getSelection();
+    const textWithEntity = Modifier.insertText(contentState, selection, text, OrderedSet.of('ITALIC'));
+
+    const newState = EditorState.push(
+      editorState,
+      textWithEntity,
+      'insert-characters'
+    );
+
+    this._onChange(newState);
+  };
+
   _renderToolbar = () => {
     const { editorState } = this.state;
     const { readOnly } = this.props;
@@ -94,6 +107,7 @@ export default class RichEditorExample extends Component {
             editorState={editorState}
             onToggle={this._toggleBlockType}
           />
+          &nbsp;
           <InlineStyleControls
             editorState={editorState}
             onToggle={this._toggleInlineStyle}
@@ -116,7 +130,7 @@ export default class RichEditorExample extends Component {
 
     onChange && onChange({
       hasContent: content.hasText()
-    });    
+    });
   };
 
   _handleKeyCommand = (command) => {
@@ -166,38 +180,26 @@ function getBlockStyle(block) {
 }
 
 class StyleButton extends React.Component {
-  constructor() {
-    super();
-    this.onToggle = (e) => {
-      e.preventDefault();
-      this.props.onToggle(this.props.style);
-    };
-  }
-
   render() {
-    let className = 'RichEditor-styleButton';
-    if (this.props.active) {
-      className += ' RichEditor-activeButton';
-    }
-
     return (
-      <span className={className} onMouseDown={this.onToggle}>
-        {this.props.label}
-      </span>
+      <Button size="mini" icon active={this.props.active} onClick={this._onToggle}>
+        <Icon name={this.props.label}/>
+      </Button>
     );
   }
+
+  _onToggle = (e) => {
+    e.preventDefault();
+    this.props.onToggle(this.props.style);
+  };
+
 }
 
 const BLOCK_TYPES = [
-  { label: 'H1', style: 'header-one' },
-  { label: 'H2', style: 'header-two' },
-  { label: 'H3', style: 'header-three' },
-  { label: 'H4', style: 'header-four' },
-  { label: 'H5', style: 'header-five' },
-  { label: 'H6', style: 'header-six' },
-  { label: 'Blockquote', style: 'blockquote' },
-  { label: 'UL', style: 'unordered-list-item' },
-  { label: 'OL', style: 'ordered-list-item' }
+  { label: 'header', style: 'header-three' },
+  { label: 'quote left', style: 'blockquote' },
+  { label: 'unordered list', style: 'unordered-list-item' },
+  { label: 'ordered list', style: 'ordered-list-item' }
 ];
 
 const BlockStyleControls = (props) => {
@@ -209,7 +211,7 @@ const BlockStyleControls = (props) => {
     .getType();
 
   return (
-    <div className="RichEditor-controls">
+    <Button.Group>
       {BLOCK_TYPES.map((type) =>
         <StyleButton
           key={type.label}
@@ -219,21 +221,21 @@ const BlockStyleControls = (props) => {
           style={type.style}
         />
       )}
-    </div>
+    </Button.Group>
   );
 };
 
 const INLINE_STYLES = [
-  { label: 'Bold', style: 'BOLD' },
-  { label: 'Italic', style: 'ITALIC' },
-  { label: 'Underline', style: 'UNDERLINE' }
+  { label: 'bold', style: 'BOLD' },
+  { label: 'italic', style: 'ITALIC' },
+  { label: 'underline', style: 'UNDERLINE' }
 ];
 
 const InlineStyleControls = (props) => {
   const currentStyle = props.editorState.getCurrentInlineStyle();
 
   return (
-    <div className="RichEditor-controls">
+    <Button.Group>
       {INLINE_STYLES.map(type =>
         <StyleButton
           key={type.label}
@@ -243,6 +245,6 @@ const InlineStyleControls = (props) => {
           style={type.style}
         />
       )}
-    </div>
+    </Button.Group>
   );
 };

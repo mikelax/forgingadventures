@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
 import { Comment, Header, Icon } from 'semantic-ui-react';
-import GameLoungeMessage from '../../components/GameLoungeMessage';
+import RichEditor from '../../../shared/components/RichEditor';
 
 import {
   gameLoungeMessagesQuery,
@@ -122,13 +122,14 @@ class GameLoungeMessageContainer extends Component {
         <Comment.Content>
           <Comment.Author>{user.name}</Comment.Author>
           <Comment.Metadata>
+            {this._lastEdited()}
             <div>
               Posted {this._relativeDate(loungeMessage.created_at)}
             </div>
-            {this._lastEdited()}
+            {this._renderMeta()}
           </Comment.Metadata>
           <Comment.Text>
-            <GameLoungeMessage message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+            <RichEditor message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
             {this._messageControls()}
@@ -145,6 +146,20 @@ class GameLoungeMessageContainer extends Component {
 
     return editing ? this._editingControls() : this._viewingControls();
   };
+
+  _renderMeta = () => {
+    const { editing } = this.state;
+    const { loungeMessage } = this.props;
+    const { user } = loungeMessage;
+
+    if (!(editing)) {
+      if (loungeMessage.meta === 'join') {
+        return (
+          <div className="meta">{user.name} has joined the game!</div>
+        );
+      } 
+    }
+  }
 
   _viewingControls = () => (
     <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> 

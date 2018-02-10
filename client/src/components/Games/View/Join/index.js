@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from "react-helmet";
 import { Button, Form, Header } from 'semantic-ui-react';
-import { Redirect } from 'react-router-dom';
-
-import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
 import { compose } from 'recompose';
+
+import RichEditor from '../../../shared/components/RichEditor';
+import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
 
 const JoinGame = class JoinGame extends Component {
 
@@ -17,10 +17,7 @@ const JoinGame = class JoinGame extends Component {
   };
 
   render() {
-    if (this.state.saved) {
-      const { match: { params: { id } } } = this.props;
-      return <Redirect to={`/games/${id}`} />;
-    }
+    const { saving, hasContent } = this.state;
 
     return (
       <React.Fragment>
@@ -33,12 +30,20 @@ const JoinGame = class JoinGame extends Component {
 
           <Form>
             <Form.Field>
-              <label>Replace with Rich Editor</label>
-              <Form.TextArea placeholder="placeholder here" />
+              <label>Introduce yourself</label>
+              <RichEditor
+                placeholder='Say something about yourself...'
+                ref={this._getEditor}
+                onChange={this._handleOnChange} />
             </Form.Field>
 
+
             <div>
-              <Button primary onClick={this._submit}>Submit</Button>
+              <Button primary onClick={this._submit} 
+              disabled={saving || !(hasContent)} 
+              loading={saving}>
+                Submit
+              </Button>
             </div>
           </Form>
 
@@ -47,21 +52,45 @@ const JoinGame = class JoinGame extends Component {
     );
   };
 
+  _getEditor = (ref) => {
+    this.editor = ref;
+  };
+
+  _handleOnChange = (data) => {
+    this.setState({ hasContent: data.hasContent });
+  };
+
   _submit = () => {
     const { match: { params: { id } } } = this.props;
     const { createGamePlayer } = this.props;
+    const { createGameLoungeMessage } = this.props;
+    const { history } = this.props;
 
     if (this._valid()) {
-      createGamePlayer(({
-          variables: {
-            input: {
-              gameId: id,
-              status: 'pending'
-            }
+      this.setState({ saving: true });
+
+      createGamePlayer({
+        variables: {
+          input: {
+            gameId: id,
+            status: 'pending'
           }
+        }
+      })
+        .then(() => {
+          return createGameLoungeMessage({
+            variables: {
+              input: {
+                gameId: id,
+                meta: 'join',
+                message: this.editor.getEditorMessage()
+              }
+            }
+          });
         })
-      )
-        .then(() => this.setState({ saved: true }));
+        .then(() => history.replace(`/games/${id}`))
+        .finally(() => this.setState({ saving: false }));
+        
     }
   };
 
@@ -72,13 +101,12 @@ const JoinGame = class JoinGame extends Component {
 
 export default compose(
   graphql(gameQuery, {
-    options: ( { match: { params: { id } } } ) => ({ variables: { id } })
+    options: ({ match: { params: { id } } }) => ({ variables: { id } })
   }),
   graphql(createGamePlayerMutation, {
     name: 'createGamePlayer'
   }),
-  // todo - need to figure out how to create a draftJS message json packet before we can call this mutation
   graphql(createGameLoungeMessageMutation, {
     name: 'createGameLoungeMessage'
-  }),
+  })
 )(JoinGame);

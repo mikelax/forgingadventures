@@ -43,6 +43,7 @@ export const gameLoungeMessageFields = `
     id
     message
     numberEdits
+    meta
     created_at
     updated_at
     user {
