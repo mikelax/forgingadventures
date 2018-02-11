@@ -3,16 +3,17 @@ import Bluebird from 'bluebird';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Button, Container, Form, Message } from 'semantic-ui-react';
-import TimezonePicker from 'react-bootstrap-timezone-picker';
 import { Helmet } from "react-helmet";
 import { compose } from "recompose";
+import Select from 'react-select';
 
-import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css';
 import ApolloLoader from "../../shared/components/ApolloLoader";
 import { meQuery, updateMeMutation, validUsernameQuery } from '../../../queries/users';
 import { uploadImage } from '../../../services/image';
 
+import 'react-select/dist/react-select.css';
 import './AlmostFinished.styl';
+import timezones from './timezones.json';
 
 
 class AlmostFinished extends Component {
@@ -94,12 +95,11 @@ class AlmostFinished extends Component {
 
               <Form.Field>
                 <label>Location</label>
-                <TimezonePicker
-                  absolute={false}
-                  placeholder="Select timezone..."
+                <Select
+                  name="timezone"
                   value={this._formValue('timezone')}
-                  overflow="false"
                   onChange={this._setTimezone}
+                  options={this._getTimezoneValues()}
                 />
               </Form.Field>
 
@@ -175,9 +175,23 @@ class AlmostFinished extends Component {
     };
   };
 
+  _getTimezoneValues = () => {
+    const values = [];
+    _.map(timezones, (o) => {
+      _.map(o.utc, (tz) => {
+        const label = `${o.text.substring(0, o.text.indexOf(') ')+1)} ${tz} (${o.value})`;
+        values.push({ value: tz, label });
+      });
+    });
+
+    return values;
+  };
+
   _setTimezone = (timezone) => {
+    const value = _.get(timezone, 'value', null);
+  
     const { store } = this.state;
-    _.set(store, 'timezone', timezone);
+    _.set(store, 'timezone', value);
     this.setState({ ...this.state, store });
   };
 
