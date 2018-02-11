@@ -44,6 +44,7 @@ const JoinGame = class JoinGame extends Component {
               loading={saving}>
                 Submit
               </Button>
+              <Button onClick={this._cancel}>Cancel</Button>
             </div>
           </Form>
 
@@ -58,6 +59,12 @@ const JoinGame = class JoinGame extends Component {
 
   _handleOnChange = (data) => {
     this.setState({ hasContent: data.hasContent });
+  };
+
+  _cancel = () => {
+    const { match: { params: { id } } } = this.props;
+
+    this.props.history.push(`/games/${id}`);
   };
 
   _submit = () => {

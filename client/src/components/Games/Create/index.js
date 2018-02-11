@@ -140,6 +140,7 @@ const CreateGame = class CreateGame extends Component {
 
             <div className="actions text-right">
               <Button primary onClick={this._submit} disabled={this.state.saving} loading={this.state.saving}>Submit</Button>
+              <Button onClick={this._cancel}>Cancel</Button>
             </div>
           </Form>
 
@@ -147,6 +148,10 @@ const CreateGame = class CreateGame extends Component {
       </React.Fragment>
 
     );
+  };
+
+  _cancel = () => {
+    this.props.history.push('/games');
   };
 
   _submit = () => {
