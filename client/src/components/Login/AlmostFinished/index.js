@@ -5,15 +5,13 @@ import { graphql } from 'react-apollo';
 import { Button, Container, Form, Message } from 'semantic-ui-react';
 import { Helmet } from "react-helmet";
 import { compose } from "recompose";
-import Select from 'react-select';
+import TimezoneSelect from '../../shared/components/TimezoneSelect';
 
 import ApolloLoader from "../../shared/components/ApolloLoader";
 import { meQuery, updateMeMutation, validUsernameQuery } from '../../../queries/users';
 import { uploadImage } from '../../../services/image';
 
-import 'react-select/dist/react-select.css';
 import './AlmostFinished.styl';
-import timezones from './timezones.json';
 
 
 class AlmostFinished extends Component {
@@ -95,11 +93,10 @@ class AlmostFinished extends Component {
 
               <Form.Field>
                 <label>Location</label>
-                <Select
+                <TimezoneSelect
                   name="timezone"
                   value={this._formValue('timezone')}
                   onChange={this._setTimezone}
-                  options={this._getTimezoneValues()}
                 />
               </Form.Field>
 
@@ -173,18 +170,6 @@ class AlmostFinished extends Component {
       _.set(store, stateKey, e.target.value);
       this.setState({ ...this.state, store });
     };
-  };
-
-  _getTimezoneValues = () => {
-    const values = [];
-    _.map(timezones, (o) => {
-      _.map(o.utc, (tz) => {
-        const label = `${o.text.substring(0, o.text.indexOf(') ')+1)} ${tz} (${o.value})`;
-        values.push({ value: tz, label });
-      });
-    });
-
-    return values;
   };
 
   _setTimezone = (timezone) => {
