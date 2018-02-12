@@ -4,6 +4,8 @@ body {
   font-family: sans-serif;
 }
 
+/*semantic ui doesn't include select styling - add simple styles to match styled inputs*/
+
 .ui.form .field select.field {
   display: block;
   width: 100%;
@@ -16,4 +18,11 @@ body {
   background-image: none;
   border: 1px solid rgba(34,36,38,.15);
   border-radius: .28571429rem;
+}
+
+/*semantic ui overrides for select-react component*/
+.ui.form .Select-input input:not([type]) {
+  padding: 8px 0 12px;
+  box-shadow: none;
+  border: none;
 }
