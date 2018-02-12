@@ -224,16 +224,16 @@ const SingSpan = (props) => {
 const decorator = new CompositeDecorator([
   {
     strategy: findEntitiesByType('SHOUT'),
-    component: ShoutSpan,
+    component: ShoutSpan
   },
   {
     strategy: findEntitiesByType('THINK'),
-    component: ThinkSpan,
+    component: ThinkSpan
   },
   {
     strategy: findEntitiesByType('SING'),
-    component: SingSpan,
-  },
+    component: SingSpan
+  }
 ]);
 
 const buttons = [

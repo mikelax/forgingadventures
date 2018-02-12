@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Segment, Button,  } from 'semantic-ui-react';
+import { Form, Segment, Button } from 'semantic-ui-react';
 
 import { gameStatus, postingFrequencies, skillLevels } from "../../utils/gameSettings";
 
@@ -27,6 +27,7 @@ class GameSearch extends Component {
               <label>Name or content</label>
               <Form.Input
                 type="text"
+                icon="search"
                 value={this.formValue('textSearch')}
                 onChange={this.formInput('textSearch')}
                 placeholder="Search"

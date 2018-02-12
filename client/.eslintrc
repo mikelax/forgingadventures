@@ -2,6 +2,7 @@
   "extends": "react-app",
   "rules": {
     "semi": 1,     // come on! Gotta have ; set it to warn(1) otherwise react stops rendering
-    "object-curly-spacing": [1, "always"]
+    "object-curly-spacing": [1, "always"],
+    "comma-dangle": [2, "never"]
   }
 }

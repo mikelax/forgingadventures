@@ -4,7 +4,7 @@ import { isAuthenticated } from '../services/login';
 export default function authReducer(state = {
   isAuthenticated: isAuthenticated(),
   loading: false,
-  error: null,
+  error: null
 }, action) {
   switch (action.type) {
     case AUTH_SUCCESS:
@@ -19,7 +19,7 @@ export default function authReducer(state = {
         ...state,
         loading: false,
         isAuthenticated: false,
-        error: action.error,
+        error: action.error
       };
     case LOGOUT_SUCCESS:
       return {

@@ -127,9 +127,9 @@ const ListGames = compose(
               }
 
               return Object.assign({}, prev, {
-                games: [...prev.games, ...fetchMoreResult.games],
+                games: [...prev.games, ...fetchMoreResult.games]
               });
-            },
+            }
           });
         }
       };

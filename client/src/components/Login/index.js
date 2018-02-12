@@ -53,7 +53,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => ({
-  authorisation: state.authorisation,
+  authorisation: state.authorisation
 });
 
 export default connect(

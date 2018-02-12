@@ -101,7 +101,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
-  authorisation: state.authorisation,
+  authorisation: state.authorisation
 });
 
 const LeftMenuItems = connect(
