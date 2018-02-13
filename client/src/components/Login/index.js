@@ -1,61 +1,23 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from "react-helmet";
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { Container, Header } from 'semantic-ui-react';
+import { Switch, Route } from 'react-router';
 
-import { showLogin } from '../../services/login';
+import AlmostFinished from './AlmostFinished';
+import Callback from './Callback';
+import Login from './Login';
 
-import './Login.styl';
-
-class Login extends Component {
-
-  static propTypes = {
-    authorisation: PropTypes.shape({
-      isAuthenticated: PropTypes.bool.isRequired
-    }).isRequired
-  };
-
-  componentDidMount() {
-    const { isAuthenticated } = this.props.authorisation;
-
-    if (!(isAuthenticated)) {
-      showLogin();
-    }
-  }
+export default class LoginView extends Component {
 
   render() {
-    const { isAuthenticated } = this.props.authorisation;
-
-    if (isAuthenticated) {
-      return <Redirect to="/"/>;
-    }
+    const { match } = this.props;
 
     return (
-      <React.Fragment>
-        <Helmet>
-          <title>Log in or Sign up to Forging Adventures</title>
-        </Helmet>
-
-        <div className="Login">
-          <Container>
-            <Header as="h1">
-              Log In
-            </Header>
-
-            <div id="auth0Lock"/>
-          </Container>
-        </div>
-      </React.Fragment>
+      <div className="login">
+        <Switch>
+          <Route path={`${match.url}/callback`} component={Callback}/>
+          <Route path={`${match.url}/almost-finished`} component={AlmostFinished}/>
+          <Route exact path={`${match.url}/`} component={Login}/>
+        </Switch>
+      </div>
     );
   }
 }
-
-const mapStateToProps = state => ({
-  authorisation: state.authorisation
-});
-
-export default connect(
-  mapStateToProps
-)(Login);
