@@ -83,3 +83,12 @@ export function updateUserAndAuth0(updatePayload, auth0UserId) {
       return patchAuth0Metadata(auth0UserId, userMetadata, appMetadata);
     });
 }
+
+export function runIfContextHasUser(context, runFn) {
+  const token = _.get(context, 'req.user.sub');
+
+  if (token) {
+    return getUser(token)
+      .then(user => runFn(user));
+  }
+}

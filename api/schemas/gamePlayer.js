@@ -4,7 +4,7 @@ import Game from 'models/game';
 import GamePlayer from 'models/gamePlayer';
 import User from 'models/user';
 import schemaScopeGate from 'services/schemaScopeGate';
-import { getOrCreateUserByAuth0Id } from 'services/user';
+import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 import pubsub from 'services/pubsub';
 
 export const GAME_PLAYER_ADDED = 'game_player_added';
@@ -43,12 +43,11 @@ export const gamePlayerResolvers = {
       .whereIn('status', status)
       .orderBy('created_at'),
     myGamePlayer: (obj, { gameId }, context) => {
-      return getOrCreateUserByAuth0Id(context.req.user.sub)
-        .then((user) => {
-          return GamePlayer
-            .query()
-            .where({ gameId, userId: user.id });
-        });
+      return runIfContextHasUser(context, (user) => {
+        return GamePlayer
+          .query()
+          .where({ gameId, userId: user.id });
+      });
     }
   },
   Mutation: {
