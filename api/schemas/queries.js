@@ -22,7 +22,7 @@ const queries = `
     gamePlayers(gameId: ID!, status: [String]): [GamePlayer!]
     
     # users
-    me: User!
+    me: User
   }
 `;
 

@@ -1,4 +1,4 @@
-import { getOrCreateUserByAuth0Id, updateUserAndAuth0 } from 'services/user';
+import { updateUserAndAuth0, runIfContextHasUser } from 'services/user';
 import User from '../models/user';
 
 export const userTypeDefs = `
@@ -37,7 +37,7 @@ export const userTypeDefs = `
 
 export const userResolvers = {
   Query: {
-    me: (obj, obj2, context) => getOrCreateUserByAuth0Id(context.req.user.sub)
+    me: (obj, obj2, context) => runIfContextHasUser(context, user => user)
   },
   Mutation: {
     updateMe: (obj, { input }, context) => updateUserAndAuth0(input, context.req.user.sub),
