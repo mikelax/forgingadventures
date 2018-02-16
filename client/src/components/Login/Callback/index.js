@@ -1,28 +1,38 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Container, Header, Icon, Message } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 
-function Callback(props) {
-  const { loading, error } = props.authorisation;
-  const me = _.get(props, 'me.me');
-  const meLoading = _.get(props, 'me.loading');
-  const completedAt = _.get(me, 'completedAt');
+import { processLockCallback } from '../../../services/login';
 
-  return <div className="Callback">
-    <Container>
-      <Header as='h2' icon textAlign='center'>
-        <Icon name='unlock' circular/>
-        <Header.Content>
-          Authorizing
-        </Header.Content>
-      </Header>
-      {renderAuthResult()}
-    </Container>
-  </div>;
+class Callback extends Component {
 
-  function renderAuthResult() {
+  componentWillMount() {
+    processLockCallback();
+  }
+
+  render() {
+    return <div className="Callback">
+      <Container>
+        <Header as='h2' icon textAlign='center'>
+          <Icon name='unlock' circular/>
+          <Header.Content>
+            Authorizing
+          </Header.Content>
+        </Header>
+
+        {this._renderAuthResult()}
+      </Container>
+    </div>;
+  }
+
+  _renderAuthResult = () => {
+    const { loading, error } = this.props.authorisation;
+    const me = _.get(this.props, 'me.me');
+    const meLoading = _.get(this.props, 'me.loading');
+    const completedAt = _.get(me, 'completedAt');
+
     if (me) {
       if (!(completedAt)) {
         return <Redirect to="/login/almost-finished"/>;
@@ -31,7 +41,7 @@ function Callback(props) {
       }
     } else if (loading || meLoading) {
       return <div className="text-center">
-        Authorizing
+        <Header textAlign="center" as="h3">Logging In</Header>
       </div>;
     } else if (error) {
       return <div>

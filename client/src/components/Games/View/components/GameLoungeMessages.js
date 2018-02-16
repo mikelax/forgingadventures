@@ -19,6 +19,8 @@ import { meQuery } from '../../../../queries/users';
 
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
+import './assets/gameLoungeMessages.styl';
+
 class GameLoungeMessages extends Component {
 
   componentWillMount() {
@@ -129,8 +131,8 @@ class GameLoungeMessageContainer extends Component {
             <div>
               Posted {this._relativeDate(loungeMessage.created_at)}
             </div>
-            {this._renderMeta()}
           </Comment.Metadata>
+          {this._renderMeta()}
           <Comment.Text>
             <RichEditor message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
           </Comment.Text>
@@ -158,7 +160,7 @@ class GameLoungeMessageContainer extends Component {
     if (!(editing)) {
       if (loungeMessage.meta === 'join') {
         return (
-          <div className="meta">{user.name} has joined the game!</div>
+          <div className="meta"><Icon name="user plus" color="green"/>{user.name} has joined the game!</div>
         );
       }
     }

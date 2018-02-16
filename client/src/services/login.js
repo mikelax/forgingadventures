@@ -1,8 +1,7 @@
 import Auth0Lock from 'auth0-lock';
 import Bluebird from 'bluebird';
-import history from "./history";
 
-import { scheduleRenewal, clearRenewalTimer } from './webAuth';
+import { scheduleRenewal, clearRenewalTimer, renewToken, logout } from './webAuth';
 
 export const requestedScopes = 'openid profile email create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
 
@@ -36,22 +35,23 @@ export function showLogin() {
   return lock.show();
 }
 
+export function processLockCallback() {
+  lock.on('authenticated', (authResult) => {
+    setSession(authResult);
+  });
+
+  lock.on('authorization_error', (e) => {
+    console.log('lock error', e);
+  });
+}
+
 export function processAuth() {
   return Bluebird.try(() => {
     if (isAuthenticated()) {
       return getAccessToken();
     } else {
-      return new Bluebird((resolve, reject) => {
-        lock.on('authenticated', (authResult) => {
-          setSession(authResult);
-
-          resolve(authResult.accessToken);
-        });
-
-        lock.on('authorization_error', (e) => {
-          reject(e);
-        });
-      });
+      return renewToken()
+        .then(res => res.accessToken);
     }
   })
     .tap(() => scheduleRenewal());
@@ -109,7 +109,5 @@ export function authLogout() {
   localStorage.removeItem('roles');
 
   clearRenewalTimer();
-
-  // navigate to the home route
-  history.replace('/');
+  logout();
 }

@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js';
 import Bluebird from 'bluebird';
 
-import { requestedScopes, getAccessToken, getAccessTokenExpiresAt, setSession } from './login';
+import { getAccessToken, getAccessTokenExpiresAt, requestedScopes, setSession } from './login';
 
 const webAuth = new auth0.WebAuth({
   domain: process.env.REACT_APP_AUTH0_DOMAIN,
@@ -37,7 +37,8 @@ export function scheduleRenewal() {
   if (delay > 0) {
     clearRenewalTimer();
     tokenRenewalTimeout = setTimeout(() => {
-      renewToken();
+      renewToken()
+        .then(() => scheduleRenewal());
     }, delay);
   }
 }
@@ -57,23 +58,28 @@ export function userHasScopes(scopes) {
 }
 
 
-///// private
-// todo - promisify this function so that scheduleRenewal() can be called after completion and independently
-function renewToken() {
-  webAuth.checkSession(
-    {
-      scope: requestedScopes
-    }, (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        setSession(result);
-        scheduleRenewal();
+export function renewToken() {
+  return new Bluebird((resolve, reject) => {
+    webAuth.checkSession({
+        scope: requestedScopes
+      }, (err, result) => {
+        if (err) {
+          reject(new Error(err));
+        } else {
+          setSession(result);
+          resolve(result);
+        }
       }
-    }
-  );
+    );
+  });
 }
 
-
+export function logout() {
+  webAuth.logout({
+    clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
+    // fixme - add the following to a base url .env.local
+    returnTo: 'http://localhost:3000'
+  });
+}
 
 

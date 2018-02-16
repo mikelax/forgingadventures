@@ -70,8 +70,14 @@ export default class GamesMessage extends Component {
   }
 
   clear() {
+    const { onChange } = this.props;
+
     this.setState({
       editorState: EditorState.createEmpty(decorator)
+    });
+
+    onChange && onChange({
+      hasContent: false
     });
   }
 
@@ -109,7 +115,6 @@ function onEditorChange(editorState) {
   onChange && onChange({
     hasContent: content.hasText()
   });
-
 }
 
 function onToggleAction(entityKey) {

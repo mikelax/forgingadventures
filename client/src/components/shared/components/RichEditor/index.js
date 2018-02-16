@@ -73,8 +73,14 @@ export default class RichEditor extends Component {
   }
 
   clear() {
+    const { onChange } = this.props;
+
     this.setState({
       editorState: EditorState.createEmpty()
+    });
+
+    onChange && onChange({
+      hasContent: false
     });
   }
 
