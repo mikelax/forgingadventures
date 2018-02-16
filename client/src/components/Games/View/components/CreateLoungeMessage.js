@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { graphql } from 'react-apollo';
 import { Form, Button } from 'semantic-ui-react';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
 
 import RichEditor from '../../../shared/components/RichEditor';
 
@@ -12,13 +15,21 @@ class CreateGameLoungeMessage extends Component {
     hasContent: false
   };
 
+  componentWillReceiveProps(nextProps) {
+    const loungeMessage = _.get(nextProps, 'loungeMessage.message');
+
+    if (loungeMessage) {
+      this.editor.addQuoteBlock(loungeMessage);
+    }
+  }
+
   render() {
     return (
       <div className="create-message">
         <Form>
           <Form.Field>
             <label>Add Message</label>
-            <RichEditor ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
+            <RichEditor ref={this._handleEditor} onChange={this._handleOnChange}/>
           </Form.Field>
 
           <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
@@ -27,6 +38,10 @@ class CreateGameLoungeMessage extends Component {
       </div>
     );
   }
+
+  _handleEditor = (e) => {
+    this.editor = e;
+  };
 
   _handleOnChange = (data) => {
     this.setState({ hasContent: data.hasContent });
@@ -50,4 +65,9 @@ class CreateGameLoungeMessage extends Component {
   };
 }
 
-export default graphql(createGameLoungeMessageMutation)(CreateGameLoungeMessage);
+export default compose(
+  graphql(createGameLoungeMessageMutation),
+  connect(
+    (state) => ({ loungeMessage: state.loungeMessage })
+  )
+)(CreateGameLoungeMessage);

@@ -1,6 +1,10 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Form, Button } from 'semantic-ui-react';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+
 
 import GameMessage from '../../components/GameMessage';
 
@@ -12,13 +16,21 @@ class CreateMessage extends Component {
     hasContent: false
   };
 
+  componentWillReceiveProps(nextProps) {
+    const gameMessage = _.get(nextProps, 'gameMessage.message');
+
+    if (gameMessage) {
+      this.editor.addQuoteBlock(gameMessage);
+    }
+  }
+
   render() {
     return (
       <div className="create-message">
         <Form>
           <Form.Field>
             <label>Add Message</label>
-            <GameMessage ref={(c) => (this.editor = c)} onChange={this._handeOnChange}/>
+            <GameMessage ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
           </Form.Field>
         </Form>
 
@@ -27,7 +39,7 @@ class CreateMessage extends Component {
     );
   }
 
-  _handeOnChange = (data) => {
+  _handleOnChange = (data) => {
     this.setState({ hasContent: data.hasContent });
   };
 
@@ -49,4 +61,9 @@ class CreateMessage extends Component {
   };
 }
 
-export default graphql(createGameMessageMutation)(CreateMessage);
+export default compose(
+  graphql(createGameMessageMutation),
+  connect(
+    (state) => ({ gameMessage: state.gameMessage })
+  )
+)(CreateMessage);

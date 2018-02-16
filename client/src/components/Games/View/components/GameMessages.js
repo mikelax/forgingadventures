@@ -3,9 +3,12 @@ import moment from "moment";
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
+import { connect } from "react-redux";
 import { Header,  Comment, Icon } from 'semantic-ui-react';
 
 import GameMessage from '../../components/GameMessage';
+import ApolloLoader from '../../../shared/components/ApolloLoader';
+import { quote } from '../../../../actions/gameMessage';
 
 import {
   gameMessagesQuery, updateGameMessageMutation,
@@ -13,7 +16,6 @@ import {
 } from '../../queries';
 import { meQuery } from '../../../../queries/users';
 
-import ApolloLoader from '../../../shared/components/ApolloLoader';
 
 class GameMessages extends Component {
 
@@ -125,27 +127,6 @@ class GameMessageContainerBase extends Component {
           </Comment.Actions>
         </Comment.Content>
       </Comment>
-
-
-      // <div className="game-message">
-      //   <div className="header">
-      //     <div className="stats">
-      //       <div className="message-stats">
-      //         <div>Posted {this._relativeDate(gameMessage.created_at)}</div>
-      //         {this._lastEdited()}
-      //       </div>
-      //     </div>
-      //   </div>
-      //
-      //   <div className="game-message-content">
-      //     <GameMessage message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
-      //   </div>
-      //
-      //   <div className="editor-controls text-right">
-      //     {this._messageControls()}
-      //   </div>
-      //
-      // </div>
     );
   }
 
@@ -159,10 +140,14 @@ class GameMessageContainerBase extends Component {
 
   _viewingControls = (messageUserId) => {
     const canEdit = _.eq(messageUserId, _.get(this.props.meQuery, 'me.id'));
+    const canPost = _.get(this.props, ('meQuery.me.id'));
 
-    if (canEdit) {
+    if (canPost) {
       return (
-        <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action>
+        <React.Fragment>
+          { canEdit && <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> }
+          <Comment.Action onClick={this._handleQuote}>Quote</Comment.Action>
+        </React.Fragment>
       );
     }
   };
@@ -176,6 +161,12 @@ class GameMessageContainerBase extends Component {
 
   _handleEdit = () => {
     this.setState({ editing: true });
+  };
+
+  _handleQuote = () => {
+    const { quoteGameMessage } = this.props;
+
+    quoteGameMessage(this.editor.getEditorMessage());
   };
 
   _handleSubmit = () => {
@@ -221,11 +212,16 @@ class GameMessageContainerBase extends Component {
 
 }
 
+const mapDispatchToProps = dispatch => ({
+  quoteGameMessage: (message) => dispatch(quote(message))
+});
+
+
 const GameMessageContainer = compose(
   graphql(updateGameMessageMutation, {
     name: 'updateMessage'
   }),
   graphql(meQuery, { name: 'meQuery' }),
-  pure,
+  connect(null, mapDispatchToProps, null, { pure: false }),
 )(GameMessageContainerBase);
 

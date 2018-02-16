@@ -1,9 +1,9 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier } from 'draft-js';
 import { getSelectionEntity } from 'draftjs-utils';
 
-import 'draft-js/dist/Draft.css';
 import './assets/GameMessage.styl';
 
 import iconMusic from './assets/icon-music-note.svg';
@@ -77,6 +77,21 @@ export default class GamesMessage extends Component {
 
   getEditorMessage() {
     return convertToRaw(this.state.editorState.getCurrentContent());
+  }
+
+  addQuoteBlock(message) {
+    const newBlocks = _.map(message.blocks, (block) => {
+      return _.tap(block, b => (b.type = 'blockquote'));
+    });
+    const { editorState } = this.state;
+    const currentContentRaw = this.getEditorMessage();
+
+    currentContentRaw.blocks = _.concat(currentContentRaw.blocks, newBlocks);
+    currentContentRaw.entityMap = _.merge({}, currentContentRaw.entityMap, message.entityMap);
+
+    const newState =  EditorState.push( editorState, convertFromRaw(currentContentRaw), 'insert-characters');
+
+    onEditorChange.call(this, newState);
   }
 
   _focus = () => this.refs.editor.focus();

@@ -80,19 +80,18 @@ function gameDetails() {
       const playerOrGm = !_.isEmpty(myGamePlayer) && _.some(myGamePlayer, (value) => {
         return _.includes(['game-master', 'accepted'], value.status);
       });
-      const editorBlock = playerOrGm ? 
+      const editorBlock = playerOrGm ?
       <CreateMessage gameId={game.id}/> :
         <Message info
           header='Please Login or Join Game to Post'
           content='While games are viewable by everyone, only players are able to post game messages. Try posting a message in the Lounge, or searching for another open game.'
-        />
-       ;
+        />;
 
       return (
         <Tab.Pane>
           {editorBlock}
           <GamesMessages gameId={game.id}/>
-        </Tab.Pane> 
+        </Tab.Pane>
       );
     } }
   ];
