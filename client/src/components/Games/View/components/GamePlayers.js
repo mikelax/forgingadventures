@@ -2,9 +2,9 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
-import { Button, Image, List, Popup, Icon } from 'semantic-ui-react';
+import { Button, Image, List, Menu, Popup, Icon } from 'semantic-ui-react';
 
-import { gamePlayersQuery, myGamePlayerQuery } from '../../queries';
+import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 
 import './assets/GamePlayers.styl';
@@ -12,6 +12,8 @@ import './assets/GamePlayers.styl';
 class GamePlayers extends Component {
   render() {
     const { data: { gamePlayers }, myGamePlayer } = this.props;
+    // INFO using _.some here as myGamePlayer returns an array for future proofing
+    // ie. in case user has multiple characters in single game
     const isGm = _.some(myGamePlayer.myGamePlayer, ['status', 'game-master']);
 
     return (
@@ -21,6 +23,8 @@ class GamePlayers extends Component {
             <List.Item key={player.id}>
               <List.Content floated='right'>
                 { isGm ? this._gmActions(player.id, player.status) : null }
+                { !isGm && _.some(myGamePlayer.myGamePlayer, (gp) => gp.user.id === player.user.id)
+                    ? this._playerOptions(player.id) : null }
               </List.Content>
               <Image avatar src={_.get(player, 'user.profileImage.url')} />
               <List.Content>
@@ -47,13 +51,45 @@ class GamePlayers extends Component {
           hoverable
         >
           <Button.Group>
-            <Button positive>Approve</Button>
+            <Button positive onClick={this._updatePlayerStatus(playerId, 'accepted')}>Approve</Button>
             <Button.Or />
-            <Button negative>Reject</Button>
+            <Button negative onClick={this._updatePlayerStatus(playerId, 'rejected')}>Reject</Button>
           </Button.Group>
         </Popup>
       );
+    } else if (playerStatus === 'accepted') {
+      return (
+        <Popup
+          trigger={<Button icon><Icon name="setting" /></Button>}
+          flowing
+          hoverable
+        >
+          <Menu vertical compact size="tiny">
+            <Menu.Item onClick={this._updatePlayerStatus(playerId, 'kicked')}>
+              <Icon name="remove" />
+              Kick Player
+            </Menu.Item>
+          </Menu>
+        </Popup>
+      );
     }
+  };
+
+  _playerOptions = (playerId) => {
+    return (
+        <Popup
+          trigger={<Button icon><Icon name="setting" /></Button>}
+          flowing
+          hoverable
+        >
+          <Menu vertical compact size="tiny">
+            <Menu.Item onClick={this._updatePlayerStatus(playerId, 'quit')}>
+              <Icon name="remove" />
+              Leave Game
+            </Menu.Item>
+          </Menu>
+        </Popup>
+    );
   };
 
   _userProfileImage = (player) => {
@@ -65,6 +101,21 @@ class GamePlayers extends Component {
       return <span className="glyphicon glyphicon-user" aria-hidden="true"/>;
     }
   };
+
+  _updatePlayerStatus = (playerId, status) => {
+    return (e) => {
+      const { updateGamePlayer } = this.props;
+
+      return updateGamePlayer({
+        variables: {
+          id: playerId,
+          input: {
+            status
+          }
+        }
+      });
+    };
+  };
 }
 
 export default compose(
@@ -74,6 +125,9 @@ export default compose(
   }),
   graphql(gamePlayersQuery, {
     options: ({ gameId }) => ({ variables: { gameId, status: ['game-master', 'pending', 'accepted'] } })
+  }),
+  graphql(updateGamePlayerMutation, {
+    name: 'updateGamePlayer'
   }),
   ApolloLoader,
   pure,
