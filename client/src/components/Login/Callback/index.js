@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Container, Header, Icon, Message } from 'semantic-ui-react';
+import { Container, Header, Loader, Message } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 
 import { processLockCallback } from '../../../services/login';
@@ -16,10 +16,9 @@ class Callback extends Component {
     return <div className="Callback">
       <Container>
         <Header as='h2' icon textAlign='center'>
-          <Icon name='unlock' circular/>
-          <Header.Content>
-            Authorizing
-          </Header.Content>
+          <Loader active size='huge' inline='centered'>
+            Logging In
+          </Loader>
         </Header>
 
         {this._renderAuthResult()}
@@ -40,9 +39,7 @@ class Callback extends Component {
         return <Redirect to="/"/>;
       }
     } else if (loading || meLoading) {
-      return <div className="text-center">
-        <Header textAlign="center" as="h3">Logging In</Header>
-      </div>;
+      return null;
     } else if (error) {
       return <div>
         <Message negative>
