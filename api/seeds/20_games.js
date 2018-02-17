@@ -14,6 +14,7 @@ exports.seed = function(knex, Promise) {
               overview: 'You are gathered at the entrace of the dungeon.',
               userId,
               notes: 'have fun',
+              labelId: 1,
               gameSettings: {
                 minPlayers: 3,
                 maxPlayers: 5,
@@ -21,6 +22,18 @@ exports.seed = function(knex, Promise) {
                 postingFrequency: 3
               }
             }
-          ]));
+          ])
+            .returning('*')
+        )
+        .then((gameResponse) => {
+          return knex('game_players').insert([
+            {
+              gameId: gameResponse[0].id,
+              userId: gameResponse[0].userId,
+              status: 'game-master'
+            }
+          ])
+            .returning('*');
+        });
     });
 };
