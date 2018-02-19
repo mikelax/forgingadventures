@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from "react";
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -5,7 +6,7 @@ import { connect } from 'react-redux';
 import logo from './logo.png';
 import './Header.styl';
 
-import { Container, Icon, Image, Menu, Responsive } from "semantic-ui-react";
+import { Container, Dropdown, Icon, Image, Menu, Responsive } from "semantic-ui-react";
 
 import { logout } from '../../actions/auth';
 
@@ -82,26 +83,54 @@ const LeftMenuItemsBase = ({ authorisation: { isAuthenticated } }) => {
   );
 };
 
-const RightMenuItemsBase = ({ authorisation: { isAuthenticated }, logout }) => {
-  return (
-    <React.Fragment>
-      {
-        !(isAuthenticated) && <Menu.Item as={Link} name="Login" to="/login"/>
-      }
-      {
-        isAuthenticated && <Menu.Item as="a" name="Logout" onClick={logout}/>
-      }
-    </React.Fragment>
-  );
-};
+class RightMenuItemsBase extends Component {
+  render() {
+    const { authorisation: { isAuthenticated }, logout } = this.props;
 
+    const loggedInMenu = (
+      <Menu.Item>
+        <Dropdown trigger={this._userLogo()}>
+          <Dropdown.Menu>
+            <Menu.Item as={NavLink} name="Profile" to="/profile"/>
+            <Dropdown.Divider />
+            <Menu.Item as="a" name="Logout" onClick={logout}/>
+          </Dropdown.Menu>
+        </Dropdown>
+      </Menu.Item>
+    );
+
+    return (
+      <React.Fragment>
+        {
+          !(isAuthenticated) && <Menu.Item as={Link} name="Login" to="/login"/>
+        }
+        {
+          isAuthenticated && loggedInMenu
+        }
+      </React.Fragment>
+    );
+  }
+
+  _userLogo() {
+    const { me: { me } } = this.props;
+    const userProfileImageUrl = _.get(me, 'profileImage.url');
+    const username = _.get(me, 'username');
+
+    return (
+      <span>
+        <Image avatar src={userProfileImageUrl} /> {username}
+      </span>
+    );
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout())
 });
 
 const mapStateToProps = state => ({
-  authorisation: state.authorisation
+  authorisation: state.authorisation,
+  me: state.me
 });
 
 const LeftMenuItems = connect(
