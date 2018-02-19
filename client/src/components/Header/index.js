@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React, { Component } from "react";
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
 
 import logo from './logo.png';
 import './Header.styl';
@@ -138,11 +137,9 @@ const LeftMenuItems = connect(
   mapStateToProps, null, null, { pure: false }
 )(LeftMenuItemsBase);
 
-const RightMenuItems = compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps, null, { pure: false }
-  )
+const RightMenuItems = connect(
+  mapStateToProps,
+  mapDispatchToProps, null, { pure: false }
 )(RightMenuItemsBase);
 
 export default class Header extends Component {
