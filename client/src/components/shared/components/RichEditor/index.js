@@ -53,9 +53,9 @@ export default class RichEditor extends Component {
     const editingClass = readOnly ? '' : 'editing';
 
     return (
-      <div className={`RichEditor-root ${editingClass}`}>
+      <div className={`RichEditor-root ${editingClass}`}  onClick={this._focus}>
         {this._renderToolbar()}
-        <div className={`${className} ${hasTextClass}`} onClick={this._focus}>
+        <div className={`${className} ${hasTextClass}`}>
           <Editor
             blockStyleFn={getBlockStyle}
             editorState={editorState}

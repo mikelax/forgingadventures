@@ -32,9 +32,9 @@ class CreateMessage extends Component {
             <label>Add Message</label>
             <GameMessage ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
           </Form.Field>
-        </Form>
 
-        <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
+          <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
+        </Form>
       </div>
     );
   }

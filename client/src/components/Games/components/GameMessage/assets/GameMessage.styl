@@ -1,10 +1,15 @@
 .GameMessage
+  padding 5px
+
+  &.editing
+    border 1px solid #ddd
+    border-radius 2px
+    min-height 150px
+
+    .editor-container
+      padding 5px
 
   .editor-container
-    border 1px solid silver
-    border-radius 2px
-    padding 5px
-    min-height 60px
 
     blockquote
       border-left 5px solid #4ca8de + 50%
@@ -12,6 +17,18 @@
       margin 0
       padding 0 0 0 20px
       background-color #e8f3ff + 50%
+
+  .editor-controls
+    padding-bottom 5px
+    border-bottom 1px solid #ddd
+
+    .ui.buttons
+      vertical-align top
+
+      button
+        .super-mini
+          opacity 0.6
+          width 14px
 
   span.shouting
     color blue
@@ -35,13 +52,3 @@
       height 12px
       margin-left 3px
       margin-right 3px
-
-  button.active
-    background-color red
-
-
-  button
-    img
-      width 16px
-      height 16px
-
