@@ -1,16 +1,14 @@
 import _ from 'lodash';
 import React, { Component } from "react";
 import { Link, NavLink } from 'react-router-dom';
-import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { compose, pure } from 'recompose';
+import { compose } from 'recompose';
 
 import logo from './logo.png';
 import './Header.styl';
 
 import { Container, Dropdown, Icon, Image, Menu, Responsive } from "semantic-ui-react";
 
-import { meQuery } from '../../queries/users';
 import { logout } from '../../actions/auth';
 
 const NavBarDesktop = () => (
@@ -88,21 +86,18 @@ const LeftMenuItemsBase = ({ authorisation: { isAuthenticated } }) => {
 
 class RightMenuItemsBase extends Component {
   render() {
-    const { authorisation: { isAuthenticated }, logout, meQuery: { me } } = this.props;
-    const userProfileImageUrl = _.get(me, 'profileImage.url');
-    // TODO needed to use _ as this is rendering multiple times
-    // sometimes me is null, even logged in
-    const username = _.get(me, 'username');
+    const { authorisation: { isAuthenticated }, logout } = this.props;
 
     const loggedInMenu = (
-      <Dropdown item simple text={username}>
-        <Dropdown.Menu>
-          <Image avatar src={userProfileImageUrl} />
-          <Menu.Item as={NavLink} name="Profile" to="/profile"/>
-          <Dropdown.Divider />
-          <Menu.Item as="a" name="Logout" onClick={logout}/>
-        </Dropdown.Menu>
-      </Dropdown>
+      <Menu.Item>
+        <Dropdown trigger={this._userLogo()}>
+          <Dropdown.Menu>
+            <Menu.Item as={NavLink} name="Profile" to="/profile"/>
+            <Dropdown.Divider />
+            <Menu.Item as="a" name="Logout" onClick={logout}/>
+          </Dropdown.Menu>
+        </Dropdown>
+      </Menu.Item>
     );
 
     return (
@@ -116,6 +111,18 @@ class RightMenuItemsBase extends Component {
       </React.Fragment>
     );
   }
+
+  _userLogo() {
+    const { me: { me } } = this.props;
+    const userProfileImageUrl = _.get(me, 'profileImage.url');
+    const username = _.get(me, 'username');
+
+    return (
+      <span>
+        <Image avatar src={userProfileImageUrl} /> {username}
+      </span>
+    );
+  }
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -123,7 +130,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
-  authorisation: state.authorisation
+  authorisation: state.authorisation,
+  me: state.me
 });
 
 const LeftMenuItems = connect(
@@ -134,9 +142,7 @@ const RightMenuItems = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps, null, { pure: false }
-  ),
-  graphql(meQuery, { name: 'meQuery' }),
-  pure
+  )
 )(RightMenuItemsBase);
 
 export default class Header extends Component {
