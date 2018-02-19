@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Form, Button } from 'semantic-ui-react';
+import { Button, Form, Image } from 'semantic-ui-react';
 import { Helmet } from "react-helmet";
 
 import { skillLevels, postingFrequencies } from '../utils/gameSettings';
@@ -128,7 +128,7 @@ const CreateGame = class CreateGame extends Component {
               <label>Game Image</label>
               {
                 gameImageUrl ? (
-                  <div className="game-image"><img src={gameImageUrl} alt=""/></div>
+                  <Image size='huge' src={gameImageUrl} />
                 ) : null
               }
               <Form.Input

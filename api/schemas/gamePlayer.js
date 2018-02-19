@@ -85,7 +85,7 @@ export const gamePlayerResolvers = {
               .returning('*')
               .execute()
               .tap((gamePlayerMessage) => {
-                pubsub.publish(GAME_PLAYER_UPDATED, {
+                return pubsub.publish(GAME_PLAYER_UPDATED, {
                   gamePlayerUpdated: gamePlayerMessage
                 });
               });
