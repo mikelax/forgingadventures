@@ -88,7 +88,7 @@ export function runIfContextHasUser(context, runFn) {
   const token = _.get(context, 'req.user.sub');
 
   if (token) {
-    return getUser(token)
+    return getOrCreateUserByAuth0Id(token)
       .then(user => runFn(user));
   }
 }
