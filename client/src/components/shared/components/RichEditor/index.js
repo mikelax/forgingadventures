@@ -203,7 +203,7 @@ function getBlockStyle(block) {
 class StyleButton extends React.Component {
   render() {
     return (
-      <Button size="mini" icon active={this.props.active} onClick={this._onToggle}>
+      <Button size="mini" icon active={this.props.active} onMouseDown={this._onToggle}>
         <Icon name={this.props.label}/>
       </Button>
     );
