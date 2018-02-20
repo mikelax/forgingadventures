@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Form, Segment, Button } from 'semantic-ui-react';
 
 import { gameStatus, postingFrequencies, skillLevels } from "../../utils/gameSettings";
+import GameLabelsSelect from '../GameLabelsSelect';
 
 
 class GameSearch extends Component {
@@ -31,6 +32,15 @@ class GameSearch extends Component {
                 value={this.formValue('textSearch')}
                 onChange={this.formInput('textSearch')}
                 placeholder="Search"
+              />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Label</label>
+              <GameLabelsSelect
+                placeholder="Any"
+                value={this.formValue('labelId')}
+                onChange={this.formInput('labelId')}
               />
             </Form.Field>
 

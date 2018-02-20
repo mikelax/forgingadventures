@@ -3,7 +3,6 @@ import { withFilter } from 'graphql-subscriptions';
 import { raw } from 'objection';
 
 import GameLounge from 'models/gameLounge';
-import User from 'models/user';
 
 import schemaScopeGate from 'services/schemaScopeGate';
 
@@ -39,7 +38,7 @@ export const gameLoungeTypeDefs = `
 
 export const gameLoungeResolvers = {
   GameLoungeMessage: {
-    user: gameLoungeMessage => User.query().findById(gameLoungeMessage.userId)
+    user: (gameLoungeMessage, vars, context) => context.loaders.users.load(gameLoungeMessage.userId)
   },
   Query: {
     gameLoungeMessage: (obj, { id }) => GameLounge.query().findById(id),

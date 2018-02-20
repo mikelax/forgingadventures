@@ -8,7 +8,9 @@ import { skillLevels, postingFrequencies } from '../utils/gameSettings';
 import { createGameMutation, gamesQuery } from '../queries';
 import { uploadImage } from '../../../services/image';
 
-const CreateGame = class CreateGame extends Component {
+import GameLabelsSelect from '../components/GameLabelsSelect';
+
+class CreateGame extends Component {
 
   state = {
     // the form control state
@@ -16,6 +18,7 @@ const CreateGame = class CreateGame extends Component {
       title: '',
       scenario: '',
       overview: '',
+      labelId: 0,
       gameSettings: {
         minPlayers: 2,
         maxPlayers: 6,
@@ -41,15 +44,26 @@ const CreateGame = class CreateGame extends Component {
           <h1>Create a New Game</h1>
 
           <Form>
-            <Form.Field required>
-              <label>Campaign Name</label>
-              <Form.Input
-                error={this._validity('title')}
-                value={this._formValue('title')}
-                placeholder="Enter Campaign Name"
-                onChange={this._formInput('title')}
-              />
-            </Form.Field>
+            <Form.Group widths="equal">
+              <Form.Field required>
+                <label>Campaign Name</label>
+                <Form.Input
+                  error={this._validity('title')}
+                  value={this._formValue('title')}
+                  placeholder="Enter Campaign Name"
+                  onChange={this._formInput('title')}
+                />
+              </Form.Field>
+
+              <Form.Field required>
+                <label>Label</label>
+                <GameLabelsSelect
+                  error={this._validity('labelId')}
+                  value={this._formValue('labelId')}
+                  onChange={this._formInput('labelId')}
+                />
+              </Form.Field>
+            </Form.Group>
 
             <Form.Field required>
               <label className="top">Scenario</label>
@@ -191,9 +205,10 @@ const CreateGame = class CreateGame extends Component {
   _valid = () => {
     const errors = {};
 
-    errors.title = _.isEmpty(this._formValue('title'));
-    errors.scenario = _.isEmpty(this._formValue('scenario'));
+    errors.labelId = _.isEmpty(this._formValue('labelId'));
     errors.overview = _.isEmpty(this._formValue('overview'));
+    errors.scenario = _.isEmpty(this._formValue('scenario'));
+    errors.title = _.isEmpty(this._formValue('title'));
 
     this.setState({ errors });
 

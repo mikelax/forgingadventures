@@ -19,6 +19,7 @@ export default class {
       .bind(this)
       .then(doFullTextSearch)
       .then(doGameSettingsSearch)
+      .then(doAssociationSearch)
       .then(() => this.gameQuery);
   }
 }
@@ -48,5 +49,13 @@ function doGameSettingsSearch() {
     if (postingFrequency) {
       this.gameQuery.whereJsonSupersetOf('gameSettings', { postingFrequency });
     }
+  }
+}
+
+function doAssociationSearch() {
+  const { labelId } = this.searchOptions;
+
+  if (labelId) {
+    this.gameQuery.where({ labelId });
   }
 }

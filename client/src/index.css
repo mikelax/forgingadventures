@@ -20,6 +20,13 @@ body {
   border-radius: .28571429rem;
 }
 
+.ui.form .field select.field.error {
+    background: #fff6f6;
+    border-color: #e0b4b4;
+    color: #9f3a38;
+    box-shadow: none;
+}
+
 /*semantic ui overrides for select-react component*/
 .ui.form .Select-input input:not([type]) {
   padding: 8px 0 12px;

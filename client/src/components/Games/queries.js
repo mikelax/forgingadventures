@@ -20,6 +20,10 @@ fragment gameFields on Game {
     url
     publicId
   }
+  label {
+    displayName
+    shortName
+  }
 }
 `;
 
@@ -126,6 +130,17 @@ export const createGameMutation = gql`
   ${gameFields}
 `;
 
+// game labels
+
+export const gameLabelsQuery = gql`
+  query {
+    gameLabels {
+      id
+      displayName
+      shortName
+    }
+  }
+`;
 
 // game messages
 
