@@ -2,9 +2,12 @@ import _ from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { compose, pure } from 'recompose';
+import { compose } from 'recompose';
 import { Comment, Header, Icon } from 'semantic-ui-react';
+import { connect } from "react-redux";
+
 import RichEditor from '../../../shared/components/RichEditor';
+import { quote } from '../../../../actions/loungeMessage';
 
 import {
   gameLoungeMessagesQuery,
@@ -103,7 +106,6 @@ export default compose(
     options: ({ gameId }) => ({ variables: { gameId } })
   }),
   ApolloLoader,
-  pure,
 )(GameLoungeMessages);
 
 // private
@@ -166,10 +168,14 @@ class GameLoungeMessageContainer extends Component {
 
   _viewingControls = (messageUserId) => {
     const canEdit = _.eq(messageUserId, _.get(this.props.meQuery, 'me.id'));
+    const canPost = _.get(this.props, ('meQuery.me.id'));
 
-    if (canEdit) {
+    if (canPost) {
       return (
-        <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action>
+        <React.Fragment>
+          { canEdit && <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> }
+          <Comment.Action onClick={this._handleQuote}>Quote</Comment.Action>
+        </React.Fragment>
       );
     }
   };
@@ -183,6 +189,12 @@ class GameLoungeMessageContainer extends Component {
 
   _handleEdit = () => {
     this.setState({ editing: true });
+  };
+
+  _handleQuote = () => {
+    const { quoteLoungeMessage } = this.props;
+
+    quoteLoungeMessage(this.editor.getEditorMessage());
   };
 
   _handleSubmit = () => {
@@ -238,10 +250,14 @@ class GameLoungeMessageContainer extends Component {
   };
 }
 
+const mapDispatchToProps = dispatch => ({
+  quoteLoungeMessage: (message) => dispatch(quote(message))
+});
+
 const GameLoungeMessageContainerData = compose(
   graphql(updateGameLoungeMessageMutation, {
     name: 'updateLoungeMessage'
   }),
   graphql(meQuery, { name: 'meQuery' }),
-  pure,
+  connect(null, mapDispatchToProps, null, { pure: false })
 )(GameLoungeMessageContainer);

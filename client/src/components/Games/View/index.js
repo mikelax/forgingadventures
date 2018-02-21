@@ -85,8 +85,7 @@ function gameDetails() {
         <Message info
           header='Please Login or Join Game to Post'
           content='While games are viewable by everyone, only players are able to post game messages. Try posting a message in the Lounge, or searching for another open game.'
-        />
-       ;
+        />;
 
       return (
         <Tab.Pane>

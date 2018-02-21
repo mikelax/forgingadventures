@@ -1,12 +1,18 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier } from 'draft-js';
+import {
+  CompositeDecorator, convertFromRaw, convertToRaw, Editor, EditorState, Entity, Modifier,
+  RichUtils
+} from 'draft-js';
 import { getSelectionEntity } from 'draftjs-utils';
+import { Button, Image } from 'semantic-ui-react';
 
-import 'draft-js/dist/Draft.css';
 import './assets/GameMessage.styl';
 
 import iconMusic from './assets/icon-music-note.svg';
+import iconThink from './assets/think.svg';
+import iconShout from './assets/shouting.svg';
 
 /**
  * GamesMessage is export wrapper component around draft js
@@ -48,21 +54,17 @@ export default class GamesMessage extends Component {
 
   render() {
     const { editorState } = this.state;
-    const { readOnly } = this.props;
-
-    const editorControls = readOnly ? null :
-      <ActionControls
-        editorState={editorState}
-        onToggle={onToggleAction.bind(this)}
-      />;
+    const { readOnly, placeholder } = this.props;
+    const editingClass = readOnly ? '' : 'editing';
 
     return (
-      <div className="GameMessage" onClick={this._focus}>
-        {editorControls}
+      <div className={`GameMessage ${editingClass}`} onClick={this._focus}>
+        {this._toolbar()}
         <div className="editor-container">
           <Editor editorState={editorState}
                   onChange={onEditorChange.bind(this)}
                   ref="editor"
+                  placeholder={placeholder}
                   readOnly={readOnly}/>
         </div>
       </div>
@@ -85,7 +87,43 @@ export default class GamesMessage extends Component {
     return convertToRaw(this.state.editorState.getCurrentContent());
   }
 
+  addQuoteBlock(message) {
+    const newBlocks = _.map(message.blocks, (block) => {
+      return _.tap(block, b => (b.type = 'blockquote'));
+    });
+    const { editorState } = this.state;
+    const currentContentRaw = this.getEditorMessage();
+
+    currentContentRaw.blocks = _.concat(currentContentRaw.blocks, newBlocks);
+    currentContentRaw.entityMap = _.merge({}, currentContentRaw.entityMap, message.entityMap);
+
+    const newState =  EditorState.push( editorState, convertFromRaw(currentContentRaw), 'insert-characters');
+
+    onEditorChange.call(this, newState);
+  }
+
   _focus = () => this.refs.editor.focus();
+
+  _toolbar = () => {
+    const { readOnly } = this.props;
+    const { editorState } = this.state;
+
+    if (!(readOnly)) {
+      return (
+        <div className="editor-controls">
+          <ActionControls
+            editorState={editorState}
+            onToggle={onToggleAction.bind(this)}
+          />
+          &nbsp;
+          <BlockControls
+            editorState={editorState}
+            onToggle={toggleBlockStyle.bind(this)}
+          />
+        </div>
+      );
+    }
+  }
 
 }
 
@@ -142,6 +180,15 @@ function onToggleAction(entityKey) {
   }
 }
 
+function toggleBlockStyle(blockType) {
+  onEditorChange.call(this,
+    RichUtils.toggleBlockType(
+      this.state.editorState,
+      blockType
+    )
+  );
+}
+
 
 /*
  ActionControls is the toolabr component, which is built based on styles defined in buttons
@@ -152,21 +199,63 @@ const ActionControls = (props) => {
   const selectionEntity = getSelectionEntity(editorState);
 
   return (
-    <div>
+    <Button.Group icon={true}>
       {buttons.map(button =>
         <ActionButton
           key={button.type}
           entity={button.entity}
           active={selectionEntity === button.entity}
-          label={button.label}
           onToggle={props.onToggle}
           type={button.type}
           icon={button.icon}
         />
       )}
-    </div>
+    </Button.Group>
   );
 };
+
+const BLOCK_TYPES = [
+  { label: 'quote left', style: 'blockquote' },
+  { label: 'unordered list', style: 'unordered-list-item' },
+  { label: 'ordered list', style: 'ordered-list-item' }
+];
+
+const BlockControls = (props) => {
+  const { editorState } = props;
+  const selection = editorState.getSelection();
+  const blockType = editorState
+    .getCurrentContent()
+    .getBlockForKey(selection.getStartKey())
+    .getType();
+
+  return (
+    <Button.Group icon={true}>
+      {BLOCK_TYPES.map((type) =>
+        <StyleButton
+          key={type.label}
+          active={type.style === blockType}
+          label={type.label}
+          onToggle={props.onToggle}
+          style={type.style}
+        />
+      )}
+    </Button.Group>
+  );
+};
+
+class StyleButton extends React.Component {
+  render() {
+    return (
+      <Button active={this.props.active} onMouseDown={this._onToggle} size="mini" icon={this.props.label} />
+    );
+  }
+
+  _onToggle = (e) => {
+    e.preventDefault();
+    this.props.onToggle(this.props.style);
+  };
+
+}
 
 
 /*
@@ -176,18 +265,13 @@ ActionButton is the toolbar button
 
 class ActionButton extends React.Component {
   render() {
-    const icon = this.props.icon ?
-      <img src={this.props.icon} alt={this.props.label}/>
-      : this.props.label;
-
     return (
-      <button
-        className={this.props.active ? 'active' : ''}
-        type="button"
+      <Button
+        size="mini"
+        active={this.props.active}
         title={this.props.type}
-        onMouseDown={this._toggle}>
-        {icon}
-      </button>
+        content={<Image src={this.props.icon} className="super-mini"/>}
+        onMouseDown={this._toggle} />
     );
   }
 
@@ -243,19 +327,18 @@ const decorator = new CompositeDecorator([
 
 const buttons = [
   {
-    label: 'S',
+    icon: iconShout,
     type: 'SHOUT',
     entity: Entity.create('SHOUT', 'MUTABLE')
   },
   {
-    label: 'TH',
+    icon: iconThink,
     type: 'THINK',
     entity: Entity.create('THINK', 'MUTABLE')
   },
   {
-    label: 'S',
-    type: 'SING',
     icon: iconMusic,
+    type: 'SING',
     entity: Entity.create('SING', 'MUTABLE')
   }
 ];

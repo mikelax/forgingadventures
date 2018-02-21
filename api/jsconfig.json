@@ -6,7 +6,7 @@
         "models/*": ["./models/*"],
         "routes/*": ["./routes/*"],
         "schemas/*": ["./schemas/*"],
-        "services/*": ["./models/*"],
+        "services/*": ["./services/*"],
         "utils/*": ["./utils/*"]
       }
     }

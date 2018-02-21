@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, Modifier } from 'draft-js';
 import { OrderedSet } from 'immutable';
 import React, { Component } from 'react';
@@ -52,9 +53,9 @@ export default class RichEditor extends Component {
     const editingClass = readOnly ? '' : 'editing';
 
     return (
-      <div className={`RichEditor-root ${editingClass}`}>
+      <div className={`RichEditor-root ${editingClass}`}  onClick={this._focus}>
         {this._renderToolbar()}
-        <div className={`${className} ${hasTextClass}`} onClick={this._focus}>
+        <div className={`${className} ${hasTextClass}`}>
           <Editor
             blockStyleFn={getBlockStyle}
             editorState={editorState}
@@ -102,6 +103,20 @@ export default class RichEditor extends Component {
     this._onChange(newState);
   };
 
+  addQuoteBlock(message) {
+    const newBlocks = _.map(message.blocks, (block) => {
+      return _.tap(block, b => (b.type = 'blockquote'));
+    });
+    const { editorState } = this.state;
+    const currentContentRaw = this.getEditorMessage();
+
+    currentContentRaw.blocks = _.concat(currentContentRaw.blocks, newBlocks);
+
+    const newState =  EditorState.push( editorState, convertFromRaw(currentContentRaw), 'insert-fragment');
+
+    this._onChange(newState);
+  }
+
   _renderToolbar = () => {
     const { editorState } = this.state;
     const { readOnly } = this.props;
@@ -142,11 +157,13 @@ export default class RichEditor extends Component {
   _handleKeyCommand = (command) => {
     const { editorState } = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
+
     if (newState) {
       this._onChange(newState);
       return true;
+    } else {
+      return false;
     }
-    return false;
   };
 
   _onTab = (e) => {
@@ -174,8 +191,6 @@ export default class RichEditor extends Component {
 
 }
 
-// Custom overrides for "code" style.
-
 function getBlockStyle(block) {
   switch (block.getType()) {
     case 'blockquote':
@@ -188,7 +203,7 @@ function getBlockStyle(block) {
 class StyleButton extends React.Component {
   render() {
     return (
-      <Button size="mini" icon active={this.props.active} onClick={this._onToggle}>
+      <Button size="mini" icon active={this.props.active} onMouseDown={this._onToggle}>
         <Icon name={this.props.label}/>
       </Button>
     );

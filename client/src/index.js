@@ -21,7 +21,10 @@ import reducers from './reducers';
 import { getAuthorizationHeader, getAccessToken, isAuthenticated } from './services/login';
 import registerServiceWorker from './registerServiceWorker';
 
+// import third party component styles
 import 'semantic-ui-css/semantic.min.css';
+import 'draft-js/dist/Draft.css';
+
 import './index.css';
 
 
