@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from 'config';
@@ -15,15 +16,13 @@ import { execute, subscribe } from 'graphql';
 import { Model } from 'objection';
 
 import schema from 'schemas';
-
 import routes from 'routes';
-
 import knex from 'services/knex';
-
 import logger from 'services/logger';
-
 import logging from 'middleware/logging';
 import { checkJwt } from 'middleware/security';
+
+import loader from './loaders';
 
 const app = express();
 const server = createServer(app);
@@ -55,7 +54,7 @@ app.use(checkJwt());
 // graphql endpoints
 app.use('/graphql', graphqlExpress((req, res) => ({
   schema,
-  context: { req, res }
+  context: { req, res, loaders: loader() }
 })));
 
 if (config.get('graphql.graphiql')) {
@@ -74,7 +73,14 @@ server.listen(app.get('port'), () => {
   SubscriptionServer.create({
     execute,
     subscribe,
-    schema
+    schema,
+    onOperation: (message, params) => {
+      return _.merge({}, params, {
+        context: {
+          loaders: loader({ cache: false })
+        }
+      });
+    }
   }, {
     server,
     path: '/subscriptions'

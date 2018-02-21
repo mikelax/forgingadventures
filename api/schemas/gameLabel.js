@@ -16,6 +16,6 @@ export const gameLabelResolvers = {
       GameLabel.query().findById(id),
 
     gameLabels: () =>
-      GameLabel.query()
+      GameLabel.query().orderBy('displayOrder')
   }
 };

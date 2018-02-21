@@ -80,7 +80,7 @@ function gameDetails() {
       const playerOrGm = !_.isEmpty(myGamePlayer) && _.some(myGamePlayer, (value) => {
         return _.includes(['game-master', 'accepted'], value.status);
       });
-      const editorBlock = playerOrGm ? 
+      const editorBlock = playerOrGm ?
       <CreateMessage gameId={game.id}/> :
         <Message info
           header='Please Login or Join Game to Post'
@@ -92,13 +92,20 @@ function gameDetails() {
         <Tab.Pane>
           {editorBlock}
           <GamesMessages gameId={game.id}/>
-        </Tab.Pane> 
+        </Tab.Pane>
       );
     } }
   ];
 
   return (
     <React.Fragment>
+      <Header as='h2' dividing>
+        Label
+        <Header.Subheader>
+          {game.label.displayName}
+        </Header.Subheader>
+      </Header>
+
       <Header as='h2' dividing>
         Scenario
         <Header.Subheader>

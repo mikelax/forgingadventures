@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import Game from 'models/game';
 import GameLabel from 'models/gameLabel';
 import GamePlayer from 'models/gamePlayer';
@@ -23,13 +25,15 @@ export const gameTypeDefs = `
     scenario: String!,
     overview: String!,
     gameSettings: GameSetting!,
-    gameImage: ProfileImage
+    gameImage: ProfileImage,
+    user: User!
   }
   
   input CreateGameInput {
     title: String!,
     scenario: String!,
     overview: String!,
+    labelId: Int!,
     gameSettings: GameSettingInput!,
     gameImage: ProfileImageInput
   }
@@ -44,6 +48,7 @@ export const gameTypeDefs = `
   input SearchOptions {
     textSearch: String,
     gameSettings: gameSettingsSearchOptions,
+    labelId: Int
   }
   
   input gameSettingsSearchOptions {
@@ -55,7 +60,8 @@ export const gameTypeDefs = `
 
 export const gameResolvers = {
   Game: {
-    label: game => GameLabel.query().findById(game.labelId)
+    label: (game, vars, context) => context.loaders.gameLabels.load(game.labelId),
+    user: (game, vars, context) => context.loaders.users.load(game.userId)
   },
   Query: {
     game: (parent, { id }) => Game.query().findById(id),
@@ -67,12 +73,11 @@ export const gameResolvers = {
         // TODO consider writing function to automaticaly add userId to input
         return getUser(context.req.user.sub)
           .then((user) => {
-            input.userId = user.id;
-            // TODO Remove when label is added to create screen
-            input.labelId = 1;
             return Game
               .query()
-              .insert(input)
+              .insert(_.merge({}, {
+                userId: user.id
+              }, input))
               .returning('*');
           })
           .tap((gameResponse) => {
@@ -81,7 +86,9 @@ export const gameResolvers = {
               userId: gameResponse.userId,
               status: 'game-master'
             };
-            return GamePlayer.query()
+
+            return GamePlayer
+              .query()
               .insert(playerInput);
           });
       })

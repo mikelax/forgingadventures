@@ -7,7 +7,6 @@ import schemaScopeGate from 'services/schemaScopeGate';
 
 import { getUser } from 'services/user';
 import pubsub from 'services/pubsub';
-import User from '../models/user';
 
 export const TOPIC_MESSAGE_ADDED = 'topic_message_added';
 export const TOPIC_MESSAGE_UPDATED = 'topic_message_updated';
@@ -36,7 +35,7 @@ export const gameMessageTypeDefs = `
 
 export const gameMessageResolvers = {
   GameMessage: {
-    user: gameMessage => User.query().findById(gameMessage.userId)
+    user: (gameMessage, vars, context) => context.loaders.users.load(gameMessage.userId)
   },
   Query: {
     gameMessage: (obj, { id }) =>

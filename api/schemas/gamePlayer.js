@@ -2,7 +2,6 @@ import { withFilter } from 'graphql-subscriptions';
 
 import Game from 'models/game';
 import GamePlayer from 'models/gamePlayer';
-import User from 'models/user';
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 import pubsub from 'services/pubsub';
@@ -33,7 +32,7 @@ export const gamePlayerTypeDefs = `
 
 export const gamePlayerResolvers = {
   GamePlayer: {
-    user: gamePlayer => User.query().findById(gamePlayer.userId),
+    user: (gamePlayer, vars, context) => context.loaders.users.load(gamePlayer.userId),
     game: gamePlayer => Game.query().findById(gamePlayer.gameId)
   },
   Query: {
