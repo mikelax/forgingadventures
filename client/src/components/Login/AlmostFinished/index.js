@@ -5,11 +5,12 @@ import { graphql } from 'react-apollo';
 import { Button, Container, Form, Message } from 'semantic-ui-react';
 import { Helmet } from "react-helmet";
 import { compose } from "recompose";
-import TimezoneSelect from '../../shared/components/TimezoneSelect';
+import { connect } from 'react-redux';
 
-import ApolloLoader from "../../shared/components/ApolloLoader";
+import TimezoneSelect from '../../shared/components/TimezoneSelect';
 import { meQuery, updateMeMutation, validUsernameQuery } from '../../../queries/users';
 import { uploadImage } from '../../../services/image';
+import { getMyDetails } from '../../../actions/me';
 
 import './AlmostFinished.styl';
 
@@ -27,19 +28,20 @@ class AlmostFinished extends Component {
     errors: {}
   };
 
-  componentWillMount() {
+  componentWillReceiveProps(nextProps) {
     this.setState({
       store: {
-        username: _.get(this.props.data, 'me.username') || '',
-        name: _.get(this.props.data, 'me.name') || '',
-        timezone: _.get(this.props.data, 'me.timezone') || '',
-        profileImageUrl: _.get(this.props.data, 'me.profileImage.url') || ''
+        username: _.get(nextProps.data, 'me.username') || '',
+        name: _.get(nextProps.data, 'me.name') || '',
+        timezone: _.get(nextProps.data, 'me.timezone') || '',
+        profileImageUrl: _.get(nextProps.data, 'me.profileImage.url') || ''
       }
     });
   }
 
   render() {
     const { profileImageUrl } = this.state.store;
+    const { loading } = this.props.data;
 
     return (
       <React.Fragment>
@@ -52,7 +54,7 @@ class AlmostFinished extends Component {
             <h1>You're mere steps away from starting your Adventure</h1>
             <h2>But first, you must finish completing your Profile</h2>
 
-            <Form>
+            <Form loading={loading}>
               <Form.Field required>
                 <label>Unique Username</label>
                 <Form.Input
@@ -174,7 +176,7 @@ class AlmostFinished extends Component {
 
   _setTimezone = (timezone) => {
     const value = _.get(timezone, 'value', null);
-  
+
     const { store } = this.state;
     _.set(store, 'timezone', value);
     this.setState({ ...this.state, store });
@@ -190,6 +192,7 @@ class AlmostFinished extends Component {
         if (valid) {
           const { store } = this.state;
           const { file } = this.state;
+          const { getMyDetailsDispatch } = this.props;
 
           this.setState({ saving: true });
 
@@ -214,15 +217,24 @@ class AlmostFinished extends Component {
               return updateMe({
                 variables: {
                   input: payload
-                }
+                },
+                refetchQueries: [{
+                  query: meQuery
+                }]
               })
                 .then(() => this.setState({ saving: false }))
+                .then(() => getMyDetailsDispatch())
                 .then(() => this.props.history.replace('/games'));
             });
         }
       });
   };
 }
+
+const mapDispatchToProps = dispatch => ({
+  getMyDetailsDispatch: () => dispatch(getMyDetails())
+});
+
 
 export default compose(
   graphql(meQuery),
@@ -232,6 +244,6 @@ export default compose(
   graphql(updateMeMutation, {
     name: 'updateMe'
   }),
-  ApolloLoader,
+  connect(null, mapDispatchToProps, null, { pure: false }),
 )(AlmostFinished);
 
