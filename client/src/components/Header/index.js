@@ -86,10 +86,11 @@ const LeftMenuItemsBase = ({ authorisation: { isAuthenticated } }) => {
 class RightMenuItemsBase extends Component {
   render() {
     const { authorisation: { isAuthenticated }, logout } = this.props;
+    const meLoading = _.get(this.props, 'me.loading');
 
     const loggedInMenu = (
       <Menu.Item>
-        <Dropdown trigger={this._userLogo()}>
+        <Dropdown trigger={this._userLogo()} loading={meLoading}>
           <Dropdown.Menu>
             <Menu.Item as={NavLink} name="Profile" to="/profile"/>
             <Dropdown.Divider />
@@ -116,11 +117,13 @@ class RightMenuItemsBase extends Component {
     const userProfileImageUrl = _.get(me, 'profileImage.url');
     const username = _.get(me, 'username');
 
-    return (
-      <span>
-        <Image avatar src={userProfileImageUrl} /> {username}
-      </span>
-    );
+    if (userProfileImageUrl) {
+      return (
+        <span>
+          <Image avatar src={userProfileImageUrl} /> {username}
+        </span>
+      );
+    }
   }
 }
 
