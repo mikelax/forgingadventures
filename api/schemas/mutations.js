@@ -2,6 +2,7 @@ const mutations = `
   type Mutation {
     # games
     createGame(input: CreateGameInput): Game
+    updateGame(id: ID!, input: UpdateGameInput): Game
     
     # game_messages
     createGameMessage(input: CreateGameMessageInput): GameMessage

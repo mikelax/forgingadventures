@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from "recompose";
@@ -10,6 +11,12 @@ import ApolloLoader from '../../../shared/components/ApolloLoader';
 import './assets/GamePlayers.styl';
 
 class GamePlayers extends Component {
+
+  static propTypes = {
+    gameId: PropTypes.string.isRequired,
+    status: PropTypes.array
+  };
+
   render() {
     const { data: { gamePlayers }, myGamePlayer } = this.props;
     // INFO using _.some here as myGamePlayer returns an array for future proofing
@@ -124,7 +131,7 @@ export default compose(
     options: ({ gameId }) => ({ variables: { gameId } })
   }),
   graphql(gamePlayersQuery, {
-    options: ({ gameId }) => ({ variables: { gameId, status: ['game-master', 'pending', 'accepted'] } })
+    options: ({ gameId, status }) => ({ variables: { gameId, status } })
   }),
   graphql(updateGamePlayerMutation, {
     name: 'updateGamePlayer'

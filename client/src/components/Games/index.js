@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
 import CreateGame from './Create';
+import EditGame from './Edit';
 import JoinGame from './View/Join';
 import ListGames from './List';
 import ViewGame from './View';
@@ -20,6 +21,7 @@ export default class Campaigns extends Component {
           <Switch>
             <Route exact path={`${match.url}/create`} component={AuthGuard(CreateGame)}/>
             <Route exact path={`${match.url}/:id/join`} component={AuthGuard(JoinGame)}/>
+            <Route exact path={`${match.url}/:id/edit`} component={AuthGuard(EditGame)}/>
             <Route exact path={`${match.url}/:id`} component={ViewGame}/>
             <Route exact path={`${match.url}`} component={ListGames}/>
           </Switch>

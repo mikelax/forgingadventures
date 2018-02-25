@@ -74,7 +74,7 @@ function gameDetails() {
         <GameLoungeMessages gameId={game.id}/>
       </Tab.Pane> },
     { menuItem: 'Players', render: () => <Tab.Pane>
-        <GamePlayers gameId={game.id}/>
+        <GamePlayers gameId={game.id} status={['game-master', 'pending', 'accepted']} />
       </Tab.Pane> },
     { menuItem: 'Game Messages', render: () => {
       const playerOrGm = !_.isEmpty(myGamePlayer) && _.some(myGamePlayer, (value) => {

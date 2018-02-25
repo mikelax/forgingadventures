@@ -37,6 +37,14 @@ export const gameTypeDefs = `
     gameSettings: GameSettingInput!,
     gameImage: ProfileImageInput
   }
+
+  input UpdateGameInput {
+    title: String!,
+    scenario: String!,
+    overview: String!,
+    gameSettings: GameSettingInput!,
+    gameImage: ProfileImageInput
+  }
   
   input GameSettingInput {
     minPlayers: Int!,
@@ -91,6 +99,15 @@ export const gameResolvers = {
               .query()
               .insert(playerInput);
           });
+      }),
+    updateGame: (obj, { id, input }, context) =>
+      schemaScopeGate(['create:games'], context, () => {
+        return Game
+          .query()
+          .update(input)
+          .where('id', id)
+          .returning('*')
+          .first();
       })
   }
 };
