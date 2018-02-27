@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
-import { compose, pure } from 'recompose';
+import { compose } from 'recompose';
 import { Grid, Header, Label, Menu } from 'semantic-ui-react';
 
 import { gameQuery, updateGameMutation } from '../queries';
@@ -112,6 +112,5 @@ export default compose(
     graphql(gameQuery, {
       options: ( { match: { params: { id } } } ) => ({ variables: { id } })
     }),
-    graphql(updateGameMutation, { name: 'updateGame' }),
-    pure
+    graphql(updateGameMutation, { name: 'updateGame' })
   )(EditGame);

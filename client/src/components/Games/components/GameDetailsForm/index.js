@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
-import { compose, pure } from 'recompose';
+import { compose } from 'recompose';
 import { Button, Form, Image } from 'semantic-ui-react';
 
 import { createGameMutation } from '../../queries';
@@ -37,24 +37,16 @@ class GameDetailsForm extends Component {
     errors: {}
   };
 
+  componentWillMount() {
+    const { game } = this.props;
+
+    this._saveGameToState(game);
+  }
+
   componentWillReceiveProps(nextProps) {
-    if (nextProps.game) {
-      this.setState({ 
-        store: { 
-          title: nextProps.game.title,
-          scenario: nextProps.game.scenario,
-          overview: nextProps.game.overview,
-          labelId: nextProps.game.label.id,
-          gameSettings: {
-            minPlayers: nextProps.game.gameSettings.minPlayers,
-            maxPlayers: nextProps.game.gameSettings.maxPlayers,
-            skillLevel: nextProps.game.gameSettings.skillLevel,
-            postingFrequency: nextProps.game.gameSettings.postingFrequency
-          }
-        },
-        gameImageUrl: _.get(nextProps.game, 'gameImage.url')
-      });
-    }
+    const { game } = nextProps;
+
+    this._saveGameToState(game);
   }
 
   render() {
@@ -181,6 +173,26 @@ class GameDetailsForm extends Component {
     );
   };
 
+  _saveGameToState(game) {
+    if (game) {
+      this.setState({ 
+        store: { 
+          title: game.title,
+          scenario: game.scenario,
+          overview: game.overview,
+          labelId: game.label.id,
+          gameSettings: {
+            minPlayers: game.gameSettings.minPlayers,
+            maxPlayers: game.gameSettings.maxPlayers,
+            skillLevel: game.gameSettings.skillLevel,
+            postingFrequency: game.gameSettings.postingFrequency
+          }
+        },
+        gameImageUrl: _.get(game, 'gameImage.url')
+      });
+    }
+  }
+
   _valid = () => {
     const errors = {};
 
@@ -254,6 +266,5 @@ class GameDetailsForm extends Component {
 
 export default compose(
     graphql(createGameMutation),
-    pure,
     withRouter
   )(GameDetailsForm);
