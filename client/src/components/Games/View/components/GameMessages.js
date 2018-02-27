@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import moment from "moment";
+import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { compose, pure } from "recompose";
-import { connect } from "react-redux";
+import { compose, pure } from 'recompose';
+import { connect } from 'react-redux';
 import { Header,  Comment, Icon } from 'semantic-ui-react';
 
 import GameMessage from '../../components/GameMessage';

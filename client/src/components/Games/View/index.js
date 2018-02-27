@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Helmet } from "react-helmet";
-import { compose, pure } from "recompose";
+import { Helmet } from 'react-helmet';
+import { compose, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
 import { Button, Breadcrumb, Tab, Segment, Header, Container, Message } from 'semantic-ui-react';

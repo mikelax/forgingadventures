@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
 import { Comment, Header, Icon } from 'semantic-ui-react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import RichEditor from '../../../shared/components/RichEditor';
 import { quote } from '../../../../actions/loungeMessage';

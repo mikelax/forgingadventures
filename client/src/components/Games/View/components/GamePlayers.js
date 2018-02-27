@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { compose, pure } from "recompose";
+import { compose, pure } from 'recompose';
 import { Button, Image, List, Menu, Popup, Icon } from 'semantic-ui-react';
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';

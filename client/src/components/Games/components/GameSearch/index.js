@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Segment, Button } from 'semantic-ui-react';
 
-import { gameStatus, postingFrequencies, skillLevels } from "../../utils/gameSettings";
+import { gameStatus, postingFrequencies, skillLevels } from '../../utils/gameSettings';
 import GameLabelsSelect from '../GameLabelsSelect';
 
 

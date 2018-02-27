@@ -3,8 +3,8 @@ import Bluebird from 'bluebird';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Button, Container, Form, Message } from 'semantic-ui-react';
-import { Helmet } from "react-helmet";
-import { compose } from "recompose";
+import { Helmet } from 'react-helmet';
+import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
 import TimezoneSelect from '../../shared/components/TimezoneSelect';

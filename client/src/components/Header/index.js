@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import logo from './logo.png';
 import './Header.styl';
 
-import { Container, Dropdown, Icon, Image, Menu, Responsive } from "semantic-ui-react";
+import { Container, Dropdown, Icon, Image, Menu, Responsive } from 'semantic-ui-react';
 
 import { logout } from '../../actions/auth';
 
