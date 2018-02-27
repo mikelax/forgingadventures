@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { compose, pure } from 'recompose';
 import { Grid, Header, Label, Menu } from 'semantic-ui-react';
 
-import { gameQuery } from '../queries';
+import { gameQuery, updateGameMutation } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
 import GameDetailsForm from '../components/GameDetailsForm';
 
@@ -15,6 +15,7 @@ class EditGame extends Component {
   _handleMenuClick = (e, { name }) => this.setState({ activeItem: name });
 
   _getActiveContent = () => {
+    const game = _.get(this.props, 'data.game');
     const gameId = _.get(this.props, 'data.game.id');
     let content;
 
@@ -30,7 +31,7 @@ class EditGame extends Component {
         break;
       case 'details':
       default:
-        content = <GameDetailsForm history={this.props.history} gameId={gameId} cancelFn={this._cancel} />;
+        content = <GameDetailsForm onSave={this._onSave} game={game} onCancel={this._cancel} />;
         break;
     };
 
@@ -93,11 +94,24 @@ class EditGame extends Component {
 
     this.props.history.push(`/games/${id}`);
   };
+
+  _onSave = (payload) => {
+    const { match: { params: { id } }, updateGame } = this.props;
+
+    return updateGame({
+        variables: {
+          id: id,
+          input: payload
+        }
+      })
+      .then(() => this.props.history.replace(`/games/${id}`));
+  }
 };
 
 export default compose(
     graphql(gameQuery, {
       options: ( { match: { params: { id } } } ) => ({ variables: { id } })
     }),
+    graphql(updateGameMutation, { name: 'updateGame' }),
     pure
   )(EditGame);

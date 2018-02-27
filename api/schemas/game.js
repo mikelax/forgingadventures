@@ -42,6 +42,7 @@ export const gameTypeDefs = `
     title: String!,
     scenario: String!,
     overview: String!,
+    labelId: Int!,
     gameSettings: GameSettingInput!,
     gameImage: ProfileImageInput
   }

@@ -2,10 +2,11 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router';
 import { compose, pure } from 'recompose';
 import { Button, Form, Image } from 'semantic-ui-react';
 
-import { createGameMutation, gamesQuery, gameQuery } from '../../queries';
+import { createGameMutation } from '../../queries';
 import { skillLevels, postingFrequencies } from '../../utils/gameSettings';
 import GameLabelsSelect from '../GameLabelsSelect';
 import { uploadImage } from '../../../../services/image';
@@ -13,9 +14,9 @@ import { uploadImage } from '../../../../services/image';
 class GameDetailsForm extends Component {
 
   static propTypes = {
-    gameId: PropTypes.string,
-    history: PropTypes.object.isRequired,
-    cancelFn: PropTypes.func.isRequired
+    game: PropTypes.object,
+    onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired
   };
 
   state = {
@@ -37,27 +38,28 @@ class GameDetailsForm extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log(JSON.stringify(nextProps.data));
-    this.setState({ 
-      store: { 
-        title: nextProps.data.game.title,
-        scenario: nextProps.data.game.scenario,
-        overview: nextProps.data.game.overview,
-        labelId: nextProps.data.game.label.id,
-        gameSettings: {
-          minPlayers: nextProps.data.game.gameSettings.minPlayers,
-          maxPlayers: nextProps.data.game.gameSettings.maxPlayers,
-          skillLevel: nextProps.data.game.gameSettings.skillLevel,
-          postingFrequency: nextProps.data.game.gameSettings.postingFrequency
-        }
-      },
-      gameImageUrl: nextProps.data.game.gameImage.url
-    });
+    if (nextProps.game) {
+      this.setState({ 
+        store: { 
+          title: nextProps.game.title,
+          scenario: nextProps.game.scenario,
+          overview: nextProps.game.overview,
+          labelId: nextProps.game.label.id,
+          gameSettings: {
+            minPlayers: nextProps.game.gameSettings.minPlayers,
+            maxPlayers: nextProps.game.gameSettings.maxPlayers,
+            skillLevel: nextProps.game.gameSettings.skillLevel,
+            postingFrequency: nextProps.game.gameSettings.postingFrequency
+          }
+        },
+        gameImageUrl: _.get(nextProps.game, 'gameImage.url')
+      });
+    }
   }
 
   render() {
     const { gameImageUrl } = this.state;
-    const { cancelFn } = this.props;
+    const { onCancel } = this.props;
 
     return (
       <React.Fragment>
@@ -172,7 +174,7 @@ class GameDetailsForm extends Component {
 
           <div className="actions text-right">
             <Button primary onClick={this._submit} disabled={this.state.saving} loading={this.state.saving}>Submit</Button>
-            <Button onClick={cancelFn}>Cancel</Button>
+            <Button onClick={onCancel}>Cancel</Button>
           </div>
         </Form>
       </React.Fragment>
@@ -227,6 +229,7 @@ class GameDetailsForm extends Component {
   _submit = () => {
     if (this._valid()) {
       const { file } = this.state;
+      const { onSave } = this.props;
 
       this.setState({ saving: true });
 
@@ -242,18 +245,8 @@ class GameDetailsForm extends Component {
             };
           }
 
-          return this.props
-            .mutate({
-              variables: {
-                input: payload
-              },
-              refetchQueries: [{
-                query: gamesQuery,
-                variables: { offset: 0 }
-              }]
-            })
-            .then(() => this.setState({ saving: false }))
-            .then(() => this.props.history.replace('/games'));
+          this.setState({ saving: false });
+          return onSave(payload);
         });
     }
   };
@@ -261,8 +254,6 @@ class GameDetailsForm extends Component {
 
 export default compose(
     graphql(createGameMutation),
-    graphql(gameQuery, {
-      options: ( { variables: { id: 6 } } )
-    }),
-    pure
+    pure,
+    withRouter
   )(GameDetailsForm);

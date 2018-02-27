@@ -131,6 +131,15 @@ export const createGameMutation = gql`
   ${gameFields}
 `;
 
+export const updateGameMutation = gql`
+  mutation updateGame($id: ID!, $input: UpdateGameInput) {
+    updateGame(id: $id, input: $input) {
+      ...gameFields
+    }
+  }
+  ${gameFields}
+`;
+
 // game labels
 
 export const gameLabelsQuery = gql`
