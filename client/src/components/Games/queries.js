@@ -21,6 +21,7 @@ fragment gameFields on Game {
     publicId
   }
   label {
+    id
     displayName
     shortName
   }

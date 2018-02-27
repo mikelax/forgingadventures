@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Helmet } from "react-helmet";
-import { compose, pure } from "recompose";
+import { Helmet } from 'react-helmet';
+import { compose, pure } from 'recompose';
 import { Grid, Header, Label, Menu } from 'semantic-ui-react';
 
 import { gameQuery } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
+import GameDetailsForm from '../components/GameDetailsForm';
 
 class EditGame extends Component {
   state = { activeItem: 'details' };
@@ -14,24 +15,22 @@ class EditGame extends Component {
   _handleMenuClick = (e, { name }) => this.setState({ activeItem: name });
 
   _getActiveContent = () => {
-    const { data: { game } } = this.props;
+    const gameId = _.get(this.props, 'data.game.id');
     let content;
 
     switch(this.state.activeItem) {
       case 'gameGM':
-        content = <GamePlayers gameId={game.id} status={['game-master']} />;;
+        content = <GamePlayers gameId={gameId} status={['game-master']} />;;
         break;
       case 'pendingPlayers':
-        content = <GamePlayers gameId={game.id} status={['pending']} />;;
+        content = <GamePlayers gameId={gameId} status={['pending']} />;;
         break;
       case 'acceptedPlayers':
-        content = <GamePlayers gameId={game.id} status={['accepted']} />;
+        content = <GamePlayers gameId={gameId} status={['accepted']} />;
         break;
       case 'details':
       default:
-        content = (<div>
-                Details content
-              </div>);
+        content = <GameDetailsForm history={this.props.history} gameId={gameId} cancelFn={this._cancel} />;
         break;
     };
 
@@ -88,11 +87,17 @@ class EditGame extends Component {
       </React.Fragment>
     );
   };
+
+  _cancel = () => {
+    const { match: { params: { id } } } = this.props;
+
+    this.props.history.push(`/games/${id}`);
+  };
 };
 
 export default compose(
     graphql(gameQuery, {
       options: ( { match: { params: { id } } } ) => ({ variables: { id } })
     }),
-    pure,
+    pure
   )(EditGame);
