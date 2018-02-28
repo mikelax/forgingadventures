@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
 import { Grid, Header, Label, Menu } from 'semantic-ui-react';
 
-import { gameQuery, updateGameMutation } from '../queries';
+import { gamePlayersQuery, gameQuery, updateGameMutation } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
 import GameDetailsForm from '../components/GameDetailsForm';
 
@@ -41,7 +41,7 @@ class EditGame extends Component {
   render() {
     const { activeItem } = this.state;
     const title = _.get(this.props, 'data.game.title');
-
+    const playerCounts = _.groupBy(_.get(this.props, 'gamePlayers.gamePlayers'), 'status');
     const content = this._getActiveContent();
 
     return (
@@ -64,15 +64,15 @@ class EditGame extends Component {
                   <Menu.Header>Players</Menu.Header>
                   <Menu.Menu>
                     <Menu.Item name='gameGM' active={activeItem === 'gameGM'} onClick={this._handleMenuClick}>
-                      <Label>1</Label>
+                      <Label>{_.size(playerCounts['game-master'])}</Label>
                       GM
                     </Menu.Item>
                     <Menu.Item name='acceptedPlayers' active={activeItem === 'acceptedPlayers'} onClick={this._handleMenuClick}>
-                      <Label>4</Label>
+                      <Label>{_.size(playerCounts['accepted'])}</Label>
                       Accepted
                     </Menu.Item>
                     <Menu.Item name='pendingPlayers' active={activeItem === 'pendingPlayers'} onClick={this._handleMenuClick}>
-                      <Label>2</Label>
+                      <Label>{_.size(playerCounts['pending'])}</Label>
                       Pending
                     </Menu.Item>
                   </Menu.Menu>
@@ -109,8 +109,12 @@ class EditGame extends Component {
 };
 
 export default compose(
-    graphql(gameQuery, {
-      options: ( { match: { params: { id } } } ) => ({ variables: { id } })
-    }),
-    graphql(updateGameMutation, { name: 'updateGame' })
-  )(EditGame);
+  graphql(gameQuery, {
+    options: ( { match: { params: { id } } } ) => ({ variables: { id } })
+  }),
+  graphql(updateGameMutation, { name: 'updateGame' }),
+  graphql(gamePlayersQuery, {
+    name: 'gamePlayers',
+    options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id, status: ['game-master', 'pending', 'accepted'] } })
+  }),
+)(EditGame);

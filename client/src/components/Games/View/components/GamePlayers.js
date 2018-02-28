@@ -111,7 +111,8 @@ class GamePlayers extends Component {
 
   _updatePlayerStatus = (playerId, status) => {
     return (e) => {
-      const { updateGamePlayer } = this.props;
+      const { gameId, updateGamePlayer } = this.props;
+      const originalStatus = this.props.status;
 
       return updateGamePlayer({
         variables: {
@@ -119,7 +120,11 @@ class GamePlayers extends Component {
           input: {
             status
           }
-        }
+        },
+        refetchQueries: [{
+          query: gamePlayersQuery,
+          variables: { gameId, status: originalStatus }
+        }]
       });
     };
   };
