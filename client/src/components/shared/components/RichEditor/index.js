@@ -62,7 +62,7 @@ export default class RichEditor extends Component {
             handleKeyCommand={this._handleKeyCommand}
             onChange={this._onChange}
             onTab={this._onTab}
-            placeholder={this.props.placeholder || "What's on your mind..."}
+            placeholder={this.props.placeholder || 'What\'s on your mind...'}
             ref='editor'
             spellCheck={true}
             readOnly={readOnly}

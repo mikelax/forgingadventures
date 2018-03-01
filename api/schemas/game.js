@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import Game from 'models/game';
-import GameLabel from 'models/gameLabel';
 import GamePlayer from 'models/gamePlayer';
 
 import schemaScopeGate from 'services/schemaScopeGate';
@@ -30,6 +29,15 @@ export const gameTypeDefs = `
   }
   
   input CreateGameInput {
+    title: String!,
+    scenario: String!,
+    overview: String!,
+    labelId: Int!,
+    gameSettings: GameSettingInput!,
+    gameImage: ProfileImageInput
+  }
+
+  input UpdateGameInput {
     title: String!,
     scenario: String!,
     overview: String!,
@@ -91,6 +99,15 @@ export const gameResolvers = {
               .query()
               .insert(playerInput);
           });
+      }),
+    updateGame: (obj, { id, input }, context) =>
+      schemaScopeGate(['create:games'], context, () => {
+        return Game
+          .query()
+          .update(input)
+          .where('id', id)
+          .returning('*')
+          .first();
       })
   }
 };

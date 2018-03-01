@@ -2,8 +2,8 @@
 
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from "react-redux";
-import { Helmet } from "react-helmet";
+import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 import { Router, Route, Switch } from 'react-router-dom';
 
 import About from '../About';

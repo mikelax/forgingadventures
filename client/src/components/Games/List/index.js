@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { compose, pure } from "recompose";
+import { compose, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
-import { connect } from "react-redux";
-import { Helmet } from "react-helmet";
+import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { Card, Header, Icon, Image, Segment } from 'semantic-ui-react';
 import Observer from 'react-intersection-observer';
@@ -13,7 +13,7 @@ import GameSearch from '../components/GameSearch';
 import { gamesQuery } from '../queries';
 import { postingFrequency, skillLevel } from '../utils/gameSettings';
 
-import { search } from "../../../actions/gamesSearch";
+import { search } from '../../../actions/gamesSearch';
 import dragons from './dragons.jpg';
 
 class ListGamesView extends Component {

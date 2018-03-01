@@ -7,6 +7,9 @@ import gql from 'graphql-tag';
 export const gameFields = `
 fragment gameFields on Game {
   id
+  user {
+    id
+  }
   title
   scenario
   overview
@@ -21,6 +24,7 @@ fragment gameFields on Game {
     publicId
   }
   label {
+    id
     displayName
     shortName
   }
@@ -124,6 +128,15 @@ export const gamesQuery = gql`
 export const createGameMutation = gql`
   mutation createGame($input: CreateGameInput) {
     createGame(input: $input) {
+      ...gameFields
+    }
+  }
+  ${gameFields}
+`;
+
+export const updateGameMutation = gql`
+  mutation updateGame($id: ID!, $input: UpdateGameInput) {
+    updateGame(id: $id, input: $input) {
       ...gameFields
     }
   }

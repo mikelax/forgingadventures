@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Helmet } from "react-helmet";
+import { Helmet } from 'react-helmet';
 import { Button, Form, Header } from 'semantic-ui-react';
 import { compose } from 'recompose';
 
