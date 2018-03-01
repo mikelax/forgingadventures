@@ -9,8 +9,6 @@ import { gamePlayersQuery, gameQuery, updateGameMutation } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
 import GameDetailsForm from '../components/GameDetailsForm';
 
-import OwnerGuard from '../../shared/components/OwnerGuard';
-
 class EditGame extends Component {
   state = { activeItem: 'details' };
 
@@ -119,6 +117,5 @@ export default compose(
   graphql(gamePlayersQuery, {
     name: 'gamePlayers',
     options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id, status: ['game-master', 'pending', 'accepted'] } })
-  }),
-  OwnerGuard('data.game.user.id')
+  })
 )(EditGame);

@@ -9,6 +9,7 @@ import ListGames from './List';
 import ViewGame from './View';
 
 import AuthGuard from '../shared/components/AuthGuard';
+import EditGameGuard from '../shared/components/EditGameGuard';
 
 export default class Campaigns extends Component {
 
@@ -21,7 +22,7 @@ export default class Campaigns extends Component {
           <Switch>
             <Route exact path={`${match.url}/create`} component={AuthGuard(CreateGame)}/>
             <Route exact path={`${match.url}/:id/join`} component={AuthGuard(JoinGame)}/>
-            <Route exact path={`${match.url}/:id/edit`} component={AuthGuard(EditGame)}/>
+            <Route exact path={`${match.url}/:id/edit`} component={EditGameGuard(AuthGuard(EditGame))}/>
             <Route exact path={`${match.url}/:id`} component={ViewGame}/>
             <Route exact path={`${match.url}`} component={ListGames}/>
           </Switch>
