@@ -9,34 +9,10 @@ import { gamePlayersQuery, gameQuery, updateGameMutation } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
 import GameDetailsForm from '../components/GameDetailsForm';
 
+import OwnerGuard from '../../shared/components/OwnerGuard';
+
 class EditGame extends Component {
   state = { activeItem: 'details' };
-
-  _handleMenuClick = (e, { name }) => this.setState({ activeItem: name });
-
-  _getActiveContent = () => {
-    const game = _.get(this.props, 'data.game');
-    const gameId = _.get(this.props, 'data.game.id');
-    let content;
-
-    switch(this.state.activeItem) {
-      case 'gameGM':
-        content = <GamePlayers gameId={gameId} status={['game-master']} />;;
-        break;
-      case 'pendingPlayers':
-        content = <GamePlayers gameId={gameId} status={['pending']} />;;
-        break;
-      case 'acceptedPlayers':
-        content = <GamePlayers gameId={gameId} status={['accepted']} />;
-        break;
-      case 'details':
-      default:
-        content = <GameDetailsForm onSave={this._onSave} game={game} onCancel={this._cancel} />;
-        break;
-    };
-
-    return content;
-  };
 
   render() {
     const { activeItem } = this.state;
@@ -89,6 +65,33 @@ class EditGame extends Component {
     );
   };
 
+  _handleMenuClick = (e, { name }) => this.setState({ activeItem: name });
+
+  _getActiveContent = () => {
+    const game = _.get(this.props, 'data.game');
+    const loading = _.get(this.props, 'data.loading');
+    const gameId = _.get(this.props, 'data.game.id');
+    let content;
+
+    switch(this.state.activeItem) {
+      case 'gameGM':
+        content = <GamePlayers gameId={gameId} status={['game-master']} />;
+        break;
+      case 'pendingPlayers':
+        content = <GamePlayers gameId={gameId} status={['pending']} />;
+        break;
+      case 'acceptedPlayers':
+        content = <GamePlayers gameId={gameId} status={['accepted']} />;
+        break;
+      case 'details':
+      default:
+        content = <GameDetailsForm onSave={this._onSave} game={game} loading={loading} onCancel={this._cancel} />;
+        break;
+    }
+
+    return content;
+  };
+
   _cancel = () => {
     const { match: { params: { id } } } = this.props;
 
@@ -106,7 +109,7 @@ class EditGame extends Component {
       })
       .then(() => this.props.history.replace(`/games/${id}`));
   }
-};
+}
 
 export default compose(
   graphql(gameQuery, {
@@ -117,4 +120,5 @@ export default compose(
     name: 'gamePlayers',
     options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id, status: ['game-master', 'pending', 'accepted'] } })
   }),
+  OwnerGuard('data.game.user.id')
 )(EditGame);

@@ -15,6 +15,7 @@ class GameDetailsForm extends Component {
 
   static propTypes = {
     game: PropTypes.object,
+    loading: PropTypes.bool,
     onSave: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired
   };
@@ -51,11 +52,11 @@ class GameDetailsForm extends Component {
 
   render() {
     const { gameImageUrl } = this.state;
-    const { onCancel } = this.props;
+    const { loading, onCancel } = this.props;
 
     return (
       <React.Fragment>
-        <Form>
+        <Form loading={loading}>
           <Form.Group widths="equal">
             <Form.Field required>
               <label>Campaign Name</label>
@@ -175,8 +176,8 @@ class GameDetailsForm extends Component {
 
   _saveGameToState(game) {
     if (game) {
-      this.setState({ 
-        store: { 
+      this.setState({
+        store: {
           title: game.title,
           scenario: game.scenario,
           overview: game.overview,
@@ -262,7 +263,7 @@ class GameDetailsForm extends Component {
         });
     }
   };
-};
+}
 
 export default compose(
     graphql(createGameMutation),
