@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import Game from 'models/game';
-import GameLabel from 'models/gameLabel';
 import GamePlayer from 'models/gamePlayer';
 
 import schemaScopeGate from 'services/schemaScopeGate';
