@@ -7,6 +7,9 @@ import gql from 'graphql-tag';
 export const gameFields = `
 fragment gameFields on Game {
   id
+  user {
+    id
+  }
   title
   scenario
   overview
