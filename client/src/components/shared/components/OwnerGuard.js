@@ -23,18 +23,14 @@ export default function(objectOwnerKeyPath) {
       renderComponent((props) => {
         const { history } = props;
 
-        setTimeout(() => {
-          youShallNotPass();
-        }, 5000);
-
         return (
           <div>
             <Header as='h1' icon textAlign='center'>
               <Icon name='lock' circular />
               <Header.Content>
-                Not Authorised
+                Not Authorized
                 <Header.Subheader>
-                  Redirecting back in 5 seconds or <a onClick={youShallNotPass}>click here to return</a>.
+                  You are not able to access this page, please <a style={{ cursor: 'pointer' }} onClick={youShallNotPass}>click here to go back</a>.
                 </Header.Subheader>
               </Header.Content>
             </Header>
