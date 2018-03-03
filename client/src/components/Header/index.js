@@ -93,6 +93,7 @@ class RightMenuItemsBase extends Component {
         <Dropdown trigger={this._userLogo()} loading={meLoading}>
           <Dropdown.Menu>
             <Menu.Item as={NavLink} name="Profile" to="/profile"/>
+            <Menu.Item as={NavLink} name="Settings" to="/settings"/>
             <Dropdown.Divider />
             <Menu.Item as="a" name="Logout" onClick={logout}/>
           </Dropdown.Menu>
