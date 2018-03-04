@@ -5,7 +5,7 @@ import GamePlayer from 'models/gamePlayer';
 
 import schemaScopeGate from 'services/schemaScopeGate';
 import GetGames from 'services/games/getGames';
-import { getUser } from 'services/user';
+import { getUser, runIfContextHasUser } from 'services/user';
 
 import serviceExecutor from 'utils/serviceExecutor';
 
@@ -73,7 +73,17 @@ export const gameResolvers = {
   },
   Query: {
     game: (parent, { id }) => Game.query().findById(id),
-    games: (parent, { offset, searchOptions }) => serviceExecutor(GetGames, { offset, searchOptions })
+    games: (parent, { offset, searchOptions }) => serviceExecutor(GetGames, { offset, searchOptions }),
+    myGames: (obj, { status = ['game-master', 'accepted'] }, context) => {
+      return runIfContextHasUser(context, (user) => {
+        return Game
+          .query()
+          .select('games.*')
+          .join('game_players as gp', 'games.id', 'gp.gameId')
+          .whereIn('gp.status', status)
+          .where('gp.userId', user.id);
+      });
+    }
   },
   Mutation: {
     createGame: (obj, { input }, context) =>

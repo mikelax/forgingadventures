@@ -6,15 +6,14 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { Card, Header, Icon, Image, Segment } from 'semantic-ui-react';
+import { Card, Header, Icon, Segment } from 'semantic-ui-react';
 import Observer from 'react-intersection-observer';
 
+import GameCard from '../components/GameCard';
 import GameSearch from '../components/GameSearch';
 import { gamesQuery } from '../queries';
-import { postingFrequency, skillLevel } from '../utils/gameSettings';
 
 import { search } from '../../../actions/gamesSearch';
-import dragons from './dragons.jpg';
 
 class ListGamesView extends Component {
 
@@ -76,13 +75,13 @@ class ListGamesPure extends Component {
   canPage = true;
 
   render() {
-    const { match, data: { games, loading } } = this.props;
+    const { data: { games, loading } } = this.props;
 
     return (
       <Segment basic loading={loading}>
         <Card.Group stackable={true} itemsPerRow={3}>
           {_.map(games, (game) => (
-            <GameDetails key={game.id} game={game} link={`${match.url}/${game.id}`}/>
+            <GameCard key={game.id} game={game} />
           ))}
         </Card.Group>
 
@@ -138,43 +137,3 @@ const ListGames = compose(
   }),
   pure,
 )(ListGamesPure);
-
-
-const GameDetails = (props) => {
-  const { game } = props;
-  const { label: { shortName } } = game;
-  const imageSrc = _.get(game, 'gameImage.url') || dragons;
-
-  return (
-    <Card>
-      <Image src={imageSrc}
-             label={{ as: 'a', color: 'red', content: shortName, ribbon: true }}
-      />
-      <Card.Content>
-        <Card.Header>
-          <Link to={props.link}> {game.title}</Link>
-        </Card.Header>
-        <Card.Meta>
-          {game.scenario}
-        </Card.Meta>
-        <Card.Description>
-          {game.overview}
-        </Card.Description>
-      </Card.Content>
-      <Card.Content extra>
-        <div>
-          <Icon name='group'/>
-          {game.gameSettings.minPlayers} to {game.gameSettings.maxPlayers} players
-        </div>
-        <div>
-          <Icon name='student'/>
-          {skillLevel(game.gameSettings.skillLevel)}
-        </div>
-        <div>
-          <Icon name='clock'/>
-          {postingFrequency(game.gameSettings.postingFrequency)}
-        </div>
-      </Card.Content>
-    </Card>
-  );
-};
