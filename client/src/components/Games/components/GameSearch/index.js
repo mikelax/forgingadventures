@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Segment, Button } from 'semantic-ui-react';
 
-import { gameStatus, postingFrequencies, skillLevels } from '../../utils/gameSettings';
+import { gameStatuses, postingFrequencies, skillLevels } from '../../utils/gameSettings';
 import GameLabelsSelect from '../GameLabelsSelect';
 
 
@@ -82,7 +82,7 @@ class GameSearch extends Component {
                 onChange={this.formInput('gameSettings.gameStatus')}>
                 <option value={0}>Any</option>
                 {
-                  _.map(gameStatus, (desc, level) =>
+                  _.map(gameStatuses, (desc, level) =>
                     <option key={level} value={level}>{desc}</option>
                   )
                 }

@@ -10,10 +10,11 @@ export const postingFrequencies = {
   3: 'Hardcore - More than 1 / day'
 };
 
-export const gameStatus = {
+export const gameStatuses = {
   1: 'Recruiting Players',
   2: 'In Progress',
-  3: 'Adding Additional Players' // todo - is this the same as 1?
+  3: 'Adding Additional Players',
+  4: 'Completed'
 };
 
 export function skillLevel(level) {
@@ -22,4 +23,8 @@ export function skillLevel(level) {
 
 export function postingFrequency(freq) {
   return postingFrequencies[freq];
+}
+
+export function gameStatus(status) {
+  return gameStatuses[status];
 }

@@ -53,6 +53,7 @@ class EditGame extends Component {
                     </Menu.Item>
                   </Menu.Menu>
                 </Menu.Item>
+                <Menu.Item name='status' active={activeItem === 'status'} onClick={this._handleMenuClick} />
               </Menu>
             </Grid.Column>
 
@@ -82,6 +83,9 @@ class EditGame extends Component {
         break;
       case 'acceptedPlayers':
         content = <GamePlayers gameId={gameId} status={['accepted']} />;
+        break;
+      case 'status':
+        content = 'Game Status'
         break;
       case 'details':
       default:

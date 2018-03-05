@@ -14,7 +14,8 @@ export const gameTypeDefs = `
     minPlayers: Int!,
     maxPlayers: Int!,
     skillLevel: Int!,
-    postingFrequency: Int!
+    postingFrequency: Int!,
+    gameStatus: Int!
   }
   
   type Game {
@@ -84,7 +85,10 @@ export const gameResolvers = {
             return Game
               .query()
               .insert(_.merge({}, {
-                userId: user.id
+                userId: user.id,
+                gameSettings: {
+                  gameStatus: 1
+                }
               }, input))
               .returning('*');
           })

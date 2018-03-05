@@ -18,6 +18,7 @@ fragment gameFields on Game {
     maxPlayers
     skillLevel
     postingFrequency
+    gameStatus
   }
   gameImage {
     url
