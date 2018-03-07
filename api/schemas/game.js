@@ -51,7 +51,8 @@ export const gameTypeDefs = `
     minPlayers: Int!,
     maxPlayers: Int!,
     skillLevel: Int!,
-    postingFrequency: Int!
+    postingFrequency: Int!,
+    gameStatus: Int!
   }
   
   input SearchOptions {
