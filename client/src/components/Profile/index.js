@@ -49,8 +49,7 @@ class Profile extends Component {
   }
 
   _getTabs() {
-    const myGamesProp = _.get(this.props, 'myGames');
-    const myGamePlayersProp = _.get(this.props, 'myGamePlayers');
+    const { myGames: myGamesProp, myGamePlayers: myGamePlayersProp } = this.props;
 
     const { loading: loadingGame, myGames } = myGamesProp;
     const { loading: loadingMyGamePlayers, myGamePlayers } = myGamePlayersProp;
