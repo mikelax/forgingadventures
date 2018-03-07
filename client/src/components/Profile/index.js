@@ -39,7 +39,7 @@ class Profile extends Component {
             </Header.Content>
           </Header>
 
-          <Tab menu={{ pointing: true }} panes={panes}/>
+          <Tab menu={{ pointing: true }} defaultActiveIndex='1' panes={panes}/>
         </Container>
       </React.Fragment>
       );
@@ -56,8 +56,6 @@ class Profile extends Component {
 
     const gamesBreakdown = _.groupBy(myGamePlayers, 'status');
     const pendingGamesCount = _.get(gamesBreakdown, 'pending.length', 0);
-    const quitGamesCount = _.get(gamesBreakdown, 'quit.length', 0);
-    const rejectedGamesCount = _.get(gamesBreakdown, 'rejected.length', 0);
     const kickedGamesCount = _.get(gamesBreakdown, 'kicked.length', 0);
 
     return [
@@ -73,17 +71,11 @@ class Profile extends Component {
       { menuItem: <Menu.Item key='games'><Icon loading={loadingGame} name='comments' />Current Games<Label>{_.size(myGames)}</Label></Menu.Item>,
         render: () => <GamesByState status={['game-master', 'accepted']}/>
       },
-      { menuItem: <Menu.Item key='pending'><Icon loading={loadingMyGamePlayers} name='wait' />Pending<Label>{pendingGamesCount}</Label></Menu.Item>,
+      { menuItem: <Menu.Item key='pending'><Icon loading={loadingMyGamePlayers} name='wait' />Pending Games<Label>{pendingGamesCount}</Label></Menu.Item>,
         render: () => <GamesByState status={['pending']}/>
       },
-      { menuItem: <Menu.Item key='quit'><Icon loading={loadingMyGamePlayers} name='hand paper' />Quit<Label>{quitGamesCount}</Label></Menu.Item>,
-        render: () => <GamesByState status={['quit']}/>
-      },
-      { menuItem: <Menu.Item key='rejected'><Icon loading={loadingMyGamePlayers} name='thumbs outline down' />Rejected<Label>{rejectedGamesCount}</Label></Menu.Item>,
-        render: () => <GamesByState status={['rejected']}/>
-      },
       { menuItem: <Menu.Item key='kicked'><Icon loading={loadingMyGamePlayers} name='dont' />Kicked<Label>{kickedGamesCount}</Label></Menu.Item>,
-        render: () => <GamesByState status={['rejected']}/>
+        render: () => <GamesByState status={['kicked']}/>
       }
     ];
   }
