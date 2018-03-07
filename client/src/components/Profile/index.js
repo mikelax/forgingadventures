@@ -90,12 +90,8 @@ class Profile extends Component {
 }
 
 function gamesByStatesBase(props) {
-  const { status, myGames: myGamesProp } = props;
+  const { myGames: myGamesProp } = props;
   const { myGames, loading } = myGamesProp;
-
-  myGamesProp.refetch({
-    status
-  });
 
   return (
     <Tab.Pane loading={loading}>
