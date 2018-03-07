@@ -3,6 +3,7 @@ const queries = `
     # games
     game(id: ID!): Game!
     games(offset: Int, searchOptions: SearchOptions): [Game]
+    myGames(status: [String]): [Game]
 
     # game labels
     gameLabel(id: ID!): GameLabel!
@@ -19,6 +20,7 @@ const queries = `
     # game players
     gamePlayer(id: ID!): GamePlayer!,
     myGamePlayer(gameId: ID!): [GamePlayer],
+    myGamePlayers: [GamePlayer],
     gamePlayers(gameId: ID!, status: [String]): [GamePlayer!]
     
     # users

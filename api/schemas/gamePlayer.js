@@ -47,6 +47,13 @@ export const gamePlayerResolvers = {
           .query()
           .where({ gameId, userId: user.id });
       });
+    },
+    myGamePlayers: (obj, variables, context) => {
+      return runIfContextHasUser(context, (user) => {
+        return GamePlayer
+          .query()
+          .where({ userId: user.id });
+      });
     }
   },
   Mutation: {

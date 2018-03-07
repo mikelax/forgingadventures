@@ -1,44 +1,112 @@
 // @flow
 
+import _ from 'lodash';
 import React, { Component } from 'react';
-import { Container, Item } from 'semantic-ui-react';
+import { graphql } from 'react-apollo';
+import { Helmet } from 'react-helmet';
+import { compose } from 'recompose';
+import { Card, Container, Header, Icon, Image, Label, Menu, Tab } from 'semantic-ui-react';
 
-import { getProfile } from '../../services/webAuth';
+import GameCard from '../Games/components/GameCard';
+import { myGamesQuery } from '../Games/queries';
+import { meQuery, myGamePlayersQuery } from '../../queries/users';
 
 import './Profile.css';
 
-export default class Profile extends Component {
-
-  state = {
-    profile: null
-  };
-
-  componentWillMount() {
-    return getProfile()
-      .then(profile => {
-        this.setState({ profile });
-      });
-  }
+class Profile extends Component {
 
   render() {
-    const { profile } = this.state;
+    const user = _.get(this.props, 'me.me');
 
-    if (profile) {
+    const panes = this._getTabs();
+
+    if (user) {
       return (
-        <Container>
-          <Item>
-            <Item.Image src={profile.picture} />
-            <Item.Content>
-              <Item.Header as='h1'>{profile.name}</Item.Header>
-              <Item.Meta>{profile.nickname}</Item.Meta>
-              <Item.Description><pre>{JSON.stringify(profile, null, 2)}</pre></Item.Description>
-            </Item.Content>
+      <React.Fragment>
+        <Helmet>
+          <title>{user.name} Profile on Forging Adventures</title>
+        </Helmet>
 
-          </Item>
+        <Container>
+          <Header as='h1'>
+            <Image circular src={user.profileImage.url} />
+            <Header.Content>
+              {user.name}
+              <Header.Subheader>
+                {user.username}
+                <br />{user.timezone}
+              </Header.Subheader>
+            </Header.Content>
+          </Header>
+
+          <Tab menu={{ pointing: true }} defaultActiveIndex='1' panes={panes}/>
         </Container>
+      </React.Fragment>
       );
     } else {
       return null;
     }
   }
+
+  _getTabs() {
+    const { myGames: myGamesProp, myGamePlayers: myGamePlayersProp } = this.props;
+
+    const { loading: loadingGame, myGames } = myGamesProp;
+    const { loading: loadingMyGamePlayers, myGamePlayers } = myGamePlayersProp;
+
+    const gamesBreakdown = _.groupBy(myGamePlayers, 'status');
+    const pendingGamesCount = _.get(gamesBreakdown, 'pending.length', 0);
+    const kickedGamesCount = _.get(gamesBreakdown, 'kicked.length', 0);
+
+    return [
+      { menuItem: <Menu.Item key='characters'><Icon name='users' />Characters<Label>0</Label></Menu.Item>,
+        render: () => {
+          return (
+            <Tab.Pane>
+              Character List
+            </Tab.Pane>
+          );
+        }
+      },
+      { menuItem: <Menu.Item key='games'><Icon loading={loadingGame} name='comments' />Current Games<Label>{_.size(myGames)}</Label></Menu.Item>,
+        render: () => <GamesByState status={['game-master', 'accepted']}/>
+      },
+      { menuItem: <Menu.Item key='pending'><Icon loading={loadingMyGamePlayers} name='wait' />Pending Games<Label>{pendingGamesCount}</Label></Menu.Item>,
+        render: () => <GamesByState status={['pending']}/>
+      },
+      { menuItem: <Menu.Item key='kicked'><Icon loading={loadingMyGamePlayers} name='dont' />Kicked<Label>{kickedGamesCount}</Label></Menu.Item>,
+        render: () => <GamesByState status={['kicked']}/>
+      }
+    ];
+  }
 }
+
+function gamesByStatesBase(props) {
+  const { myGames: { myGames, loading } } = props;
+
+  return (
+    <Tab.Pane loading={loading}>
+      <Card.Group stackable={true} itemsPerRow={3}>
+        {_.map(myGames, (game) => (
+          <GameCard key={game.id} game={game} />
+        ))}
+      </Card.Group>
+    </Tab.Pane>
+  );
+}
+
+const GamesByState = graphql(myGamesQuery, {
+  name: 'myGames',
+  options: ( { status } ) => ({ variables: { status } })
+})(gamesByStatesBase);
+
+export default compose(
+  graphql(meQuery, { name: 'me' }),
+  graphql(myGamesQuery, {
+    name: 'myGames',
+    options: ({ variables: { status: ['game-master', 'accepted'] } })
+  }),
+  graphql(myGamePlayersQuery, {
+    name: 'myGamePlayers'
+  })
+)(Profile);

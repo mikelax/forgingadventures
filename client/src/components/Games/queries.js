@@ -125,6 +125,15 @@ export const gamesQuery = gql`
   ${gameFields}
 `;
 
+export const myGamesQuery = gql`
+  query myGames($status: [String]) {
+    myGames(status: $status) {
+      ...gameFields
+    }
+  }
+  ${gameFields}
+`;
+
 export const createGameMutation = gql`
   mutation createGame($input: CreateGameInput) {
     createGame(input: $input) {

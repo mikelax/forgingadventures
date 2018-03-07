@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { gamePlayerFields } from '../components/Games/queries';
 
 export const userFields = `
   fragment userFields on User {
@@ -23,6 +24,15 @@ export const meQuery = gql`
     }
   }
   ${userFields}
+`;
+
+export const myGamePlayersQuery = gql`
+  query  {
+    myGamePlayers {
+      ...gamePlayerFields
+    }
+  }
+  ${gamePlayerFields}
 `;
 
 export const validUsernameQuery = gql`
