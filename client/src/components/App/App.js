@@ -12,6 +12,7 @@ import Header from '../Header';
 import Home from '../Home';
 import Login from '../Login';
 import Profile from '../Profile';
+import Settings from '../Settings';
 
 import { processAuth } from '../../services/login';
 import Games from '../Games';
@@ -53,6 +54,7 @@ class App extends Component {
               <Route exact path="/" component={Home} />
               <Route path="/about" component={About} />
               <Route path="/profile" component={AuthGuard(Profile)} />
+              <Route path="/settings" component={AuthGuard(Settings)} />
               <Route path="/login" component={Login} />
               <Route path="/games" component={Games} />
             </Switch>
