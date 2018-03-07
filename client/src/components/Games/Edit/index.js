@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
 import { Button, Form, Grid, Header, Label, Menu, Statistic } from 'semantic-ui-react';
 
-import { gamePlayersQuery, gameQuery, updateGameMutation } from '../queries';
+import { gamePlayersQuery, gameQuery, updateGameMutation, updateGameStatusMutation } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
 import GameDetailsForm from '../components/GameDetailsForm';
 
@@ -116,13 +116,13 @@ class EditGame extends Component {
       .then(() => this.props.history.replace(`/games/${id}`));
   };
 
-  _onGameStatusSave = (payload) => {
-    const { match: { params: { id } }, updateGame } = this.props;
+  _onGameStatusSave = (gameStatus) => {
+    const { match: { params: { id } }, updateGameStatus } = this.props;
 
-    return updateGame({
+    return updateGameStatus({
         variables: {
-          id: id,
-          input: payload
+          id,
+          gameStatus
         }
       });
   }
@@ -169,18 +169,17 @@ class GameStatus extends Component {
 
   _submit = () => {
     const { onSave } = this.props;
-    const payload = _.merge({}, this.props.game);
-    payload.gameSettings.gameStatus = Number(this.state.status);
 
-    return onSave(payload);
+    return onSave(Number(this.state.status));
   };
-};
+}
 
 export default compose(
   graphql(gameQuery, {
     options: ( { match: { params: { id } } } ) => ({ variables: { id } })
   }),
   graphql(updateGameMutation, { name: 'updateGame' }),
+  graphql(updateGameStatusMutation, { name: 'updateGameStatus' }),
   graphql(gamePlayersQuery, {
     name: 'gamePlayers',
     options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id, status: ['game-master', 'pending', 'accepted'] } })

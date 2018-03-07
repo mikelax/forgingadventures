@@ -144,6 +144,15 @@ export const updateGameMutation = gql`
   ${gameFields}
 `;
 
+export const updateGameStatusMutation = gql`
+  mutation updateGameStatus($id: ID!, $gameStatus: Int) {
+    updateGameStatus(id: $id, gameStatus: $gameStatus) {
+      ...gameFields
+    }
+  }
+  ${gameFields}
+`;
+
 // game labels
 
 export const gameLabelsQuery = gql`

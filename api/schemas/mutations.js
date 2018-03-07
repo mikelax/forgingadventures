@@ -3,6 +3,7 @@ const mutations = `
     # games
     createGame(input: CreateGameInput): Game
     updateGame(id: ID!, input: UpdateGameInput): Game
+    updateGameStatus(id: ID!, gameStatus: Int): Game
     
     # game_messages
     createGameMessage(input: CreateGameMessageInput): GameMessage
