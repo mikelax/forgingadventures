@@ -20,6 +20,7 @@ const queries = `
     # game players
     gamePlayer(id: ID!): GamePlayer!,
     myGamePlayer(gameId: ID!): [GamePlayer],
+    myGamePlayers: [GamePlayer],
     gamePlayers(gameId: ID!, status: [String]): [GamePlayer!]
     
     # users

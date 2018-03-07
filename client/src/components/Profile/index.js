@@ -9,17 +9,16 @@ import { Card, Container, Header, Icon, Image, Label, Menu, Tab } from 'semantic
 
 import GameCard from '../Games/components/GameCard';
 import { myGamesQuery } from '../Games/queries';
-import { meQuery } from '../../queries/users';
+import { meQuery, myGamePlayersQuery } from '../../queries/users';
 
 import './Profile.css';
 
 class Profile extends Component {
 
   render() {
-    const myGames = _.get(this.props, 'myGames.myGames');
     const user = _.get(this.props, 'me.me');
 
-    const panes = this._getTabs(myGames);
+    const panes = this._getTabs();
 
     if (user) {
       return (
@@ -49,31 +48,20 @@ class Profile extends Component {
     }
   }
 
-  _getTabs(games) {
+  _getTabs() {
+    const myGamesProp = _.get(this.props, 'myGames');
+    const myGamePlayersProp = _.get(this.props, 'myGamePlayers');
+
+    const { loading: loadingGame, myGames } = myGamesProp;
+    const { loading: loadingMyGamePlayers, myGamePlayers } = myGamePlayersProp;
+
+    const gamesBreakdown = _.groupBy(myGamePlayers, 'status');
+    const pendingGamesCount = _.get(gamesBreakdown, 'pending.length', 0);
+    const quitGamesCount = _.get(gamesBreakdown, 'quit.length', 0);
+    const rejectedGamesCount = _.get(gamesBreakdown, 'rejected.length', 0);
+    const kickedGamesCount = _.get(gamesBreakdown, 'kicked.length', 0);
+
     return [
-      { menuItem: <Menu.Item key='games'><Icon name='comments' />Games<Label>{_.size(games)}</Label></Menu.Item>,
-        render: () => {
-          return (
-            <Tab.Pane>
-              <Card.Group stackable={true} itemsPerRow={3}>
-                {_.map(games, (game) => (
-                  <GameCard key={game.id} game={game} />
-                ))}
-              </Card.Group>
-            </Tab.Pane>
-          );
-        }
-      },
-      { menuItem: <Menu.Item key='invites'><Icon name='wait' />Pending Games<Label>0</Label></Menu.Item>,
-        render: () => {
-          return (
-            <Tab.Pane>
-              Games joined and waiting to be accepted.
-              <br /> What is the best way to get a list of Games (with details) for games pending of status?
-            </Tab.Pane>
-          );
-        }
-      },
       { menuItem: <Menu.Item key='characters'><Icon name='users' />Characters<Label>0</Label></Menu.Item>,
         render: () => {
           return (
@@ -82,15 +70,57 @@ class Profile extends Component {
             </Tab.Pane>
           );
         }
+      },
+      { menuItem: <Menu.Item key='games'><Icon loading={loadingGame} name='comments' />Current Games<Label>{_.size(myGames)}</Label></Menu.Item>,
+        render: () => <GamesByState status={['game-master', 'accepted']}/>
+      },
+      { menuItem: <Menu.Item key='pending'><Icon loading={loadingMyGamePlayers} name='wait' />Pending<Label>{pendingGamesCount}</Label></Menu.Item>,
+        render: () => <GamesByState status={['pending']}/>
+      },
+      { menuItem: <Menu.Item key='quit'><Icon loading={loadingMyGamePlayers} name='hand paper' />Quit<Label>{quitGamesCount}</Label></Menu.Item>,
+        render: () => <GamesByState status={['quit']}/>
+      },
+      { menuItem: <Menu.Item key='rejected'><Icon loading={loadingMyGamePlayers} name='thumbs outline down' />Rejected<Label>{rejectedGamesCount}</Label></Menu.Item>,
+        render: () => <GamesByState status={['rejected']}/>
+      },
+      { menuItem: <Menu.Item key='kicked'><Icon loading={loadingMyGamePlayers} name='dont' />Kicked<Label>{kickedGamesCount}</Label></Menu.Item>,
+        render: () => <GamesByState status={['rejected']}/>
       }
     ];
   }
 }
+
+function gamesByStatesBase(props) {
+  const { status, myGames: myGamesProp } = props;
+  const { myGames, loading } = myGamesProp;
+
+  myGamesProp.refetch({
+    status
+  });
+
+  return (
+    <Tab.Pane loading={loading}>
+      <Card.Group stackable={true} itemsPerRow={3}>
+        {_.map(myGames, (game) => (
+          <GameCard key={game.id} game={game} />
+        ))}
+      </Card.Group>
+    </Tab.Pane>
+  );
+}
+
+const GamesByState = graphql(myGamesQuery, {
+  name: 'myGames',
+  options: ({ variables: { status: ['game-master', 'accepted'] } })
+})(gamesByStatesBase);
 
 export default compose(
   graphql(meQuery, { name: 'me' }),
   graphql(myGamesQuery, {
     name: 'myGames',
     options: ({ variables: { status: ['game-master', 'accepted'] } })
+  }),
+  graphql(myGamePlayersQuery, {
+    name: 'myGamePlayers'
   })
 )(Profile);
