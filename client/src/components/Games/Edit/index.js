@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
-import { Grid, Header, Label, Menu } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Label, Menu, Statistic } from 'semantic-ui-react';
 
-import { gamePlayersQuery, gameQuery, updateGameMutation } from '../queries';
+import { gamePlayersQuery, gameQuery, updateGameMutation, updateGameStatusMutation } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
 import GameDetailsForm from '../components/GameDetailsForm';
 
 import OwnerGuard from '../../shared/components/OwnerGuard';
+import { gameStatus, gameStatuses } from '../utils/gameSettings';
 
 class EditGame extends Component {
   state = { activeItem: 'details' };
@@ -53,6 +54,7 @@ class EditGame extends Component {
                     </Menu.Item>
                   </Menu.Menu>
                 </Menu.Item>
+                <Menu.Item name='status' active={activeItem === 'status'} onClick={this._handleMenuClick} />
               </Menu>
             </Grid.Column>
 
@@ -71,6 +73,7 @@ class EditGame extends Component {
     const game = _.get(this.props, 'data.game');
     const loading = _.get(this.props, 'data.loading');
     const gameId = _.get(this.props, 'data.game.id');
+    const playerCounts = _.groupBy(_.get(this.props, 'gamePlayers.gamePlayers'), 'status');
     let content;
 
     switch(this.state.activeItem) {
@@ -82,6 +85,9 @@ class EditGame extends Component {
         break;
       case 'acceptedPlayers':
         content = <GamePlayers gameId={gameId} status={['accepted']} />;
+        break;
+      case 'status':
+        content = <GameStatus onSave={this._onGameStatusSave} game={game} playerCount={_.size(playerCounts['accepted'])} />;
         break;
       case 'details':
       default:
@@ -108,7 +114,64 @@ class EditGame extends Component {
         }
       })
       .then(() => this.props.history.replace(`/games/${id}`));
+  };
+
+  _onGameStatusSave = (gameStatus) => {
+    const { match: { params: { id } }, updateGameStatus } = this.props;
+
+    return updateGameStatus({
+        variables: {
+          id,
+          gameStatus
+        }
+      });
   }
+}
+
+class GameStatus extends Component {
+  render() {
+    const { game, playerCount } = this.props;
+    const countColor = playerCount >= game.gameSettings.minPlayers && playerCount <= game.gameSettings.maxPlayers ?
+    'green' : 'red';
+
+    return (
+      <React.Fragment>
+        <Header as='h2'>
+          Current Game Status: { gameStatus(game.gameSettings.gameStatus) }
+        </Header>
+
+        <Statistic horizontal color={countColor} label='Current Players' value={playerCount} />
+
+        <Form>
+          <Form.Group inline>
+              <Form.Field>
+                <label>Status</label>
+                <Form.Field
+                  as="select"
+                  defaultValue={game.gameSettings.gameStatus}
+                  onChange={(e) => this.setState({ 'status': e.target.value })}>
+                  {
+                    _.map(gameStatuses, (desc, level) =>
+                      <option key={level} value={level}>{desc}</option>
+                    )
+                  }
+                </Form.Field>
+              </Form.Field>
+            </Form.Group>
+
+            <Button primary onClick={this._submit} size="tiny" type="submit">
+              Update Game Status
+            </Button>
+          </Form>
+      </React.Fragment>
+    );
+  };
+
+  _submit = () => {
+    const { onSave } = this.props;
+
+    return onSave(Number(this.state.status));
+  };
 }
 
 export default compose(
@@ -116,6 +179,7 @@ export default compose(
     options: ( { match: { params: { id } } } ) => ({ variables: { id } })
   }),
   graphql(updateGameMutation, { name: 'updateGame' }),
+  graphql(updateGameStatusMutation, { name: 'updateGameStatus' }),
   graphql(gamePlayersQuery, {
     name: 'gamePlayers',
     options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id, status: ['game-master', 'pending', 'accepted'] } })

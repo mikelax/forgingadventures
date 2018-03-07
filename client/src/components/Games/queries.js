@@ -18,6 +18,7 @@ fragment gameFields on Game {
     maxPlayers
     skillLevel
     postingFrequency
+    gameStatus
   }
   gameImage {
     url
@@ -146,6 +147,15 @@ export const createGameMutation = gql`
 export const updateGameMutation = gql`
   mutation updateGame($id: ID!, $input: UpdateGameInput) {
     updateGame(id: $id, input: $input) {
+      ...gameFields
+    }
+  }
+  ${gameFields}
+`;
+
+export const updateGameStatusMutation = gql`
+  mutation updateGameStatus($id: ID!, $gameStatus: Int) {
+    updateGameStatus(id: $id, gameStatus: $gameStatus) {
       ...gameFields
     }
   }

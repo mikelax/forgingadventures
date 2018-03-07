@@ -14,7 +14,8 @@ export const gameTypeDefs = `
     minPlayers: Int!,
     maxPlayers: Int!,
     skillLevel: Int!,
-    postingFrequency: Int!
+    postingFrequency: Int!,
+    gameStatus: Int!
   }
   
   type Game {
@@ -94,7 +95,10 @@ export const gameResolvers = {
             return Game
               .query()
               .insert(_.merge({}, {
-                userId: user.id
+                userId: user.id,
+                gameSettings: {
+                  gameStatus: 1
+                }
               }, input))
               .returning('*');
           })
@@ -110,14 +114,55 @@ export const gameResolvers = {
               .insert(playerInput);
           });
       }),
+
     updateGame: (obj, { id, input }, context) =>
       schemaScopeGate(['create:games'], context, () => {
-        return Game
-          .query()
-          .update(input)
-          .where('id', id)
-          .returning('*')
-          .first();
+        return runIfContextHasUser(context, (user) => {
+          return Game
+            .query()
+            .where({ id, userId: user.id })
+            .first()
+            .then((game) => {
+              if (game) {
+                const payload = _.merge({}, {
+                  gameSettings: {
+                    gameStatus: game.gameSettings.gameStatus
+                  }
+                }, input);
+
+                return Game
+                  .query()
+                  .update(payload)
+                  .where({ id })
+                  .returning('*')
+                  .first();
+              }
+            });
+        });
+      }),
+
+    updateGameStatus: (obj, { id, gameStatus }, context) =>
+      schemaScopeGate(['create:games'], context, () => {
+        return runIfContextHasUser(context, (user) => {
+          return Game
+            .query()
+            .where({ id, userId: user.id })
+            .first()
+            .then((game) => {
+              if (game) {
+                const gameSettings = _.merge({}, game.gameSettings, {
+                  gameStatus
+                });
+
+                return Game
+                  .query()
+                  .update({ gameSettings })
+                  .where({ id })
+                  .returning('*')
+                  .first();
+              }
+            });
+        });
       })
   }
 };
