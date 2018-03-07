@@ -110,7 +110,7 @@ function gamesByStatesBase(props) {
 
 const GamesByState = graphql(myGamesQuery, {
   name: 'myGames',
-  options: ({ variables: { status: ['game-master', 'accepted'] } })
+  options: ( { status } ) => ({ variables: { status } })
 })(gamesByStatesBase);
 
 export default compose(
