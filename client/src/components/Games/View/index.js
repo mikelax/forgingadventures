@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { compose, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
-import { Button, Breadcrumb, Tab, Segment, Header, Container, Message } from 'semantic-ui-react';
+import { Button, Breadcrumb, Container, Header, Label, Message, Segment, Tab } from 'semantic-ui-react';
 
 import CreateLoungeMessage from './components/CreateLoungeMessage';
 import CreateMessage from './components/CreateMessage';
@@ -99,16 +99,9 @@ function gameDetails() {
   return (
     <React.Fragment>
       <Header as='h2' dividing>
-        Label
-        <Header.Subheader>
-          {game.label.displayName}
-        </Header.Subheader>
-      </Header>
-
-      <Header as='h2' dividing>
         Scenario
         <Header.Subheader>
-          {game.scenario}
+          <Label color='red'>{game.label.displayName}</Label> {game.scenario}
         </Header.Subheader>
       </Header>
 
