@@ -1,15 +1,20 @@
-import { SEARCH } from '../actions/gamesSearch';
+import { SEARCH, RESET_SEARCH } from '../actions/gamesSearch';
 
-export default function gameSearchReducer(state = {
+const defaultState = {
+  textSearch: '',
+  labelId: '0',
   gameSettings: {}
-}, action) {
+};
 
+export default function gameSearchReducer(state = defaultState, action) {
   switch (action.type) {
     case SEARCH:
       return {
         ...state,
-        searchParams: action.searchParams
+        ...action.searchParams
       };
+    case RESET_SEARCH:
+      return defaultState;
     default:
       return state;
   }

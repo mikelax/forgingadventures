@@ -19,6 +19,10 @@ class GameSearch extends Component {
     this.setState(this.props.gamesSearch);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps.gamesSearch);
+  }
+
   render() {
     return <div className="GameSearch">
       <Segment>
