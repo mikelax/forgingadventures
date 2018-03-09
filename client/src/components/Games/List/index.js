@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { compose, pure } from 'recompose';
+import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
@@ -13,9 +13,15 @@ import GameCard from '../components/GameCard';
 import GameSearch from '../components/GameSearch';
 import { gamesQuery } from '../queries';
 
-import { search } from '../../../actions/gamesSearch';
+import { search, resetSearch } from '../../../actions/gamesSearch';
 
 class ListGamesView extends Component {
+
+  componentDidMount() {
+    const { resetSearch } = this.props;
+
+    resetSearch();
+  }
 
   render() {
     const { match } = this.props;
@@ -59,7 +65,8 @@ class ListGamesView extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  search: (searchParams) => dispatch(search(searchParams))
+  search: (searchParams) => dispatch(search(searchParams)),
+  resetSearch: () => dispatch(resetSearch())
 });
 
 
@@ -112,7 +119,7 @@ const ListGames = compose(
     (state) => ({ gamesSearch: state.gamesSearch })
   ),
   graphql(gamesQuery, {
-    options: ({ gamesSearch }) => ({ variables: { searchOptions: gamesSearch.searchParams, offset: 0 } }),
+    options: ({ gamesSearch }) => ({ variables: { searchOptions: gamesSearch, offset: 0 } }),
     props: ({ data, data: { fetchMore } }) => {
       return {
         data,
@@ -135,5 +142,4 @@ const ListGames = compose(
       };
     }
   }),
-  pure,
 )(ListGamesPure);
