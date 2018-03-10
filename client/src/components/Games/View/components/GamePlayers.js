@@ -25,7 +25,7 @@ class GamePlayers extends Component {
 
     return (
       <div className="GamePlayers">
-        <List divided verticalAlign='middle'>
+        <List divided verticalAlign='middle' relaxed size='large'>
           {_.map(gamePlayers, (player) => (
             <List.Item key={player.id}>
               <List.Content floated='right'>
@@ -37,7 +37,8 @@ class GamePlayers extends Component {
               <List.Content>
                 <List.Header as='a'>{player.user.name}</List.Header>
                 <List.Description>
-                  {_.startCase(player.status)}
+                  {player.user.timezone}
+                  <br/>{_.startCase(player.status)}
                 </List.Description>
               </List.Content>
             </List.Item>
