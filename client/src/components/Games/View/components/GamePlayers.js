@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
-import { Button, Header, Image, List, Menu, Popup, Icon, Table } from 'semantic-ui-react';
+import { Button, Header, Image, Menu, Popup, Icon, Table } from 'semantic-ui-react';
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
