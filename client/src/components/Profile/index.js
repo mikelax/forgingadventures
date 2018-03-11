@@ -8,6 +8,7 @@ import { compose } from 'recompose';
 import { Card, Container, Header, Icon, Image, Label, Menu, Tab } from 'semantic-ui-react';
 
 import GameCard from '../Games/components/GameCard';
+import { myCharactersQuery } from '../Characters/queries';
 import { myGamesQuery } from '../Games/queries';
 import { meQuery, myGamePlayersQuery } from '../../queries/users';
 
@@ -49,8 +50,9 @@ class Profile extends Component {
   }
 
   _getTabs() {
-    const { myGames: myGamesProp, myGamePlayers: myGamePlayersProp } = this.props;
+    const { myCharacters: myCharactersProp, myGames: myGamesProp, myGamePlayers: myGamePlayersProp } = this.props;
 
+    const { loading: loadingCharacter, myCharacters } = myCharactersProp;
     const { loading: loadingGame, myGames } = myGamesProp;
     const { loading: loadingMyGamePlayers, myGamePlayers } = myGamePlayersProp;
 
@@ -59,14 +61,8 @@ class Profile extends Component {
     const kickedGamesCount = _.get(gamesBreakdown, 'kicked.length', 0);
 
     return [
-      { menuItem: <Menu.Item key='characters'><Icon name='users' />Characters<Label>0</Label></Menu.Item>,
-        render: () => {
-          return (
-            <Tab.Pane>
-              Character List
-            </Tab.Pane>
-          );
-        }
+      { menuItem: <Menu.Item key='characters'><Icon name='users' />Characters<Label>{_.size(myCharacters)}</Label></Menu.Item>,
+        render: () => <Characters loading={loadingCharacter} />
       },
       { menuItem: <Menu.Item key='games'><Icon loading={loadingGame} name='comments' />Current Games<Label>{_.size(myGames)}</Label></Menu.Item>,
         render: () => <GamesByState status={['game-master', 'accepted']}/>
@@ -79,6 +75,27 @@ class Profile extends Component {
       }
     ];
   }
+}
+
+function charactersBase(props) {
+  const { myCharacters: { myCharacters, loading } } = props;
+
+  return (
+    <Tab.Pane loading={loading}>
+      <Card.Group stackable={true} itemsPerRow={3}>
+        {_.map(myCharacters, (character) => (
+          <Card key={character.id}>
+            <Image src={_.get(character, 'profileImage.url')}
+              label={{ as: 'a', color: 'red', content: character.label.shortName, ribbon: true }}
+            />
+            <Card.Content>
+              <Card.Header>{character.name}</Card.Header>
+            </Card.Content>
+          </Card>
+        ))}
+      </Card.Group>
+    </Tab.Pane>
+  );
 }
 
 function gamesByStatesBase(props) {
@@ -95,12 +112,17 @@ function gamesByStatesBase(props) {
   );
 }
 
+const Characters = graphql(myCharactersQuery, {
+  name: 'myCharacters'
+})(charactersBase);
+
 const GamesByState = graphql(myGamesQuery, {
   name: 'myGames',
   options: ( { status } ) => ({ variables: { status } })
 })(gamesByStatesBase);
 
 export default compose(
+  graphql(myCharactersQuery, { name: 'myCharacters' }),
   graphql(meQuery, { name: 'me' }),
   graphql(myGamesQuery, {
     name: 'myGames',

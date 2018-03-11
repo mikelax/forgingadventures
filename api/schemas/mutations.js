@@ -20,6 +20,9 @@ const mutations = `
     # game_players
     createGamePlayer(input: CreateGamePlayerInput): GamePlayer
     updateGamePlayer(id: ID!, input: UpdateGamePlayerInput): GamePlayer
+
+    # characters
+    createCharacter(input: CreateCharacterInput!): Character
   }
 `;
 
