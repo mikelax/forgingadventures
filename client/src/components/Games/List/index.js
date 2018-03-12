@@ -100,9 +100,10 @@ class ListGamesPure extends Component {
   }
 
   _loadMore = (inView) => {
-    const { fetchMore, data: { loading } } = this.props;
+    const { games, fetchMore, data: { loading } } = this.props;
+    const gamesCount = _.get(games, 'length');
 
-    if (this.canPage && inView && !(loading)) {
+    if (this.canPage && inView && !(loading) && gamesCount) {
       fetchMore()
         .then(({ data: { games } }) => {
           if (_.isEmpty(games)) {

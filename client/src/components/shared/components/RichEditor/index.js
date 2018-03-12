@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Button, Icon } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 import CkEditor from '@ckeditor/ckeditor5-build-classic';
@@ -16,39 +15,29 @@ export default class RichTextDisplay extends Component {
   };
 
   state = {
-    message: ''
+    message: null
   };
+
+  messageContent = null;
 
   componentWillMount() {
     const { message } = this.props;
 
-    if (message) {
-      this.setState({
-        message
-      });
-    }
+    this.setState({ message });
   }
 
   componentWillReceiveProps(nextProp) {
     const { message } = nextProp;
 
-    if (message) {
-      this.setState({
-        message
-      });
-    } else {
-      this.setState({
-        message: ''
-      });
-    }
+    this.setState({ message });
   }
 
   render() {
-    const { message } = this.state;
-    const { readOnly } = this.props;
+    const { message, readOnly } = this.props;
 
     const displayComponent = readOnly ?
-      <RenderMessage message={message} /> : <RichTextDisplayEditor message={message} onChange={this._handleOnChange} />;
+      <RenderMessage message={message} /> :
+      <RichTextDisplayEditor ref={e => this.editor = e} message={message} onChange={this._handleOnChange} />;
 
     return (
       <div className="rich-text-display">
@@ -56,6 +45,15 @@ export default class RichTextDisplay extends Component {
       </div>
     );
   }
+
+  clear() {
+    this.editor.clear();
+  }
+
+  getEditorMessage() {
+    return this.messageContent;
+  }
+
 
   _handleOnChange = (meta) => {
     const { onChange } = this.props;
@@ -65,6 +63,8 @@ export default class RichTextDisplay extends Component {
         hasContent: meta.wordCount > 0
       });
     }
+
+    this.messageContent = meta.content;
   }
 
 }
@@ -82,6 +82,7 @@ class RichTextDisplayEditor extends Component {
     onChange: PropTypes.func
   };
 
+  static blankMessage = '<p>&nbsp;</p>';
 
   componentDidMount() {
     return CkEditor
@@ -92,6 +93,8 @@ class RichTextDisplayEditor extends Component {
 
         if (message) {
           this.editor.setData(message);
+        } else {
+          this.clear();
         }
         // https://docs.ckeditor.com/ckeditor5/latest/api/module_engine_view_document-Document.html
         this.editor.document.on('change', () => this._handleOnChange());
@@ -103,20 +106,21 @@ class RichTextDisplayEditor extends Component {
       <div className="rich-text-editor">
         <div ref={e => this.editorEl = e} />
       </div>
-
     );
   }
 
-
+  clear() {
+    this.editor.setData(RichTextDisplayEditor.blankMessage);
+  }
 
   _handleOnChange = () => {
     const { onChange } = this.props;
-    const data = this.editor.getData().replace('<p>&nbsp;</p>', '');
+    const content = this.editor.getData().replace('<p>&nbsp;</p>', '');
 
     onChange({
-      wordCount: (data || '').length
+      content,
+      wordCount: (content || '').length
     });
   }
-
 
 }
