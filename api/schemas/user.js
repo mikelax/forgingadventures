@@ -17,7 +17,7 @@ export const userTypeDefs = `
   type ProfileImage {
     url: String,
     publicId: String,
-    userUploadsId: Int
+    userUploadId: Int
   }
   
   input ProfileImageInput {

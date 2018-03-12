@@ -77,8 +77,9 @@ export const gamePlayerFields = `
     user {
       id
       name
+      timezone
       profileImage {
-        url 
+        url
       }
     }
   }
