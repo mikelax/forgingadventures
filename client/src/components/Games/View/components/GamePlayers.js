@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
-import { Button, Image, List, Menu, Popup, Icon } from 'semantic-ui-react';
+import { Button, Header, Image, Menu, Popup, Icon, Table } from 'semantic-ui-react';
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
@@ -25,24 +25,39 @@ class GamePlayers extends Component {
 
     return (
       <div className="GamePlayers">
-        <List divided verticalAlign='middle'>
-          {_.map(gamePlayers, (player) => (
-            <List.Item key={player.id}>
-              <List.Content floated='right'>
-                { isGm ? this._gmActions(player.id, player.status) : null }
-                { !isGm && _.some(myGamePlayer.myGamePlayer, (gp) => gp.user.id === player.user.id)
-                    ? this._playerOptions(player.id) : null }
-              </List.Content>
-              <Image avatar src={_.get(player, 'user.profileImage.url')} />
-              <List.Content>
-                <List.Header as='a'>{player.user.name}</List.Header>
-                <List.Description>
+        <Table selectable striped>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Player</Table.HeaderCell>
+              <Table.HeaderCell>Status</Table.HeaderCell>
+              <Table.HeaderCell>Game Actions</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {_.map(gamePlayers, (player) => (
+              <Table.Row key={player.id}>
+                <Table.Cell>
+                  <Header as='h3' image>
+                    <Image avatar src={_.get(player, 'user.profileImage.url')} />
+                    <Header.Content>
+                        {player.user.name}
+                      <Header.Subheader>{player.user.timezone}</Header.Subheader>
+                    </Header.Content>
+                  </Header>
+                </Table.Cell>
+                <Table.Cell>
+                  { player.status === 'accepted' ? <Icon name='checkmark' /> : null }
                   {_.startCase(player.status)}
-                </List.Description>
-              </List.Content>
-            </List.Item>
-          ))}
-        </List>
+                </Table.Cell>
+                <Table.Cell>
+                  { isGm ? this._gmActions(player.id, player.status) : null }
+                  { !isGm && _.some(myGamePlayer.myGamePlayer, (gp) => gp.user.id === player.user.id)
+                      ? this._playerOptions(player.id) : null }
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       </div>
     );
   }
