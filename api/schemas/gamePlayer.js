@@ -1,5 +1,6 @@
 import { withFilter } from 'graphql-subscriptions';
 
+import Character from 'models/character';
 import Game from 'models/game';
 import GamePlayer from 'models/gamePlayer';
 import schemaScopeGate from 'services/schemaScopeGate';
@@ -16,6 +17,7 @@ export const gamePlayerTypeDefs = `
     user: User!,
     game: Game!,
     status: String!,
+    character: Character,
     updated_at: GraphQLDateTime,
     created_at: GraphQLDateTime
   }
@@ -32,6 +34,7 @@ export const gamePlayerTypeDefs = `
 
 export const gamePlayerResolvers = {
   GamePlayer: {
+    character: gamePlayer => Character.query().findById(gamePlayer.characterId),
     user: (gamePlayer, vars, context) => context.loaders.users.load(gamePlayer.userId),
     game: gamePlayer => Game.query().findById(gamePlayer.gameId)
   },
