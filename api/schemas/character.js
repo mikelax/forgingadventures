@@ -18,6 +18,12 @@ export const characterTypeDefs = `
     labelId: Int!,
     profileImage: ProfileImageInput
   }
+
+  input UpdateCharacterInput {
+    name: String!,
+    labelId: Int!,
+    profileImage: ProfileImageInput
+  }
 `;
 
 export const characterResolvers = {
@@ -48,6 +54,25 @@ export const characterResolvers = {
               .returning('*')
               .execute();
           });
+      }),
+    updateCharacter: (obj, { id, input }, context) =>
+      schemaScopeGate(['create:characters'], context, () => {
+        return runIfContextHasUser(context, (user) => {
+          return Character
+            .query()
+            .where({ id, userId: user.id })
+            .first()
+            .then((character) => {
+              if (character) {
+                return Character
+                  .query()
+                  .update(input)
+                  .where({ id })
+                  .returning('*')
+                  .first();
+              }
+            });
+        });
       })
   }
 };

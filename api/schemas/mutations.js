@@ -22,7 +22,8 @@ const mutations = `
     updateGamePlayer(id: ID!, input: UpdateGamePlayerInput): GamePlayer
 
     # characters
-    createCharacter(input: CreateCharacterInput!): Character
+    createCharacter(input: CreateCharacterInput): Character
+    updateCharacter(id: ID!, input: UpdateCharacterInput): Character
   }
 `;
 
