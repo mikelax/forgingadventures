@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
@@ -6,11 +7,13 @@ import { compose } from 'recompose';
 
 import RichEditor from '../../../shared/components/RichEditor';
 import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
+import CharactersSelect from '../../../Characters/components/CharactersSelect';
 
 const JoinGame = class JoinGame extends Component {
 
   state = {
     store: {
+      characterId: 0,
       message: ''
     },
     errors: {}
@@ -35,6 +38,15 @@ const JoinGame = class JoinGame extends Component {
                 placeholder='Say something about yourself...'
                 ref={this._getEditor}
                 onChange={this._handleOnChange} />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Character</label>
+              <CharactersSelect
+                error={this._validity('characterId')}
+                value={this._formValue('characterId')}
+                onChange={this._formInput('characterId')}
+              />
             </Form.Field>
 
 
@@ -79,6 +91,7 @@ const JoinGame = class JoinGame extends Component {
       createGamePlayer({
         variables: {
           input: {
+            characterId: this._formValue('characterId') !== 0 ? this._formValue('characterId') : null,
             gameId: id,
             status: 'pending'
           }
@@ -103,7 +116,24 @@ const JoinGame = class JoinGame extends Component {
 
   _valid = () => {
     return true;
-  }
+  };
+
+  _validity = (field) => {
+    return this.state.errors[field] === true;
+  };
+
+  _formInput = (stateKey) => {
+    return (e) => {
+      const { store } = this.state;
+
+      _.set(store, stateKey, e.target.value);
+      this.setState({ ...this.state, store });
+    };
+  };
+
+  _formValue = (stateKey) => {
+    return _.get(this.state.store, stateKey, '');
+  };
 };
 
 export default compose(

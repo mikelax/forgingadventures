@@ -1,4 +1,5 @@
 import Character from 'models/character';
+import Game from 'models/game';
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 
@@ -31,6 +32,15 @@ export const characterResolvers = {
     label: (character, vars, context) => context.loaders.gameLabels.load(character.labelId)
   },
   Query: {
+    availableCharacters: (obj, { gameId }, context) => {
+      return runIfContextHasUser(context, (user) => {
+        return Character.query()
+          .where('labelId', Game.query().select('labelId').where({ id: gameId }).first())
+          // TODO filter out characters already in Live Games
+          .where({ userId: user.id })
+          .orderBy('updated_at', 'desc');
+      });
+    },
     character: (obj, { id }) => Character.query().findById(id),
     myCharacters: (obj, variables, context) => {
       return runIfContextHasUser(context, (user) => {

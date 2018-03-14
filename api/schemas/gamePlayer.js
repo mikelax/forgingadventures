@@ -22,11 +22,13 @@ export const gamePlayerTypeDefs = `
   
   input CreateGamePlayerInput {
     gameId: ID!,
-    status: String!
+    status: String!,
+    characterId: Int
   }
   
   input UpdateGamePlayerInput {
-    status: String!
+    status: String!,
+    characterId: Int
   }
 `;
 

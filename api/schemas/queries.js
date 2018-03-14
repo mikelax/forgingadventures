@@ -25,6 +25,7 @@ const queries = `
 
     # characters
     character(id: ID!): Character!
+    availableCharacters: [Character]
     myCharacters: [Character]
     
     # users

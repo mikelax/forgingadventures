@@ -34,6 +34,15 @@ export const characterQuery = gql`
   ${characterFields}
 `;
 
+export const availableCharactersQuery = gql`
+  query availableCharacters($gameId: String!) {
+    availableCharacters(gameId: $gameId) {
+      ...characterFields
+    }
+  }
+  ${characterFields}
+`;
+
 export const createCharacterMutation = gql`
   mutation createCharacter($input: CreateCharacterInput) {
     createCharacter(input: $input) {
