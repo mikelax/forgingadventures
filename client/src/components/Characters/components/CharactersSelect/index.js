@@ -12,7 +12,7 @@ class CharactersSelect extends Component {
 
   static propTypes = {
     error: PropTypes.bool.isRequired,
-    value: PropTypes.number.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     onChange: PropTypes.func.isRequired
   };
 

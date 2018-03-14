@@ -25,7 +25,7 @@ const queries = `
 
     # characters
     character(id: ID!): Character!
-    availableCharacters: [Character]
+    availableCharacters(gameId: Int!): [Character]
     myCharacters: [Character]
     
     # users

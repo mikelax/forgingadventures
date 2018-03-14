@@ -35,7 +35,7 @@ export const characterQuery = gql`
 `;
 
 export const availableCharactersQuery = gql`
-  query availableCharacters($gameId: String!) {
+  query availableCharacters($gameId: Int!) {
     availableCharacters(gameId: $gameId) {
       ...characterFields
     }
