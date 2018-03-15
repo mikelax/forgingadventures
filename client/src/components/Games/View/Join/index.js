@@ -32,7 +32,7 @@ const JoinGame = class JoinGame extends Component {
           <Header as="h1">You're one step away from the Adventure</Header>
 
           <Form>
-            <Form.Field>
+            <Form.Field required>
               <label>Introduce yourself</label>
               <RichEditor
                 placeholder='Say something about yourself...'
@@ -40,20 +40,17 @@ const JoinGame = class JoinGame extends Component {
                 onChange={this._handleOnChange} />
             </Form.Field>
 
-            <Form.Field>
-              <label>Character</label>
-              <CharactersSelect
-                error={this._validity('characterId')}
-                value={this._formValue('characterId')}
-                onChange={this._formInput('characterId')}
-              />
-            </Form.Field>
+            <CharactersSelect
+              error={this._validity('characterId')}
+              value={this._formValue('characterId')}
+              onChange={this._formInput('characterId')}
+            />
 
 
             <div>
               <Button primary onClick={this._submit} 
-              disabled={saving || !(hasContent)} 
-              loading={saving}>
+                disabled={saving || !(hasContent)} 
+                loading={saving}>
                 Submit
               </Button>
               <Button onClick={this._cancel}>Cancel</Button>

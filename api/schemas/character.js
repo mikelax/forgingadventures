@@ -1,5 +1,6 @@
 import Character from 'models/character';
 import Game from 'models/game';
+import GamePlayer from 'models/gamePlayer';
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 
@@ -36,7 +37,9 @@ export const characterResolvers = {
       return runIfContextHasUser(context, (user) => {
         return Character.query()
           .where('labelId', Game.query().select('labelId').where({ id: gameId }).first())
-          // TODO filter out characters already in Live Games
+          .whereNotIn('id', GamePlayer.query().select('characterId')
+            .where({ userId: user.id }).whereNotNull('characterId')
+            .whereIn('status', ['pending', 'accepted']))
           .where({ userId: user.id })
           .orderBy('updated_at', 'desc');
       });
