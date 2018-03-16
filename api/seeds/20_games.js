@@ -19,7 +19,8 @@ exports.seed = function(knex, Promise) {
                 minPlayers: 3,
                 maxPlayers: 5,
                 skillLevel: 2,
-                postingFrequency: 3
+                postingFrequency: 3,
+                gameStatus: 1
               }
             }
           ])

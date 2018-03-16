@@ -8,6 +8,7 @@ import { Router, Route, Switch } from 'react-router-dom';
 
 import About from '../About';
 import AuthGuard from '../shared/components/AuthGuard';
+import Characters from '../Characters';
 import Header from '../Header';
 import Home from '../Home';
 import Login from '../Login';
@@ -53,6 +54,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/about" component={About} />
+              <Route path="/characters" component={AuthGuard(Characters)} />
               <Route path="/profile" component={AuthGuard(Profile)} />
               <Route path="/settings" component={AuthGuard(Settings)} />
               <Route path="/login" component={Login} />
