@@ -3,36 +3,43 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
+import Select from 'react-select';
 import { compose } from 'recompose';
-import { Form, Message } from 'semantic-ui-react';
+import { Form, Image, Item, Label, Message } from 'semantic-ui-react';
 
 import { availableCharactersQuery } from '../../queries';
+import { getFullImageUrl } from '../../../../services/image';
 
 class CharactersSelect extends Component {
 
   static propTypes = {
-    error: PropTypes.bool.isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    value: PropTypes.PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
   render() {
-    const { data: { availableCharacters }, value, error, placeholder, onChange } = this.props;
+    const { data: { availableCharacters }, value, onChange } = this.props;
+
+    const options = _.map(availableCharacters, (character) => {
+      const publicId = _.get(character, 'profileImage.publicId');
+      return {
+        value: character.id,
+        label: character.name,
+        profileImageUrl: getFullImageUrl(publicId, 'profileImage')
+      };
+    });
 
     return (
       <React.Fragment>
-        <Form.Field
-          control='select'
-          error={error}
-          label='Select an existing Character'
-          value={value}
-          onChange={onChange}>
-            <option value="0">{ placeholder || 'Select a Character' }</option>
-            {
-              _.map(availableCharacters, (character) =>
-                <option key={character.id} value={character.id}>{character.name}</option>
-              )
-            }
+        <Form.Field>
+          <label>Select an existing Character</label>
+          <Select
+            value={value}
+            options={options}
+            onChange={onChange}
+            optionRenderer={this._renderOption}
+            valueRenderer={this._renderValue}
+          />
         </Form.Field>
 
         <Message info>
@@ -42,6 +49,28 @@ class CharactersSelect extends Component {
           </Message.List>
         </Message>
       </React.Fragment>
+    );
+  };
+
+  _renderValue = (option) => {
+    return (
+      <Label as='a'>
+        <Image avatar size='mini' src={option.profileImageUrl} />
+        {option.label}
+      </Label>
+    );
+  };
+
+  _renderOption = (option) => {
+    return (
+      <Item.Group>
+      <Item>
+        <Item.Image avatar size='mini' src={option.profileImageUrl} />
+        <Item.Content verticalAlign='middle'>
+          <Item.Header as='a'>{option.label}</Item.Header>
+        </Item.Content>
+      </Item>
+      </Item.Group>
     );
   }
 }

@@ -13,7 +13,7 @@ const JoinGame = class JoinGame extends Component {
 
   state = {
     store: {
-      characterId: 0,
+      characterId: '',
       message: ''
     },
     errors: {}
@@ -41,9 +41,9 @@ const JoinGame = class JoinGame extends Component {
             </Form.Field>
 
             <CharactersSelect
-              error={this._validity('characterId')}
+              name='characterId'
               value={this._formValue('characterId')}
-              onChange={this._formInput('characterId')}
+              onChange={this._setCharacter}
             />
 
 
@@ -51,7 +51,7 @@ const JoinGame = class JoinGame extends Component {
               <Button primary onClick={this._submit} 
                 disabled={saving || !(hasContent)} 
                 loading={saving}>
-                Submit
+                Join Game
               </Button>
               <Button onClick={this._cancel}>Cancel</Button>
             </div>
@@ -82,13 +82,15 @@ const JoinGame = class JoinGame extends Component {
     const { createGameLoungeMessage } = this.props;
     const { history } = this.props;
 
+    const { store } = this.state;
+
     if (this._valid()) {
       this.setState({ saving: true });
 
       createGamePlayer({
         variables: {
           input: {
-            characterId: this._formValue('characterId') !== 0 ? this._formValue('characterId') : null,
+            characterId: store.characterId !== '' ? store.characterId : null,
             gameId: id,
             status: 'pending'
           }
@@ -117,6 +119,14 @@ const JoinGame = class JoinGame extends Component {
 
   _validity = (field) => {
     return this.state.errors[field] === true;
+  };
+
+  _setCharacter = (character) => {
+    const value = _.get(character, 'value', null);
+
+    const { store } = this.state;
+    _.set(store, 'characterId', value);
+    this.setState({ ...this.state, store });
   };
 
   _formInput = (stateKey) => {
