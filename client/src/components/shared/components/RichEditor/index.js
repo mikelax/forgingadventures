@@ -206,10 +206,14 @@ class RichTextDisplayEditor extends Component {
   }
 
   insertHtml(html) {
+    this.editorEl.focus();
+
+    setTimeout(() => {
     const { CKEDITOR } = window;
     const el = CKEDITOR.dom.element.createFromHtml(html);
 
     this.editor.insertElement(el);
+    }, 100);
   }
 
   _handleOnChange = () => {
