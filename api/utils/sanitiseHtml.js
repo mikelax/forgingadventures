@@ -7,7 +7,7 @@ export default function (input) {
       'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre'],
     allowedAttributes: {
       a: ['href'],
-      img: ['src']
+      img: ['src', 'width', 'height']
     }
   });
 }
