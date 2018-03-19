@@ -1,12 +1,14 @@
 import DataLoader from 'dataloader';
 
+import Character from 'models/character';
 import GameLabel from 'models/gameLabel';
 import User from 'models/user';
 
 export default function(options) {
   return {
-    users: new DataLoader(ids => modelIdFetcher(User, ids), options),
-    gameLabels: new DataLoader(ids => modelIdFetcher(GameLabel, ids), options)
+    characters: new DataLoader(ids => modelIdFetcher(Character, ids), options),
+    gameLabels: new DataLoader(ids => modelIdFetcher(GameLabel, ids), options),
+    users: new DataLoader(ids => modelIdFetcher(User, ids), options)
   };
 }
 

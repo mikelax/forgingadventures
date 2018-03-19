@@ -7,6 +7,7 @@ import { Button, Header, Image, Menu, Popup, Icon, Table } from 'semantic-ui-rea
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
+import { getFullImageUrl } from '../../../../services/image';
 
 import './assets/GamePlayers.styl';
 
@@ -29,6 +30,7 @@ class GamePlayers extends Component {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Player</Table.HeaderCell>
+              <Table.HeaderCell>Character</Table.HeaderCell>
               <Table.HeaderCell>Status</Table.HeaderCell>
               <Table.HeaderCell>Game Actions</Table.HeaderCell>
             </Table.Row>
@@ -44,6 +46,9 @@ class GamePlayers extends Component {
                       <Header.Subheader>{player.user.timezone}</Header.Subheader>
                     </Header.Content>
                   </Header>
+                </Table.Cell>
+                <Table.Cell>
+                  {this._characterCell(player)}
                 </Table.Cell>
                 <Table.Cell>
                   { player.status === 'accepted' ? <Icon name='checkmark' /> : null }
@@ -114,15 +119,29 @@ class GamePlayers extends Component {
     );
   };
 
-  _userProfileImage = (player) => {
-    const imageUrl = _.get(player, 'user.profileImage.url');
+  _characterCell = (player) => {
+    const publicId = _.get(player, 'character.profileImage.publicId');
+    const imageUrl = getFullImageUrl(publicId, 'profileImage');
+    const name = _.get(player, 'character.name');
 
-    if (imageUrl) {
-      return <img src={imageUrl} alt=""/>;
+    if (player.status === 'game-master') {
+      return <Header as='h3' content='N/A' />;
+    } else if (player.character === null) {
+      return <Header as='h3' icon='warning' content='Still working on it' />;
     } else {
-      return <span className="glyphicon glyphicon-user" aria-hidden="true"/>;
+      return (
+        <Header as='h3' image>
+          {
+            imageUrl ? <Image avatar src={imageUrl} /> : 
+              <Icon size='big' name='user circle' />
+          }
+          <Header.Content>
+              {name}
+          </Header.Content>
+        </Header>
+      );
     }
-  };
+  }
 
   _updatePlayerStatus = (playerId, status) => {
     return (e) => {

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
@@ -6,11 +7,13 @@ import { compose } from 'recompose';
 
 import RichEditor from '../../../shared/components/RichEditor';
 import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
+import CharactersSelect from '../../../Characters/components/CharactersSelect';
 
 const JoinGame = class JoinGame extends Component {
 
   state = {
     store: {
+      characterId: '',
       message: ''
     },
     errors: {}
@@ -29,7 +32,7 @@ const JoinGame = class JoinGame extends Component {
           <Header as="h1">You're one step away from the Adventure</Header>
 
           <Form>
-            <Form.Field>
+            <Form.Field required>
               <label>Introduce yourself</label>
               <RichEditor
                 placeholder='Say something about yourself...'
@@ -37,12 +40,18 @@ const JoinGame = class JoinGame extends Component {
                 onChange={this._handleOnChange} />
             </Form.Field>
 
+            <CharactersSelect
+              name='characterId'
+              value={this._formValue('characterId')}
+              onChange={this._setCharacter}
+            />
+
 
             <div>
               <Button primary onClick={this._submit} 
-              disabled={saving || !(hasContent)} 
-              loading={saving}>
-                Submit
+                disabled={saving || !(hasContent)} 
+                loading={saving}>
+                Join Game
               </Button>
               <Button onClick={this._cancel}>Cancel</Button>
             </div>
@@ -73,12 +82,15 @@ const JoinGame = class JoinGame extends Component {
     const { createGameLoungeMessage } = this.props;
     const { history } = this.props;
 
+    const { store } = this.state;
+
     if (this._valid()) {
       this.setState({ saving: true });
 
       createGamePlayer({
         variables: {
           input: {
+            characterId: store.characterId !== '' ? store.characterId : null,
             gameId: id,
             status: 'pending'
           }
@@ -95,15 +107,40 @@ const JoinGame = class JoinGame extends Component {
             }
           });
         })
-        .then(() => history.replace(`/games/${id}`))
-        .finally(() => this.setState({ saving: false }));
+        .then(() => this.setState({ saving: false }))
+        .then(() => history.replace(`/games/${id}`));
         
     }
   };
 
   _valid = () => {
     return true;
-  }
+  };
+
+  _validity = (field) => {
+    return this.state.errors[field] === true;
+  };
+
+  _setCharacter = (character) => {
+    const value = _.get(character, 'value', null);
+
+    const { store } = this.state;
+    _.set(store, 'characterId', value);
+    this.setState({ ...this.state, store });
+  };
+
+  _formInput = (stateKey) => {
+    return (e) => {
+      const { store } = this.state;
+
+      _.set(store, stateKey, e.target.value);
+      this.setState({ ...this.state, store });
+    };
+  };
+
+  _formValue = (stateKey) => {
+    return _.get(this.state.store, stateKey, '');
+  };
 };
 
 export default compose(

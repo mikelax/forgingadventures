@@ -8,8 +8,8 @@ import insertUserUpload from './userUploads';
 
 const imageTypeTransformation = {
   userProfile: 'c_fill,g_auto,w_100,h_100',
-  gameImage: 'c_fill,g_auto,w_290,h_380',
-  characterImage: 'c_fill,g_auto,w_290,h_380'
+  gameImage: 'c_fill,g_auto,w_348,h_456',
+  characterProfile: 'c_fill,g_auto,w_348,h_456'
 };
 
 export function uploadToCloudinary(file, dbUser, imageType) {
