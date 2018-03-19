@@ -20,7 +20,6 @@ import history from '../../services/history';
 import { authFailure, authSuccess } from '../../actions/auth';
 import { getMyDetails } from '../../actions/me';
 
-
 import './App.styl';
 
 class App extends Component {
