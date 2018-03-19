@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Editor } from '@tinymce/tinymce-react';
 
+import { uploadImage } from '../../../../services/image';
+
 import './assets/RichEditor.styl';
 
 export default class RichTextDisplay extends Component {
@@ -87,27 +89,12 @@ class RichTextDisplayEditor extends Component {
     onChange: PropTypes.func
   };
 
-  static blankMessage = '<p>&nbsp;</p>';
-
   render() {
     const { message } = this.props;
 
     return (
       <Editor
-        init={{
-          menubar: false,
-          branding: false,    
-          elementpath: false,
-          theme: 'modern',
-          inline:true,
-          height: 150,
-          autofocus: true,
-          init_instance_callback: this._handleInit,
-          setup: (editor) => {
-            // This prevents the blur event from hiding the toolbar
-            editor.on('blur',() => false);
-          }
-        }}
+        init={this._initEditor()}
         value={message}
         onEditorChange={this._handleOnChange}
       />
@@ -120,14 +107,6 @@ class RichTextDisplayEditor extends Component {
 
   insertHtml(html) {
     this.editor.insertContent(html);
-    // this.editorEl.focus();
-
-    // setTimeout(() => {
-    // const { CKEDITOR } = window;
-    // const el = CKEDITOR.dom.element.createFromHtml(html);
-
-    // this.editor.insertElement(el);
-    // }, 100);
   }
 
   _handleOnChange = (content) => {
@@ -138,11 +117,38 @@ class RichTextDisplayEditor extends Component {
       content,
       wordCount: (content || '').length
     });
-  }
+  };
 
   _handleInit = (editor) => {
     this.editor = editor;
-    this.editor.focus();
+  };
+
+  _initEditor = () => {
+    return {
+      menubar: false,
+      branding: false,
+      elementpath: false,
+      theme: 'modern',
+      init_instance_callback: this._handleInit,
+      images_upload_handler: (blobInfo, success, failure) => {
+        uploadImage(blobInfo.blob(), 'messageImage')
+          .then((image) => {
+            if (image) {
+              success(image.imageUrl);
+            }
+          })
+          .catch(failure);
+      },
+      plugins: [
+        'link image lists colorpicker',
+        'fullscreen media imagetools',
+        'directionality emoticons textcolor fullpage textcolor colorpicker textpattern'
+      ],
+      toolbar: 'bold italic underline | alignleft aligncenter alignright | formatselect | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image | emoticons',
+      content_css: [
+        `${window.PUBLIC_URL}/editor.css`
+      ]
+    };
   }
 
 }
