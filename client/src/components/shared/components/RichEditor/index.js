@@ -139,6 +139,7 @@ class RichTextDisplayEditor extends Component {
           })
           .catch(failure);
       },
+      block_formats: 'Paragraph=p;Header 2=h2;Header 3=h3',
       plugins: [
         'link image lists colorpicker',
         'fullscreen media imagetools',
