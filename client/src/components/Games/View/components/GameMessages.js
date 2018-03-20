@@ -6,7 +6,7 @@ import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
 import { Header,  Comment, Icon } from 'semantic-ui-react';
 
-import GameMessage from '../../components/GameMessage';
+import RichEditor from '../../../shared/components/RichEditor';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 import { quote } from '../../../../actions/gameMessage';
 
@@ -120,7 +120,7 @@ class GameMessageContainerBase extends Component {
             {this._lastEdited()}
           </Comment.Metadata>
           <Comment.Text>
-            <GameMessage message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+            <RichEditor message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
             {this._messageControls(gameMessage.user.id)}

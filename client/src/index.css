@@ -33,3 +33,7 @@ body {
   box-shadow: none;
   border: none;
 }
+
+.mce-widget.mce-notification.mce-notification-warning {
+  display:none!important;
+}

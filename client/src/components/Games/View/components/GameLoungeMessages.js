@@ -192,9 +192,9 @@ class GameLoungeMessageContainer extends Component {
   };
 
   _handleQuote = () => {
-    const { quoteLoungeMessage } = this.props;
+    const { quoteLoungeMessage, loungeMessage } = this.props;
 
-    quoteLoungeMessage(this.editor.getEditorMessage());
+    quoteLoungeMessage(loungeMessage);
   };
 
   _handleSubmit = () => {

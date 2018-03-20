@@ -4,10 +4,11 @@ import { raw } from 'objection';
 
 import GameLounge from 'models/gameLounge';
 
-import schemaScopeGate from 'services/schemaScopeGate';
-
-import { getOrCreateUserByAuth0Id } from 'services/user';
 import pubsub from 'services/pubsub';
+import schemaScopeGate from 'services/schemaScopeGate';
+import { getUser } from 'services/user';
+
+import sanitiseHtml from 'utils/sanitiseHtml';
 
 export const LOUNGE_MESSAGE_ADDED = 'lounge_message_added';
 export const LOUNGE_MESSAGE_UPDATED = 'lounge_message_updated';
@@ -18,7 +19,7 @@ export const gameLoungeTypeDefs = `
     id: ID!,
     user: User!,
     gameId: ID!,
-    message: JSON!,
+    message: String!,
     numberEdits: Int!,
     meta: String,
     updated_at: GraphQLDateTime,
@@ -27,12 +28,12 @@ export const gameLoungeTypeDefs = `
   
   input CreateGameLoungeMessageInput {
     gameId: ID!,
-    message: JSON!,
+    message: String!,
     meta: String
   }
   
   input UpdateGameLoungeMessageInput {
-    message: JSON!
+    message: String!
   }
 `;
 
@@ -47,13 +48,16 @@ export const gameLoungeResolvers = {
   Mutation: {
     createGameLoungeMessage: (obj, { input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
-        return getOrCreateUserByAuth0Id(context.req.user.sub)
+        return getUser(context.req.user.sub)
           .then((user) => {
-            input.userId = user.id;
+            const payload = _.merge({}, input, {
+              userId: user.id,
+              message: sanitiseHtml(input.message)
+            });
 
             return GameLounge
               .query()
-              .insert(input)
+              .insert(payload)
               .returning('*')
               .execute()
               .tap((loungeMessage) => {
@@ -65,26 +69,25 @@ export const gameLoungeResolvers = {
       }),
     updateGameLoungeMessage: (obj, { id, input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
-        return getOrCreateUserByAuth0Id(context.req.user.sub)
+        return getUser(context.req.user.sub)
           .then((user) => {
             return GameLounge
               .query()
-              .count('*')
-              .where('id', id)
-              .where('userId', user.id) // May refactor to consider allowing admin or GM to edit
-              .first()
-              .execute();
+              .where({
+                id,
+                userId: user.id
+              })
+              .first();
           })
-          .then((rowCount) => {
-            // In PG count returns as String from knex
-            if (_.eq(rowCount.count, '1')) {
+          .then((gameLounge) => {
+            if (gameLounge) {
               return GameLounge
                 .query()
                 .patch({
-                  message: input.message,
+                  message: sanitiseHtml(input.message),
                   numberEdits: raw('"numberEdits" + 1')
                 })
-                .where('id', id)
+                .where('id', gameLounge.id)
                 .first()
                 .returning('*')
                 .execute()

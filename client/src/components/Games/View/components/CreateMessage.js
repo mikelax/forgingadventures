@@ -5,8 +5,7 @@ import { Form, Button } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
-
-import GameMessage from '../../components/GameMessage';
+import RichEditor from '../../../shared/components/RichEditor';
 
 import { createGameMessageMutation } from '../../queries';
 
@@ -30,7 +29,7 @@ class CreateMessage extends Component {
         <Form>
           <Form.Field>
             <label>Add Message</label>
-            <GameMessage ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
+            <RichEditor ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
           </Form.Field>
 
           <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
