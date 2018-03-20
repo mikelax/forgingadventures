@@ -143,9 +143,9 @@ class RichTextDisplayEditor extends Component {
       plugins: [
         'link image lists colorpicker',
         'fullscreen media imagetools',
-        'directionality emoticons textcolor fullpage textcolor colorpicker textpattern'
+        'directionality textcolor fullpage textcolor colorpicker textpattern'
       ],
-      toolbar: 'bold italic underline | alignleft aligncenter alignright | formatselect | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image | emoticons',
+      toolbar: 'bold italic underline | alignleft aligncenter alignright | formatselect | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image',
       content_css: [
         `${window.PUBLIC_URL}/editor.css`
       ]
