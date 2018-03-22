@@ -97,7 +97,7 @@ class RightMenuItemsBase extends Component {
           </Dropdown.Menu>
         </Dropdown>
       </Menu.Item>
-    )
+    );
 
     const loggedInMenu = (
       <Menu.Item>
