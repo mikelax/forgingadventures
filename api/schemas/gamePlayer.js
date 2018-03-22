@@ -37,7 +37,7 @@ export const gamePlayerResolvers = {
     character: (gamePlayer, vars, context) => gamePlayer.characterId &&
       context.loaders.characters.load(gamePlayer.characterId),
     user: (gamePlayer, vars, context) => context.loaders.users.load(gamePlayer.userId),
-    game: gamePlayer => Game.query().findById(gamePlayer.gameId)
+    game: (gamePlayer, vars, context) => context.loaders.games.load(gamePlayer.gameId)
   },
   Query: {
     gamePlayer: (obj, { id }) => GamePlayer.query().findById(id),
