@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { compose } from 'recompose';
 import { Card, Container, Header, Icon, Image, Label, Menu, Tab } from 'semantic-ui-react';
 
@@ -84,12 +85,26 @@ function charactersBase(props) {
     <Tab.Pane loading={loading}>
       <Card.Group stackable={true} itemsPerRow={3}>
         {_.map(myCharacters, (character) => (
-          <Card key={character.id}>
-            <Image src={_.get(character, 'profileImage.url')}
-              label={{ as: 'a', color: 'red', content: character.label.shortName, ribbon: true }}
-            />
+          <Card key={character.id} link>
+            <Link to={`/characters/${character.id}/edit`}>
+              <Image src={_.get(character, 'profileImage.url')}
+                label={{ as: 'a', color: 'red', content: character.label.shortName, ribbon: true }}
+              />
+            </Link>
             <Card.Content>
-              <Card.Header>{character.name}</Card.Header>
+              <Card.Header>
+                <Link to={`/characters/${character.id}/edit`}>{character.name}</Link>
+              </Card.Header>
+            </Card.Content>
+            <Card.Content extra>
+              <Icon name='comments' />
+              { character.activeGamePlayer &&
+                  <Link to={`/games/${character.activeGamePlayer.game.id}`}>{character.activeGamePlayer.game.title}</Link>
+              }
+              {
+                !character.activeGamePlayer &&
+                  'Not in Game'
+              }
             </Card.Content>
           </Card>
         ))}

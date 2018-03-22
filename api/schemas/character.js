@@ -11,6 +11,8 @@ export const characterTypeDefs = `
     profileImage: ProfileImage,
     user: User!,
     label: GameLabel!,
+    gamePlayer: [GamePlayer],
+    activeGamePlayer: GamePlayer,
     updated_at: GraphQLDateTime,
     created_at: GraphQLDateTime
   }
@@ -30,7 +32,17 @@ export const characterTypeDefs = `
 
 export const characterResolvers = {
   Character: {
-    label: (character, vars, context) => context.loaders.gameLabels.load(character.labelId)
+    label: (character, vars, context) => context.loaders.gameLabels.load(character.labelId),
+    gamePlayer: (character) => {
+      return GamePlayer.query()
+        .where({ characterId: character.id });
+    },
+    activeGamePlayer: (character) => {
+      return GamePlayer.query()
+        .whereIn('status', ['pending', 'accepted'])
+        .where({ characterId: character.id })
+        .first();
+    }
   },
   Query: {
     availableCharacters: (obj, { gameId }, context) => {

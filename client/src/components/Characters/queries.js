@@ -19,6 +19,13 @@ export const characterFields = `
 export const myCharactersQuery = gql`
   query myCharacters {
     myCharacters {
+        activeGamePlayer {
+          status
+          game {
+            id
+            title
+          }
+        }
       ...characterFields
     }
   }
