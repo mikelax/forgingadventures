@@ -88,6 +88,17 @@ class RightMenuItemsBase extends Component {
     const { authorisation: { isAuthenticated }, logout } = this.props;
     const meLoading = _.get(this.props, 'me.loading');
 
+    const createNewMenu = (
+      <Menu.Item>
+        <Dropdown icon='add'>
+          <Dropdown.Menu>
+            <Menu.Item as={NavLink} name="New Character" icon='users' to="/characters/create" />
+            <Menu.Item as={NavLink} name="New Game" icon='comments' to="/games/create" />
+          </Dropdown.Menu>
+        </Dropdown>
+      </Menu.Item>
+    )
+
     const loggedInMenu = (
       <Menu.Item>
         <Dropdown trigger={this._userLogo()} loading={meLoading}>
@@ -105,6 +116,9 @@ class RightMenuItemsBase extends Component {
       <React.Fragment>
         {
           !(isAuthenticated) && <Menu.Item as={Link} name="Login" to="/login"/>
+        }
+        {
+          isAuthenticated && createNewMenu
         }
         {
           isAuthenticated && loggedInMenu
@@ -163,5 +177,3 @@ export default class Header extends Component {
     );
   }
 }
-
-

@@ -16,6 +16,14 @@ export const characterFields = `
   }
 `;
 
+// Character {
+//   gamePlayer {
+//     game {
+//       id
+//       title
+//     }
+//   }
+// }
 export const myCharactersQuery = gql`
   query myCharacters {
     myCharacters {
