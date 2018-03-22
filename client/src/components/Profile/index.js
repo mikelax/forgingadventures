@@ -97,7 +97,14 @@ function charactersBase(props) {
               </Card.Header>
             </Card.Content>
             <Card.Content extra>
-              Current Game Title or Available
+              <Icon name='comments' />
+              { character.activeGamePlayer &&
+                  <Link to={`/games/${character.activeGamePlayer.game.id}`}>{character.activeGamePlayer.game.title}</Link>
+              }
+              {
+                !character.activeGamePlayer &&
+                  'Not in Game'
+              }
             </Card.Content>
           </Card>
         ))}
