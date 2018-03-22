@@ -2,9 +2,11 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { compose, pure } from 'recompose';
-import { Button, Header, Image, Menu, Popup, Icon, Table } from 'semantic-ui-react';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import { Button, Header, Image, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-react';
 
+import CharactersSelect from '../../../shared/components/CharactersSelect';
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
 import ApolloLoader from '../../../shared/components/ApolloLoader';
 import { getFullImageUrl } from '../../../../services/image';
@@ -18,8 +20,13 @@ class GamePlayers extends Component {
     status: PropTypes.array
   };
 
+  state = {
+    characterModal: false
+  };
+
   render() {
-    const { data: { gamePlayers }, myGamePlayer } = this.props;
+    const { data: { gamePlayers }, myGamePlayer, me } = this.props;
+    const { characterModal } = this.state;
     // INFO using _.some here as myGamePlayer returns an array for future proofing
     // ie. in case user has multiple characters in single game
     const isGm = _.some(myGamePlayer.myGamePlayer, ['status', 'game-master']);
@@ -36,33 +43,39 @@ class GamePlayers extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {_.map(gamePlayers, (player) => (
-              <Table.Row key={player.id}>
+            {_.map(gamePlayers, (gamePlayer) => (
+              <Table.Row key={gamePlayer.id}>
                 <Table.Cell>
                   <Header as='h3' image>
-                    <Image avatar src={_.get(player, 'user.profileImage.url')} />
+                    <Image avatar src={_.get(gamePlayer, 'user.profileImage.url')} />
                     <Header.Content>
-                        {player.user.name}
-                      <Header.Subheader>{player.user.timezone}</Header.Subheader>
+                        {gamePlayer.user.name}
+                      <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
                     </Header.Content>
                   </Header>
                 </Table.Cell>
                 <Table.Cell>
-                  {this._characterCell(player)}
+                  {this._characterCell(gamePlayer)}
                 </Table.Cell>
                 <Table.Cell>
-                  { player.status === 'accepted' ? <Icon name='checkmark' /> : null }
-                  {_.startCase(player.status)}
+                  { gamePlayer.status === 'accepted' ? <Icon name='checkmark' /> : null }
+                  {_.startCase(gamePlayer.status)}
                 </Table.Cell>
                 <Table.Cell>
-                  { isGm ? this._gmActions(player.id, player.status) : null }
-                  { !isGm && _.some(myGamePlayer.myGamePlayer, (gp) => gp.user.id === player.user.id)
-                      ? this._playerOptions(player.id) : null }
+                  { isGm ? this._gmActions(gamePlayer.id, gamePlayer.status) : null }
+                  { !isGm && gamePlayer.user.id === _.get(me, 'me.id')
+                      ? this._playerOptions(gamePlayer) : null }
                 </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
         </Table>
+
+        <SelectCharacterModal
+          open={characterModal}
+          onSelectedCharacter={this._updatePlayerCharacter}
+          onClose={this._closeSelectCharacterModal}
+        />
       </div>
     );
   }
@@ -102,7 +115,9 @@ class GamePlayers extends Component {
     }
   };
 
-  _playerOptions = (playerId) => {
+  _playerOptions = (gamePlayer) => {
+    const { character, id: playerId } = gamePlayer;
+
     return (
         <Popup
           trigger={<Button icon><Icon name="setting" /></Button>}
@@ -114,25 +129,49 @@ class GamePlayers extends Component {
               <Icon name="remove" />
               Leave Game
             </Menu.Item>
+            {
+              _.isEmpty(character) && (
+                <Menu.Item onClick={this._selectCharacter}>
+                  <Icon name="add" />
+                  Select a Character
+                </Menu.Item>
+              )
+            }
           </Menu>
         </Popup>
     );
   };
 
   _characterCell = (player) => {
-    const publicId = _.get(player, 'character.profileImage.publicId');
+    const { character } = player;
+    const publicId = _.get(character, 'profileImage.publicId');
     const imageUrl = getFullImageUrl(publicId, 'profileImage');
-    const name = _.get(player, 'character.name');
+    const name = _.get(character, 'name');
+    const playerUserId = _.get(player, 'user.id');
+    const currentUserId = _.get(this.props, 'me.me.id');
+    const needsCharacter = _.isEmpty(character) && (playerUserId === currentUserId);
 
     if (player.status === 'game-master') {
       return <Header as='h3' content='N/A' />;
     } else if (player.character === null) {
-      return <Header as='h3' icon='warning' content='Still working on it' />;
+      return (
+        <React.Fragment>
+          <Header as='h3'>
+            {
+              needsCharacter && <Button as="a" href="/characters/create" size="mini" floated="right">Create Character</Button>
+            }
+            <span>
+              <Icon name="warning" />
+              Still working on it
+            </span>
+          </Header>
+        </React.Fragment>
+      );
     } else {
       return (
         <Header as='h3' image>
           {
-            imageUrl ? <Image avatar src={imageUrl} /> : 
+            imageUrl ? <Image avatar src={imageUrl} /> :
               <Icon size='big' name='user circle' />
           }
           <Header.Content>
@@ -141,10 +180,10 @@ class GamePlayers extends Component {
         </Header>
       );
     }
-  }
+  };
 
   _updatePlayerStatus = (playerId, status) => {
-    return (e) => {
+    return () => {
       const { gameId, updateGamePlayer } = this.props;
       const originalStatus = this.props.status;
 
@@ -162,7 +201,94 @@ class GamePlayers extends Component {
       });
     };
   };
+
+  _updatePlayerCharacter = (characterId) => {
+    const { gameId, updateGamePlayer, status, me } = this.props;
+    const playerId = _.get(me, 'me.id');
+
+    return updateGamePlayer({
+      variables: {
+        id: playerId,
+        input: {
+          characterId
+        }
+      },
+      refetchQueries: [{
+        query: gamePlayersQuery,
+        variables: { gameId, status: status }
+      }]
+    });
+  };
+
+  _selectCharacter = () => {
+    this.setState({ characterModal: true });
+  };
+
+  _closeSelectCharacterModal = () => {
+    this.setState({ characterModal: false });
+  };
 }
+
+class SelectCharacterModal extends Component {
+
+  static propTypes = {
+    open: PropTypes.bool,
+    onSelectedCharacter: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired
+  };
+
+  state = {
+    characterId: null
+  };
+
+  render() {
+    const { open } = this.props;
+
+    return (
+      <Modal
+        open={open}
+        onClose={this._onClose}
+        basic
+        size='mini'
+      >
+        <Modal.Header>
+          Select a Character for this Game
+        </Modal.Header>
+        <Modal.Content>
+          <CharactersSelect
+            value={this.state.characterId}
+            onChange={this._selectCharacter}
+          />
+        </Modal.Content>
+        <Modal.Actions>
+          <Button positive onClick={this._onSelect} icon='checkmark' labelPosition='right' content='Select' />
+          <Button icon='close' labelPosition='right' content='Cancel' />
+        </Modal.Actions>
+      </Modal>
+    );
+  }
+
+  _onSelect = () => {
+    const { onSelectedCharacter, onClose } = this.props;
+
+    onSelectedCharacter(this.state.characterId);
+    onClose();
+  };
+
+  _onClose = () => {
+    this.props.onClose();
+  };
+
+  _selectCharacter = (character) => {
+    const value = _.get(character, 'value', null);
+    this.setState({ characterId: value });
+  };
+}
+
+const mapStateToProps = state => ({
+  me: state.me
+});
+
 
 export default compose(
   graphql(myGamePlayerQuery, {
@@ -175,6 +301,6 @@ export default compose(
   graphql(updateGamePlayerMutation, {
     name: 'updateGamePlayer'
   }),
+  connect(mapStateToProps),
   ApolloLoader,
-  pure,
 )(GamePlayers);

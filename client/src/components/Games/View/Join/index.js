@@ -7,7 +7,7 @@ import { compose } from 'recompose';
 
 import RichEditor from '../../../shared/components/RichEditor';
 import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
-import CharactersSelect from '../../../Characters/components/CharactersSelect';
+import CharactersSelect from '../../../shared/components/CharactersSelect';
 
 const JoinGame = class JoinGame extends Component {
 
@@ -48,8 +48,8 @@ const JoinGame = class JoinGame extends Component {
 
 
             <div>
-              <Button primary onClick={this._submit} 
-                disabled={saving || !(hasContent)} 
+              <Button primary onClick={this._submit}
+                disabled={saving || !(hasContent)}
                 loading={saving}>
                 Join Game
               </Button>
@@ -109,7 +109,7 @@ const JoinGame = class JoinGame extends Component {
         })
         .then(() => this.setState({ saving: false }))
         .then(() => history.replace(`/games/${id}`));
-        
+
     }
   };
 
