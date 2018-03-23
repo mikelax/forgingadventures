@@ -248,7 +248,6 @@ class SelectCharacterModal extends Component {
       <Modal
         open={open}
         onClose={this._onClose}
-        basic
         size='mini'
       >
         <Modal.Header>
@@ -261,8 +260,8 @@ class SelectCharacterModal extends Component {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button positive onClick={this._onSelect} icon='checkmark' labelPosition='right' content='Select' />
-          <Button icon='close' labelPosition='right' content='Cancel' />
+          <Button onClick={this._onClose} content='Cancel' />
+          <Button primary onClick={this._onSelect} icon='checkmark' labelPosition='right' content='Select' />
         </Modal.Actions>
       </Modal>
     );
