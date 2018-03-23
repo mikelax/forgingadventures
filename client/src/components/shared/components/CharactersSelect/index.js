@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { compose } from 'recompose';
 import { Form, Image, Item, Label, Message } from 'semantic-ui-react';
 
-import { availableCharactersQuery } from '../../queries';
+import { availableCharactersQuery } from '../../../Characters/queries';
 import { getFullImageUrl } from '../../../../services/image';
 
 class CharactersSelect extends Component {

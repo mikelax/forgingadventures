@@ -26,7 +26,7 @@ export const gamePlayerTypeDefs = `
   }
   
   input UpdateGamePlayerInput {
-    status: String!,
+    status: String,
     characterId: Int
   }
 `;
@@ -86,9 +86,7 @@ export const gamePlayerResolvers = {
 
             return GamePlayer
               .query()
-              .patch({
-                status: input.status
-              })
+              .patch(input)
               .where('id', id)
               .first()
               .returning('*')
