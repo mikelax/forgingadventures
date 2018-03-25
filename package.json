@@ -11,7 +11,9 @@
   "scripts": {
     "start": "./node_modules/.bin/concurrently \"yarn server\" \"yarn client\"",
     "server": "cd api && yarn start",
-    "client": "cd client && yarn start"
+    "client": "cd client && yarn start",
+    "cfn-upload": "aws --profile forgingadventures s3 sync infrastructure/ s3://forgingadventures-resources/cfn-templates/ --delete",
+    "cfn-update-global": "aws --profile forgingadventures cloudformation update-stack --stack-name forgingadventures-global --region us-east-1 --capabilities CAPABILITY_NAMED_IAM --template-url https://s3.amazonaws.com/forgingadventures-resources/cfn-templates/global.yml"
   },
   "dependencies": {
     "concurrently": "^3.5.0"
