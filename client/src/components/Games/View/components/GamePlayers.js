@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Button, Header, Image, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-react';
 
 import CharactersSelect from '../../../shared/components/CharactersSelect';
@@ -83,7 +84,23 @@ class GamePlayers extends Component {
   ////// private
 
   _gmActions = (playerId, playerStatus) => {
-    if (playerStatus === 'pending') {
+    const gameId = this.props.gameId;
+
+    if (playerStatus === 'game-master') {
+      return (
+        <Popup
+          trigger={<Button icon><Icon name="setting" /></Button>}
+          flowing
+          hoverable
+        >
+          <Menu vertical compact size="tiny">
+            <Menu.Item as={Link} link to={`/games/${gameId}/edit`}>
+              Edit Game <Icon name="edit" />
+            </Menu.Item>
+          </Menu>
+        </Popup>
+      );
+    } else if (playerStatus === 'pending') {
       return (
         <Popup
           trigger={<Button icon><Icon name="setting" /></Button>}
@@ -203,7 +220,7 @@ class GamePlayers extends Component {
   };
 
   _updatePlayerCharacter = (characterId) => {
-    const { gameId, updateGamePlayer, status, me } = this.props;
+    const { gameId, updateGamePlayer, status } = this.props;
     const playerId = this.state.modalPlayerId;
 
     return updateGamePlayer({
