@@ -131,7 +131,7 @@ class GamePlayers extends Component {
             </Menu.Item>
             {
               _.isEmpty(character) && (
-                <Menu.Item onClick={this._selectCharacter}>
+                <Menu.Item onClick={this._selectCharacter(playerId)}>
                   <Icon name="add" />
                   Select a Character
                 </Menu.Item>
@@ -204,7 +204,7 @@ class GamePlayers extends Component {
 
   _updatePlayerCharacter = (characterId) => {
     const { gameId, updateGamePlayer, status, me } = this.props;
-    const playerId = _.get(me, 'me.id');
+    const playerId = this.state.modalPlayerId;
 
     return updateGamePlayer({
       variables: {
@@ -220,12 +220,20 @@ class GamePlayers extends Component {
     });
   };
 
-  _selectCharacter = () => {
-    this.setState({ characterModal: true });
+  _selectCharacter = (playerId) => {
+    return () => {
+      this.setState({
+        characterModal: true,
+        modalPlayerId: playerId
+      });
+    };
   };
 
   _closeSelectCharacterModal = () => {
-    this.setState({ characterModal: false });
+    this.setState({
+      characterModal: false,
+      modalPlayerId: null
+    });
   };
 }
 

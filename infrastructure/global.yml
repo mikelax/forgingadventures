@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Resources:
   S3UserUploads:
     Type: AWS::S3::Bucket
-    Properties: 
+    Properties:
       BucketName: forgingadventures-user-uploads
       Tags:
         -
@@ -31,11 +31,15 @@ Resources:
               - s3:GetObject
             Resource: "arn:aws:s3:::forgingadventures-user-uploads/*"
 
-
   ApiRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: api
+      RepositoryName: forgingadventures-api
+
+  ClientRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: forgingadventures-client
 
 Outputs:
   UserUploadsBucket:
@@ -43,5 +47,13 @@ Outputs:
     Value: !Ref S3UserUploads
 
   ApiRepository:
-    Description: api ECS Repository
+    Description: FA api ECS Repository
     Value: !Ref ApiRepository
+    Export:
+      Name: !Sub "ecr:FAApiRepository"
+
+  ClientRepository:
+    Description: FA client ECS Repository
+    Value: !Ref ClientRepository
+    Export:
+      Name: !Sub "ecr:FAClientRepository"

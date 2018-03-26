@@ -24,11 +24,9 @@ Resources:
       Subnets: !Ref VpcSubnetList
       Type: "application"
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
   ElbTargetGroup:
@@ -36,37 +34,65 @@ Resources:
     Properties:
       HealthCheckIntervalSeconds: 30
       HealthCheckPath: "/"
-      HealthCheckPort: 80
-      HealthCheckProtocol: "HTTP"
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
-      HealthyThresholdCount: 6
+      HealthyThresholdCount: 4
       UnhealthyThresholdCount: 3
       Port: 80
-      Protocol: "HTTP"
+      Protocol: HTTP
       VpcId: !Ref VpcId
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 15
+      TargetType: ip
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
+        - Key: StackName
+          Value: !Ref AWS::StackName
 
   ElbHttpListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-        -
-          TargetGroupArn: !Ref ElbTargetGroup
+        - TargetGroupArn: !Ref ElbTargetGroup
           Type: "forward"
       LoadBalancerArn: !Ref Elb
       Port: 80
       Protocol: "HTTP"
 
+  EcsTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs-tasks.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  ApiCloudwatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/api"
+      RetentionInDays: 14
+
+  ClientCloudwatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/client"
+      RetentionInDays: 14
+
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: !Join [ "-", [ forgingadventures, !Ref Environment ] ]
+      ClusterName: !Sub "forgingadventures-${Environment}"
 
 
 Outputs:
