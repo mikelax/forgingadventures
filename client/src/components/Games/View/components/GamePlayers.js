@@ -44,38 +44,41 @@ class GamePlayers extends Component {
           </Table.Header>
           <Table.Body>
             {_.map(gamePlayers, (gamePlayer) => (
-              <Table.Row key={gamePlayer.id}>
-                <Table.Cell>
-                  <Header as='h3' image>
-                    <Image avatar src={_.get(gamePlayer, 'user.profileImage.url')} />
-                    <Header.Content>
+              <React.Fragment key={gamePlayer.id}>
+                <Table.Row>
+                  <Table.Cell>
+                    <Header as='h3' image>
+                      <Image avatar src={_.get(gamePlayer, 'user.profileImage.url')} />
+                      <Header.Content>
                         {gamePlayer.user.name}
-                      <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
-                    </Header.Content>
-                  </Header>
-                </Table.Cell>
-                <Table.Cell>
-                  {this._characterCell(gamePlayer)}
-                </Table.Cell>
-                <Table.Cell>
-                  { gamePlayer.status === 'accepted' ? <Icon name='checkmark' /> : null }
-                  {_.startCase(gamePlayer.status)}
-                </Table.Cell>
-                <Table.Cell>
-                  { isGm ? this._gmActions(gamePlayer.id, gamePlayer.status) : null }
-                  { !isGm && gamePlayer.user.id === _.get(me, 'me.id')
+                        <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
+                      </Header.Content>
+                    </Header>
+                  </Table.Cell>
+                  <Table.Cell>
+                    {this._characterCell(gamePlayer)}
+                  </Table.Cell>
+                  <Table.Cell>
+                    { gamePlayer.status === 'accepted' ? <Icon name='checkmark' /> : null }
+                    {_.startCase(gamePlayer.status)}
+                  </Table.Cell>
+                  <Table.Cell>
+                    { isGm ? this._gmActions(gamePlayer.id, gamePlayer.status) : null }
+                    { !isGm && gamePlayer.user.id === _.get(me, 'me.id')
                       ? this._playerOptions(gamePlayer) : null }
-                </Table.Cell>
-              </Table.Row>
+                  </Table.Cell>
+                </Table.Row>
+
+                <SelectCharacterModal
+                  open={characterModal}
+                  gamePlayer={gamePlayer}
+                  onSelectedCharacter={this._updatePlayerCharacter}
+                  onClose={this._closeSelectCharacterModal}
+                />
+              </React.Fragment>
             ))}
           </Table.Body>
         </Table>
-
-        <SelectCharacterModal
-          open={characterModal}
-          onSelectedCharacter={this._updatePlayerCharacter}
-          onClose={this._closeSelectCharacterModal}
-        />
       </div>
     );
   }
@@ -202,9 +205,9 @@ class GamePlayers extends Component {
     };
   };
 
-  _updatePlayerCharacter = (characterId) => {
-    const { gameId, updateGamePlayer, status, me } = this.props;
-    const playerId = this.state.modalPlayerId;
+  _updatePlayerCharacter = (characterId, gamePlayer) => {
+    const { gameId, updateGamePlayer, status } = this.props;
+    const { id: playerId } = gamePlayer;
 
     return updateGamePlayer({
       variables: {
@@ -223,16 +226,14 @@ class GamePlayers extends Component {
   _selectCharacter = (playerId) => {
     return () => {
       this.setState({
-        characterModal: true,
-        modalPlayerId: playerId
+        characterModal: true
       });
     };
   };
 
   _closeSelectCharacterModal = () => {
     this.setState({
-      characterModal: false,
-      modalPlayerId: null
+      characterModal: false
     });
   };
 }
@@ -241,6 +242,7 @@ class SelectCharacterModal extends Component {
 
   static propTypes = {
     open: PropTypes.bool,
+    gamePlayer: PropTypes.object.isRequired,
     onSelectedCharacter: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired
   };
@@ -276,9 +278,9 @@ class SelectCharacterModal extends Component {
   }
 
   _onSelect = () => {
-    const { onSelectedCharacter, onClose } = this.props;
+    const { gamePlayer, onSelectedCharacter, onClose } = this.props;
 
-    onSelectedCharacter(this.state.characterId);
+    onSelectedCharacter(this.state.characterId, gamePlayer);
     onClose();
   };
 
