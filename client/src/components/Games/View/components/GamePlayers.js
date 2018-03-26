@@ -242,6 +242,7 @@ class SelectCharacterModal extends Component {
 
   static propTypes = {
     open: PropTypes.bool,
+    gamePlayer: PropTypes.object.isRequired,
     onSelectedCharacter: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired
   };
