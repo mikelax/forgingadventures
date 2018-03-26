@@ -6,6 +6,7 @@ import GamePlayer from 'models/gamePlayer';
 import schemaScopeGate from 'services/schemaScopeGate';
 import GetGames from 'services/games/getGames';
 import { getUser, runIfContextHasUser } from 'services/user';
+import sanitiseHtml from 'utils/sanitiseHtml';
 
 import serviceExecutor from 'utils/serviceExecutor';
 
@@ -94,12 +95,13 @@ export const gameResolvers = {
           .then((user) => {
             return Game
               .query()
-              .insert(_.merge({}, {
+              .insert(_.merge({}, input, {
                 userId: user.id,
                 gameSettings: {
                   gameStatus: 1
-                }
-              }, input))
+                },
+                overview: sanitiseHtml(input.overview)
+              }))
               .returning('*');
           })
           .tap((gameResponse) => {
@@ -124,11 +126,12 @@ export const gameResolvers = {
             .first()
             .then((game) => {
               if (game) {
-                const payload = _.merge({}, {
+                const payload = _.merge({}, input, {
                   gameSettings: {
                     gameStatus: game.gameSettings.gameStatus
-                  }
-                }, input);
+                  },
+                  overview: sanitiseHtml(input.overview)
+                });
 
                 return Game
                   .query()

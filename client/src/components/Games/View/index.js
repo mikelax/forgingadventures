@@ -108,7 +108,7 @@ function gameDetails() {
       <Header as='h2' dividing>
         Overview
         <Header.Subheader>
-          {game.overview}
+          <div dangerouslySetInnerHTML={{ __html: game.overview }} />
         </Header.Subheader>
       </Header>
 
