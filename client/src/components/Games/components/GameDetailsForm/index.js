@@ -10,6 +10,7 @@ import { createGameMutation } from '../../queries';
 import { skillLevels, postingFrequencies } from '../../utils/gameSettings';
 import GameLabelsSelect from '../GameLabelsSelect';
 import { uploadImage } from '../../../../services/image';
+import RichEditor from '../../../shared/components/RichEditor';
 
 class GameDetailsForm extends Component {
 
@@ -80,7 +81,7 @@ class GameDetailsForm extends Component {
 
           <Form.Field required>
             <label className="top">Scenario</label>
-            <Form.TextArea
+            <Form.Input
               error={this._validity('scenario')}
               value={this._formValue('scenario')}
               placeholder="Enter Scenario"
@@ -90,11 +91,11 @@ class GameDetailsForm extends Component {
 
           <Form.Field required>
             <label className="top">Overview</label>
-            <Form.TextArea
+            <Form.Field
+              as={RichEditor}
               error={this._validity('overview')}
-              value={this._formValue('overview')}
-              placeholder="Enter Overview"
-              onChange={this._formInput('overview')}
+              message={this._formValue('overview')}
+              onChange={this._handleOverview}
             />
           </Form.Field>
 
@@ -218,6 +219,13 @@ class GameDetailsForm extends Component {
       _.set(store, stateKey, e.target.value);
       this.setState({ ...this.state, store });
     };
+  };
+
+  _handleOverview = (message) => {
+    const { store } = this.state;
+
+    _.set(store, 'overview', message.content);
+    this.setState({ ...this.state, store });
   };
 
   _formValue = (stateKey) => {

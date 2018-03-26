@@ -31,7 +31,7 @@ export default class GameCard extends Component {
             {game.scenario}
           </Card.Meta>
           <Card.Description>
-            {game.overview}
+            <div dangerouslySetInnerHTML={{ __html: game.overview }} />
           </Card.Description>
         </Card.Content>
         <Card.Content extra>

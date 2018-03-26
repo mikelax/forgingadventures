@@ -67,7 +67,8 @@ export default class RichTextDisplay extends Component {
 
     if (_.isFunction(onChange)) {
       onChange({
-        hasContent: meta.wordCount > 0
+        hasContent: meta.wordCount > 0,
+        content: meta.content
       });
     }
 
@@ -90,12 +91,9 @@ class RichTextDisplayEditor extends Component {
   };
 
   render() {
-    const { message } = this.props;
-
     return (
       <Editor
         init={this._initEditor()}
-        value={message}
         onEditorChange={this._handleOnChange}
       />
     );
@@ -110,7 +108,6 @@ class RichTextDisplayEditor extends Component {
   }
 
   _handleOnChange = (content) => {
-    console.log('content', content);
     const { onChange } = this.props;
 
     onChange({
@@ -120,7 +117,10 @@ class RichTextDisplayEditor extends Component {
   };
 
   _handleInit = (editor) => {
+    const { message } = this.props;
+
     this.editor = editor;
+    this.editor.setContent(message || '');
   };
 
   _initEditor = () => {
@@ -143,7 +143,7 @@ class RichTextDisplayEditor extends Component {
       plugins: [
         'link image lists colorpicker',
         'fullscreen media imagetools',
-        'directionality textcolor fullpage textcolor colorpicker textpattern'
+        'directionality textcolor textcolor colorpicker textpattern'
       ],
       toolbar: 'bold italic underline | alignleft aligncenter alignright | formatselect | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image',
       content_css: [
