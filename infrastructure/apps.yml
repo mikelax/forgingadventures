@@ -64,36 +64,16 @@ Resources:
       Port: 80
       Protocol: "HTTP"
 
-  EcsTaskExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: [ecs-tasks.amazonaws.com]
-            Action: ['sts:AssumeRole']
-      Path: /
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-
   ApiCloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/api"
       RetentionInDays: 14
 
-  ClientCloudwatchLogsGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/client"
-      RetentionInDays: 14
-
   Cluster:
     Type: AWS::ECS::Cluster
-    Properties:
-      ClusterName: !Sub "forgingadventures-${Environment}"
-
+      Properties:
+        ClusterName: !Sub "forgingadventures-${Environment}"
 
 Outputs:
   ElbId:
@@ -102,7 +82,6 @@ Outputs:
   ElbUrl:
     Description: "App Load Balancer URL for the cluster"
     Value: !Join [ "", [ "http://", !GetAtt Elb.DNSName ] ]
-
-  ClusterName:
-    Description: The ECS Cluster Name
-    Value: !Ref Cluster
+  ElbTargetGroup:
+    Description: Client Target Group
+    Value: !Ref ElbTargetGroup
