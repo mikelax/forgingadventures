@@ -7,11 +7,11 @@
     },
     {
       "ParameterKey": "VpcSubnetList",
-      "ParameterValue": "subnet-3b24344d,subnet-56dbf90e"
+      "ParameterValue": "subnet-f17179de,subnet-fd2fce9a"
     },
     {
       "ParameterKey": "VpcSecurityGroupList",
-      "ParameterValue": "sg-93050ff7"
+      "ParameterValue": "sg-f111e3b8"
     },
     {
       "ParameterKey": "ClusterName",
@@ -19,23 +19,11 @@
     },
     {
       "ParameterKey": "ContainerImage",
-      "ParameterValue": "044671781443.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:37"
-    },
-    {
-      "ParameterKey": "VpcId",
-      "ParameterValue": "vpc-ddead1b8"
-    },
-    {
-      "ParameterKey": "HttpListenerArn",
-      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:044671781443:listener/app/test-Elbv2-1NPOA23TUXKPD/5845747d1e0cd430/de5bd65a2f0283b7"
-    },
-    {
-      "ParameterKey": "HttpsListenerArn",
-      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:044671781443:listener/app/test-Elbv2-1NPOA23TUXKPD/5845747d1e0cd430/b448b2af741f0b6c"
+      "ParameterValue": "466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:ea7c2f6"
     },
     {
       "ParameterKey": "ElbTargetGroup",
-      "ParameterValue": "arn:aws:xxx"
+      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:466853810010:targetgroup/forgi-ElbTa-JG19P4QMMNZ5/5ccff1b7b1be9528"
     },
     {
       "ParameterKey": "DesiredTaskCount",

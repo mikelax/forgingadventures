@@ -39,7 +39,7 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 4
       UnhealthyThresholdCount: 3
-      Port: 80
+      Port: 3000
       Protocol: HTTP
       VpcId: !Ref VpcId
       TargetGroupAttributes:
@@ -64,18 +64,18 @@ Resources:
       Port: 80
       Protocol: "HTTP"
 
-  ApiCloudwatchLogsGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/api"
-      RetentionInDays: 14
-
   Cluster:
     Type: AWS::ECS::Cluster
-      Properties:
-        ClusterName: !Sub "forgingadventures-${Environment}"
+    Properties:
+      ClusterName: !Sub "forgingadventures-${Environment}"
 
 Outputs:
+  ClusterName:
+    Description: The ECS Cluster Name
+    Value: !Ref Cluster
+  ElbHttpListenerArn:
+    Description: HTTP Listener ARN
+    Value: !Ref ElbHttpListener
   ElbId:
     Description: "App Load Balancer Id"
     Value: !Ref Elb

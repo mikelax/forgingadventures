@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: Forging Adventures VPC, Subnets, etc
 
 Parameters:
   Environment:
@@ -8,89 +9,182 @@ Parameters:
   VpcCidrBlock:
     Type: String
     Description: VPC CIDR block
-    Default: 10.0.0.0/16
+    Default: 10.10.0.0/16
 
 Resources:
   VPC:
     Type: AWS::EC2::VPC
-    Properties: 
+    Properties:
       CidrBlock: !Ref VpcCidrBlock
       EnableDnsSupport: true
       EnableDnsHostnames: true
       InstanceTenancy: default
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
-  Subnet1:
+  PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: us-east-1a
-      CidrBlock: 10.0.0.0/24
+      CidrBlock: 10.10.0.0/24
       VpcId: !Ref VPC
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
-  Subnet2:
+  PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: us-east-1d
-      CidrBlock: 10.0.1.0/24
+      CidrBlock: 10.10.1.0/24
       VpcId: !Ref VPC
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
+  PublicSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  PublicSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
-  RouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties: 
-      VpcId: !Ref VPC
-      Tags:
-        -
-          Key: Environment
-          Value: !Ref Environment
-        -
-          Key: Name
-          Value: forgingadventures
-  Route:
+  PublicRoute:
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
-    Properties: 
+    Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
-      RouteTableId: !Ref RouteTable
+      RouteTableId: !Ref PublicRouteTable
 
-  Subnet1RouteTableAssociation:
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.10.10.0/24
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: us-east-1d
+      CidrBlock: 10.10.20.0/24
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
+  PrivateSubnetRouteTableAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref Subnet1
-      RouteTableId: !Ref RouteTable
-  Subnet2RouteTableAssociation:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref PrivateSubnet1
+
+  PrivateSubnetRouteTableAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref Subnet2
-      RouteTableId: !Ref RouteTable
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+  # PrivateNatGatewayIP1:
+  #   Type: AWS::EC2::EIP
+  #   Properties:
+  #     Domain: vpc
+
+  # PrivateNatGateway1:
+  #   Type: AWS::EC2::NatGateway
+  #   Properties:
+  #     AllocationId: !GetAtt PrivateNatGatewayIP1.AllocationId
+  #     SubnetId: !Ref PublicSubnet1
+
+  # PrivateRoute1:
+  #   Type: AWS::EC2::Route
+  #   Properties:
+  #     DestinationCidrBlock: 0.0.0.0/0
+  #     NatGatewayId: !Ref PrivateNatGateway1
+  #     RouteTableId: !Ref PrivateRouteTable1
+
+  # PrivateNatGatewayIP2:
+  #   Type: AWS::EC2::EIP
+  #   Properties:
+  #     Domain: vpc
+
+  # PrivateNatGateway2:
+  #   Type: AWS::EC2::NatGateway
+  #   Properties:
+  #     AllocationId: !GetAtt PrivateNatGatewayIP2.AllocationId
+  #     SubnetId: !Ref PublicSubnet2
+
+  # PrivateRoute2:
+  #   Type: AWS::EC2::Route
+  #   Properties:
+  #     DestinationCidrBlock: 0.0.0.0/0
+  #     NatGatewayId: !Ref PrivateNatGateway2
+  #     RouteTableId: !Ref PrivateRouteTable2
 
 Outputs:
   VpcId:
@@ -99,17 +193,27 @@ Outputs:
     Export:
       Name: !Sub "${AWS::StackName}-VpcId"
   VpcCidrBlock:
-    Description: Vpc Cidr Block 
+    Description: Vpc Cidr Block
     Value: !GetAtt VPC.CidrBlock
     Export:
       Name: !Sub "${AWS::StackName}-VpcCidrBlock"
-  Subnet1:
-    Description: Primary Subnet Id
-    Value: !Ref Subnet1
+  PrivateSubnet1:
+    Description: Primary Private Subnet Id
+    Value: !Ref PrivateSubnet1
     Export:
-      Name: !Sub "${AWS::StackName}-SubnetId1"
-  Subnet2:
-    Description: Secondary Subnet Id
-    Value: !Ref Subnet2
+      Name: !Sub "${AWS::StackName}-PrivateSubnet1"
+  PrivateSubnet2:
+    Description: Secondary Private Subnet Id
+    Value: !Ref PrivateSubnet2
     Export:
-      Name: !Sub "${AWS::StackName}-SubnetId2"
+      Name: !Sub "${AWS::StackName}-PrivateSubnet2"
+  PublicSubnet1:
+    Description: Primary Public Subnet Id
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicSubnet1"
+  PublicSubnet2:
+    Description: Secondary Public Subnet Id
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicSubnet2"

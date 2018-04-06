@@ -5,6 +5,12 @@ Parameters:
   ContainerImage:
     Type: String
     Description: The client ECS Image
+  ClusterName:
+    Type: String
+    Description: The ECS Cluster
+  Environment:
+    Type: String
+    Description: The environment
   DesiredTaskCount:
     Type: Number
     Description: Desired Task Count
@@ -65,7 +71,7 @@ Resources:
       ContainerDefinitions:
         - Name: client
           Cpu: !Ref ContainerCpu
-          Command: [nginx, -g, daemon off;]
+          Command: [yarn, start]
           Essential: true
           Image: !Ref ContainerImage
           Memory: !Ref ContainerMemory
@@ -94,7 +100,7 @@ Resources:
         TargetGroupArn: !Ref ElbTargetGroup
       NetworkConfiguration:
         AwsvpcConfiguration:
-          AssignPublicIp: DISABLED
+          AssignPublicIp: ENABLED
           SecurityGroups: !Ref VpcSecurityGroupList
           Subnets: !Ref VpcSubnetList
       TaskDefinition: !Ref ClientTaskDefinition
