@@ -18,9 +18,7 @@ RUN yarn install --frozen-lockfile --no-cache --production
 RUN yarn build
 
 # The deployed container
-FROM node:8.9.4-alpine
-
-RUN apk update && apk add nginx && mkdir /run/nginx
+FROM nginx:1.13-alpine
 
 COPY ./etc/nginx.conf /etc/nginx/
 
