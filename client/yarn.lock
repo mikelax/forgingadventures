@@ -5985,7 +5985,7 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rupture@^0.7.1:
+rupture@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/rupture/-/rupture-0.7.1.tgz#d51bcd5fe93757b4855e4ea70ac9d97a897183a1"
 
@@ -6408,7 +6408,7 @@ style-loader@0.19.0:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
 
-stylus-loader@^3.0.1:
+stylus-loader@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/stylus-loader/-/stylus-loader-3.0.1.tgz#77f4b34fd030d25b2617bcf5513db5b0730c4089"
   dependencies:
