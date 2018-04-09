@@ -6,8 +6,9 @@ FROM node:8.9.4-alpine as builder
 COPY package.json /usr/src/app/
 COPY yarn.lock /usr/src/app/
 WORKDIR /usr/src/app
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --no-cache
 
+# copy application artifacts
 COPY /config /usr/src/app/config
 COPY /public /usr/src/app/public
 COPY /scripts /usr/src/app/scripts
@@ -15,6 +16,7 @@ COPY /src /usr/src/app/src
 
 RUN mkdir /usr/src/app/build
 
+# build using production env for optimized build
 ENV NODE_ENV production
 RUN yarn build
 
