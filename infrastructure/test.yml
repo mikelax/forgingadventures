@@ -13,6 +13,10 @@ Parameters:
     Type: String
     Description: The S3 bucket name where CFN templates are
     Default: forgingadventures-resources
+  SslCertificateArn:
+    Type: String
+    Description: SSL certificate ARN
+    Default: arn:aws:acm:us-east-1:466853810010:certificate/b696027f-8e4f-4c8d-ad39-12135b21ba40
   RdsUsername:
     Type: String
     Description: The database admin account username
@@ -63,6 +67,7 @@ Resources:
       TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/apps.yml"
       Parameters:
         Environment: !Ref Environment
+        SslCertificateArn: !Ref SslCertificateArn
         VpcId: !GetAtt VPC.Outputs.VpcId
         VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
         VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.ElbSecurityGroupId] ]
