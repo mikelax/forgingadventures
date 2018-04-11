@@ -1,0 +1,41 @@
+{
+  "StackName": "forgingadventures-test-client",
+  "Parameters": [
+    {
+      "ParameterKey": "Environment",
+      "ParameterValue": "test"
+    },
+    {
+      "ParameterKey": "VpcSubnetList",
+      "ParameterValue": "subnet-f17179de,subnet-fd2fce9a"
+    },
+    {
+      "ParameterKey": "VpcSecurityGroupList",
+      "ParameterValue": "sg-f111e3b8"
+    },
+    {
+      "ParameterKey": "ClusterName",
+      "ParameterValue": "forgingadventures-test"
+    },
+    {
+      "ParameterKey": "ContainerImage",
+      "ParameterValue": "466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g1"
+    },
+    {
+      "ParameterKey": "ElbTargetGroup",
+      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:466853810010:targetgroup/forgi-ElbTa-JG19P4QMMNZ5/5ccff1b7b1be9528"
+    },
+    {
+      "ParameterKey": "DesiredTaskCount",
+      "ParameterValue": "1"
+    },
+    {
+      "ParameterKey": "ContainerCpu",
+      "ParameterValue": "256"
+    },
+    {
+      "ParameterKey": "ContainerMemory",
+      "ParameterValue": "512"
+    }
+  ]
+}

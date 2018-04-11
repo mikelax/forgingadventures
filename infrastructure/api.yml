@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "API Docker Resources"
+
+Parameters:
+  ContainerImage:
+    Type: String
+    Description: The client ECS Image
+  DesiredTaskCount:
+    Type: Number
+    Description: Desired Task Count
+    Default: 1
+  ContainerCpu:
+    Type: String
+    Description: Docker CPU requirements
+    Default: 256
+  ContainerMemory:
+    Type: String
+    Description: Docker memory limit
+    Default: 512
+
+Conditions:
+  SetDesiredTaskCount:
+    !Not [ !Equals [ !Ref DesiredTaskCount, -1 ] ]
+  SingleTask:
+    !Equals [ !Ref DesiredTaskCount, 1 ]
+
+Resources:
+  EcsTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs-tasks.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  ApiCloudwatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/api"
+      RetentionInDays: 14

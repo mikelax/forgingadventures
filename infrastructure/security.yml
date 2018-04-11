@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: "VPC Security Groups and Access rules"
 
 Parameters:
   Environment:
@@ -18,7 +19,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Redis-${AWS::StackName}'
-      GroupDescription: !Join [ " ", [ 'Allow access to redis cache for VPC', !Ref VpcId ] ]
+      GroupDescription: !Sub "Allow access to redis cache for VPC ${VpcId}"
       VpcId: !Ref VpcId
       SecurityGroupIngress:
       - IpProtocol: tcp
@@ -31,18 +32,16 @@ Resources:
         ToPort: 65535
         CidrIp: 0.0.0.0/0
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
   ElbSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Elb-${AWS::StackName}'
-      GroupDescription: !Join [ " ", [ 'Allow access to ELB inbound and to VPC', !Ref VpcId ] ]
+      GroupDescription: !Sub "Allow access to ELB inbound and to VPC ${VpcId}"
       VpcId: !Ref VpcId
       SecurityGroupIngress:
       - IpProtocol: tcp
@@ -54,11 +53,26 @@ Resources:
         ToPort: 443
         CidrIp: 0.0.0.0/0
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
+          Value: forgingadventures
+
+  ClientEcsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub 'Client-Ecs-${AWS::StackName}'
+      GroupDescription: !Sub "Allow access to Client ECS Tasks inbound and to VPC ${VpcId}"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 3000
+        ToPort: 3000
+        SourceSecurityGroupId: !Ref ElbSecurityGroup
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
           Value: forgingadventures
 
   RdsSecurityGroup:
@@ -78,14 +92,15 @@ Resources:
         ToPort: 65535
         CidrIp: 0.0.0.0/0
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
 Outputs:
+  ClientEcsSecurityGroup:
+    Description: ECS Client Group ID
+    Value: !Ref ClientEcsSecurityGroup
   ElbSecurityGroupId:
     Description: Elb Group ID
     Value: !Ref ElbSecurityGroup

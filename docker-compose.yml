@@ -19,7 +19,9 @@ services:
     volumes:
       - ./api:/app:delegated
   client:
-    build: ./client
+    build:
+      context: ./client
+      dockerfile: Dockerfile-dev
     depends_on:
       - api
     ports: ["3000:3000"]

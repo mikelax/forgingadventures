@@ -13,6 +13,10 @@ Parameters:
     Type: String
     Description: The S3 bucket name where CFN templates are
     Default: forgingadventures-resources
+  SslCertificateArn:
+    Type: String
+    Description: SSL certificate ARN
+    Default: arn:aws:acm:us-east-1:466853810010:certificate/b696027f-8e4f-4c8d-ad39-12135b21ba40
   RdsUsername:
     Type: String
     Description: The database admin account username
@@ -63,8 +67,9 @@ Resources:
       TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/apps.yml"
       Parameters:
         Environment: !Ref Environment
+        SslCertificateArn: !Ref SslCertificateArn
         VpcId: !GetAtt VPC.Outputs.VpcId
-        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.Subnet1, !GetAtt VPC.Outputs.Subnet2] ]
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
         VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.ElbSecurityGroupId] ]
       Tags:
         - Key: Environment
@@ -72,42 +77,62 @@ Resources:
         - Key: Name
           Value: forgingadventures
 
-  Rds:
-    Type: AWS::CloudFormation::Stack
+  AppHostname:
+    Type: AWS::Route53::RecordSet
     Properties:
-      TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/rds.yml"
-      Parameters:
-        Environment: !Ref Environment
-        HostedZoneId: !Ref HostedZoneId
-        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.Subnet1, !GetAtt VPC.Outputs.Subnet2] ]
-        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId] ]
-        Username: !Ref RdsUsername
-        Password: !Ref RdsPassword
-        StorageType: standard
-        AllocatedStorage: 5
-        PubliclyAccessible: true
-      Tags:
-        - Key: Environment
-          Value: !Ref Environment
-        - Key: Name
-          Value: forgingadventures
+      AliasTarget:
+        DNSName: !GetAtt Apps.Outputs.ElbDns
+        EvaluateTargetHealth: false
+        HostedZoneId: Z35SXDOTRQ7X7K
+      HostedZoneName: forgingadventures.com.
+      Name: playquest.forgingadventures.com.
+      Type: A
 
-  Cache:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/redis.yml"
-      Parameters:
-        Environment: !Ref Environment
-        HostedZoneId: !Ref HostedZoneId
-        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.Subnet1, !GetAtt VPC.Outputs.Subnet2] ]
-        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RedisSecurityGroupId] ]
-      Tags:
-        - Key: Environment
-          Value: !Ref Environment
-        - Key: Name
-          Value: forgingadventures
+  # Rds:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/rds.yml"
+  #     Parameters:
+  #       Environment: !Ref Environment
+  #       HostedZoneId: !Ref HostedZoneId
+  #       VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
+  #       VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId] ]
+  #       Username: !Ref RdsUsername
+  #       Password: !Ref RdsPassword
+  #       StorageType: standard
+  #       AllocatedStorage: 5
+  #       PubliclyAccessible: true
+  #     Tags:
+  #       - Key: Environment
+  #         Value: !Ref Environment
+  #       - Key: Name
+  #         Value: forgingadventures
+
+  # Cache:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/redis.yml"
+  #     Parameters:
+  #       Environment: !Ref Environment
+  #       HostedZoneId: !Ref HostedZoneId
+  #       VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
+  #       VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RedisSecurityGroupId] ]
+  #     Tags:
+  #       - Key: Environment
+  #         Value: !Ref Environment
+  #       - Key: Name
+  #         Value: forgingadventures
 
 Outputs:
   ClusterName:
     Description: The ECS Cluster Name
     Value: !GetAtt Apps.Outputs.ClusterName
+  PublicSubnet1:
+    Description: Public Subnet 1
+    Value: !GetAtt VPC.Outputs.PublicSubnet1
+  PublicSubnet2:
+    Description: Public Subnet 2
+    Value: !GetAtt VPC.Outputs.PublicSubnet2
+  AppHostname:
+    Description: DNS of App Load Balancer
+    Value: !Ref AppHostname

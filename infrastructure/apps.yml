@@ -1,10 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: EC2 application resources such as ALB, etc
 
 Parameters:
   Environment:
     Type: String
     Description: The environment
     Default: test
+  SslCertificateArn:
+    Type: String
+    Description: SSL certificate ARN
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: The VPC Id
@@ -39,7 +43,7 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 4
       UnhealthyThresholdCount: 3
-      Port: 80
+      Port: 3000
       Protocol: HTTP
       VpcId: !Ref VpcId
       TargetGroupAttributes:
@@ -59,50 +63,44 @@ Resources:
     Properties:
       DefaultActions:
         - TargetGroupArn: !Ref ElbTargetGroup
-          Type: "forward"
+          Type: forward
       LoadBalancerArn: !Ref Elb
       Port: 80
-      Protocol: "HTTP"
+      Protocol: HTTP
 
-  EcsTaskExecutionRole:
-    Type: AWS::IAM::Role
+  ElbHttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: [ecs-tasks.amazonaws.com]
-            Action: ['sts:AssumeRole']
-      Path: /
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-
-  ApiCloudwatchLogsGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/api"
-      RetentionInDays: 14
-
-  ClientCloudwatchLogsGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/client"
-      RetentionInDays: 14
+      Certificates:
+        - CertificateArn: !Ref SslCertificateArn
+      DefaultActions:
+        - TargetGroupArn: !Ref ElbTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref Elb
+      Port: 443
+      Protocol: HTTPS
 
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: !Sub "forgingadventures-${Environment}"
 
-
 Outputs:
-  ElbId:
-    Description: "App Load Balancer Id"
-    Value: !Ref Elb
-  ElbUrl:
-    Description: "App Load Balancer URL for the cluster"
-    Value: !Join [ "", [ "http://", !GetAtt Elb.DNSName ] ]
-
   ClusterName:
     Description: The ECS Cluster Name
     Value: !Ref Cluster
+  ElbHttpListenerArn:
+    Description: HTTP Listener ARN
+    Value: !Ref ElbHttpListener
+  ElbId:
+    Description: "App Load Balancer Id"
+    Value: !Ref Elb
+  ElbDns:
+    Description: "App Load Balancer DNS Name"
+    Value: !GetAtt Elb.DNSName
+  ElbUrl:
+    Description: "App Load Balancer URL for the cluster"
+    Value: !Join [ "", [ "https://", !GetAtt Elb.DNSName ] ]
+  ElbTargetGroup:
+    Description: Client Target Group
+    Value: !Ref ElbTargetGroup
