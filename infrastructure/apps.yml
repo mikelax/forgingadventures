@@ -79,9 +79,12 @@ Outputs:
   ElbId:
     Description: "App Load Balancer Id"
     Value: !Ref Elb
+  ElbDns:
+    Description: "App Load Balancer DNS Name"
+    Value: !GetAtt Elb.DNSName
   ElbUrl:
     Description: "App Load Balancer URL for the cluster"
-    Value: !Join [ "", [ "http://", !GetAtt Elb.DNSName ] ]
+    Value: !Join [ "", [ "https://", !GetAtt Elb.DNSName ] ]
   ElbTargetGroup:
     Description: Client Target Group
     Value: !Ref ElbTargetGroup

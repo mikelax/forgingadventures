@@ -72,6 +72,17 @@ Resources:
         - Key: Name
           Value: forgingadventures
 
+  AppHostname:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !GetAtt Apps.Outputs.ElbDns
+        EvaluateTargetHealth: false
+        HostedZoneId: Z35SXDOTRQ7X7K
+      HostedZoneName: forgingadventures.com.
+      Name: playquest.forgingadventures.com.
+      Type: A
+
   # Rds:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -117,3 +128,6 @@ Outputs:
   PublicSubnet2:
     Description: Public Subnet 2
     Value: !GetAtt VPC.Outputs.PublicSubnet2
+  AppHostname:
+    Description: DNS of App Load Balancer
+    Value: !Ref AppHostname
