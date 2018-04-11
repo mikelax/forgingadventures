@@ -71,7 +71,7 @@ Resources:
       ContainerDefinitions:
         - Name: client
           Cpu: !Ref ContainerCpu
-          Command: [yarn, start]
+          Command: [nginx, -g, daemon off;]
           Essential: true
           Image: !Ref ContainerImage
           Memory: !Ref ContainerMemory

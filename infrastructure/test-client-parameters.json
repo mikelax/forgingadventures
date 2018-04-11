@@ -19,7 +19,7 @@
     },
     {
       "ParameterKey": "ContainerImage",
-      "ParameterValue": "466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:ea7c2f6"
+      "ParameterValue": "466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g1"
     },
     {
       "ParameterKey": "ElbTargetGroup",
