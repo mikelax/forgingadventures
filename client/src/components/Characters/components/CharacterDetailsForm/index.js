@@ -6,6 +6,10 @@ import { Button, Form, Image } from 'semantic-ui-react';
 import GameLabelsSelect from '../../../Games/components/GameLabelsSelect';
 import { uploadImage } from '../../../../services/image';
 
+// label forms
+
+import CharacterDetails5e_1_0_0 from '../CharacterLabelForms/CharacterDetails5e_1_0_0';
+
 class CharacterDetailsForm extends Component {
 
   static propTypes = {
@@ -82,6 +86,8 @@ class CharacterDetailsForm extends Component {
             <Button onClick={onCancel}>Cancel</Button>
           </div>
         </Form>
+
+        {this._renderLabelCharacterForm()}
       </React.Fragment>
     );
   };
@@ -165,6 +171,15 @@ class CharacterDetailsForm extends Component {
         });
     }
   };
+
+  _renderLabelCharacterForm = () => {
+    const { store: { labelId } } = this.state;
+    const LabelForm = {
+      1: CharacterDetails5e_1_0_0
+    }[labelId];
+
+    return LabelForm && <LabelForm />;
+  }
 }
 
 export default CharacterDetailsForm;
