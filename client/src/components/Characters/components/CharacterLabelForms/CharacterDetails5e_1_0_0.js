@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Field, Formik } from 'formik';
-import { Form, Grid } from 'semantic-ui-react';
+import { Form, Grid, Radio } from 'semantic-ui-react';
 import Yup from 'yup';
 
 
@@ -101,7 +101,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
               </Form.Field>
 
               <Form.Field required>
-                <Form.Field required label="Hit Die" name="health.hitDie" control={Field} type="number" min="0"/>
+                <Form.Field required label="Hit Die" name="health.hitDie" control={Field} type="text"/>
               </Form.Field>
             </Form.Group>
 
@@ -114,7 +114,21 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                   name="background"
                   component="select"
                 >
-                  <option value="background1">back1</option>
+                  <option value="acolyte">Acolyte</option>
+                  <option value="charlatan">Charlatan</option>
+                  <option value="criminal">Criminal</option>
+                  <option value="entertainer">Entertainer</option>
+                  <option value="folkhero">Folk Hero</option>
+                  <option value="guildartisan">Guild Artisan</option>
+                  <option value="herit">Hermit</option>
+                  <option value="noble">Noble</option>
+                  <option value="outlander">Outlander</option>
+                  <option value="pirate">Pirate</option>
+                  <option value="sage">Sage</option>
+                  <option value="sailor">Sailor</option>
+                  <option value="soldier">Soldier</option>
+                  <option value="urchin">Urchin</option>
+                  <option value="other">Other - Variant</option>
                 </Field>
               </Form.Field>
 
@@ -131,11 +145,14 @@ export default class CharacterDetails5e_1_0_0 extends Component {
               </Form.Field>
             </Form.Group>
 
+            <Form.Field>
+              <label>Additional Background Information</label>
+              <Form.Field name="traits.backgroundInformation" control="textarea" placeholder="Add additional Background Information" value={values.traits.backgroundInformation}/>
+            </Form.Field>
             <Form.Field required>
               <label>Physical Characteristics</label>
               <Form.Field name="traits.physicalCharacteristics" control="textarea" value={values.traits.physicalCharacteristics}/>
             </Form.Field>
-
             <Form.Field required>
               <label>Features and Traits</label>
               <Form.Field name="traits.featuresTraits" control="textarea" value={values.traits.featuresTraits}/>
@@ -159,6 +176,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <label>Modifier</label>
                     <Field name="strength.modifier" type="number" min="0" readOnly/>
                   </Form.Field>
+                  <Radio label="Saving Throws" name="strength.savingThrows" toggle />
                 </Grid.Column>
 
                 <Grid.Column>
@@ -288,7 +306,9 @@ const validationSchema = Yup.object().shape({
     race: Yup.string().default(''),
     primaryClass: Yup.string().default(''),
     alignment: Yup.string().default(''),
+    background: Yup.string().default(''),
     sex: Yup.string().default(''),
+    backgroundInformation: Yup.string().default(''),
     physicalCharacteristics: Yup.string().default(''),
     featuresAndTraits: Yup.string().default('')
   }),
@@ -300,34 +320,35 @@ const validationSchema = Yup.object().shape({
   abilities: Yup.object().shape({
     strength: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
-      savingThrowProficient: Yup.boolean().default(false),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(0)
+      total: Yup.number().integer().default(1).min(1).max(20),
+      savingThrows: Yup.boolean().default(false),
+      modifier: Yup.number().integer().default(0).min(-5).max(5)
     }),
     dexterity: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(0)
+      modifier: Yup.number().integer().default(0).min(-5).max(5)
     }),
     constitution: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(0)
+      modifier: Yup.number().integer().default(0).min(-5).max(5)
     }),
     intelligence: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(0)
+      modifier: Yup.number().integer().default(0).min(-5).max(5)
     }),
-    wisdow: Yup.object().shape({
+    wisdom: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(0)
+      modifier: Yup.number().integer().default(0).min(-5).max(5)
     }),
     charisma: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(0)
+      modifier: Yup.number().integer().default(0).min(-5).max(5)
     })
   })
 });
@@ -335,6 +356,3 @@ const validationSchema = Yup.object().shape({
 function characterToValues(character) {
   return character && validationSchema.noUnknown().cast(character);
 }
-
-
-
