@@ -5,12 +5,12 @@ import GraphQLJSON from 'graphql-type-json';
 import { GraphQLDateTime } from 'graphql-iso-date';
 
 import { characterTypeDefs, characterResolvers } from './character';
-import { gameTypeDefs, gameResolvers } from 'schemas/game';
-import { gameLabelTypeDefs, gameLabelResolvers } from 'schemas/gameLabel';
-import { gameLoungeTypeDefs, gameLoungeResolvers } from 'schemas/gameLounge';
-import { gameMessageTypeDefs, gameMessageResolvers } from 'schemas/gameMessage';
-import { gamePlayerTypeDefs, gamePlayerResolvers } from 'schemas/gamePlayer';
-import { userTypeDefs, userResolvers } from 'schemas/user';
+import { gameTypeDefs, gameResolvers } from './game';
+import { gameLabelTypeDefs, gameLabelResolvers } from './gameLabel';
+import { gameLoungeTypeDefs, gameLoungeResolvers } from './gameLounge';
+import { gameMessageTypeDefs, gameMessageResolvers } from './gameMessage';
+import { gamePlayerTypeDefs, gamePlayerResolvers } from './gamePlayer';
+import { userTypeDefs, userResolvers } from './user';
 
 import queries from './queries';
 import mutations from './mutations';
@@ -51,4 +51,3 @@ export default makeExecutableSchema({
     userResolvers
   )
 });
-

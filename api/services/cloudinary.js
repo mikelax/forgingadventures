@@ -13,7 +13,7 @@ const imageTypeTransformation = {
   messageImage: 'c_fill,g_auto,w_640,h_480'
 };
 
-export function uploadToCloudinary(file, dbUser, imageType) {
+export default function uploadToCloudinary(file, dbUser, imageType) {
   return Bluebird.try(() => {
     const fileName = shortid.generate();
     const transform = imageTypeTransformation[imageType];
@@ -86,4 +86,3 @@ function s3UploadFile(fileBuffer, fileName) {
   return s3.upload(options)
     .promise();
 }
-
