@@ -1,10 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: EC2 application resources such as ALB, etc
 
 Parameters:
   Environment:
     Type: String
     Description: The environment
     Default: test
+  SslCertificateArn:
+    Type: String
+    Description: SSL certificate ARN
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: The VPC Id
@@ -59,10 +63,22 @@ Resources:
     Properties:
       DefaultActions:
         - TargetGroupArn: !Ref ElbTargetGroup
-          Type: "forward"
+          Type: forward
       LoadBalancerArn: !Ref Elb
       Port: 80
-      Protocol: "HTTP"
+      Protocol: HTTP
+
+  ElbHttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref SslCertificateArn
+      DefaultActions:
+        - TargetGroupArn: !Ref ElbTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref Elb
+      Port: 443
+      Protocol: HTTPS
 
   Cluster:
     Type: AWS::ECS::Cluster
@@ -79,9 +95,12 @@ Outputs:
   ElbId:
     Description: "App Load Balancer Id"
     Value: !Ref Elb
+  ElbDns:
+    Description: "App Load Balancer DNS Name"
+    Value: !GetAtt Elb.DNSName
   ElbUrl:
     Description: "App Load Balancer URL for the cluster"
-    Value: !Join [ "", [ "http://", !GetAtt Elb.DNSName ] ]
+    Value: !Join [ "", [ "https://", !GetAtt Elb.DNSName ] ]
   ElbTargetGroup:
     Description: Client Target Group
     Value: !Ref ElbTargetGroup
