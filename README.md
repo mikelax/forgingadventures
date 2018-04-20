@@ -34,20 +34,17 @@ from the host machine was copied to a docker container. Delete the `node_modules
 and client folders and then recreate the containers.
 
 NOTE 3: Note that switching branches on the host is prone to crashing the docker services especially if new 
-packages have been added to either the `api` or `client` folders. It is advisable to `docker-compose stop && docker-compose up`
+packages have been added to either the `api` or `client` folders. It is advisable to `docker-compose stop && docker-compose up --build`
 after switching branches. 
 
 From the root folder run:
 
 ```shell
-# Pull public postgres docker library
+# Optionally, pull public postgres docker library
 docker pull postgres
 
-# only required for this first build or when a Dockerfile is edited
-docker-compose build 
-
 # to start both the api and client containers
-docker-compose up
+docker-compose up --build
 ```
 
 Use the following command to _shell_ into a docker - for example to open a shell in the api container:

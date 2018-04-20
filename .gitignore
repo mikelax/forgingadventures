@@ -5,5 +5,10 @@
 
 .DS_Store
 .idea
+.docker-sync
 
 node_modules
+
+# misc dev docker optional files
+docker-compose.override.yml
+docker-sync.yml

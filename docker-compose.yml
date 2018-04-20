@@ -1,13 +1,5 @@
 version: '3'
 services:
-  db:
-    image: postgres:9.6.5-alpine
-    ports: ["5432:5432"]
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-docker}
-  redis:
-    image: redis:3.2.6-alpine
-    ports: ["6379:6379"]
   api:
     environment:
       - NODE_ENV=development
@@ -18,6 +10,7 @@ services:
     ports: ["3001:3001"]
     volumes:
       - ./api:/app:delegated
+
   client:
     build:
       context: ./client
@@ -27,3 +20,14 @@ services:
     ports: ["3000:3000"]
     volumes:
       - ./client:/app:delegated
+
+  db:
+    image: postgres:9.6.5-alpine
+    ports: ["5432:5432"]
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-docker}
+
+  redis:
+    image: redis:3.2.6-alpine
+    ports: ["6379:6379"]
+
