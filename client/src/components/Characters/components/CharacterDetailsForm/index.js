@@ -80,17 +80,21 @@ class CharacterDetailsForm extends Component {
               onChange={this._handleImage}
             />
           </Form.Field>
-
-          <div className="actions text-right">
-            <Button primary onClick={this._submit} disabled={this.state.saving} loading={this.state.saving}>Submit</Button>
-            <Button onClick={onCancel}>Cancel</Button>
-          </div>
         </Form>
 
         {this._renderLabelCharacterForm()}
       </React.Fragment>
     );
   };
+
+  doSave() {
+    //check validity of both forms
+    //save both forms
+  }
+
+  doReset() {
+    //reset both forms
+  }
 
   _saveGameToState(character) {
     if (character) {
@@ -178,7 +182,7 @@ class CharacterDetailsForm extends Component {
       1: CharacterDetails5e_1_0_0
     }[labelId];
 
-    return LabelForm && <LabelForm />;
+    return LabelForm && <LabelForm ref={(ref) => this.labelForm = ref} />;
   }
 }
 
