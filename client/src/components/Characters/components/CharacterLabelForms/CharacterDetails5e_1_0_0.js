@@ -1,7 +1,10 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Field, Form as FormikForm, Formik } from 'formik';
 import { Form, Grid, Radio } from 'semantic-ui-react';
 import Yup from 'yup';
+
+import { propsChanged } from '../../../../services/props';
 
 
 export default class CharacterDetails5e_1_0_0 extends Component {
@@ -15,8 +18,10 @@ export default class CharacterDetails5e_1_0_0 extends Component {
         initialValues={characterToValues(characterLabelDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, handleChange, handleReset, handleSubmit, isSubmitting }) => (
+        render={({ values, handleChange, handleReset, handleSubmit, isSubmitting, setFieldValue }) => (
           <Form className="character-details" as={FormikForm} loading={loading}>
+            <FormFieldAutoCalculator values={values} setFieldValue={setFieldValue} />
+
             <h2>Custom Character Settings</h2>
 
             <Form.Group widths="equal">
@@ -84,11 +89,9 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                 </Field>
               </Form.Field>
 
-              <Form.Field required label="Level" name="level" control={Field} type="number" min="1" max="20"/>
+              <Form.Field required label="Level" name="primaryLevel" control={Field} type="number" min="1" max="20"/>
 
-              <Form.Input label="Proficiency" name="proficiency" value={this._levelProficieny(values.level)} readOnly>
-                <label>Proficiency</label>
-              </Form.Input>
+              <Form.Field label="Proficiency" name="proficiency" control={Field} readOnly />
             </Form.Group>
 
             <h3>Health</h3>
@@ -282,6 +285,10 @@ export default class CharacterDetails5e_1_0_0 extends Component {
     );
   }
 
+  valid() {
+
+  }
+
   _handleSubmit = (props, values, { setSubmitting, setErrors }) => {
     const { onSave } = props;
     const payload = validationSchema.noUnknown().cast(values);
@@ -297,16 +304,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 
   _handleCancel = () => {
     this.props.onCancel();
-  };
-
-  _levelProficieny = (level) => {
-    const classProficiencyLevels = {
-      1: 2,
-      5: 3,
-      9: 4,
-      13: 5,
-      17: 6
-    };
   };
 
 }
@@ -334,14 +331,16 @@ const validationSchema = Yup.object().shape({
     strength: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
+      modifier: Yup.number().integer().default(0).min(-5).max(5),
+      levelUpgrades: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1),
-      savingThrows: Yup.boolean().default(false),
-      modifier: Yup.number().integer().default(0).min(-5).max(5)
+      savingThrows: Yup.boolean().default(false)
     }),
     dexterity: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
+      levelUpgrades: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
@@ -349,6 +348,7 @@ const validationSchema = Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
+      levelUpgrades: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
@@ -356,6 +356,7 @@ const validationSchema = Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
+      levelUpgrades: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
@@ -363,6 +364,7 @@ const validationSchema = Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
+      levelUpgrades: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
@@ -370,6 +372,7 @@ const validationSchema = Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
+      levelUpgrades: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     })
@@ -378,4 +381,38 @@ const validationSchema = Yup.object().shape({
 
 function characterToValues(character) {
   return character && validationSchema.noUnknown().cast(character);
+}
+
+class FormFieldAutoCalculator extends Component {
+
+  componentDidUpdate(prevProps) {
+    const { setFieldValue } = this.props;
+    const valuesPropsChanged = _.partial(propsChanged, prevProps, this.props, 'values');
+
+    if (valuesPropsChanged('primaryLevel')) {
+      const primaryLevel = _.get(this.props, 'values.primaryLevel');
+
+      // calculate proficiency
+      if (primaryLevel) {
+        setFieldValue('proficiency', this._levelProficiency(primaryLevel));
+      } else {
+        setFieldValue('proficiency', '');
+      }
+    }
+  }
+
+  render = () => null;
+
+  _levelProficiency = (level) => {
+    const classProficiencyLevels = {
+      1: 2,
+      5: 3,
+      9: 4,
+      13: 5,
+      17: 6
+    };
+    // FIXME - this is here as an example but need to implement a bucket type matcher
+    return classProficiencyLevels[level];
+  };
+
 }

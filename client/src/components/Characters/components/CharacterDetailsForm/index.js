@@ -87,6 +87,10 @@ class CharacterDetailsForm extends Component {
     );
   };
 
+  valid() {
+
+  }
+
   doSave() {
     //check validity of both forms
     //save both forms

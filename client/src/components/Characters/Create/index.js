@@ -39,14 +39,16 @@ class CreateCharacter extends Component {
   };
 
   _onSave = (payload) => {
-    const { createCharacter } = this.props;
+    if (this.form.valid()) {
+      const { createCharacter } = this.props;
 
-    return createCharacter({
+      return createCharacter({
         variables: {
           input: payload
         }
       })
-      .then(() => this.props.history.replace('/profile'));
+        .then(() => this.props.history.replace('/profile'));
+    }
   };
 }
 
