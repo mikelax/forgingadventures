@@ -1,0 +1,17 @@
+FROM node:8.9.1-alpine
+
+# for dev only - extend watchers limit for file watchers and auto-reload
+COPY ./etc/sysctl.conf /etc/sysctl.conf
+
+WORKDIR /tmp/packages
+COPY ./package.json ./yarn.lock ./
+RUN yarn install
+
+# Create app directory
+WORKDIR /app
+RUN cp -R /tmp/packages/node_modules .
+COPY . /app
+
+EXPOSE 3001
+
+CMD yarn start
