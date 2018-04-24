@@ -10,13 +10,13 @@ import { uploadImage } from '../../../../services/image';
 
 import CharacterDetails5e_1_0_0 from '../CharacterLabelForms/CharacterDetails5e_1_0_0';
 
+import './CharacterDetailsForm.styl';
+
 class CharacterDetailsForm extends Component {
 
   static propTypes = {
     character: PropTypes.object,
-    loading: PropTypes.bool,
-    onSave: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired
+    loading: PropTypes.bool
   };
 
   state = {
@@ -41,10 +41,10 @@ class CharacterDetailsForm extends Component {
 
   render() {
     const { profileImageUrl } = this.state;
-    const { loading, onCancel } = this.props;
+    const { loading } = this.props;
 
     return (
-      <React.Fragment>
+      <div className="character-detail-form">
         <Form loading={loading}>
           <Form.Group widths="equal">
             <Form.Field required>
@@ -83,7 +83,7 @@ class CharacterDetailsForm extends Component {
         </Form>
 
         {this._renderLabelCharacterForm()}
-      </React.Fragment>
+      </div>
     );
   };
 

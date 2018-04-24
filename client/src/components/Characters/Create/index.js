@@ -7,6 +7,8 @@ import { Button, Segment } from 'semantic-ui-react';
 import { createCharacterMutation } from '../queries';
 import CharacterDetailsForm from '../components/CharacterDetailsForm';
 
+import './CreateCharacter.styl';
+
 class CreateCharacter extends Component {
 
   render() {
@@ -16,7 +18,7 @@ class CreateCharacter extends Component {
           <title>Create new Character on Forging Adventures</title>
         </Helmet>
 
-        <div className="CreateCharacter">
+        <div className="create-character">
           <h1>Create a New Character</h1>
 
           <CharacterDetailsForm ref={this._formRef} />
