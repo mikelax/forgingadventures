@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
-import { Button, Segment } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 
 import { createCharacterMutation } from '../queries';
 import CharacterDetailsForm from '../components/CharacterDetailsForm';
@@ -30,6 +30,10 @@ class CreateCharacter extends Component {
         </div>
       </React.Fragment>
     );
+  };
+
+  _submit = () => {
+    this.form.submitForm();
   };
 
   _formRef = (ref) => {

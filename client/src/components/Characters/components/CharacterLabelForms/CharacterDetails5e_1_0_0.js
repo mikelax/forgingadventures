@@ -18,7 +18,8 @@ export default class CharacterDetails5e_1_0_0 extends Component {
         initialValues={characterToValues(characterLabelDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, handleChange, handleReset, handleSubmit, isSubmitting, setFieldValue }) => (
+        ref={this._registerForm}
+        render={({ values, setFieldValue }) => (
           <Form className="character-details" as={FormikForm} loading={loading}>
             <FormFieldAutoCalculator values={values} setFieldValue={setFieldValue} />
 
@@ -309,25 +310,32 @@ export default class CharacterDetails5e_1_0_0 extends Component {
     );
   }
 
-  valid() {
+  valid = () => {
+    return this.formIsValid === true;
+  };
 
-  }
+  submitForm = () => {
+    this.form.submitForm();
+  };
 
-  _handleSubmit = (props, values, { setSubmitting, setErrors }) => {
-    const { onSave } = props;
+  _registerForm = (form) => {
+    this.form = form;
+  };
+
+  // only called if the form is valid
+  _handleSubmit = (values, { setSubmitting, setErrors }) => {
+    const { onSubmit } = this.props;
     const payload = validationSchema.noUnknown().cast(values);
 
+    this.formIsValid = true;
+    console.log('payload', payload)
     setSubmitting(true);
     try {
-      onSave(payload);
+      onSubmit(payload);
     } catch (e) {
       setSubmitting(false);
       setErrors(e);
     }
-  };
-
-  _handleCancel = () => {
-    this.props.onCancel();
   };
 
 }
@@ -343,52 +351,52 @@ const validationSchema = Yup.object().shape({
     background: Yup.string().default(''),
     sex: Yup.string().default(''),
     backgroundInformation: Yup.string().default(''),
-    physicalCharacteristics: Yup.string().default(''),
-    featuresAndTraits: Yup.string().default('')
+    physicalCharacteristics: Yup.string().default('').required(),
+    featuresAndTraits: Yup.string().default('').required()
   }),
   health: Yup.object().shape({
-    currentHitPoints: Yup.number().integer().default(0),
-    maxHitPoints: Yup.number().integer().default(1).min(1),
-    hitDie: Yup.string().default('')
+    currentHitPoints: Yup.number().integer().default(0).required(),
+    maxHitPoints: Yup.number().integer().default(1).min(1).required(),
+    hitDie: Yup.string().default('').required()
   }),
   abilities: Yup.object().shape({
     strength: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1),
+      baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
     dexterity: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1),
+      baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
     constitution: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1),
+      baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
     intelligence: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1),
+      baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
     wisdom: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1),
+      baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
       total: Yup.number().integer().default(1).min(1),
       savingThrows: Yup.boolean().default(false)
     }),
     charisma: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1),
+      baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       modifier: Yup.number().integer().default(0).min(-5).max(5),
       total: Yup.number().integer().default(1).min(1),

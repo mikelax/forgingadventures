@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button, Form, Image } from 'semantic-ui-react';
+import { Form, Image } from 'semantic-ui-react';
 
 import GameLabelsSelect from '../../../Games/components/GameLabelsSelect';
 import { uploadImage } from '../../../../services/image';
@@ -87,20 +87,19 @@ class CharacterDetailsForm extends Component {
     );
   };
 
-  valid() {
+  valid = () => {
 
-  }
+  };
 
-  doSave() {
-    //check validity of both forms
-    //save both forms
-  }
+  submitForm = () => {
+    this.labelForm && this.labelForm.submitForm();
+  };
 
-  doReset() {
+  doReset = () => {
     //reset both forms
-  }
+  };
 
-  _saveGameToState(character) {
+  _saveGameToState = (character) => {
     if (character) {
       this.setState({
         store: {
@@ -110,7 +109,7 @@ class CharacterDetailsForm extends Component {
         profileImageUrl: _.get(character, 'profileImage.url')
       });
     }
-  }
+  };
 
   _valid = () => {
     const errors = {};
@@ -186,7 +185,16 @@ class CharacterDetailsForm extends Component {
       1: CharacterDetails5e_1_0_0
     }[labelId];
 
-    return LabelForm && <LabelForm ref={(ref) => this.labelForm = ref} />;
+    return LabelForm && (
+      <LabelForm
+        ref={(ref) => this.labelForm = ref}
+        onSubmit={this._handleLabelSubmit}
+      />
+    );
+  };
+
+  _handleLabelSubmit = (characterLabelDetails) => {
+    console.log('characterLabelDetails', characterLabelDetails)
   }
 }
 
