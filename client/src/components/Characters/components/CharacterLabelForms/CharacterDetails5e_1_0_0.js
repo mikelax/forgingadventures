@@ -185,12 +185,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Field name="abilities.strength.raceBonus" type="number" min="0"/>
                   </Form.Field>
                   <Form.Field>
-                    <label>Modifier</label>
-                    <Field name="abilities.strength.modifier" type="number" min="0"/>
+                    <label>Total</label>
+                    <Field name="abilities.strength.total" type="number" min="0" readOnly />
                   </Form.Field>
                   <Form.Field>
-                    <label>Total</label>
-                    <Field name="abilities.strength.total" type="number" min="0" readOnly/>
+                    <label>Modifier</label>
+                    <Field name="abilities.strength.modifier" type="number" min="0" readOnly />
                   </Form.Field>
                   <Radio label="Saving Throws" name="abilities.strength.savingThrows" toggle />
                 </Grid.Column>
@@ -206,12 +206,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Field name="abilities.dexterity.raceBonus" type="number" min="0"/>
                   </Form.Field>
                   <Form.Field>
-                    <label>Modifier</label>
-                    <Field name="abilities.dexterity.modifier" type="number" min="0"/>
+                    <label>Total</label>
+                    <Field name="abilities.dexterity.total" type="number" min="0" readOnly />
                   </Form.Field>
                   <Form.Field>
-                    <label>Total</label>
-                    <Field name="abilities.dexterity.total" type="number" min="0" readOnly/>
+                    <label>Modifier</label>
+                    <Field name="abilities.dexterity.modifier" type="number" min="0" readOnly />
                   </Form.Field>
                   <Radio label="Saving Throws" name="abilities.dexterity.savingThrows" toggle />
                 </Grid.Column>
@@ -227,12 +227,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Field name="abilities.constitution.raceBonus" type="number" min="0"/>
                   </Form.Field>
                   <Form.Field>
-                    <label>Modifier</label>
-                    <Field name="abilities.constitution.modifier" type="number" min="0"/>
+                    <label>Total</label>
+                    <Field name="abilities.constitution.total" type="number" min="0" readOnly />
                   </Form.Field>
                   <Form.Field>
-                    <label>Total</label>
-                    <Field name="abilities.constitution.total" type="number" min="0" readOnly/>
+                    <label>Modifier</label>
+                    <Field name="abilities.constitution.modifier" type="number" min="0" readOnly />
                   </Form.Field>
                   <Radio label="Saving Throws" name="abilities.constitution.savingThrows" toggle />
                 </Grid.Column>
@@ -250,12 +250,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Field name="abilities.intelligence.raceBonus" type="number" min="0"/>
                   </Form.Field>
                   <Form.Field>
-                    <label>Modifier</label>
-                    <Field name="abilities.intelligence.modifier" type="number" min="0"/>
+                    <label>Total</label>
+                    <Field name="abilities.intelligence.total" type="number" min="0" readOnly />
                   </Form.Field>
                   <Form.Field>
-                    <label>Total</label>
-                    <Field name="abilities.intelligence.total" type="number" min="0" readOnly/>
+                    <label>Modifier</label>
+                    <Field name="abilities.intelligence.modifier" type="number" min="0" readOnly />
                   </Form.Field>
                   <Radio label="Saving Throws" name="abilities.intelligence.savingThrows" toggle />
                 </Grid.Column>
@@ -271,12 +271,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Field name="abilities.wisdom.raceBonus" type="number" min="0"/>
                   </Form.Field>
                   <Form.Field>
-                    <label>Modifier</label>
-                    <Field name="abilities.wisdom.modifier" type="number" min="0"/>
+                    <label>Total</label>
+                    <Field name="abilities.wisdom.total" type="number" min="0" readOnly />
                   </Form.Field>
                   <Form.Field>
-                    <label>Total</label>
-                    <Field name="abilities.wisdom.total" type="number" min="0" readOnly/>
+                    <label>Modifier</label>
+                    <Field name="abilities.wisdom.modifier" type="number" min="0" readOnly />
                   </Form.Field>
                   <Radio label="Saving Throws" name="abilities.wisdom.savingThrows" toggle />
                 </Grid.Column>
@@ -292,12 +292,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Field name="abilities.charisma.raceBonus" type="number" min="0"/>
                   </Form.Field>
                   <Form.Field>
-                    <label>Modifier</label>
-                    <Field name="abilities.charisma.modifier" type="number" min="0"/>
+                    <label>Total</label>
+                    <Field name="abilities.charisma.total" type="number" min="0" readOnly />
                   </Form.Field>
                   <Form.Field>
-                    <label>Total</label>
-                    <Field name="abilities.charisma.total" type="number" min="0" readOnly/>
+                    <label>Modifier</label>
+                    <Field name="abilities.charisma.modifier" type="number" min="0" readOnly />
                   </Form.Field>
                   <Radio label="Saving Throws" name="abilities.charisma.savingThrows" toggle />
                 </Grid.Column>
@@ -328,7 +328,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
     const payload = validationSchema.noUnknown().cast(values);
 
     this.formIsValid = true;
-    console.log('payload', payload)
+    console.log('payload', payload);
     setSubmitting(true);
     try {
       onSubmit(payload);
@@ -345,9 +345,9 @@ const validationSchema = Yup.object().shape({
   proficiency: Yup.number().integer().default(2).min(2).required(),
   xp: Yup.number().integer().default(0).min(0).required(),
   traits: Yup.object().shape({
-    race: Yup.string().default(''),
-    primaryClass: Yup.string().default(''),
-    alignment: Yup.string().default(''),
+    race: Yup.string().default('').required(),
+    primaryClass: Yup.string().default('').required(),
+    alignment: Yup.string().default('').required(),
     background: Yup.string().default(''),
     sex: Yup.string().default(''),
     backgroundInformation: Yup.string().default(''),
@@ -363,43 +363,43 @@ const validationSchema = Yup.object().shape({
     strength: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(-5).max(5),
-      total: Yup.number().integer().default(1).min(1),
+      total: Yup.number().integer().default(1).min(1).required(),
+      modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     dexterity: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(-5).max(5),
-      total: Yup.number().integer().default(1).min(1),
+      total: Yup.number().integer().default(1).min(1).required(),
+      modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     constitution: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(-5).max(5),
-      total: Yup.number().integer().default(1).min(1),
+      total: Yup.number().integer().default(1).min(1).required(),
+      modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     intelligence: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(-5).max(5),
-      total: Yup.number().integer().default(1).min(1),
+      total: Yup.number().integer().default(1).min(1).required(),
+      modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     wisdom: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(-5).max(5),
-      total: Yup.number().integer().default(1).min(1),
+      total: Yup.number().integer().default(1).min(1).required(),
+      modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     charisma: Yup.object().shape({
       baseValue: Yup.number().integer().default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
-      modifier: Yup.number().integer().default(0).min(-5).max(5),
-      total: Yup.number().integer().default(1).min(1),
+      total: Yup.number().integer().default(1).min(1).required(),
+      modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     })
   })
@@ -430,10 +430,10 @@ class FormFieldAutoCalculator extends Component {
     _.each(['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'], (ability) => {
       if (
         valuesPropsChanged(`abilities.${ability}.baseValue`) ||
-        valuesPropsChanged(`abilities.${ability}.raceBonus`) ||
-        valuesPropsChanged(`abilities.${ability}.modifier`)
+        valuesPropsChanged(`abilities.${ability}.raceBonus`)
       ) {
         setFieldValue(`abilities.${ability}.total`, this._abilityTotal(ability));
+        setFieldValue(`abilities.${ability}.modifier`, this._abilityModifier(ability));
       }
     });
   }
@@ -461,7 +461,13 @@ class FormFieldAutoCalculator extends Component {
   _abilityTotal = (ability) => {
     const value = _.partial(propsBase, this.props, 'values', `abilities.${ability}`);
 
-    return value('baseValue') + value('raceBonus') + value('modifier');
+    return value('baseValue') + value('raceBonus');
+  }
+
+  _abilityModifier = (ability) => {
+    const value = _.partial(propsBase, this.props, 'values', `abilities.${ability}`);
+
+    return _.floor((value('baseValue') + value('raceBonus') - 10) / 2);
   }
 
 }

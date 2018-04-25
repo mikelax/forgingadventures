@@ -194,7 +194,7 @@ class CharacterDetailsForm extends Component {
   };
 
   _handleLabelSubmit = (characterLabelDetails) => {
-    console.log('characterLabelDetails', characterLabelDetails)
+    console.log('characterLabelDetails', characterLabelDetails);
   }
 }
 
