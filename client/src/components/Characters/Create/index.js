@@ -21,23 +21,19 @@ class CreateCharacter extends Component {
         <div className="create-character">
           <h1>Create a New Character</h1>
 
-          <CharacterDetailsForm ref={this._formRef} />
-
-          <div className="actions">
-            <Button primary onClick={this._submit}>Submit</Button>
-            <Button onClick={this._onCancel}>Cancel</Button>
-          </div>
+          <CharacterDetailsForm
+            onSubmit={this._onSave}
+            renderActions={({ isValid, submitForm }) => (
+              <div className="actions">
+                <Button primary onClick={submitForm}>Submit</Button>
+                <Button onClick={this._onCancel}>Cancel</Button>
+                {console.log('isValid', isValid)}
+              </div>
+            )}
+          />
         </div>
       </React.Fragment>
     );
-  };
-
-  _submit = () => {
-    this.form.submitForm();
-  };
-
-  _formRef = (ref) => {
-    this.form = ref;
   };
 
   _onCancel = () => {

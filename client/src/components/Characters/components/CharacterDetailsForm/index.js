@@ -1,10 +1,12 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Form as FormikForm, Formik } from 'formik';
 import { Form, Image } from 'semantic-ui-react';
 
 import GameLabelsSelect from '../../../Games/components/GameLabelsSelect';
 import { uploadImage } from '../../../../services/image';
+import Yup from 'yup';
 
 // label forms
 
@@ -15,128 +17,83 @@ import './CharacterDetailsForm.styl';
 class CharacterDetailsForm extends Component {
 
   static propTypes = {
+    renderActions: PropTypes.func.isRequired,
     character: PropTypes.object,
     loading: PropTypes.bool
   };
 
   state = {
-    store: {
-      name: '',
-      labelId: 0
-    },
-    errors: {}
+    file: null,
+    profileImageUrl: null
   };
-
-  componentWillMount() {
-    const { character } = this.props;
-
-    this._saveGameToState(character);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { character } = nextProps;
-
-    this._saveGameToState(character);
-  }
 
   render() {
     const { profileImageUrl } = this.state;
-    const { loading } = this.props;
+    const { loading, character, renderActions } = this.props;
 
     return (
-      <div className="character-detail-form">
-        <Form loading={loading}>
-          <Form.Group widths="equal">
-            <Form.Field required>
-              <label>Character Name</label>
-              <Form.Input
-                error={this._validity('name')}
-                value={this._formValue('name')}
-                placeholder="Enter Character Name"
-                onChange={this._formInput('name')}
-              />
-            </Form.Field>
+      <Formik
+        enableReinitialize={true}
+        initialValues={characterToValues(character) || validationSchema.default()}
+        onSubmit={this._handleSubmit}
+        validationSchema={validationSchema}
+        render={({ values, handleChange, setFieldValue, submitForm: submitFormMain, isValid: isValidMain }) => (
+          <div className="character-detail-form">
+            <Form as={FormikForm} loading={loading}>
+              <Form.Group widths="equal">
+                <Form.Field required>
+                  <label>Character Name</label>
+                  <Form.Input
+                    name="name"
+                    value={values.name}
+                    placeholder="Enter Character Name"
+                    onChange={handleChange}
+                  />
+                </Form.Field>
 
-            <Form.Field required>
-              <label>Label</label>
-              <GameLabelsSelect
-                error={this._validity('labelId')}
-                value={this._formValue('labelId')}
-                onChange={this._formInput('labelId')}
-              />
-            </Form.Field>
-          </Form.Group>
+                <Form.Field required>
+                  <label>Label</label>
+                  <GameLabelsSelect
+                    value={values.labelId}
+                    onChange={e => setFieldValue('labelId', e.target.value)}
+                  />
+                </Form.Field>
+              </Form.Group>
 
-          <Form.Field>
-            <label>Profile Image</label>
-            {
-              profileImageUrl ? (
-                <Image size='medium' src={profileImageUrl} />
-              ) : null
-            }
-            <Form.Input
-              type="file"
-              placeholder="Select a Profile Image"
-              onChange={this._handleImage}
+              <Form.Field>
+                <label>Profile Image</label>
+                {
+                  profileImageUrl ? (
+                    <Image size='medium' src={profileImageUrl}/>
+                  ) : null
+                }
+                <Form.Input
+                  type="file"
+                  placeholder="Select a Profile Image"
+                  onChange={this._handleImage}
+                />
+              </Form.Field>
+            </Form>
+
+            <LabelDetailForm
+              labelId={values.labelId}
+              characterLabelDetails={null}
+              setFieldValue={setFieldValue}
+              renderActions={({ submitForm: submitFormLabel, isValid: isValidLabel }) => (
+                renderActions({
+                  submitForm: this._handleFormSubmits(submitFormLabel, submitFormMain),
+                  isValid: isValidMain && isValidLabel
+                })
+              )}
             />
-          </Form.Field>
-        </Form>
-
-        {this._renderLabelCharacterForm()}
-      </div>
+          </div>
+        )}
+      />
     );
   };
 
-  valid = () => {
+  _handleFormSubmits = (submitFormLabel, submitFormMain) => {
 
-  };
-
-  submitForm = () => {
-    this.labelForm && this.labelForm.submitForm();
-  };
-
-  doReset = () => {
-    //reset both forms
-  };
-
-  _saveGameToState = (character) => {
-    if (character) {
-      this.setState({
-        store: {
-          name: character.name,
-          labelId: character.label.id
-        },
-        profileImageUrl: _.get(character, 'profileImage.url')
-      });
-    }
-  };
-
-  _valid = () => {
-    const errors = {};
-
-    errors.labelId = _.isEmpty(this._formValue('labelId'));
-    errors.name = _.isEmpty(this._formValue('name'));
-
-    this.setState({ errors });
-
-    return _(errors).values().sumBy(v => v) === 0;
-  };
-
-  _validity = (field) => {
-    return this.state.errors[field] === true;
-  };
-
-  _formInput = (stateKey) => {
-    return (e) => {
-      const { store } = this.state;
-
-      _.set(store, stateKey, e.target.value);
-      this.setState({ ...this.state, store });
-    };
-  };
-
-  _formValue = (stateKey) => {
-    return _.get(this.state.store, stateKey, '');
   };
 
   _handleImage = (e) => {
@@ -154,48 +111,53 @@ class CharacterDetailsForm extends Component {
     reader.readAsDataURL(file);
   };
 
-  _submit = () => {
-    if (this._valid()) {
-      const { file } = this.state;
-      const { onSave } = this.props;
+  _handleSubmit = (values, { setSubmitting, setErrors }) => {
+    const { file } = this.state;
+    const { onSave } = this.props;
 
-      this.setState({ saving: true });
+    setSubmitting(true);
 
-      return uploadImage(file, 'characterProfile')
-        .then((image) => {
-          const payload = _.merge({}, this.state.store);
+    return uploadImage(file, 'characterProfile')
+      .then((image) => {
+        const payload = _.merge({}, values);
 
-          if (image) {
-            payload.profileImage = {
-              publicId: _.get(image, 'publicId'),
-              userUploadId: _.get(image, 'userUploadId'),
-              url: _.get(image, 'imageUrl')
-            };
-          }
+        if (image) {
+          payload.profileImage = {
+            publicId: _.get(image, 'publicId'),
+            userUploadId: _.get(image, 'userUploadId'),
+            url: _.get(image, 'imageUrl')
+          };
+        }
 
-          this.setState({ saving: false });
-          return onSave(payload);
-        });
-    }
+        setSubmitting(true);
+
+        return onSave(payload);
+      });
   };
 
-  _renderLabelCharacterForm = () => {
-    const { store: { labelId } } = this.state;
-    const LabelForm = {
-      1: CharacterDetails5e_1_0_0
-    }[labelId];
-
-    return LabelForm && (
-      <LabelForm
-        ref={(ref) => this.labelForm = ref}
-        onSubmit={this._handleLabelSubmit}
-      />
-    );
-  };
-
-  _handleLabelSubmit = (characterLabelDetails) => {
-    console.log('characterLabelDetails', characterLabelDetails);
-  }
 }
 
 export default CharacterDetailsForm;
+
+function LabelDetailForm(props) {
+  const { labelId, characterLabelDetails, renderActions } = props;
+  const LabelComponent = {
+    1: CharacterDetails5e_1_0_0
+  }[labelId] || null;
+
+  return LabelComponent && (
+    <LabelComponent
+      characterLabelDetails={characterLabelDetails}
+      renderActions={renderActions}
+    />
+  );
+}
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().default('').max(128).min(3).required(),
+  labelId: Yup.number().integer().default('').required()
+});
+
+function characterToValues(character) {
+  return character && validationSchema.noUnknown().cast(character);
+}
