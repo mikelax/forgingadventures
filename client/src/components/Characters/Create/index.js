@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
-import { Button } from 'semantic-ui-react';
+import { Button, Segment } from 'semantic-ui-react';
 
 import { createCharacterMutation } from '../queries';
 import CharacterDetailsForm from '../components/CharacterDetailsForm';
@@ -23,8 +23,14 @@ class CreateCharacter extends Component {
 
           <CharacterDetailsForm
             onSubmit={this._onSave}
-            renderActions={({ isValid, submitForm }) => (
+            renderActions={({ isValid, isDirty, submitForm }) => (
               <div className="actions">
+                { (!(isValid) && isDirty) && (
+                  <Segment inverted color='orange' tertiary>
+                    Please fill in all required fields
+                  </Segment>
+                )}
+
                 <Button primary onClick={submitForm}>Submit</Button>
                 <Button onClick={this._onCancel}>Cancel</Button>
               </div>

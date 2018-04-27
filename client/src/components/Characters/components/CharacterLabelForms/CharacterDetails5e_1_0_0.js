@@ -27,7 +27,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
         initialValues={characterToValues(characterLabelDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange }) => (
+        render={({ values, dirty, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange }) => (
           <React.Fragment>
             <Form className="character-details" as={FormikForm} loading={loading}>
               <FormFieldAutoCalculator values={values} setFieldValue={setFieldValue}/>
@@ -338,7 +338,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 
               </Grid>
             </Form>
-            {renderActions({ validateForm, submitForm, resetForm, isValid })}
+            {renderActions({ validateForm, submitForm, resetForm, isValid, dirty })}
           </React.Fragment>
         )}
       />

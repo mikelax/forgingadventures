@@ -39,7 +39,7 @@ class CharacterDetailsForm extends Component {
         initialValues={characterToValues(character) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, handleChange, setFieldValue, submitForm: submitFormMain, isValid: isValidMain }) => (
+        render={({ values, dirty: dirtyMain, handleChange, setFieldValue, submitForm: submitFormMain, isValid: isValidMain }) => (
           <div className="character-detail-form">
             <Form as={FormikForm} loading={loading}>
               <Form.Group widths="equal">
@@ -83,10 +83,11 @@ class CharacterDetailsForm extends Component {
               characterLabelDetails={null}
               setFieldValue={setFieldValue}
               onSubmit={this._handleLabelSubmit}
-              renderActions={({ submitForm: submitFormLabel, isValid: isValidLabel }) => (
+              renderActions={({ submitForm: submitFormLabel, isValid: isValidLabel, dirty: dirtyLabel }) => (
                 renderActions({
                   submitForm: this._handleFormSubmits(submitFormLabel, submitFormMain),
-                  isValid: isValidMain && isValidLabel
+                  isValid: isValidMain && isValidLabel,
+                  isDirty: dirtyMain || dirtyLabel
                 })
               )}
             />
