@@ -6,12 +6,14 @@ import { Form, Grid, Radio } from 'semantic-ui-react';
 import Yup from 'yup';
 
 import { propsChanged, propsBase } from '../../../../services/props';
+import FormFieldErrorMessage from '../../../../components/shared/components/FormFieldErrorMessage';
 
 
 export default class CharacterDetails5e_1_0_0 extends Component {
 
   static propTypes = {
     renderActions: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool,
     characterLabelDetails: PropTypes.object
   };
@@ -25,7 +27,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
         initialValues={characterToValues(characterLabelDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, setFieldValue, validateForm, submitForm, resetForm, isValid }) => (
+        render={({ values, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange }) => (
           <React.Fragment>
             <Form className="character-details" as={FormikForm} loading={loading}>
               <FormFieldAutoCalculator values={values} setFieldValue={setFieldValue}/>
@@ -71,7 +73,11 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                   </Field>
                 </Form.Field>
 
-                <Form.Field required label="XP" name="xp" control={Field} type="number" min="0"/>
+                <Form.Field required>
+                  <label>XP</label>
+                  <Field name="xp" type="number" min="0"/>
+                  <FormFieldErrorMessage name="xp"/>
+                </Form.Field>
               </Form.Group>
 
               <Form.Group widths="equal">
@@ -97,7 +103,11 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                   </Field>
                 </Form.Field>
 
-                <Form.Field required label="Level" name="primaryLevel" control={Field} type="number" min="1" max="20"/>
+                <Form.Field required>
+                  <label>Level</label>
+                  <Field name="primaryLevel" type="number" min="1" max="20" />
+                  <FormFieldErrorMessage name="primaryLevel"/>
+                </Form.Field>
 
                 <Form.Field label="Proficiency" name="proficiency" control={Field} readOnly/>
               </Form.Group>
@@ -114,8 +124,9 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                   <Form.Field required label="Max" name="health.maxHitPoints" control={Field} type="number" min="1"/>
                 </Form.Field>
 
-                <Form.Field required>
+                <Form.Field>
                   <Form.Field required label="Hit Die" name="health.hitDie" control={Field} type="text"/>
+                  <FormFieldErrorMessage name="health.hitDie"/>
                 </Form.Field>
               </Form.Group>
 
@@ -166,16 +177,24 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                 <Form.Field name="traits.backgroundInformation"
                             control="textarea"
                             placeholder="Add additional Background Information"
+                            onChange={handleChange}
                             value={values.traits.backgroundInformation}/>
               </Form.Field>
               <Form.Field required>
                 <label>Physical Characteristics</label>
-                <Form.Field name="traits.physicalCharacteristics" control="textarea"
+                <Form.Field name="traits.physicalCharacteristics"
+                            control="textarea"
+                            onChange={handleChange}
                             value={values.traits.physicalCharacteristics}/>
+                <FormFieldErrorMessage name="traits.physicalCharacteristics"/>
               </Form.Field>
               <Form.Field required>
                 <label>Features and Traits</label>
-                <Form.Field name="traits.featuresTraits" control="textarea" value={values.traits.featuresTraits}/>
+                <Form.Field name="traits.featuresAndTraits"
+                            onChange={handleChange}
+                            control="textarea"
+                            value={values.traits.featuresAndTraits}/>
+                <FormFieldErrorMessage name="traits.featuresAndTraits"/>
               </Form.Field>
 
               <h3>Abilities</h3>
@@ -187,6 +206,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Form.Field required>
                       <label>Base</label>
                       <Field name="abilities.strength.baseValue" type="number" min="1"/>
+                      <FormFieldErrorMessage name="abilities.strength.baseValue"/>
                     </Form.Field>
                     <Form.Field>
                       <label>Race Bonus</label>
@@ -208,6 +228,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Form.Field required>
                       <label>Base</label>
                       <Field name="abilities.dexterity.baseValue" type="number" min="1"/>
+                      <FormFieldErrorMessage name="abilities.dexterity.baseValue"/>
                     </Form.Field>
                     <Form.Field>
                       <label>Race Bonus</label>
@@ -229,6 +250,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Form.Field required>
                       <label>Base</label>
                       <Field name="abilities.constitution.baseValue" type="number" min="1"/>
+                      <FormFieldErrorMessage name="abilities.constitution.baseValue"/>
                     </Form.Field>
                     <Form.Field>
                       <label>Race Bonus</label>
@@ -252,6 +274,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Form.Field required>
                       <label>Base</label>
                       <Field name="abilities.intelligence.baseValue" type="number" min="1"/>
+                      <FormFieldErrorMessage name="abilities.intelligence.baseValue"/>
                     </Form.Field>
                     <Form.Field>
                       <label>Race Bonus</label>
@@ -273,6 +296,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Form.Field required>
                       <label>Base</label>
                       <Field name="abilities.wisdom.baseValue" type="number" min="1"/>
+                      <FormFieldErrorMessage name="abilities.wisdom.baseValue"/>
                     </Form.Field>
                     <Form.Field>
                       <label>Race Bonus</label>
@@ -294,6 +318,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Form.Field required>
                       <label>Base</label>
                       <Field name="abilities.charisma.baseValue" type="number" min="1"/>
+                      <FormFieldErrorMessage name="abilities.charisma.baseValue"/>
                     </Form.Field>
                     <Form.Field>
                       <label>Race Bonus</label>
@@ -320,17 +345,11 @@ export default class CharacterDetails5e_1_0_0 extends Component {
     );
   }
 
-  submitForm = () => {
-    this.form.submitForm();
-  };
-
   // only called if the form is valid
   _handleSubmit = (values, { setSubmitting, setErrors }) => {
     const { onSubmit } = this.props;
     const payload = validationSchema.noUnknown().cast(values);
 
-    this.formIsValid = true;
-    console.log('payload', payload);
     setSubmitting(true);
     try {
       onSubmit(payload);
@@ -347,58 +366,58 @@ const validationSchema = Yup.object().shape({
   proficiency: Yup.number().integer().default(2).min(2).required(),
   xp: Yup.number().integer().default(0).min(0).required(),
   traits: Yup.object().shape({
-    race: Yup.string().default('').required(),
-    primaryClass: Yup.string().default('').required(),
-    alignment: Yup.string().default('').required(),
-    background: Yup.string().default(''),
-    sex: Yup.string().default(''),
-    backgroundInformation: Yup.string().default(''),
-    physicalCharacteristics: Yup.string().default('').required(),
-    featuresAndTraits: Yup.string().default('').required()
+    race: Yup.string().default('dwarf').required(),
+    primaryClass: Yup.string().default('barbarian').required(),
+    alignment: Yup.string().default('n').required(),
+    background: Yup.string().default('acolyte'),
+    sex: Yup.string().default('other'),
+    backgroundInformation: Yup.string().label('background information').default(''),
+    physicalCharacteristics: Yup.string().label('physical characteristics').default('').required(),
+    featuresAndTraits: Yup.string().label('features and traits').default('').required()
   }),
   health: Yup.object().shape({
     currentHitPoints: Yup.number().integer().default(0).required(),
     maxHitPoints: Yup.number().integer().default(1).min(1).required(),
-    hitDie: Yup.string().default('').required()
+    hitDie: Yup.string().label('hit die').default('').required()
   }),
   abilities: Yup.object().shape({
     strength: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1).required(),
+      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
       modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     dexterity: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1).required(),
+      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
       modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     constitution: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1).required(),
+      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
       modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     intelligence: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1).required(),
+      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
       modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     wisdom: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1).required(),
+      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
       modifier: Yup.number().integer().default(0).min(-5).max(5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     charisma: Yup.object().shape({
-      baseValue: Yup.number().integer().default(1).min(1).required(),
+      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
       modifier: Yup.number().integer().default(0).min(-5).max(5).required(),

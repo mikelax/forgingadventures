@@ -27,7 +27,6 @@ class CreateCharacter extends Component {
               <div className="actions">
                 <Button primary onClick={submitForm}>Submit</Button>
                 <Button onClick={this._onCancel}>Cancel</Button>
-                {console.log('isValid', isValid)}
               </div>
             )}
           />
@@ -41,16 +40,14 @@ class CreateCharacter extends Component {
   };
 
   _onSave = (payload) => {
-    if (this.form.valid()) {
-      const { createCharacter } = this.props;
+    const { createCharacter } = this.props;
 
-      return createCharacter({
-        variables: {
-          input: payload
-        }
-      })
-        .then(() => this.props.history.replace('/profile'));
-    }
+    return createCharacter({
+      variables: {
+        input: payload
+      }
+    })
+      .then(() => this.props.history.replace('/profile'));
   };
 }
 

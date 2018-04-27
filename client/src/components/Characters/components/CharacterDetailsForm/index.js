@@ -2,11 +2,12 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Form as FormikForm, Formik } from 'formik';
-import { Form, Image } from 'semantic-ui-react';
+import { Form, Image, Segment } from 'semantic-ui-react';
+import Yup from 'yup';
 
 import GameLabelsSelect from '../../../Games/components/GameLabelsSelect';
 import { uploadImage } from '../../../../services/image';
-import Yup from 'yup';
+import FormFieldErrorMessage from '../../../../components/shared/components/FormFieldErrorMessage';
 
 // label forms
 
@@ -18,6 +19,7 @@ class CharacterDetailsForm extends Component {
 
   static propTypes = {
     renderActions: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     character: PropTypes.object,
     loading: PropTypes.bool
   };
@@ -49,6 +51,7 @@ class CharacterDetailsForm extends Component {
                     placeholder="Enter Character Name"
                     onChange={handleChange}
                   />
+                  <FormFieldErrorMessage name="name"/>
                 </Form.Field>
 
                 <Form.Field required>
@@ -79,6 +82,7 @@ class CharacterDetailsForm extends Component {
               labelId={values.labelId}
               characterLabelDetails={null}
               setFieldValue={setFieldValue}
+              onSubmit={this._handleLabelSubmit}
               renderActions={({ submitForm: submitFormLabel, isValid: isValidLabel }) => (
                 renderActions({
                   submitForm: this._handleFormSubmits(submitFormLabel, submitFormMain),
@@ -93,7 +97,51 @@ class CharacterDetailsForm extends Component {
   };
 
   _handleFormSubmits = (submitFormLabel, submitFormMain) => {
+    // submitting two forms here. The Label first, which if is valid
+    // will call this._handleLabelSubmit. We then call
+    // this.submitFormMain to submit the main form
+    // which sends the combined payload to the caller's onSubmit
+    this.submitFormMain =  submitFormMain;
 
+    return () => {
+      // invoke the two form submits here to that each form is validated
+      // to display any errors
+      submitFormLabel();
+      submitFormMain();
+    };
+  };
+
+  _handleLabelSubmit = (labelDetailsPayload) => {
+    this.labelDetailsPayload = labelDetailsPayload;
+    this.submitFormMain();
+  };
+
+  _handleSubmit = (values, { setSubmitting, setErrors }) => {
+    if (this.labelDetailsPayload) {
+      const { file } = this.state;
+      const { onSubmit } = this.props;
+
+      setSubmitting(true);
+
+      return uploadImage(file, 'characterProfile')
+        .then((image) => {
+          const payload = _.merge({}, {
+            characterDetails: this.labelDetailsPayload
+          }, values);
+
+          if (image) {
+            payload.profileImage = {
+              publicId: _.get(image, 'publicId'),
+              userUploadId: _.get(image, 'userUploadId'),
+              url: _.get(image, 'imageUrl')
+            };
+          }
+
+          setSubmitting(true);
+
+          return onSubmit(payload);
+        });
+    }
   };
 
   _handleImage = (e) => {
@@ -111,46 +159,33 @@ class CharacterDetailsForm extends Component {
     reader.readAsDataURL(file);
   };
 
-  _handleSubmit = (values, { setSubmitting, setErrors }) => {
-    const { file } = this.state;
-    const { onSave } = this.props;
-
-    setSubmitting(true);
-
-    return uploadImage(file, 'characterProfile')
-      .then((image) => {
-        const payload = _.merge({}, values);
-
-        if (image) {
-          payload.profileImage = {
-            publicId: _.get(image, 'publicId'),
-            userUploadId: _.get(image, 'userUploadId'),
-            url: _.get(image, 'imageUrl')
-          };
-        }
-
-        setSubmitting(true);
-
-        return onSave(payload);
-      });
-  };
 
 }
 
 export default CharacterDetailsForm;
 
 function LabelDetailForm(props) {
-  const { labelId, characterLabelDetails, renderActions } = props;
+  const { labelId, characterLabelDetails, renderActions, onSubmit } = props;
   const LabelComponent = {
     1: CharacterDetails5e_1_0_0
   }[labelId] || null;
 
-  return LabelComponent && (
-    <LabelComponent
-      characterLabelDetails={characterLabelDetails}
-      renderActions={renderActions}
-    />
-  );
+  if (LabelComponent) {
+    return (
+      <LabelComponent
+        characterLabelDetails={characterLabelDetails}
+        renderActions={renderActions}
+        onSubmit={onSubmit}
+      />
+    );
+  } else {
+    return (
+      <Segment inverted color='grey' tertiary>
+        Please select a Game from the label list
+      </Segment>
+    );
+  }
+
 }
 
 const validationSchema = Yup.object().shape({
