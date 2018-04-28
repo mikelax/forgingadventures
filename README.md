@@ -1,16 +1,16 @@
 # Overview
 
-This repo is a POC for a quickstart web project that is based off the [create-react-app](https://github.com/facebookincubator/create-react-app) starter project. That was used as a base with additional useful libraries and options enabled. The goal is to continue utilizing create-react-app without needing to [eject](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject). 
+This repo is a POC for a quickstart web project that is based off the [create-react-app](https://github.com/facebookincubator/create-react-app) starter project. That was used as a base with additional useful libraries and options enabled. The goal is to continue utilizing create-react-app without needing to [eject](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject).
 
 # Details
 
 This repo is organized into two separate projects, one for the React client, and the other as the backend server API. This is based off [this article](https://www.fullstackreact.com/articles/using-create-react-app-with-a-server/) with some slight changes to the folder layout. I didn't want any coupling between the API and client, so they are in totally separate folders to allow zero cross-over. One can be totally replaced without knowledge to the other.
 
-Start scripts/etc are currently not cross-platform compatible. Current set up supports Mac OS / Linux. 
+Start scripts/etc are currently not cross-platform compatible. Current set up supports Mac OS / Linux.
 
 ## How to run - on the host
 
-The package.json file in the ROOT folder is present mainly to support npm scripts to run the development environment. 
+The package.json file in the ROOT folder is present mainly to support npm scripts to run the development environment.
 
 First the dependencies must be installed, run the following install commands:
 
@@ -29,17 +29,17 @@ Edit [package.json](./client/package.json) and set `"proxy": "http://localhost:3
 Install [docker](https://www.docker.com/docker-mac)
 NOTE: Config values for some container parameters (ie. db) are set up using [env files](https://docs.docker.com/compose/environment-variables/).
 
-NOTE 2: If you get errors about certain npm libs not building correctly, it could be that the node_modules folder 
-from the host machine was copied to a docker container. Delete the `node_modules` folder on the host in the api 
+NOTE 2: If you get errors about certain npm libs not building correctly, it could be that the node_modules folder
+from the host machine was copied to a docker container. Delete the `node_modules` folder on the host in the api
 and client folders and then recreate the containers.
 
-NOTE 3: Note that switching branches on the host is prone to crashing the docker services especially if new 
+NOTE 3: Note that switching branches on the host is prone to crashing the docker services especially if new
 packages have been added to either the `api` or `client` folders. It is advisable to `docker-compose stop && docker-compose up --build`
-after switching branches. 
+after switching branches.
 
 From the root folder run:
 
-```shell
+```bash
 # Optionally, pull public postgres docker library
 docker pull postgres
 
@@ -49,13 +49,13 @@ docker-compose up --build
 
 Use the following command to _shell_ into a docker - for example to open a shell in the api container:
 
-```
+```bash
 bash -c "clear && docker exec -it reactapipoc_api_1 sh"
 ```
 
 ## GraphQL
 
-The API server presents a [GraphQL](http://graphql.org) endpoint via `/graphql`. The [GraphiQL](https://github.com/graphql/graphiql) browser 
+The API server presents a [GraphQL](http://graphql.org) endpoint via `/graphql`. The [GraphiQL](https://github.com/graphql/graphiql) browser
 is also accessible via [http://localhost:3001/graphiql](http://localhost:3001/graphiql)
 
 An [introduction](http://graphql.org/learn/) to GraphQL language and schema syntax
@@ -63,7 +63,6 @@ definitions can be be found [here](http://graphql.org/graphql-js/).
 
 This project uses [Apollo graphql-tools](https://www.apollographql.com/docs/graphql-tools/) to define graphQL
 schemas in the [schemas](./api/schemas) folder.
-
 
 ## Additional Libraries & Integrations
 
@@ -79,7 +78,7 @@ schemas in the [schemas](./api/schemas) folder.
 
 # TODO
 
-This is a basic TODO list of additional libraries and enhancements I want to add to this POC to get it closer to a true starting point for a new project. 
+This is a basic TODO list of additional libraries and enhancements I want to add to this POC to get it closer to a true starting point for a new project.
 
 - [X] Integrate express as API server
 - [X] Enhance Auth0 integration with [SPA / API guide](https://auth0.com/docs/architecture-scenarios/application/spa-api)
@@ -95,7 +94,6 @@ This is a basic TODO list of additional libraries and enhancements I want to add
 - [ ] CI/CD Set up
 - [ ] Google Tag Manager / Google Analytics - Possible [page tracking option](https://www.pmg.com/blog/tracking-single-page-web-apps-google-tag-manager-analytics/)
 - [X] Better Handling of ENV variables for multiple environments
-
 
 # Further Reading
 

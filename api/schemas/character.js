@@ -18,12 +18,14 @@ export const characterTypeDefs = `
   }
 
   input CreateCharacterInput {
+    characterDetails: JSON!,
     name: String!,
     labelId: Int!,
     profileImage: ProfileImageInput
   }
 
   input UpdateCharacterInput {
+    characterDetails: JSON!,
     name: String!,
     labelId: Int!,
     profileImage: ProfileImageInput
