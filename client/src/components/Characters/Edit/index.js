@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
-import { Header } from 'semantic-ui-react';
+import { Button, Segment } from 'semantic-ui-react';
 
 import { characterQuery, updateCharacterMutation } from '../queries';
 import CharacterDetailsForm from '../components/CharacterDetailsForm';
 import OwnerGuard from '../../shared/components/OwnerGuard';
+
+import './EditCharacter.styl';
 
 class EditCharacter extends Component {
   render() {
@@ -21,13 +23,26 @@ class EditCharacter extends Component {
           <title>{`Editing Character ${name}`}</title>
         </Helmet>
 
-        <div className="EditCharacter">
-          <Header
-            as='h1'
-            content='Edit Character'
-          />
+        <div className="edit-character">
+          <h1>Edit Character</h1>
 
-          <CharacterDetailsForm onSave={this._onSave} character={character} loading={loading} onCancel={this._onCancel} />
+          <CharacterDetailsForm
+            onSubmit={this._onSave}
+            character={character}
+            loading={loading}
+            renderActions={({ isValid, isDirty, submitForm }) => (
+              <div className="actions">
+                {(!(isValid) && isDirty) && (
+                  <Segment inverted color='orange' tertiary>
+                    Please fill in all required fields
+                  </Segment>
+                )}
+
+                <Button primary onClick={submitForm}>Submit</Button>
+                <Button onClick={this._onCancel}>Cancel</Button>
+              </div>
+            )}
+          />
         </div>
       </React.Fragment>
     );

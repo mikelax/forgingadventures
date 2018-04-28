@@ -11,6 +11,7 @@ export const characterTypeDefs = `
     profileImage: ProfileImage,
     user: User!,
     label: GameLabel!,
+    characterDetails: JSON,
     gamePlayer: [GamePlayer],
     activeGamePlayer: GamePlayer,
     updated_at: GraphQLDateTime,
