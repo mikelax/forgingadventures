@@ -15,16 +15,16 @@ export default class CharacterDetails5e_1_0_0 extends Component {
     renderActions: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool,
-    characterLabelDetails: PropTypes.object
+    characterDetails: PropTypes.object
   };
 
   render() {
-    const { characterLabelDetails, loading, renderActions } = this.props;
+    const { characterDetails, loading, renderActions } = this.props;
 
     return (
       <Formik
         enableReinitialize={true}
-        initialValues={characterToValues(characterLabelDetails) || validationSchema.default()}
+        initialValues={characterToValues(characterDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
         render={({ values, dirty, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange, submitCount }) => (
@@ -184,6 +184,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                 <label>Physical Characteristics</label>
                 <Form.Field name="traits.physicalCharacteristics"
                             control="textarea"
+                            placeholder="Describe notable physical characteristics"
                             onChange={handleChange}
                             value={values.traits.physicalCharacteristics}/>
                 <FormFieldErrorMessage name="traits.physicalCharacteristics"/>
@@ -192,6 +193,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                 <label>Features and Traits</label>
                 <Form.Field name="traits.featuresAndTraits"
                             onChange={handleChange}
+                            placeholder="Describe Features and Traits"
                             control="textarea"
                             value={values.traits.featuresAndTraits}/>
                 <FormFieldErrorMessage name="traits.featuresAndTraits"/>

@@ -80,7 +80,7 @@ class CharacterDetailsForm extends Component {
 
             <LabelDetailForm
               labelId={values.labelId}
-              characterLabelDetails={null}
+              characterDetails={_.get(character, 'characterDetails')}
               setFieldValue={setFieldValue}
               onSubmit={this._handleLabelSubmit}
               renderActions={({ submitForm: submitFormLabel, isValid: isValidLabel, dirty: dirtyLabel, submitCount: submitCountLabel }) => (
@@ -167,7 +167,7 @@ class CharacterDetailsForm extends Component {
 export default CharacterDetailsForm;
 
 function LabelDetailForm(props) {
-  const { labelId, characterLabelDetails, renderActions, onSubmit } = props;
+  const { labelId, characterDetails, renderActions, onSubmit } = props;
   const LabelComponent = {
     1: CharacterDetails5e_1_0_0
   }[labelId] || null;
@@ -175,7 +175,7 @@ function LabelDetailForm(props) {
   if (LabelComponent) {
     return (
       <LabelComponent
-        characterLabelDetails={characterLabelDetails}
+        characterDetails={characterDetails}
         renderActions={renderActions}
         onSubmit={onSubmit}
       />

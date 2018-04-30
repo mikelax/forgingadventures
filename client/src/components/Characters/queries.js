@@ -4,6 +4,7 @@ export const characterFields = `
   fragment characterFields on Character {
     id
     name
+    labelId
     label {
       id
       displayName
