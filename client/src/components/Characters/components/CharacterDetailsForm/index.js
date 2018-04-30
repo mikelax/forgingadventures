@@ -30,8 +30,9 @@ class CharacterDetailsForm extends Component {
   };
 
   render() {
-    const { profileImageUrl } = this.state;
     const { loading, character, renderActions } = this.props;
+    // profileImageUrl is either off the character or the internal state if editing
+    const profileImageUrl = _.get(this.state, 'profileImageUrl') || _.get(character, 'profileImage.url');
 
     return (
       <Formik
