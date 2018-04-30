@@ -30,9 +30,9 @@ class EditCharacter extends Component {
             onSubmit={this._onSave}
             character={character}
             loading={loading}
-            renderActions={({ isValid, isDirty, submitForm }) => (
+            renderActions={({ isValid, submitCount, submitForm }) => (
               <div className="actions">
-                {(!(isValid) && isDirty) && (
+                {(!(isValid) && (submitCount > 0)) && (
                   <Segment inverted color='orange' tertiary>
                     Please fill in all required fields
                   </Segment>
