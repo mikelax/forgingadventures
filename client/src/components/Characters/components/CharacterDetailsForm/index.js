@@ -12,6 +12,7 @@ import FormFieldErrorMessage from '../../../../components/shared/components/Form
 // label forms
 
 import CharacterDetails5e_1_0_0 from '../CharacterLabelForms/CharacterDetails5e_1_0_0';
+import CharacterDetailsPathFinder_1_0_0 from '../CharacterLabelForms/CharacterDetailsPathFinder_1_0_0';
 
 import './CharacterDetailsForm.styl';
 
@@ -170,7 +171,8 @@ export default CharacterDetailsForm;
 function LabelDetailForm(props) {
   const { labelId, characterDetails, renderActions, onSubmit } = props;
   const LabelComponent = {
-    1: CharacterDetails5e_1_0_0
+    1: CharacterDetails5e_1_0_0,
+    2: CharacterDetailsPathFinder_1_0_0
   }[labelId] || null;
 
   if (LabelComponent) {
