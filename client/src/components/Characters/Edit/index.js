@@ -67,7 +67,23 @@ class EditCharacter extends Component {
 
 export default compose(
   graphql(characterQuery, {
-    options: ( { match: { params: { id } } } ) => ({ variables: { id } })
+    options: ( { match: { params: { id } } } ) => ({ variables: { id } }),
+    // the form expects character.labelId - compute this from character.label.id
+    props: (props) => {
+      const { data: { character } } = props;
+
+      if (character) {
+        return _.merge({}, props, {
+          data: {
+            character: _.merge({}, character, {
+              labelId: character.label.id
+            })
+          }
+        });
+      } else {
+        return props;
+      }
+    }
   }),
   graphql(updateCharacterMutation, { name: 'updateCharacter' }),
   OwnerGuard('data.game.user.id')

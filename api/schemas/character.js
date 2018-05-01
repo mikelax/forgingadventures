@@ -11,7 +11,6 @@ export const characterTypeDefs = `
     profileImage: ProfileImage,
     user: User!,
     label: GameLabel!,
-    labelId: Int!,
     characterDetails: JSON,
     gamePlayer: [GamePlayer],
     activeGamePlayer: GamePlayer,
