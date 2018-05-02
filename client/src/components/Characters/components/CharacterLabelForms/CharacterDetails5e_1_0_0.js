@@ -7,6 +7,7 @@ import Yup from 'yup';
 
 import { propsChanged, propsBase } from '../../../../services/props';
 import FormFieldErrorMessage from '../../../../components/shared/components/FormFieldErrorMessage';
+import RadioInput from '../../../../components/shared/components/RadioInput';
 
 
 export default class CharacterDetails5e_1_0_0 extends Component {
@@ -223,7 +224,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                         <label>Modifier</label>
                         <Field name="abilities.strength.modifier" type="number" min="0" readOnly/>
                       </Form.Field>
-                      <Radio label="Saving Throws" name="abilities.strength.savingThrows" toggle/>
+                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.strength.savingThrows" />
                     </Grid.Column>
 
                     <Grid.Column>
@@ -245,7 +246,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                         <label>Modifier</label>
                         <Field name="abilities.dexterity.modifier" type="number" min="0" readOnly/>
                       </Form.Field>
-                      <Radio label="Saving Throws" name="abilities.dexterity.savingThrows" toggle/>
+                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.dexterity.savingThrows"/>
                     </Grid.Column>
 
                     <Grid.Column>
@@ -267,7 +268,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                         <label>Modifier</label>
                         <Field name="abilities.constitution.modifier" type="number" min="0" readOnly/>
                       </Form.Field>
-                      <Radio label="Saving Throws" name="abilities.constitution.savingThrows" toggle/>
+                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.constitution.savingThrows" />
                     </Grid.Column>
                   </Grid.Row>
 
@@ -291,7 +292,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                         <label>Modifier</label>
                         <Field name="abilities.intelligence.modifier" type="number" min="0" readOnly/>
                       </Form.Field>
-                      <Radio label="Saving Throws" name="abilities.intelligence.savingThrows" toggle/>
+                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.intelligence.savingThrows" />
                     </Grid.Column>
 
                     <Grid.Column>
@@ -313,7 +314,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                         <label>Modifier</label>
                         <Field name="abilities.wisdom.modifier" type="number" min="0" readOnly/>
                       </Form.Field>
-                      <Radio label="Saving Throws" name="abilities.wisdom.savingThrows" toggle/>
+                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.wisdom.savingThrows" />
                     </Grid.Column>
 
                     <Grid.Column>
@@ -335,7 +336,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                         <label>Modifier</label>
                         <Field name="abilities.charisma.modifier" type="number" min="0" readOnly/>
                       </Form.Field>
-                      <Radio label="Saving Throws" name="abilities.charisma.savingThrows" toggle/>
+                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.charisma.savingThrows" />
                     </Grid.Column>
                   </Grid.Row>
 
