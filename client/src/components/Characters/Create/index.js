@@ -24,7 +24,7 @@ class CreateCharacter extends Component {
           <CharacterDetailsForm
             onSubmit={this._onSave}
             renderActions={({ isValid, submitForm, submitCount }) => (
-              <div className="actions">
+              <Segment>
                 { (!(isValid) && (submitCount > 0)) && (
                   <Segment inverted color='orange' tertiary>
                     Please fill in all required fields
@@ -33,7 +33,7 @@ class CreateCharacter extends Component {
 
                 <Button primary onClick={submitForm}>Submit</Button>
                 <Button onClick={this._onCancel}>Cancel</Button>
-              </div>
+              </Segment>
             )}
           />
         </div>

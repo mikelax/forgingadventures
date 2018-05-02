@@ -31,7 +31,7 @@ class CharacterDetailsForm extends Component {
   };
 
   render() {
-    const { loading, character, renderActions } = this.props;
+    const { loading, character, renderActions, lockLabel } = this.props;
     // profileImageUrl is either off the character or the internal state if editing
     const profileImageUrl = _.get(this.state, 'profileImageUrl') || _.get(character, 'profileImage.url');
 
@@ -43,42 +43,45 @@ class CharacterDetailsForm extends Component {
         validationSchema={validationSchema}
         render={({ values, dirty: dirtyMain, handleChange, setFieldValue, submitForm: submitFormMain, isValid: isValidMain, submitCount: submitCountMain }) => (
           <div className="character-detail-form">
-            <Form as={FormikForm} loading={loading}>
-              <Form.Group widths="equal">
-                <Form.Field required>
-                  <label>Character Name</label>
+            <Segment>
+              <Form as={FormikForm} loading={loading}>
+                <Form.Group widths="equal">
+                  <Form.Field required>
+                    <label>Character Name</label>
+                    <Form.Input
+                      name="name"
+                      value={values.name}
+                      placeholder="Enter Character Name"
+                      onChange={handleChange}
+                    />
+                    <FormFieldErrorMessage name="name"/>
+                  </Form.Field>
+
+                  <Form.Field required>
+                    <label>Label</label>
+                    <GameLabelsSelect
+                      value={values.labelId}
+                      disabled={lockLabel}
+                      onChange={e => setFieldValue('labelId', e.target.value)}
+                    />
+                  </Form.Field>
+                </Form.Group>
+
+                <Form.Field>
+                  <label>Profile Image</label>
+                  {
+                    profileImageUrl ? (
+                      <Image size='medium' src={profileImageUrl}/>
+                    ) : null
+                  }
                   <Form.Input
-                    name="name"
-                    value={values.name}
-                    placeholder="Enter Character Name"
-                    onChange={handleChange}
-                  />
-                  <FormFieldErrorMessage name="name"/>
-                </Form.Field>
-
-                <Form.Field required>
-                  <label>Label</label>
-                  <GameLabelsSelect
-                    value={values.labelId}
-                    onChange={e => setFieldValue('labelId', e.target.value)}
+                    type="file"
+                    placeholder="Select a Profile Image"
+                    onChange={this._handleImage}
                   />
                 </Form.Field>
-              </Form.Group>
-
-              <Form.Field>
-                <label>Profile Image</label>
-                {
-                  profileImageUrl ? (
-                    <Image size='medium' src={profileImageUrl}/>
-                  ) : null
-                }
-                <Form.Input
-                  type="file"
-                  placeholder="Select a Profile Image"
-                  onChange={this._handleImage}
-                />
-              </Form.Field>
-            </Form>
+              </Form>
+            </Segment>
 
             <LabelDetailForm
               labelId={values.labelId}

@@ -30,8 +30,9 @@ class EditCharacter extends Component {
             onSubmit={this._onSave}
             character={character}
             loading={loading}
+            lockLabel={true}
             renderActions={({ isValid, submitCount, submitForm }) => (
-              <div className="actions">
+              <Segment>
                 {(!(isValid) && (submitCount > 0)) && (
                   <Segment inverted color='orange' tertiary>
                     Please fill in all required fields
@@ -40,7 +41,7 @@ class EditCharacter extends Component {
 
                 <Button primary onClick={submitForm}>Submit</Button>
                 <Button onClick={this._onCancel}>Cancel</Button>
-              </div>
+              </Segment>
             )}
           />
         </div>
