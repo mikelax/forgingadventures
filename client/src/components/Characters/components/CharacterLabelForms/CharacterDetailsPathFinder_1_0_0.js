@@ -131,31 +131,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 
               <Form.Group widths="equal">
                 <Form.Field required>
-                  <label>Background</label>
-                  <Field
-                    name="background"
-                    component="select"
-                    className="field"
-                  >
-                    <option value="acolyte">Acolyte</option>
-                    <option value="charlatan">Charlatan</option>
-                    <option value="criminal">Criminal</option>
-                    <option value="entertainer">Entertainer</option>
-                    <option value="folkhero">Folk Hero</option>
-                    <option value="guildartisan">Guild Artisan</option>
-                    <option value="herit">Hermit</option>
-                    <option value="noble">Noble</option>
-                    <option value="outlander">Outlander</option>
-                    <option value="pirate">Pirate</option>
-                    <option value="sage">Sage</option>
-                    <option value="sailor">Sailor</option>
-                    <option value="soldier">Soldier</option>
-                    <option value="urchin">Urchin</option>
-                    <option value="other">Other - Variant</option>
-                  </Field>
-                </Form.Field>
-
-                <Form.Field required>
                   <label>Sex</label>
                   <Field
                     name="traits.sex"
@@ -219,7 +194,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <label>Modifier</label>
                       <Field name="abilities.strength.modifier" type="number" min="0" readOnly/>
                     </Form.Field>
-                    <Radio label="Saving Throws" name="abilities.strength.savingThrows" toggle/>
                   </Grid.Column>
 
                   <Grid.Column>
@@ -241,7 +215,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <label>Modifier</label>
                       <Field name="abilities.dexterity.modifier" type="number" min="0" readOnly/>
                     </Form.Field>
-                    <Radio label="Saving Throws" name="abilities.dexterity.savingThrows" toggle/>
                   </Grid.Column>
 
                   <Grid.Column>
@@ -263,7 +236,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <label>Modifier</label>
                       <Field name="abilities.constitution.modifier" type="number" min="0" readOnly/>
                     </Form.Field>
-                    <Radio label="Saving Throws" name="abilities.constitution.savingThrows" toggle/>
                   </Grid.Column>
                 </Grid.Row>
 
@@ -287,7 +259,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <label>Modifier</label>
                       <Field name="abilities.intelligence.modifier" type="number" min="0" readOnly/>
                     </Form.Field>
-                    <Radio label="Saving Throws" name="abilities.intelligence.savingThrows" toggle/>
                   </Grid.Column>
 
                   <Grid.Column>
@@ -309,7 +280,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <label>Modifier</label>
                       <Field name="abilities.wisdom.modifier" type="number" min="0" readOnly/>
                     </Form.Field>
-                    <Radio label="Saving Throws" name="abilities.wisdom.savingThrows" toggle/>
                   </Grid.Column>
 
                   <Grid.Column>
@@ -331,7 +301,6 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <label>Modifier</label>
                       <Field name="abilities.charisma.modifier" type="number" min="0" readOnly/>
                     </Form.Field>
-                    <Radio label="Saving Throws" name="abilities.charisma.savingThrows" toggle/>
                   </Grid.Column>
                 </Grid.Row>
 
@@ -368,7 +337,6 @@ const validationSchema = Yup.object().shape({
     race: Yup.string().default('dwarf').required(),
     primaryClass: Yup.string().default('barbarian').required(),
     alignment: Yup.string().default('n').required(),
-    background: Yup.string().default('acolyte'),
     sex: Yup.string().default('other'),
     backgroundInformation: Yup.string().label('background information').default(''),
     physicalCharacteristics: Yup.string().label('physical characteristics').default('').required(),
@@ -384,43 +352,37 @@ const validationSchema = Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
-      savingThrows: Yup.boolean().default(false)
+      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
     }),
     dexterity: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
-      savingThrows: Yup.boolean().default(false)
+      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
     }),
     constitution: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
-      savingThrows: Yup.boolean().default(false)
+      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
     }),
     intelligence: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
-      savingThrows: Yup.boolean().default(false)
+      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
     }),
     wisdom: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
-      savingThrows: Yup.boolean().default(false)
+      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
     }),
     charisma: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
-      savingThrows: Yup.boolean().default(false)
+      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
     })
   })
 });
