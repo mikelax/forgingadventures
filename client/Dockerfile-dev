@@ -3,10 +3,16 @@ FROM node:8.9.4-alpine
 # for dev only - extend watchers limit for CRA file watchers and auto-reload
 COPY ./etc/sysctl.conf /etc/sysctl.conf
 
+RUN mkdir /tmp/packages
+WORKDIR /tmp/packages
+COPY ./package.json ./yarn.lock ./
+RUN yarn install
+
 # define paths
 WORKDIR /app
+RUN cp -R /tmp/packages/node_modules .
 COPY . /app
 
 EXPOSE 3000
 
-CMD yarn && yarn start
+CMD yarn start

@@ -8,13 +8,14 @@ import { gameLabelsQuery } from '../../queries';
 class GameLabelsSelect extends Component {
 
   render() {
-    const { data: { gameLabels }, value, error, placeholder, onChange } = this.props;
+    const { data: { gameLabels }, value, error, placeholder, onChange, disabled } = this.props;
 
     return (
       <Form.Field
         as="select"
         error={error}
         value={value}
+        disabled={disabled}
         onChange={onChange}>
           <option value="0">{ placeholder || 'Select a Label' }</option>
         {

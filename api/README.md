@@ -2,23 +2,23 @@
 
 ## Code Linting
 
-This project is set up with [eslint](https://eslint.org/) using the [airbnb style guide](https://www.npmjs.com/package/eslint-config-airbnb). 
+This project is set up with [eslint](https://eslint.org/) using the [airbnb style guide](https://www.npmjs.com/package/eslint-config-airbnb).
 
-The airbnb and eslint versions being used include support for most of the webpack and babel features, but [babel-eslint](https://github.com/babel/babel-eslint) was required to get *all* features working, ie. static properties. 
+The airbnb and eslint versions being used include support for most of the webpack and babel features, but [babel-eslint](https://github.com/babel/babel-eslint) was required to get *all* features working, ie. static properties.
 
 To lint this project run the following command:
 
-```
+```bash
 yarn lint
 ```
 
 ## Configuration Notes
 
-The project uses the [node-config](https://github.com/lorenwest/node-config) package to manage configuration files between environments. 
+The project uses the [node-config](https://github.com/lorenwest/node-config) package to manage configuration files between environments.
 
 ### Auth0
 
-There are two attributes defined under the main `auth0` object within the config json files. 
+There are two attributes defined under the main `auth0` object within the config json files.
 
 The first attirbute is named `faClient`. This contains properties that are used for security and validation of the main FA Client and API. This contains keys for the Auth0 Client `Forging Adventures` such as the clientId, domain, audience, and redirectUri.
 

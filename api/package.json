@@ -2,7 +2,7 @@
   "name": "forging-adventures-api",
   "version": "0.1.0",
   "private": true,
-  "description": "Express API  and Apollo/GraphQL",
+  "description": "Express API and Apollo/GraphQL",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

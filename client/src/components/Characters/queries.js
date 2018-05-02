@@ -9,6 +9,7 @@ export const characterFields = `
       displayName
       shortName
     }
+    characterDetails
     profileImage {
       url
       publicId

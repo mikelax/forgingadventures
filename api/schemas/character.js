@@ -11,6 +11,7 @@ export const characterTypeDefs = `
     profileImage: ProfileImage,
     user: User!,
     label: GameLabel!,
+    characterDetails: JSON,
     gamePlayer: [GamePlayer],
     activeGamePlayer: GamePlayer,
     updated_at: GraphQLDateTime,
@@ -18,12 +19,14 @@ export const characterTypeDefs = `
   }
 
   input CreateCharacterInput {
+    characterDetails: JSON!,
     name: String!,
     labelId: Int!,
     profileImage: ProfileImageInput
   }
 
   input UpdateCharacterInput {
+    characterDetails: JSON!,
     name: String!,
     labelId: Int!,
     profileImage: ProfileImageInput
