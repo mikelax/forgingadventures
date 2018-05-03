@@ -97,6 +97,34 @@ Resources:
         - Key: Name
           Value: forgingadventures
 
+    SecretsKmsKey:
+      Type: AWS::KMS::Key
+      Properties:
+        Description: !Sub 'Key to encrypt ${Environment} secrets'
+        Enabled: true
+        EnableKeyRotation: false
+        KeyPolicy:
+          Version: "2012-10-17",
+          Statement:
+            -
+              Sid: "Allow administration of the key"
+              Effect: Allow
+              Principal:
+                AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+              Action:
+                - "kms:*"
+              Resource: "*"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
+    SecretsKmsKeyAlias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: !Sub 'alias/secrets/${Environment}'
+        TargetKeyId: !Ref SecretsKmsKey
+
 Outputs:
   ClientEcsSecurityGroup:
     Description: ECS Client Group ID
@@ -110,3 +138,8 @@ Outputs:
   RdsSecurityGroupId:
     Description: RDS Security Group ID
     Value: !Ref RdsSecurityGroup
+  SecretsKmsKeyArn:
+    Description: SecretsKmsKey ARN
+    Value: !GetAtt SecretsKmsKey.Arn
+    Export:
+      Name: !Sub "${Environment}:security:SecretsKmsKeyArn"

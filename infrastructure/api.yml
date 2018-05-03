@@ -9,6 +9,9 @@ Parameters:
     Type: Number
     Description: Desired Task Count
     Default: 1
+  Environment:
+    Type: String
+    Description: The environment
   ContainerCpu:
     Type: String
     Description: Docker CPU requirements
@@ -37,6 +40,35 @@ Resources:
       Path: /
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  EcsTaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs-tasks.amazonaws.com]
+            Action: ["sts:AssumeRole"]
+      Path: /
+
+  KmsIamPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${AWS::StackName}-kms"
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - "kms:Get*"
+              - "kms:List*"
+              - "kms:Decrypt*"
+              - "kms:Describe*"
+            Resource:
+              - Fn::ImportValue:
+                  !Sub "${Environment}:security:SecretsKmsKeyArn"
+      Roles:
+        - !Ref EcsTaskRole
 
   ApiCloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup

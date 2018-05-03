@@ -33,7 +33,7 @@ Resources:
         - Key: Name
           Value: forgingadventures
 
-  ElbTargetGroup:
+  ClientElbTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: 30
@@ -58,13 +58,38 @@ Resources:
         - Key: StackName
           Value: !Ref AWS::StackName
 
+  ApiElbTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: "/"
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 4
+      UnhealthyThresholdCount: 3
+      Port: 3001
+      Protocol: HTTP
+      VpcId: !Ref VpcId
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 15
+      TargetType: ip
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+        - Key: StackName
+          Value: !Ref AWS::StackName
+
   ElbHttpListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-        - TargetGroupArn: !Ref ElbTargetGroup
+        - TargetGroupArn: !Ref ClientElbTargetGroup
           Type: forward
-      LoadBalancerArn: !Ref Elb
+      LoadBalancerArn: !Ref ClientElb
       Port: 80
       Protocol: HTTP
 
@@ -74,11 +99,24 @@ Resources:
       Certificates:
         - CertificateArn: !Ref SslCertificateArn
       DefaultActions:
-        - TargetGroupArn: !Ref ElbTargetGroup
+        - TargetGroupArn: !Ref ClientElbTargetGroup
           Type: forward
       LoadBalancerArn: !Ref Elb
       Port: 443
       Protocol: HTTPS
+
+  HttpsApiRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref ApiElbTargetGroup
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /api/*
+      ListenerArn: !Ref ElbHttpsListener
+      Priority: 20
 
   Cluster:
     Type: AWS::ECS::Cluster
@@ -89,18 +127,12 @@ Outputs:
   ClusterName:
     Description: The ECS Cluster Name
     Value: !Ref Cluster
-  ElbHttpListenerArn:
-    Description: HTTP Listener ARN
-    Value: !Ref ElbHttpListener
-  ElbId:
-    Description: "App Load Balancer Id"
-    Value: !Ref Elb
+  ApiElbTargetGroup:
+    Description: API Target Group
+    Value: !Ref ApiElbTargetGroup
   ElbDns:
     Description: "App Load Balancer DNS Name"
     Value: !GetAtt Elb.DNSName
-  ElbUrl:
-    Description: "App Load Balancer URL for the cluster"
-    Value: !Join [ "", [ "https://", !GetAtt Elb.DNSName ] ]
-  ElbTargetGroup:
+  ClientElbTargetGroup:
     Description: Client Target Group
-    Value: !Ref ElbTargetGroup
+    Value: !Ref ClientElbTargetGroup
