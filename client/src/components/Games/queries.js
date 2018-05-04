@@ -46,6 +46,7 @@ export const gameMessageFields = `
     character {
       name
       profileImage {
+        publicId
         url
       }
     }
@@ -69,6 +70,7 @@ export const gameLoungeMessageFields = `
       id
       name
       profileImage {
+        publicId
         url 
       }
     }

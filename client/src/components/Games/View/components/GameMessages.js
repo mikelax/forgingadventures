@@ -105,6 +105,54 @@ class GameMessageContainerBase extends Component {
   };
 
   render() {
+    const { gameMessage: { postType } } = this.props;
+    const messageRenderer = {
+      ic: this._inCharacterMessageRender,
+      ooc: this._outOfCharacterMessageRender
+    }[postType];
+
+    return messageRenderer();
+  }
+
+  ////// private
+
+  _inCharacterMessageRender = () => {
+    const { gameMessage } = this.props;
+    const { editing } = this.state;
+
+    return (
+      <Comment>
+        {characterProfileImage()}
+        <Comment.Content>
+          <Comment.Author>{gameMessage.character.name}</Comment.Author>
+          <Comment.Metadata>
+            <div>
+              Posted {this._relativeDate(gameMessage.created_at)}
+            </div>
+            {this._lastEdited()}
+          </Comment.Metadata>
+          <Comment.Text>
+            <RichEditor message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+          </Comment.Text>
+          <Comment.Actions>
+            {this._messageControls(gameMessage.user.id)}
+          </Comment.Actions>
+        </Comment.Content>
+      </Comment>
+    );
+
+    function characterProfileImage() {
+      const characterUrl = _.get(gameMessage, 'character.profileImage.url');
+
+      if (characterUrl) {
+        return <Comment.Avatar src={characterUrl} />;
+      } else {
+        return <Comment.Avatar><Icon name="user" /></Comment.Avatar>;
+      }
+    }
+  };
+
+  _outOfCharacterMessageRender = () => {
     const { gameMessage } = this.props;
     const { editing } = this.state;
 
@@ -128,9 +176,7 @@ class GameMessageContainerBase extends Component {
         </Comment.Content>
       </Comment>
     );
-  }
-
-  ////// private
+  };
 
   _messageControls = (messageUserId) => {
     const { editing } = this.state;
