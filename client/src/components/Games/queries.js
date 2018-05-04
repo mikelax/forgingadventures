@@ -40,8 +40,15 @@ export const gameMessageFields = `
     gameId
     message
     numberEdits
+    postType
     created_at
     updated_at
+    character {
+      name
+      profileImage {
+        url
+      }
+    }
     user {
       id
     }
