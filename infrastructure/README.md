@@ -42,7 +42,25 @@ aws --profile forgingadventures cloudformation create-stack --stack-name forging
 
 ### Create or Update the Application Stacks
 
-These two commands will either react the CFN stack, or update an existing stack. These commands assume the latest copies of the template files have already been uploaded to S3 using the above command. The stack name should also be adjusted to be either `test` or `production` based on the environment you are deploying to.
+These two commands will either create the CFN stack, or update an existing stack. These commands assume the latest copies of the template files have already been uploaded to S3 using the above command. The stack name should also be adjusted to be either `test` or `production` based on the environment you are deploying to.
+
+#### Create API application CFN Stack
+
+```bash
+aws --profile forgingadventures cloudformation create-stack --stack-name forgingadventures-test-api \
+  --region us-east-1 --on-failure DO_NOTHING --capabilities CAPABILITY_IAM \
+  --template-url https://s3.amazonaws.com/forgingadventures-resources/cfn-templates/api.yml \
+  --parameters https://s3.amazonaws.com/forgingadventures-resources/cfn-templates/test-api-parameters.json
+```
+
+#### Update API application CFN Stack
+
+```bash
+aws --profile forgingadventures cloudformation update-stack --stack-name forgingadventures-test-api \
+  --region us-east-1 --capabilities CAPABILITY_IAM \
+  --template-url https://s3.amazonaws.com/forgingadventures-resources/cfn-templates/api.yml \
+  --parameters https://s3.amazonaws.com/forgingadventures-resources/cfn-templates/test-api-parameters.json
+```
 
 #### Create Client application CFN Stack
 
