@@ -52,6 +52,11 @@ export const gameMessageFields = `
     }
     user {
       id
+      name
+      profileImage {
+        publicId
+        url
+      }
     }
   }
 `;

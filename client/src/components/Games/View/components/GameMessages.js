@@ -147,7 +147,7 @@ class GameMessageContainerBase extends Component {
       if (characterUrl) {
         return <Comment.Avatar src={characterUrl} />;
       } else {
-        return <Comment.Avatar><Icon name="user" /></Comment.Avatar>;
+        return <Comment.Avatar as={Icon} name="user" />;
       }
     }
   };
@@ -158,9 +158,9 @@ class GameMessageContainerBase extends Component {
 
     return (
       <Comment>
-        <Comment.Avatar><Icon name="user" /></Comment.Avatar>
+        {userProfileImage()}
         <Comment.Content>
-          <Comment.Author>Character name</Comment.Author>
+          <Comment.Author>{gameMessage.user.name}</Comment.Author>
           <Comment.Metadata>
             <div>
               Posted {this._relativeDate(gameMessage.created_at)}
@@ -176,6 +176,16 @@ class GameMessageContainerBase extends Component {
         </Comment.Content>
       </Comment>
     );
+
+    function userProfileImage() {
+      const profileImageUrl = _.get(gameMessage, 'user.profileImage.url');
+
+      if (profileImageUrl) {
+        return <Comment.Avatar src={profileImageUrl} />;
+      } else {
+        return <Comment.Avatar as={Icon} name="user" size="large" />;
+      }
+    }
   };
 
   _messageControls = (messageUserId) => {
