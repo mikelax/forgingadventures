@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form as FormikForm, Formik } from 'formik';
-import { Form, Grid, Radio, Segment } from 'semantic-ui-react';
+import { Form, Grid, Segment } from 'semantic-ui-react';
 import Yup from 'yup';
 
 import { propsChanged, propsBase } from '../../../../services/props';
