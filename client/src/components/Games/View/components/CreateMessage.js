@@ -108,7 +108,7 @@ class PostAsSelectorBase extends Component {
           <Grid.Row centered>
             <Grid.Column>
               <Dimmer.Dimmable as={Segment} basic compact dimmed={this.state.ic}>
-                <Dimmer active={this.state.ic} inverted />
+                <Dimmer active={this.state.ic} inverted/>
                 <span>Out of Character</span>
               </Dimmer.Dimmable>
             </Grid.Column>
@@ -119,7 +119,7 @@ class PostAsSelectorBase extends Component {
 
             <Grid.Column>
               <Dimmer.Dimmable as={Segment} basic compact dimmed={!(this.state.ic)}>
-                <Dimmer active={!(this.state.ic)} inverted />
+                <Dimmer active={!(this.state.ic)} inverted/>
                 <CharacterProfile character={character}/>
               </Dimmer.Dimmable>
             </Grid.Column>
@@ -159,7 +159,7 @@ class PostAsSelectorBase extends Component {
   _getMyGamePlayerCharacter = () => {
     const myGamePlayer = this._getMyGamePlayer();
     return _.get(myGamePlayer, 'character');
-  }
+  };
 
 }
 
