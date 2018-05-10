@@ -17,25 +17,30 @@ export const gameMessageTypeDefs = `
     id: ID!,
     gameId: ID!,
     user: User!,
-    message: JSON!,
+    character: Character,
+    message: String!,
     numberEdits: Int!,
+    postType: String!,
     updated_at: GraphQLDateTime,
     created_at: GraphQLDateTime
   }
   
   input CreateGameMessageInput {
     gameId: ID!,
-    message: JSON!
+    characterId: ID,
+    postType: String!,
+    message: String!
   }
   
   input UpdateGameMessageInput {
-    message: JSON!
+    message: String!
   }
 `;
 
 export const gameMessageResolvers = {
   GameMessage: {
-    user: (gameMessage, vars, context) => context.loaders.users.load(gameMessage.userId)
+    user: (gameMessage, vars, context) => context.loaders.users.load(gameMessage.userId),
+    character: (gameMessage, vars, context) => gameMessage.characterId && context.loaders.characters.load(gameMessage.characterId)
   },
   Query: {
     gameMessage: (obj, { id }) =>
@@ -49,11 +54,13 @@ export const gameMessageResolvers = {
       schemaScopeGate(['create:posts'], context, () => {
         return getUser(context.req.user.sub)
           .then((user) => {
-            input.userId = user.id;
+            const payload = _.merge({}, input, {
+              userId: user.id
+            });
 
             return GameMessage
               .query()
-              .insert(input)
+              .insert(payload)
               .returning('*')
               .execute()
               .tap((gameMessage) => {
@@ -63,6 +70,7 @@ export const gameMessageResolvers = {
               });
           });
       }),
+
     updateGameMessage: (obj, { id, input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
         return getUser(context.req.user.sub)
@@ -103,6 +111,7 @@ export const gameMessageResolvers = {
         return payload.messageAdded.gameId === Number(variables.gameId);
       })
     },
+
     messageUpdated: {
       subscribe: withFilter(() => pubsub.asyncIterator(TOPIC_MESSAGE_UPDATED), (payload, variables) => {
         return payload.messageUpdated.gameId === Number(variables.gameId);

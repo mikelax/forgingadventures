@@ -40,10 +40,23 @@ export const gameMessageFields = `
     gameId
     message
     numberEdits
+    postType
     created_at
     updated_at
+    character {
+      name
+      profileImage {
+        publicId
+        url
+      }
+    }
     user {
       id
+      name
+      profileImage {
+        publicId
+        url
+      }
     }
   }
 `;
@@ -62,6 +75,7 @@ export const gameLoungeMessageFields = `
       id
       name
       profileImage {
+        publicId
         url 
       }
     }

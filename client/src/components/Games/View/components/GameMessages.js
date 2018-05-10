@@ -104,15 +104,29 @@ class GameMessageContainerBase extends Component {
     editing: false
   };
 
+  editor = React.createRef();
+
   render() {
+    const { gameMessage: { postType } } = this.props;
+    const messageRenderer = {
+      ic: this._inCharacterMessageRender,
+      ooc: this._outOfCharacterMessageRender
+    }[postType];
+
+    return messageRenderer();
+  }
+
+  ////// private
+
+  _inCharacterMessageRender = () => {
     const { gameMessage } = this.props;
     const { editing } = this.state;
 
     return (
       <Comment>
-        <Comment.Avatar><Icon name="user" /></Comment.Avatar>
+        {characterProfileImage()}
         <Comment.Content>
-          <Comment.Author>Character name</Comment.Author>
+          <Comment.Author>{gameMessage.character.name}</Comment.Author>
           <Comment.Metadata>
             <div>
               Posted {this._relativeDate(gameMessage.created_at)}
@@ -120,7 +134,7 @@ class GameMessageContainerBase extends Component {
             {this._lastEdited()}
           </Comment.Metadata>
           <Comment.Text>
-            <RichEditor message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
             {this._messageControls(gameMessage.user.id)}
@@ -128,9 +142,53 @@ class GameMessageContainerBase extends Component {
         </Comment.Content>
       </Comment>
     );
-  }
 
-  ////// private
+    function characterProfileImage() {
+      const characterUrl = _.get(gameMessage, 'character.profileImage.url');
+
+      if (characterUrl) {
+        return <Comment.Avatar src={characterUrl} />;
+      } else {
+        return <Comment.Avatar as={Icon} name="user" />;
+      }
+    }
+  };
+
+  _outOfCharacterMessageRender = () => {
+    const { gameMessage } = this.props;
+    const { editing } = this.state;
+
+    return (
+      <Comment>
+        {userProfileImage()}
+        <Comment.Content>
+          <Comment.Author>{gameMessage.user.name}</Comment.Author>
+          <Comment.Metadata>
+            <div>
+              Posted {this._relativeDate(gameMessage.created_at)}
+            </div>
+            {this._lastEdited()}
+          </Comment.Metadata>
+          <Comment.Text>
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
+          </Comment.Text>
+          <Comment.Actions>
+            {this._messageControls(gameMessage.user.id)}
+          </Comment.Actions>
+        </Comment.Content>
+      </Comment>
+    );
+
+    function userProfileImage() {
+      const profileImageUrl = _.get(gameMessage, 'user.profileImage.url');
+
+      if (profileImageUrl) {
+        return <Comment.Avatar src={profileImageUrl} />;
+      } else {
+        return <Comment.Avatar as={Icon} name="user" size="large" />;
+      }
+    }
+  };
 
   _messageControls = (messageUserId) => {
     const { editing } = this.state;
@@ -166,7 +224,7 @@ class GameMessageContainerBase extends Component {
   _handleQuote = () => {
     const { quoteGameMessage } = this.props;
 
-    quoteGameMessage(this.editor.getEditorMessage());
+    quoteGameMessage(this.editor.current.getEditorMessage());
   };
 
   _handleSubmit = () => {
@@ -176,7 +234,7 @@ class GameMessageContainerBase extends Component {
       variables: {
         id: gameMessage.id,
         input: {
-          message: this.editor.getEditorMessage()
+          message: this.editor.current.getEditorMessage()
         }
       }
     })
