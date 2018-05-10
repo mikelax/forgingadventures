@@ -33,8 +33,6 @@ export const gameMessageTypeDefs = `
   }
   
   input UpdateGameMessageInput {
-    characterId: ID,
-    postType: String!,
     message: String!
   }
 `;

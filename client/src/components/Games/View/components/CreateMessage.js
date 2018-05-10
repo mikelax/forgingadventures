@@ -113,8 +113,9 @@ class PostAsSelector extends Component {
 
   render() {
     const character = this._getMyGamePlayerCharacter();
+    const isGameMaster = this._isGameMaster();
 
-    return (
+    return !(isGameMaster) && (
       <React.Fragment>
         <label>Post As</label>
         <Grid columns={3} textAlign='center' verticalAlign='middle'>
@@ -162,6 +163,11 @@ class PostAsSelector extends Component {
     };
 
     onPostTypeChange(payload);
+  };
+
+  _isGameMaster = () => {
+    const { data } = this.props;
+    return _(data).chain().get('myGamePlayer').filter({ status: 'game-master' }).first().value();
   };
 
   _getMyGamePlayer = () => {
