@@ -18,11 +18,13 @@ class CreateMessage extends Component {
     form: null
   };
 
+  editor = React.createRef();
+
   componentWillReceiveProps(nextProps) {
     const gameMessage = _.get(nextProps, 'gameMessage.message');
 
     if (gameMessage) {
-      this.editor.addQuoteBlock(gameMessage);
+      this.editor.current.addQuoteBlock(gameMessage);
     }
   }
 
@@ -42,7 +44,7 @@ class CreateMessage extends Component {
             </Query>
 
             <label>Add Message</label>
-            <RichEditor ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
+            <RichEditor ref={this.editor} onChange={this._handleOnChange}/>
           </Form.Field>
 
           <Button primary
@@ -75,16 +77,14 @@ class CreateMessage extends Component {
     return hasContent && mutate({
       variables: {
         input: {
-          message: this.editor.getEditorMessage(),
+          message: this.editor.current.getEditorMessage(),
           gameId,
           postType,
           characterId
         }
       }
     })
-      .then(() => {
-        this.editor.clear();
-      })
+      .then(() => this.editor.current.clear())
       .finally(() => this.setState({ saving: false }));
   };
 }

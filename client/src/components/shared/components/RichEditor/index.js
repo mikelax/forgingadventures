@@ -19,6 +19,8 @@ export default class RichTextDisplay extends Component {
     message: null
   };
 
+  editor = React.createRef();
+
   messageContent = null;
 
   componentWillMount() {
@@ -38,7 +40,7 @@ export default class RichTextDisplay extends Component {
 
     const displayComponent = readOnly ?
       <RenderMessage message={message} /> :
-      <RichTextDisplayEditor ref={e => this.editor = e} message={message} onChange={this._handleOnChange} />;
+      <RichTextDisplayEditor ref={this.editor} message={message} onChange={this._handleOnChange} />;
 
     return (
       <div className="rich-text-display">
@@ -48,7 +50,7 @@ export default class RichTextDisplay extends Component {
   }
 
   clear() {
-    this.editor.clear();
+    this.editor.current.clear();
   }
 
   getEditorMessage() {
@@ -59,7 +61,7 @@ export default class RichTextDisplay extends Component {
     const content = messageObject[messageKey];
     const quote = `<blockquote>${content}</blockquote>`;
 
-    this.editor.insertHtml(quote);
+    this.editor.current.insertHtml(quote);
   }
 
   _handleOnChange = (meta) => {

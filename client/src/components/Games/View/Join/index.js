@@ -19,6 +19,8 @@ const JoinGame = class JoinGame extends Component {
     errors: {}
   };
 
+  editor = React.createRef();
+
   render() {
     const { saving, hasContent } = this.state;
 
@@ -36,7 +38,7 @@ const JoinGame = class JoinGame extends Component {
               <label>Introduce yourself</label>
               <RichEditor
                 placeholder='Say something about yourself...'
-                ref={this._getEditor}
+                ref={this.editor}
                 onChange={this._handleOnChange} />
             </Form.Field>
 
@@ -60,10 +62,6 @@ const JoinGame = class JoinGame extends Component {
         </div>
       </React.Fragment>
     );
-  };
-
-  _getEditor = (ref) => {
-    this.editor = ref;
   };
 
   _handleOnChange = (data) => {
@@ -102,7 +100,7 @@ const JoinGame = class JoinGame extends Component {
               input: {
                 gameId: id,
                 meta: 'join',
-                message: this.editor.getEditorMessage()
+                message: this.editor.current.getEditorMessage()
               }
             }
           });

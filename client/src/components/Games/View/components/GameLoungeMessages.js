@@ -116,6 +116,8 @@ class GameLoungeMessageContainer extends Component {
     editing: false
   };
 
+  editor = React.createRef();
+
   render() {
     const { loungeMessage } = this.props;
     const { user } = loungeMessage;
@@ -134,7 +136,7 @@ class GameLoungeMessageContainer extends Component {
           </Comment.Metadata>
           {this._renderMeta()}
           <Comment.Text>
-            <RichEditor message={loungeMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+            <RichEditor message={loungeMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
             {this._messageControls(user.id)}
@@ -204,7 +206,7 @@ class GameLoungeMessageContainer extends Component {
       variables: {
         id: loungeMessage.id,
         input: {
-          message: this.editor.getEditorMessage()
+          message: this.editor.current.getEditorMessage()
         }
       }
     })

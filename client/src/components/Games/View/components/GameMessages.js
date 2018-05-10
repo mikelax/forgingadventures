@@ -104,6 +104,8 @@ class GameMessageContainerBase extends Component {
     editing: false
   };
 
+  editor = React.createRef();
+
   render() {
     const { gameMessage: { postType } } = this.props;
     const messageRenderer = {
@@ -132,7 +134,7 @@ class GameMessageContainerBase extends Component {
             {this._lastEdited()}
           </Comment.Metadata>
           <Comment.Text>
-            <RichEditor message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
             {this._messageControls(gameMessage.user.id)}
@@ -168,7 +170,7 @@ class GameMessageContainerBase extends Component {
             {this._lastEdited()}
           </Comment.Metadata>
           <Comment.Text>
-            <RichEditor message={gameMessage.message} ref={c => (this.editor = c)} readOnly={!(editing)} />
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Comment.Text>
           <Comment.Actions>
             {this._messageControls(gameMessage.user.id)}
@@ -222,7 +224,7 @@ class GameMessageContainerBase extends Component {
   _handleQuote = () => {
     const { quoteGameMessage } = this.props;
 
-    quoteGameMessage(this.editor.getEditorMessage());
+    quoteGameMessage(this.editor.current.getEditorMessage());
   };
 
   _handleSubmit = () => {
@@ -232,7 +234,7 @@ class GameMessageContainerBase extends Component {
       variables: {
         id: gameMessage.id,
         input: {
-          message: this.editor.getEditorMessage()
+          message: this.editor.current.getEditorMessage()
         }
       }
     })

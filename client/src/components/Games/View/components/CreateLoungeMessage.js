@@ -15,11 +15,13 @@ class CreateGameLoungeMessage extends Component {
     hasContent: false
   };
 
+  editor = React.createRef();
+
   componentWillReceiveProps(nextProps) {
     const loungeMessage = _.get(nextProps, 'loungeMessage.message');
 
     if (loungeMessage) {
-      this.editor.addQuoteBlock(loungeMessage);
+      this.editor.current.addQuoteBlock(loungeMessage);
     }
   }
 
@@ -29,7 +31,7 @@ class CreateGameLoungeMessage extends Component {
         <Form>
           <Form.Field>
             <label>Add Message</label>
-            <RichEditor ref={this._handleEditor} onChange={this._handleOnChange}/>
+            <RichEditor ref={this.editor} onChange={this._handleOnChange}/>
           </Form.Field>
 
           <Button primary onClick={this._submit} disabled={!(this.state.hasContent)}>Submit</Button>
@@ -38,10 +40,6 @@ class CreateGameLoungeMessage extends Component {
       </div>
     );
   }
-
-  _handleEditor = (e) => {
-    this.editor = e;
-  };
 
   _handleOnChange = (data) => {
     this.setState({ hasContent: data.hasContent });
@@ -55,12 +53,12 @@ class CreateGameLoungeMessage extends Component {
       variables: {
         input: {
           gameId: this.props.gameId,
-          message: this.editor.getEditorMessage()
+          message: this.editor.current.getEditorMessage()
         }
       }
     })
       .then(() => {
-        this.editor.clear();
+        this.editor.current.clear();
       });
   };
 }
