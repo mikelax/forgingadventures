@@ -23,6 +23,9 @@
       "userUploadsBucket": "forgingadventures-user-uploads"
     }
   },
+  "graphql": {
+    "graphiql": false
+  },
   "cloudinary": {
     "cloudName": "forgingadventures"
   }

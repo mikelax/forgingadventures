@@ -4,7 +4,13 @@ Description: "API Docker Resources"
 Parameters:
   ContainerImage:
     Type: String
-    Description: The client ECS Image
+    Description: The API ECS Image
+  ClusterName:
+    Type: String
+    Description: The ECS Cluster
+  Environment:
+    Type: String
+    Description: The environment
   DesiredTaskCount:
     Type: Number
     Description: Desired Task Count
@@ -17,6 +23,15 @@ Parameters:
     Type: String
     Description: Docker memory limit
     Default: 512
+  ElbTargetGroup:
+    Type: String
+    Description: ELB Target Group ARN
+  VpcSubnetList:
+    Type: CommaDelimitedList
+    Description: List of VPC subnets to use
+  VpcSecurityGroupList:
+    Type: CommaDelimitedList
+    Description: List of VPC security group IDs
 
 Conditions:
   SetDesiredTaskCount:
@@ -38,8 +53,91 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
 
+  EcsTaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs-tasks.amazonaws.com]
+            Action: ["sts:AssumeRole"]
+      Path: /
+
+  KmsIamPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${AWS::StackName}-kms"
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - "kms:Get*"
+              - "kms:List*"
+              - "kms:Decrypt*"
+              - "kms:Describe*"
+            Resource:
+              - Fn::ImportValue:
+                  !Sub "${Environment}:security:SecretsKmsKeyArn"
+      Roles:
+        - !Ref EcsTaskRole
+
   ApiCloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "/aws/ecs/forgingadventures/${Environment}/api"
       RetentionInDays: 14
+
+  ApiTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: forgingadventures-api
+      ExecutionRoleArn: !Ref EcsTaskExecutionRole
+      Cpu: !Ref ContainerCpu
+      Memory: !Ref ContainerMemory
+      NetworkMode: awsvpc
+      RequiresCompatibilities: [FARGATE]
+      ContainerDefinitions:
+        - Name: api
+          Cpu: !Ref ContainerCpu
+          Command: [yarn start]
+          Environment:
+            - Name: NODE_ENV
+              Value: !Ref Environment
+          Essential: true
+          Image: !Ref ContainerImage
+          Memory: !Ref ContainerMemory
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref ApiCloudwatchLogsGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: react-client
+          PortMappings:
+            - ContainerPort: 3001
+
+  ApiService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ClusterName
+      DesiredCount: !If [ SetDesiredTaskCount, !Ref DesiredTaskCount, !Ref "AWS::NoValue" ]
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: !If [ SingleTask, 0, 100 ]
+      LaunchType: FARGATE
+      HealthCheckGracePeriodSeconds: 180
+      LoadBalancers:
+      - ContainerName: api
+        ContainerPort: 3001
+        TargetGroupArn: !Ref ElbTargetGroup
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: !Ref VpcSecurityGroupList
+          Subnets: !Ref VpcSubnetList
+      TaskDefinition: !Ref ApiTaskDefinition
+
+Outputs:
+  ApiTaskDefinition:
+    Description: API Task Definition
+    Value: !Ref ApiTaskDefinition
