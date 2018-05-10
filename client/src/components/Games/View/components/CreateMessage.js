@@ -38,9 +38,7 @@ class CreateMessage extends Component {
               query={myGamePlayerQuery}
               variables={{ gameId }}
             >
-              {({ data }) => (
-                <PostAsSelector data={data} onPostTypeChange={this._handlePostType}/>
-              )}
+              {({ data }) => <PostAsSelector data={data} onPostTypeChange={this._handlePostType}/>}
             </Query>
 
             <label>Add Message</label>
