@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
+import PropTypes from 'prop-types';
+import { graphql, Query } from 'react-apollo';
 import { Form, Button, Segment, Icon, Image, Radio, Dimmer, Grid } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
@@ -33,7 +34,14 @@ class CreateMessage extends Component {
       <div className="create-message">
         <Form>
           <Form.Field>
-            <PostAsSelector gameId={gameId} onPostTypeChange={this._handlePostType}/>
+            <Query
+              query={myGamePlayerQuery}
+              variables={{ gameId }}
+            >
+              {({ data }) => (
+                <PostAsSelector data={data} onPostTypeChange={this._handlePostType}/>
+              )}
+            </Query>
 
             <label>Add Message</label>
             <RichEditor ref={(c) => (this.editor = c)} onChange={this._handleOnChange}/>
@@ -83,10 +91,15 @@ class CreateMessage extends Component {
   };
 }
 
-class PostAsSelectorBase extends Component {
+class PostAsSelector extends Component {
+
+  static propTypes = {
+    onPostTypeChange: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired
+  };
 
   state = {
-    ic: false
+    ic: true
   };
 
   componentDidMount() {
@@ -162,12 +175,6 @@ class PostAsSelectorBase extends Component {
   };
 
 }
-
-const PostAsSelector = compose(
-  graphql(myGamePlayerQuery, {
-    options: ({ gameId }) => ({ variables: { gameId } })
-  })
-)(PostAsSelectorBase);
 
 function CharacterProfile(props) {
   const { character } = props;
