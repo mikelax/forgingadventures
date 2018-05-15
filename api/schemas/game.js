@@ -21,6 +21,7 @@ export const gameTypeDefs = `
   
   type Game {
     id: ID!,
+    labelId: ID!,
     label: GameLabel!,
     title: String!,
     scenario: String!,

@@ -6,15 +6,20 @@ import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
 import { Header,  Comment, Icon } from 'semantic-ui-react';
 
-import RichEditor from '../../../shared/components/RichEditor';
-import ApolloLoader from '../../../shared/components/ApolloLoader';
-import { quote } from '../../../../actions/gameMessage';
+import RichEditor from 'components/shared/components/RichEditor';
+import ApolloLoader from 'components/shared/components/ApolloLoader';
+import { quote } from 'actions/gameMessage';
+
+import { meQuery } from 'queries/users';
+
+import DnD5eMessageHeader from './CharacterLabelGameMessageHeaders/5e';
+import PathfinderMessageHeader from './CharacterLabelGameMessageHeaders/pathFinder';
 
 import {
   gameMessagesQuery, updateGameMessageMutation,
   onGameMessageAdded, onGameMessageUpdated
 } from '../../queries';
-import { meQuery } from '../../../../queries/users';
+
 
 
 class GameMessages extends Component {
@@ -119,14 +124,20 @@ class GameMessageContainerBase extends Component {
   ////// private
 
   _inCharacterMessageRender = () => {
-    const { gameMessage } = this.props;
     const { editing } = this.state;
+
+    const { gameMessage } = this.props;
+    const { gameMessage: { game: { labelId }, character } } = this.props;
+    const CharacterHeaderRenderer = {
+      1: DnD5eMessageHeader,
+      PathfinderMessageHeader
+    }[labelId];
 
     return (
       <Comment>
         {characterProfileImage()}
         <Comment.Content>
-          <Comment.Author>{gameMessage.character.name}</Comment.Author>
+          <Comment.Author><CharacterHeaderRenderer character={character}/></Comment.Author>
           <Comment.Metadata>
             <div>
               Posted {this._relativeDate(gameMessage.created_at)}
