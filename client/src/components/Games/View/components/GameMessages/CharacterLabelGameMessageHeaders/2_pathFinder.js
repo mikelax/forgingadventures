@@ -25,9 +25,12 @@ export const secondaryAttributes = (props) => {
       'Perc ??'
     ];
 
-    return _(attributes)
-      .map((attr) => <span className="attribute">{attr}</span>)
-      .join('&vert;');
+    return (
+      <div className="secondary-attributes">
+        { _.map(attributes, (attr, idx) => <span className="attribute" key={`attr-${idx}`}>{attr}</span>) }
+      </div>
+    );
+
   } else {
     return null;
   }
