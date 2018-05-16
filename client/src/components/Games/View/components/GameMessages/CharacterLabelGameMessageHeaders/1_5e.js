@@ -27,7 +27,7 @@ export const secondaryAttributes = (props) => {
 
     return (
       <div className="secondary-attributes">
-        { _.map(attributes, (attr, idx) => <span className="attribute" key={`attr-${idx}`}>{attr}</span>) }
+        { _.map(attributes, (attr, idx) => <span className="attribute" key={`secondary-attribute-${idx}`}>{attr}</span>) }
       </div>
     );
 
