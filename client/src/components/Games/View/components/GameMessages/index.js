@@ -29,7 +29,7 @@ import {
 
 import './GameMessages.styl';
 
-class Index extends Component {
+class GameMessages extends Component {
 
   componentWillMount() {
     this._setupSubscriptions();
@@ -42,10 +42,8 @@ class Index extends Component {
       <Header as="h1">Messages</Header>
 
       {_.map(gameMessages, (gameMessage) => (
-        <Segment key={`message-${gameMessage.id}`}>
-          <div className='game-message'>
-            <GameMessageContainer gameMessage={gameMessage} />
-          </div>
+        <Segment key={`message-${gameMessage.id}`} className='game-message'>
+          <GameMessageContainer gameMessage={gameMessage} />
         </Segment>
       ))}
 
@@ -107,7 +105,7 @@ export default compose(
   }),
   ApolloLoader,
   pure,
-)(Index);
+)(GameMessages);
 
 /// private
 
@@ -216,7 +214,7 @@ class GameMessageContainerBase extends Component {
           </Grid.Column>
         </Grid.Row>
 
-        <Grid.Row columns={1}>
+        <Grid.Row>
           <Grid.Column>
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Grid.Column>
