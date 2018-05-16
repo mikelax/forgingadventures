@@ -11,8 +11,8 @@ import FormFieldErrorMessage from '../../../../components/shared/components/Form
 
 // label forms
 
-import CharacterDetails5e_1_0_0 from '../CharacterLabelForms/CharacterDetails5e_1_0_0';
-import CharacterDetailsPathFinder_1_0_0 from '../CharacterLabelForms/CharacterDetailsPathFinder_1_0_0';
+import CharacterDetails5e_1_0_0 from '../CharacterLabelForms/1_CharacterDetails5e_1_0_0';
+import CharacterDetailsPathFinder_1_0_0 from '../CharacterLabelForms/2_CharacterDetailsPathFinder_1_0_0';
 
 import './CharacterDetailsForm.styl';
 

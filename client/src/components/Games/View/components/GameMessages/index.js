@@ -4,25 +4,32 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
-import { Header,  Comment, Icon } from 'semantic-ui-react';
+import { Header, Comment, Icon, Grid, Image, Segment } from 'semantic-ui-react';
 
-import RichEditor from 'components/shared/components/RichEditor';
+import RichEditor from 'components/shared/components/RichEditor/index';
 import ApolloLoader from 'components/shared/components/ApolloLoader';
 import { quote } from 'actions/gameMessage';
 
 import { meQuery } from 'queries/users';
 
-import DnD5eMessageHeader from './CharacterLabelGameMessageHeaders/5e';
-import PathfinderMessageHeader from './CharacterLabelGameMessageHeaders/pathFinder';
+import {
+  primaryAttributes as dnd5PrimaryAttributes,
+  secondaryAttributes as dnd5SecondaryAttributes
+} from './CharacterLabelGameMessageHeaders/1_5e';
+
+import {
+  primaryAttributes as pfPrimaryAttributes,
+  secondaryAttributes as pfSecondaryAttributes
+} from './CharacterLabelGameMessageHeaders/2_pathFinder';
 
 import {
   gameMessagesQuery, updateGameMessageMutation,
   onGameMessageAdded, onGameMessageUpdated
-} from '../../queries';
+} from 'components/Games/queries';
 
+import './GameMessages.styl';
 
-
-class GameMessages extends Component {
+class Index extends Component {
 
   componentWillMount() {
     this._setupSubscriptions();
@@ -34,13 +41,14 @@ class GameMessages extends Component {
     return <div className='game-messages'>
       <Header as="h1">Messages</Header>
 
-      <Comment.Group>
-        {_.map(gameMessages, (gameMessage) => (
-          <div key={gameMessage.id} className='game-message'>
+      {_.map(gameMessages, (gameMessage) => (
+        <Segment key={`message-${gameMessage.id}`}>
+          <div className='game-message'>
             <GameMessageContainer gameMessage={gameMessage} />
           </div>
-        ))}
-      </Comment.Group>
+        </Segment>
+      ))}
+
     </div>;
   }
 
@@ -99,7 +107,7 @@ export default compose(
   }),
   ApolloLoader,
   pure,
-)(GameMessages);
+)(Index);
 
 /// private
 
@@ -128,39 +136,67 @@ class GameMessageContainerBase extends Component {
 
     const { gameMessage } = this.props;
     const { gameMessage: { game: { labelId }, character } } = this.props;
-    const CharacterHeaderRenderer = {
-      1: DnD5eMessageHeader,
-      PathfinderMessageHeader
+    const PrimaryAttributes = {
+      1: dnd5PrimaryAttributes,
+      2: pfPrimaryAttributes
+    }[labelId];
+    const SecondaryAttributes = {
+      1: dnd5SecondaryAttributes,
+      2: pfSecondaryAttributes
     }[labelId];
 
     return (
-      <Comment>
-        {characterProfileImage()}
-        <Comment.Content>
-          <Comment.Author><CharacterHeaderRenderer character={character}/></Comment.Author>
-          <Comment.Metadata>
-            <div>
-              Posted {this._relativeDate(gameMessage.created_at)}
-            </div>
-            {this._lastEdited()}
-          </Comment.Metadata>
-          <Comment.Text>
+      <Grid divided="vertically">
+        <Grid.Row columns={2} className="message-header">
+          <Grid.Column width={2} textAlign="center" verticalAlign="middle">
+            {characterProfileImage()}
+          </Grid.Column>
+
+          <Grid.Column width={14} verticalAlign="middle">
+            <Grid>
+              <Grid.Row columns={1}>
+                <Grid.Column className="character-name">
+                  {character.name}
+                </Grid.Column>
+                <Grid.Column>
+                  <PrimaryAttributes character={character}/>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row className="slim">
+         <Grid.Column>
+            <SecondaryAttributes character={character}/>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={1}>
+          <Grid.Column>
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
-          </Comment.Text>
-          <Comment.Actions>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={2}>
+          <Grid.Column>
             {this._messageControls(gameMessage.user.id)}
-          </Comment.Actions>
-        </Comment.Content>
-      </Comment>
+          </Grid.Column>
+          <Grid.Column>
+            Posted {this._relativeDate(gameMessage.created_at)}
+            {this._lastEdited()}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
 
     function characterProfileImage() {
       const characterUrl = _.get(gameMessage, 'character.profileImage.url');
 
       if (characterUrl) {
-        return <Comment.Avatar src={characterUrl} />;
+        return <Image avatar size="tiny" src={characterUrl} />;
       } else {
-        return <Comment.Avatar as={Icon} name="user" />;
+        return <Icon name="user" size="tiny"/>;
       }
     }
   };
@@ -170,33 +206,41 @@ class GameMessageContainerBase extends Component {
     const { editing } = this.state;
 
     return (
-      <Comment>
-        {userProfileImage()}
-        <Comment.Content>
-          <Comment.Author>{gameMessage.user.name}</Comment.Author>
-          <Comment.Metadata>
-            <div>
-              Posted {this._relativeDate(gameMessage.created_at)}
-            </div>
-            {this._lastEdited()}
-          </Comment.Metadata>
-          <Comment.Text>
+      <Grid divided='vertically'>
+        <Grid.Row columns={2}>
+          <Grid.Column width={2} textAlign="center" verticalAlign="middle">
+            {userProfileImage()}
+          </Grid.Column>
+          <Grid.Column className="user-name" width={14} verticalAlign="middle">
+            {gameMessage.user.name}
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={1}>
+          <Grid.Column>
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
-          </Comment.Text>
-          <Comment.Actions>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={2}>
+          <Grid.Column>
             {this._messageControls(gameMessage.user.id)}
-          </Comment.Actions>
-        </Comment.Content>
-      </Comment>
+          </Grid.Column>
+          <Grid.Column>
+            Posted {this._relativeDate(gameMessage.created_at)}
+            {this._lastEdited()}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
 
     function userProfileImage() {
       const profileImageUrl = _.get(gameMessage, 'user.profileImage.url');
 
       if (profileImageUrl) {
-        return <Comment.Avatar src={profileImageUrl} />;
+        return <Image avatar size="tiny" src={profileImageUrl} />;
       } else {
-        return <Comment.Avatar as={Icon} name="user" size="large" />;
+        return <Icon name="user" size="tiny" />;
       }
     }
   };
