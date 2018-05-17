@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
-import { Header, Comment, Icon, Grid, Image, Segment } from 'semantic-ui-react';
+import { Header, Button, Icon, Grid, Image, Segment } from 'semantic-ui-react';
 
 import RichEditor from 'components/shared/components/RichEditor/index';
 import ApolloLoader from 'components/shared/components/ApolloLoader';
@@ -144,7 +144,7 @@ class GameMessageContainerBase extends Component {
     }[labelId];
 
     return (
-      <Grid divided="vertically">
+      <Grid divided="vertically" className="in-character">
         <Grid.Row columns={2} className="message-header">
           <Grid.Column width={2} textAlign="center" verticalAlign="middle">
             {characterProfileImage()}
@@ -159,28 +159,26 @@ class GameMessageContainerBase extends Component {
                 <Grid.Column>
                   <PrimaryAttributes character={character}/>
                 </Grid.Column>
+                <Grid.Column>
+                  <SecondaryAttributes character={character}/>
+                </Grid.Column>
               </Grid.Row>
             </Grid>
           </Grid.Column>
         </Grid.Row>
 
-        <Grid.Row className="slim">
-         <Grid.Column>
-            <SecondaryAttributes character={character}/>
-          </Grid.Column>
-        </Grid.Row>
-
         <Grid.Row columns={1}>
-          <Grid.Column>
+          <Grid.Column  className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Grid.Column>
         </Grid.Row>
 
-        <Grid.Row columns={2}>
+        <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
             {this._messageControls(gameMessage.user.id)}
           </Grid.Column>
-          <Grid.Column>
+
+          <Grid.Column textAlign="right" className="column-info">
             Posted {this._relativeDate(gameMessage.created_at)}
             {this._lastEdited()}
           </Grid.Column>
@@ -204,7 +202,7 @@ class GameMessageContainerBase extends Component {
     const { editing } = this.state;
 
     return (
-      <Grid divided='vertically'>
+      <Grid divided='vertically'  className="out-character">
         <Grid.Row columns={2}>
           <Grid.Column width={2} textAlign="center" verticalAlign="middle">
             {userProfileImage()}
@@ -215,16 +213,16 @@ class GameMessageContainerBase extends Component {
         </Grid.Row>
 
         <Grid.Row>
-          <Grid.Column>
+          <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Grid.Column>
         </Grid.Row>
 
-        <Grid.Row columns={2}>
+        <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
             {this._messageControls(gameMessage.user.id)}
           </Grid.Column>
-          <Grid.Column>
+          <Grid.Column textAlign="right" className="column-info">
             Posted {this._relativeDate(gameMessage.created_at)}
             {this._lastEdited()}
           </Grid.Column>
@@ -256,8 +254,8 @@ class GameMessageContainerBase extends Component {
     if (canPost) {
       return (
         <React.Fragment>
-          { canEdit && <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> }
-          <Comment.Action onClick={this._handleQuote}>Quote</Comment.Action>
+          { canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button> }
+          <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
         </React.Fragment>
       );
     }
@@ -265,8 +263,8 @@ class GameMessageContainerBase extends Component {
 
   _editingControls = () => (
     <React.Fragment>
-      <Comment.Action onClick={this._handleSubmit}>Update</Comment.Action>
-      <Comment.Action onClick={this._handleCancel}>Cancel</Comment.Action>
+      <Button size="tiny" onClick={this._handleSubmit}>Update</Button>
+      <Button size="tiny" onClick={this._handleCancel}>Cancel</Button>
     </React.Fragment>
   );
 
@@ -304,8 +302,8 @@ class GameMessageContainerBase extends Component {
     if (gameMessage.numberEdits) {
       return (
         <div className="edited">
-          <div className="number-edits">Edits: {gameMessage.numberEdits}</div>
           <div className="last-edited">Updated {this._relativeDate(gameMessage.updated_at)}</div>
+          <div className="number-edits">Edits: {gameMessage.numberEdits}</div>
         </div>
       );
     } else {
