@@ -22,7 +22,7 @@ export const secondaryAttributes = (props) => {
       `HP ${characterDetails.health.currentHitPoints}/${characterDetails.health.maxHitPoints}`,
       `AC ${characterDetails.ac}`,
       `Init ${initiative()}`,
-      `Perc ${perception()}`
+      `Pas. Perc ${passivePerception()}`
     ];
 
     return (
@@ -44,9 +44,8 @@ export const secondaryAttributes = (props) => {
     return signedNumber(base + bonus);
   }
 
-  function perception() {
-    const result = _.get(characterDetails, 'abilities.wisdom.modifier') + 10;
-    return signedNumber(result);
+  function passivePerception() {
+    return _.get(characterDetails, 'abilities.wisdom.modifier') + 10;
   }
 
 };
