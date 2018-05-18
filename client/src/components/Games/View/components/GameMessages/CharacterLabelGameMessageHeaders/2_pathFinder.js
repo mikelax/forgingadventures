@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
 
+import { signedNumber } from 'services/format';
+
 export const primaryAttributes = (props) => {
   const { character: { characterDetails } } = props;
 
@@ -34,7 +36,8 @@ export const secondaryAttributes = (props) => {
   }
 
   function initiative() {
-    return _.get(characterDetails, 'abilities.dexterity.modifier');
+    const result = _.get(characterDetails, 'abilities.dexterity.modifier');
+    return signedNumber(result);
   }
 
 };

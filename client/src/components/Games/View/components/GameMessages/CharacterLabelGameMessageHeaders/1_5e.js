@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
 
+import { signedNumber } from 'services/format';
+
 export const primaryAttributes = (props) => {
   const { character: { characterDetails } } = props;
 
@@ -39,11 +41,12 @@ export const secondaryAttributes = (props) => {
       ? base + _.floor(base/2)
       : 0;
 
-    return base + bonus;
+    return signedNumber(base + bonus);
   }
 
   function perception() {
-    return _.get(characterDetails, 'abilities.wisdom.modifier') + 10;
+    const result = _.get(characterDetails, 'abilities.wisdom.modifier') + 10;
+    return signedNumber(result);
   }
 
 };
