@@ -80,6 +80,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                     <Field name="xp" type="number" min="0"/>
                     <FormFieldErrorMessage name="xp"/>
                   </Form.Field>
+
+                  <Form.Field required>
+                    <label>Armour Class</label>
+                    <Field name="ac" type="number" min="0"/>
+                    <FormFieldErrorMessage name="ac"/>
+                  </Form.Field>
                 </Form.Group>
 
                 <Form.Group widths="equal">
@@ -371,6 +377,7 @@ const validationSchema = Yup.object().shape({
   primaryLevel: Yup.number().integer().default(1).min(1).required(),
   proficiency: Yup.number().integer().default(2).min(2).required(),
   xp: Yup.number().integer().default(0).min(0).required(),
+  ac: Yup.number().integer().default(0).min(0).required(),
   traits: Yup.object().shape({
     race: Yup.string().default('dwarf').required(),
     primaryClass: Yup.string().default('barbarian').required(),

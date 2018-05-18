@@ -119,12 +119,14 @@ class GameLoungeMessageContainer extends Component {
     const { editing } = this.state;
 
     return (
-      <Grid divided='vertically' className="out-character">
-        <Grid.Row columns={2}>
-          <Grid.Column width={2} textAlign="center" verticalAlign="middle">
+      <Grid divided='vertically'>
+        <Grid.Row columns={2} className="header-row">
+          <Grid.Column computer={2} tablet={3} mobile={4}
+                       textAlign="center" verticalAlign="middle">
             {this._userProfileImage()}
           </Grid.Column>
-          <Grid.Column className="user-name" width={14} verticalAlign="middle">
+          <Grid.Column computer={14} tablet={13} mobile={12}
+                       className="user-name" verticalAlign="middle">
             {user.name}
           </Grid.Column>
         </Grid.Row>

@@ -6,6 +6,7 @@ const label1 = meta.keys({
   primaryLevel: Joi.number().integer().min(1).required(),
   proficiency: Joi.number().integer().min(2).required(),
   xp: Joi.number().integer().min(0).required(),
+  ac: Joi.number().integer().min(0).required(),
   traits: Joi.object.keys({
     race: Joi.string().required(),
     primaryClass: Joi.string().required(),

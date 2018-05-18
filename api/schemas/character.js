@@ -10,6 +10,7 @@ export const characterTypeDefs = `
     name: String!,
     profileImage: ProfileImage,
     user: User!,
+    labelId: ID!,
     label: GameLabel!,
     characterDetails: JSON,
     gamePlayer: [GamePlayer],

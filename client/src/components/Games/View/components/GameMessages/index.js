@@ -43,7 +43,7 @@ class GameMessages extends Component {
 
       {_.map(gameMessages, (gameMessage) => (
         <Segment key={`message-${gameMessage.id}`} className='game-message'>
-          <GameMessageContainer gameMessage={gameMessage} />
+          <GameMessageContainer gameMessage={gameMessage}/>
         </Segment>
       ))}
 
@@ -146,11 +146,16 @@ class GameMessageContainerBase extends Component {
     return (
       <Grid divided="vertically" className="in-character">
         <Grid.Row columns={2} className="message-header">
-          <Grid.Column width={2} textAlign="center" verticalAlign="middle">
+          <Grid.Column computer={2} tablet={3} mobile={4}
+             textAlign="center"
+             verticalAlign="middle"
+             className="profile-image"
+          >
             {characterProfileImage()}
           </Grid.Column>
 
-          <Grid.Column width={14} verticalAlign="middle">
+          <Grid.Column computer={14} tablet={13} mobile={12}
+            verticalAlign="middle">
             <Grid>
               <Grid.Row columns={1}>
                 <Grid.Column className="character-name">
@@ -168,8 +173,8 @@ class GameMessageContainerBase extends Component {
         </Grid.Row>
 
         <Grid.Row columns={1}>
-          <Grid.Column  className="column-message">
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
+          <Grid.Column className="column-message">
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
 
@@ -190,7 +195,7 @@ class GameMessageContainerBase extends Component {
       const characterUrl = _.get(gameMessage, 'character.profileImage.url');
 
       if (characterUrl) {
-        return <Image avatar size="tiny" src={characterUrl} />;
+        return <Image avatar size="tiny" src={characterUrl}/>;
       } else {
         return <Icon name="user" size="tiny"/>;
       }
@@ -202,19 +207,21 @@ class GameMessageContainerBase extends Component {
     const { editing } = this.state;
 
     return (
-      <Grid divided='vertically'  className="out-character">
-        <Grid.Row columns={2}>
-          <Grid.Column width={2} textAlign="center" verticalAlign="middle">
+      <Grid divided='vertically' className="out-character">
+        <Grid.Row columns={2} className="header-row">
+          <Grid.Column computer={2} tablet={3} mobile={4}
+                       textAlign="center" verticalAlign="middle">
             {userProfileImage()}
           </Grid.Column>
-          <Grid.Column className="user-name" width={14} verticalAlign="middle">
+          <Grid.Column computer={14} tablet={13} mobile={12}
+                       className="user-name" verticalAlign="middle">
             {gameMessage.user.name}
           </Grid.Column>
         </Grid.Row>
 
         <Grid.Row>
           <Grid.Column className="column-message">
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
 
@@ -234,9 +241,9 @@ class GameMessageContainerBase extends Component {
       const profileImageUrl = _.get(gameMessage, 'user.profileImage.url');
 
       if (profileImageUrl) {
-        return <Image avatar size="tiny" src={profileImageUrl} />;
+        return <Image avatar size="tiny" src={profileImageUrl}/>;
       } else {
-        return <Icon name="user" size="tiny" />;
+        return <Icon name="user" size="tiny"/>;
       }
     }
   };
@@ -254,7 +261,7 @@ class GameMessageContainerBase extends Component {
     if (canPost) {
       return (
         <React.Fragment>
-          { canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button> }
+          {canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
           <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
         </React.Fragment>
       );
@@ -313,7 +320,7 @@ class GameMessageContainerBase extends Component {
 
   _relativeDate = (date) => {
     const dateObject = moment(date);
-    const dateDisplayRelative = dateObject.subtract(20,'s').fromNow(); //addresses possible db time skew
+    const dateDisplayRelative = dateObject.subtract(20, 's').fromNow(); //addresses possible db time skew
     const dateDisplayActual = dateObject.format('LLL');
 
     return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;

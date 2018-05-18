@@ -13,6 +13,7 @@ exports.seed = function (knex, Promise) {
               labelId: 1,
               characterDetails: {
                 xp: 10,
+                ac: 5,
                 health: { hitDie: '5d', maxHitPoints: 1, currentHitPoints: 0 },
                 traits: {
                   sex: 'other',
@@ -74,6 +75,7 @@ exports.seed = function (knex, Promise) {
               },
               characterDetails: {
                 xp: 0,
+                ac: 5,
                 health: { hitDie: '4d', maxHitPoints: 1, currentHitPoints: 0 },
                 traits: {
                   sex: 'other',

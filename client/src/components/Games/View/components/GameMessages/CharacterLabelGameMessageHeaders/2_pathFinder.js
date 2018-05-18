@@ -5,12 +5,10 @@ export const primaryAttributes = (props) => {
   const { character: { characterDetails } } = props;
 
   return characterDetails && (
-    <React.Fragment>
-      <span className="primary-attributes">
-        {_.capitalize(characterDetails.traits.race)}&nbsp;
-        {_.capitalize(characterDetails.traits.primaryClass)} level {characterDetails.primaryLevel}
-      </span>
-    </React.Fragment>
+    <div className="primary-attributes">
+      {_.capitalize(characterDetails.traits.race)}&nbsp;
+      {_.capitalize(characterDetails.traits.primaryClass)} level {characterDetails.primaryLevel}
+    </div>
   );
 };
 
@@ -20,8 +18,8 @@ export const secondaryAttributes = (props) => {
   if (characterDetails) {
     const attributes = [
       `HP ${characterDetails.health.currentHitPoints}/${characterDetails.health.maxHitPoints}`,
-      'AC ??',
-      'Init ??',
+      `AC ${characterDetails.ac}`,
+      `Init ${initiative()}`,
       'Perc ??'
     ];
 
@@ -33,6 +31,10 @@ export const secondaryAttributes = (props) => {
 
   } else {
     return null;
+  }
+
+  function initiative() {
+    return _.get(characterDetails, 'abilities.dexterity.modifier');
   }
 
 };
