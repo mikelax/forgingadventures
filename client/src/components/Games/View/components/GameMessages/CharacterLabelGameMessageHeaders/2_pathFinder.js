@@ -21,8 +21,7 @@ export const secondaryAttributes = (props) => {
     const attributes = [
       `HP ${characterDetails.health.currentHitPoints}/${characterDetails.health.maxHitPoints}`,
       `AC ${characterDetails.ac}`,
-      `Init ${initiative()}`,
-      'Perc ??'
+      `Init ${initiative()}`
     ];
 
     return (

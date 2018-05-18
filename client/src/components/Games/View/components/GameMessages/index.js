@@ -208,7 +208,7 @@ class GameMessageContainerBase extends Component {
 
     return (
       <Grid divided='vertically' className="out-character">
-        <Grid.Row columns={2} className="header-row">
+        <Grid.Row columns={2} className="message-header">
           <Grid.Column computer={2} tablet={3} mobile={4}
                        textAlign="center" verticalAlign="middle">
             {userProfileImage()}
