@@ -3,23 +3,23 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
-import { Comment, Header, Icon } from 'semantic-ui-react';
+import { Button, Header, Icon, Grid, Image, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
-import RichEditor from '../../../shared/components/RichEditor';
-import { quote } from '../../../../actions/loungeMessage';
+import RichEditor from 'components/shared/components/RichEditor/index';
+import { quote } from 'actions/loungeMessage';
 
 import {
   gameLoungeMessagesQuery,
   updateGameLoungeMessageMutation,
   onGameLoungeMessageAdded,
   onGameLoungeMessageUpdated
-} from '../../queries';
-import { meQuery } from '../../../../queries/users';
+} from '../../../queries';
+import { meQuery } from 'queries/users';
 
-import ApolloLoader from '../../../shared/components/ApolloLoader';
+import ApolloLoader from 'components/shared/components/ApolloLoader';
 
-import './assets/gameLoungeMessages.styl';
+import './gameLoungeMessages.styl';
 
 class GameLoungeMessages extends Component {
 
@@ -31,27 +31,22 @@ class GameLoungeMessages extends Component {
     const { data: { gameLoungeMessages } } = this.props;
 
     if (_.get(gameLoungeMessages, 'length')) {
-      return <div className="game-lounge-messages">
-        <Header as="h2" dividing>Lounge Messages</Header>
-        {this.content()}
-      </div>;
+      return (
+        <div className="game-lounge-messages">
+          <Header as="h2" dividing>Lounge Messages</Header>
+
+          {_.map(gameLoungeMessages, (loungeMessage) => (
+            <Segment key={`lounge-message-${loungeMessage.id}`} className='game-lounge-message'>
+              <GameLoungeMessageContainerData key={loungeMessage.id} loungeMessage={loungeMessage} />
+            </Segment>
+          ))}
+        </div>
+      );
     } else {
       return null;
     }
 
   }
-
-  content = () => {
-    const { data: { gameLoungeMessages } } = this.props;
-
-    return (
-      <Comment.Group>
-        {_.map(gameLoungeMessages, (loungeMessage) => (
-            <GameLoungeMessageContainerData key={loungeMessage.id} loungeMessage={loungeMessage} />
-        ))}
-      </Comment.Group>
-    );
-  };
 
   _setupSubscriptions = () => {
     const { gameId, data } = this.props;
@@ -124,25 +119,35 @@ class GameLoungeMessageContainer extends Component {
     const { editing } = this.state;
 
     return (
-      <Comment>
-        {this._userProfileImage()}
-        <Comment.Content>
-          <Comment.Author>{user.name}</Comment.Author>
-          <Comment.Metadata>
-            {this._lastEdited()}
-            <div>
-              Posted {this._relativeDate(loungeMessage.created_at)}
-            </div>
-          </Comment.Metadata>
-          {this._renderMeta()}
-          <Comment.Text>
+      <Grid divided='vertically'>
+        <Grid.Row columns={2} className="message-header">
+          <Grid.Column computer={2} tablet={3} mobile={4}
+                       textAlign="center" verticalAlign="middle">
+            {this._userProfileImage()}
+          </Grid.Column>
+          <Grid.Column computer={14} tablet={13} mobile={12}
+                       className="user-name" verticalAlign="middle">
+            {user.name}
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row>
+          <Grid.Column className="column-message">
             <RichEditor message={loungeMessage.message} ref={this.editor} readOnly={!(editing)} />
-          </Comment.Text>
-          <Comment.Actions>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={2} className="slim" verticalAlign="middle">
+          <Grid.Column>
             {this._messageControls(user.id)}
-          </Comment.Actions>
-        </Comment.Content>
-      </Comment>
+          </Grid.Column>
+
+          <Grid.Column textAlign="right" className="column-info">
+            Posted {this._relativeDate(loungeMessage.created_at)}
+            {this._lastEdited()}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
   }
 
@@ -162,7 +167,7 @@ class GameLoungeMessageContainer extends Component {
     if (!(editing)) {
       if (loungeMessage.meta === 'join') {
         return (
-          <div className="meta"><Icon name="user plus" color="green"/>{user.name} has joined the game!</div>
+          <div className="meta"><Icon name="user plus" color="green" />{user.name} has joined the game!</div>
         );
       }
     }
@@ -175,8 +180,8 @@ class GameLoungeMessageContainer extends Component {
     if (canPost) {
       return (
         <React.Fragment>
-          { canEdit && <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> }
-          <Comment.Action onClick={this._handleQuote}>Quote</Comment.Action>
+          {canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
+          <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
         </React.Fragment>
       );
     }
@@ -184,8 +189,8 @@ class GameLoungeMessageContainer extends Component {
 
   _editingControls = () => (
     <React.Fragment>
-      <Comment.Action onClick={this._handleSubmit}>Update</Comment.Action>
-      <Comment.Action onClick={this._handleCancel}>Cancel</Comment.Action>
+      <Button size="tiny" compact={true} onClick={this._handleSubmit}>Update</Button>
+      <Button size="tiny" compact={true} onClick={this._handleCancel}>Cancel</Button>
     </React.Fragment>
   );
 
@@ -222,9 +227,9 @@ class GameLoungeMessageContainer extends Component {
     const imageUrl = _.get(user, 'profileImage.url');
 
     if (imageUrl) {
-      return <Comment.Avatar src={imageUrl} />;
+      return <Image avatar size="tiny" src={imageUrl} />;
     } else {
-      return <Comment.Avatar><Icon name="user" /></Comment.Avatar>;
+      return <Icon name="user" size="tiny" />;
     }
   };
 
@@ -234,8 +239,8 @@ class GameLoungeMessageContainer extends Component {
     if (loungeMessage.numberEdits) {
       return (
         <div className="edited">
-          <div className="number-edits">Edits: {loungeMessage.numberEdits}</div>
           <div className="last-edited">Updated {this._relativeDate(loungeMessage.updated_at)}</div>
+          <div className="number-edits">Edits: {loungeMessage.numberEdits}</div>
         </div>
       );
     } else {
@@ -245,10 +250,10 @@ class GameLoungeMessageContainer extends Component {
 
   _relativeDate = (date) => {
     const dateObject = moment(date);
-    const dateDisplayRelative = dateObject.subtract(20,'s').fromNow(); // addresses clock skew on DB
+    const dateDisplayRelative = dateObject.subtract(20, 's').fromNow(); // addresses clock skew on DB
     const dateDisplayActual = dateObject.format('LLL');
 
-    return <span  className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
+    return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
   };
 }
 

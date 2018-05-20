@@ -4,18 +4,30 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
-import { Header,  Comment, Icon } from 'semantic-ui-react';
+import { Header, Button, Icon, Grid, Image, Segment } from 'semantic-ui-react';
 
-import RichEditor from '../../../shared/components/RichEditor';
-import ApolloLoader from '../../../shared/components/ApolloLoader';
-import { quote } from '../../../../actions/gameMessage';
+import RichEditor from 'components/shared/components/RichEditor/index';
+import ApolloLoader from 'components/shared/components/ApolloLoader';
+import { quote } from 'actions/gameMessage';
+
+import { meQuery } from 'queries/users';
+
+import {
+  primaryAttributes as dnd5PrimaryAttributes,
+  secondaryAttributes as dnd5SecondaryAttributes
+} from './CharacterLabelGameMessageHeaders/1_5e';
+
+import {
+  primaryAttributes as pfPrimaryAttributes,
+  secondaryAttributes as pfSecondaryAttributes
+} from './CharacterLabelGameMessageHeaders/2_pathFinder';
 
 import {
   gameMessagesQuery, updateGameMessageMutation,
   onGameMessageAdded, onGameMessageUpdated
-} from '../../queries';
-import { meQuery } from '../../../../queries/users';
+} from 'components/Games/queries';
 
+import './GameMessages.styl';
 
 class GameMessages extends Component {
 
@@ -29,13 +41,12 @@ class GameMessages extends Component {
     return <div className='game-messages'>
       <Header as="h1">Messages</Header>
 
-      <Comment.Group>
-        {_.map(gameMessages, (gameMessage) => (
-          <div key={gameMessage.id} className='game-message'>
-            <GameMessageContainer gameMessage={gameMessage} />
-          </div>
-        ))}
-      </Comment.Group>
+      {_.map(gameMessages, (gameMessage) => (
+        <Segment key={`message-${gameMessage.id}`} className='game-message'>
+          <GameMessageContainer gameMessage={gameMessage}/>
+        </Segment>
+      ))}
+
     </div>;
   }
 
@@ -119,37 +130,74 @@ class GameMessageContainerBase extends Component {
   ////// private
 
   _inCharacterMessageRender = () => {
-    const { gameMessage } = this.props;
     const { editing } = this.state;
 
+    const { gameMessage } = this.props;
+    const { gameMessage: { game: { labelId }, character } } = this.props;
+    const PrimaryAttributes = {
+      1: dnd5PrimaryAttributes,
+      2: pfPrimaryAttributes
+    }[labelId];
+    const SecondaryAttributes = {
+      1: dnd5SecondaryAttributes,
+      2: pfSecondaryAttributes
+    }[labelId];
+
     return (
-      <Comment>
-        {characterProfileImage()}
-        <Comment.Content>
-          <Comment.Author>{gameMessage.character.name}</Comment.Author>
-          <Comment.Metadata>
-            <div>
-              Posted {this._relativeDate(gameMessage.created_at)}
-            </div>
-            {this._lastEdited()}
-          </Comment.Metadata>
-          <Comment.Text>
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
-          </Comment.Text>
-          <Comment.Actions>
+      <Grid divided="vertically" className="in-character">
+        <Grid.Row columns={2} className="message-header">
+          <Grid.Column computer={2} tablet={3} mobile={4}
+             textAlign="center"
+             verticalAlign="middle"
+             className="profile-image"
+          >
+            {characterProfileImage()}
+          </Grid.Column>
+
+          <Grid.Column computer={14} tablet={13} mobile={12}
+            verticalAlign="middle">
+            <Grid>
+              <Grid.Row columns={1}>
+                <Grid.Column className="character-name">
+                  {character.name}
+                </Grid.Column>
+                <Grid.Column>
+                  <PrimaryAttributes character={character}/>
+                </Grid.Column>
+                <Grid.Column>
+                  <SecondaryAttributes character={character}/>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={1}>
+          <Grid.Column className="column-message">
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={2} className="slim" verticalAlign="middle">
+          <Grid.Column>
             {this._messageControls(gameMessage.user.id)}
-          </Comment.Actions>
-        </Comment.Content>
-      </Comment>
+          </Grid.Column>
+
+          <Grid.Column textAlign="right" className="column-info">
+            Posted {this._relativeDate(gameMessage.created_at)}
+            {this._lastEdited()}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
 
     function characterProfileImage() {
       const characterUrl = _.get(gameMessage, 'character.profileImage.url');
 
       if (characterUrl) {
-        return <Comment.Avatar src={characterUrl} />;
+        return <Image avatar size="tiny" src={characterUrl}/>;
       } else {
-        return <Comment.Avatar as={Icon} name="user" />;
+        return <Icon name="user" size="tiny"/>;
       }
     }
   };
@@ -159,33 +207,43 @@ class GameMessageContainerBase extends Component {
     const { editing } = this.state;
 
     return (
-      <Comment>
-        {userProfileImage()}
-        <Comment.Content>
-          <Comment.Author>{gameMessage.user.name}</Comment.Author>
-          <Comment.Metadata>
-            <div>
-              Posted {this._relativeDate(gameMessage.created_at)}
-            </div>
-            {this._lastEdited()}
-          </Comment.Metadata>
-          <Comment.Text>
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
-          </Comment.Text>
-          <Comment.Actions>
+      <Grid divided='vertically' className="out-character">
+        <Grid.Row columns={2} className="message-header">
+          <Grid.Column computer={2} tablet={3} mobile={4}
+                       textAlign="center" verticalAlign="middle">
+            {userProfileImage()}
+          </Grid.Column>
+          <Grid.Column computer={14} tablet={13} mobile={12}
+                       className="user-name" verticalAlign="middle">
+            {gameMessage.user.name}
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row>
+          <Grid.Column className="column-message">
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={2} className="slim" verticalAlign="middle">
+          <Grid.Column>
             {this._messageControls(gameMessage.user.id)}
-          </Comment.Actions>
-        </Comment.Content>
-      </Comment>
+          </Grid.Column>
+          <Grid.Column textAlign="right" className="column-info">
+            Posted {this._relativeDate(gameMessage.created_at)}
+            {this._lastEdited()}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
 
     function userProfileImage() {
       const profileImageUrl = _.get(gameMessage, 'user.profileImage.url');
 
       if (profileImageUrl) {
-        return <Comment.Avatar src={profileImageUrl} />;
+        return <Image avatar size="tiny" src={profileImageUrl}/>;
       } else {
-        return <Comment.Avatar as={Icon} name="user" size="large" />;
+        return <Icon name="user" size="tiny"/>;
       }
     }
   };
@@ -203,8 +261,8 @@ class GameMessageContainerBase extends Component {
     if (canPost) {
       return (
         <React.Fragment>
-          { canEdit && <Comment.Action onClick={this._handleEdit}>Edit</Comment.Action> }
-          <Comment.Action onClick={this._handleQuote}>Quote</Comment.Action>
+          {canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
+          <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
         </React.Fragment>
       );
     }
@@ -212,8 +270,8 @@ class GameMessageContainerBase extends Component {
 
   _editingControls = () => (
     <React.Fragment>
-      <Comment.Action onClick={this._handleSubmit}>Update</Comment.Action>
-      <Comment.Action onClick={this._handleCancel}>Cancel</Comment.Action>
+      <Button size="tiny" onClick={this._handleSubmit}>Update</Button>
+      <Button size="tiny" onClick={this._handleCancel}>Cancel</Button>
     </React.Fragment>
   );
 
@@ -251,8 +309,8 @@ class GameMessageContainerBase extends Component {
     if (gameMessage.numberEdits) {
       return (
         <div className="edited">
-          <div className="number-edits">Edits: {gameMessage.numberEdits}</div>
           <div className="last-edited">Updated {this._relativeDate(gameMessage.updated_at)}</div>
+          <div className="number-edits">Edits: {gameMessage.numberEdits}</div>
         </div>
       );
     } else {
@@ -262,7 +320,7 @@ class GameMessageContainerBase extends Component {
 
   _relativeDate = (date) => {
     const dateObject = moment(date);
-    const dateDisplayRelative = dateObject.subtract(20,'s').fromNow(); //addresses possible db time skew
+    const dateDisplayRelative = dateObject.subtract(20, 's').fromNow(); //addresses possible db time skew
     const dateDisplayActual = dateObject.format('LLL');
 
     return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;

@@ -45,10 +45,14 @@ export const gameMessageFields = `
     updated_at
     character {
       name
+      characterDetails
       profileImage {
         publicId
         url
       }
+    }
+    game {
+      labelId
     }
     user {
       id

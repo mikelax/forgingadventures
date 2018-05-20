@@ -16,6 +16,7 @@ export const gameMessageTypeDefs = `
   type GameMessage {
     id: ID!,
     gameId: ID!,
+    game: Game!,
     user: User!,
     character: Character,
     message: String!,
@@ -39,8 +40,10 @@ export const gameMessageTypeDefs = `
 
 export const gameMessageResolvers = {
   GameMessage: {
-    user: (gameMessage, vars, context) => context.loaders.users.load(gameMessage.userId),
-    character: (gameMessage, vars, context) => gameMessage.characterId && context.loaders.characters.load(gameMessage.characterId)
+    character: (gameMessage, vars, context) => gameMessage.characterId &&
+      context.loaders.characters.load(gameMessage.characterId),
+    game: (gameMessage, vars, context) => context.loaders.games.load(gameMessage.gameId),
+    user: (gameMessage, vars, context) => context.loaders.users.load(gameMessage.userId)
   },
   Query: {
     gameMessage: (obj, { id }) =>
