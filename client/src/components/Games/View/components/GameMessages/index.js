@@ -4,10 +4,11 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
-import { Header, Button, Icon, Grid, Image, Segment } from 'semantic-ui-react';
+import { Header, Button, Grid, Segment } from 'semantic-ui-react';
 
-import RichEditor from 'components/shared/components/RichEditor/index';
 import ApolloLoader from 'components/shared/components/ApolloLoader';
+import { CharacterImageAvatar, UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
+import RichEditor from 'components/shared/components/RichEditor';
 import { quote } from 'actions/gameMessage';
 
 import { meQuery } from 'queries/users';
@@ -151,7 +152,7 @@ class GameMessageContainerBase extends Component {
              verticalAlign="middle"
              className="profile-image"
           >
-            {characterProfileImage()}
+            <CharacterImageAvatar character={character}/>
           </Grid.Column>
 
           <Grid.Column computer={14} tablet={13} mobile={12}
@@ -190,20 +191,10 @@ class GameMessageContainerBase extends Component {
         </Grid.Row>
       </Grid>
     );
-
-    function characterProfileImage() {
-      const characterUrl = _.get(gameMessage, 'character.profileImage.url');
-
-      if (characterUrl) {
-        return <Image avatar size="tiny" src={characterUrl}/>;
-      } else {
-        return <Icon name="user" size="tiny"/>;
-      }
-    }
   };
 
   _outOfCharacterMessageRender = () => {
-    const { gameMessage } = this.props;
+    const { gameMessage, gameMessage: { user } } = this.props;
     const { editing } = this.state;
 
     return (
@@ -211,7 +202,7 @@ class GameMessageContainerBase extends Component {
         <Grid.Row columns={2} className="message-header">
           <Grid.Column computer={2} tablet={3} mobile={4}
                        textAlign="center" verticalAlign="middle">
-            {userProfileImage()}
+            <UserImageAvatar user={user}/>
           </Grid.Column>
           <Grid.Column computer={14} tablet={13} mobile={12}
                        className="user-name" verticalAlign="middle">
@@ -236,16 +227,6 @@ class GameMessageContainerBase extends Component {
         </Grid.Row>
       </Grid>
     );
-
-    function userProfileImage() {
-      const profileImageUrl = _.get(gameMessage, 'user.profileImage.url');
-
-      if (profileImageUrl) {
-        return <Image avatar size="tiny" src={profileImageUrl}/>;
-      } else {
-        return <Icon name="user" size="tiny"/>;
-      }
-    }
   };
 
   _messageControls = (messageUserId) => {
