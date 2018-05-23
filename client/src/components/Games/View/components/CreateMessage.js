@@ -2,11 +2,13 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { graphql, Query } from 'react-apollo';
-import { Form, Button, Segment, Icon, Image, Radio, Dimmer, Grid } from 'semantic-ui-react';
+import { Form, Button, Segment, Radio, Dimmer, Grid } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
-import RichEditor from '../../../shared/components/RichEditor';
+import RichEditor from 'components/shared/components/RichEditor';
+
+import CharacterImageAndStats from './GameMessages/CharacterImageAndStats';
 
 import { createGameMessageMutation, myGamePlayerQuery } from '../../queries';
 
@@ -118,21 +120,23 @@ class PostAsSelector extends Component {
         <label>Post As</label>
         <Grid columns={3} textAlign='center' verticalAlign='middle'>
           <Grid.Row centered>
-            <Grid.Column>
+            <Grid.Column width={6}>
               <Dimmer.Dimmable as={Segment} basic compact dimmed={this.state.ic}>
                 <Dimmer active={this.state.ic} inverted/>
                 <span>Out of Character</span>
               </Dimmer.Dimmable>
             </Grid.Column>
 
-            <Grid.Column>
+            <Grid.Column width={1}>
               <Radio toggle checked={this.state.ic} onChange={this._handleToggle}/>
             </Grid.Column>
 
-            <Grid.Column>
-              <Dimmer.Dimmable as={Segment} basic compact dimmed={!(this.state.ic)}>
+            <Grid.Column width={9}>
+              <Dimmer.Dimmable as={Segment} basic dimmed={!(this.state.ic)}>
                 <Dimmer active={!(this.state.ic)} inverted/>
-                <CharacterProfile character={character}/>
+                <Grid divided="vertically" className="in-character">
+                  <CharacterImageAndStats character={character}/>
+                </Grid>
               </Dimmer.Dimmable>
             </Grid.Column>
           </Grid.Row>
@@ -178,20 +182,6 @@ class PostAsSelector extends Component {
     return _.get(myGamePlayer, 'character');
   };
 
-}
-
-function CharacterProfile(props) {
-  const { character } = props;
-  const characterUrl = _.get(character, 'profileImage.url');
-  const characterAvatar = characterUrl
-    ? <Image avatar src={characterUrl}/>
-    : <Icon name="user"/>;
-
-  return (
-    <React.Fragment>
-      {characterAvatar} {character.name}
-    </React.Fragment>
-  );
 }
 
 export default compose(

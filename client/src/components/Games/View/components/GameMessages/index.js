@@ -7,21 +7,13 @@ import { connect } from 'react-redux';
 import { Header, Button, Grid, Segment } from 'semantic-ui-react';
 
 import ApolloLoader from 'components/shared/components/ApolloLoader';
-import { CharacterImageAvatar, UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
+import { UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
 import RichEditor from 'components/shared/components/RichEditor';
 import { quote } from 'actions/gameMessage';
 
+import CharacterImageAndStats from './CharacterImageAndStats';
+
 import { meQuery } from 'queries/users';
-
-import {
-  primaryAttributes as dnd5PrimaryAttributes,
-  secondaryAttributes as dnd5SecondaryAttributes
-} from './CharacterLabelGameMessageHeaders/1_5e';
-
-import {
-  primaryAttributes as pfPrimaryAttributes,
-  secondaryAttributes as pfSecondaryAttributes
-} from './CharacterLabelGameMessageHeaders/2_pathFinder';
 
 import {
   gameMessagesQuery, updateGameMessageMutation,
@@ -133,45 +125,11 @@ class GameMessageContainerBase extends Component {
   _inCharacterMessageRender = () => {
     const { editing } = this.state;
 
-    const { gameMessage } = this.props;
-    const { gameMessage: { game: { labelId }, character } } = this.props;
-    const PrimaryAttributes = {
-      1: dnd5PrimaryAttributes,
-      2: pfPrimaryAttributes
-    }[labelId];
-    const SecondaryAttributes = {
-      1: dnd5SecondaryAttributes,
-      2: pfSecondaryAttributes
-    }[labelId];
+    const { gameMessage, gameMessage: { character } } = this.props;
 
     return (
       <Grid divided="vertically" className="in-character">
-        <Grid.Row columns={2} className="message-header">
-          <Grid.Column computer={2} tablet={3} mobile={4}
-             textAlign="center"
-             verticalAlign="middle"
-             className="profile-image"
-          >
-            <CharacterImageAvatar character={character}/>
-          </Grid.Column>
-
-          <Grid.Column computer={14} tablet={13} mobile={12}
-            verticalAlign="middle">
-            <Grid>
-              <Grid.Row columns={1}>
-                <Grid.Column className="character-name">
-                  {character.name}
-                </Grid.Column>
-                <Grid.Column>
-                  <PrimaryAttributes character={character}/>
-                </Grid.Column>
-                <Grid.Column>
-                  <SecondaryAttributes character={character}/>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Grid.Column>
-        </Grid.Row>
+        <CharacterImageAndStats character={character}/>
 
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
