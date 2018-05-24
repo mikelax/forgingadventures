@@ -1,0 +1,14 @@
+.create-message
+  .post-as-selector
+    display flex
+    align-items center
+
+    +mobile()
+      display block
+      .selector
+        text-align center
+
+    .in-character, .out-character
+      flex 1
+    .selector
+      transform rotate(180deg)

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { Button, Breadcrumb, Container, Header, Label, Message, Segment, Tab } from 'semantic-ui-react';
 
 import CreateLoungeMessage from './components/CreateLoungeMessage';
-import CreateMessage from './components/CreateMessage';
+import CreateMessage from './components/GameMessages/CreateMessage';
 import GameLoungeMessages from './components/GameLoungeMessages';
 import GamesMessages from './components/GameMessages';
 import GamePlayers from './components/GamePlayers';

@@ -8,9 +8,12 @@ import { connect } from 'react-redux';
 
 import RichEditor from 'components/shared/components/RichEditor';
 
-import CharacterImageAndStats from './GameMessages/CharacterImageAndStats';
+import InCharacterHeader from '../InCharacterHeader';
+import OutOfCharacterHeader from '../OutOfCharacterHeader';
 
-import { createGameMessageMutation, myGamePlayerQuery } from '../../queries';
+import { createGameMessageMutation, myGamePlayerQuery } from 'components/Games/queries';
+
+import './CreateMessage.styl';
 
 class CreateMessage extends Component {
 
@@ -113,34 +116,37 @@ class PostAsSelector extends Component {
 
   render() {
     const character = this._getMyGamePlayerCharacter();
+    const user = this._getMyGamePlayerUser();
     const isGameMaster = this._isGameMaster();
 
     return !(isGameMaster) && (
       <React.Fragment>
         <label>Post As</label>
-        <Grid columns={3} textAlign='center' verticalAlign='middle'>
-          <Grid.Row centered>
-            <Grid.Column width={6}>
-              <Dimmer.Dimmable as={Segment} basic compact dimmed={this.state.ic}>
-                <Dimmer active={this.state.ic} inverted/>
-                <span>Out of Character</span>
-              </Dimmer.Dimmable>
-            </Grid.Column>
+        <div className="post-as-selector">
+          <div className="in-character">
+            <Dimmer.Dimmable as={Segment} basic dimmed={!(this.state.ic)}>
+              <Dimmer active={!(this.state.ic)} inverted/>
+              <Grid>
+                <InCharacterHeader character={character}/>
+              </Grid>
+            </Dimmer.Dimmable>
 
-            <Grid.Column width={1}>
-              <Radio toggle checked={this.state.ic} onChange={this._handleToggle}/>
-            </Grid.Column>
+          </div>
 
-            <Grid.Column width={9}>
-              <Dimmer.Dimmable as={Segment} basic dimmed={!(this.state.ic)}>
-                <Dimmer active={!(this.state.ic)} inverted/>
-                <Grid divided="vertically" className="in-character">
-                  <CharacterImageAndStats character={character}/>
-                </Grid>
-              </Dimmer.Dimmable>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+          <div className="selector">
+            <Radio toggle checked={this.state.ic} onChange={this._handleToggle}/>
+          </div>
+
+          <div className="out-character">
+            <Dimmer.Dimmable as={Segment} basic dimmed={this.state.ic}>
+              <Dimmer active={this.state.ic} inverted/>
+              <Grid>
+                <OutOfCharacterHeader user={user}/>
+              </Grid>
+            </Dimmer.Dimmable>
+
+          </div>
+        </div>
       </React.Fragment>
     );
   }
@@ -180,6 +186,11 @@ class PostAsSelector extends Component {
   _getMyGamePlayerCharacter = () => {
     const myGamePlayer = this._getMyGamePlayer();
     return _.get(myGamePlayer, 'character');
+  };
+
+  _getMyGamePlayerUser = () => {
+    const myGamePlayer = this._getMyGamePlayer();
+    return _.get(myGamePlayer, 'user');
   };
 
 }

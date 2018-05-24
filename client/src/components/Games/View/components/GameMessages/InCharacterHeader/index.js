@@ -10,9 +10,9 @@ import {
   secondaryAttributes as pfSecondaryAttributes
 } from '../CharacterLabelGameMessageHeaders/2_pathFinder';
 
-import { CharacterImageAvatar } from 'components/shared/components/ProfileImageAvatar/index';
+import { CharacterImageAvatar } from 'components/shared/components/ProfileImageAvatar';
 
-import './CharacterImageAndStats.styl';
+import './InCharacterHeader.styl';
 
 export default function(props) {
   const { character, character: { labelId } } = props;

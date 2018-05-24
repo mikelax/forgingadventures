@@ -7,11 +7,11 @@ import { connect } from 'react-redux';
 import { Header, Button, Grid, Segment } from 'semantic-ui-react';
 
 import ApolloLoader from 'components/shared/components/ApolloLoader';
-import { UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
 import RichEditor from 'components/shared/components/RichEditor';
 import { quote } from 'actions/gameMessage';
 
-import CharacterImageAndStats from './CharacterImageAndStats';
+import InCharacterHeader from './InCharacterHeader';
+import OutOfCharacterHeader from './OutOfCharacterHeader';
 
 import { meQuery } from 'queries/users';
 
@@ -129,7 +129,7 @@ class GameMessageContainerBase extends Component {
 
     return (
       <Grid divided="vertically" className="in-character">
-        <CharacterImageAndStats character={character}/>
+        <InCharacterHeader character={character}/>
 
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
@@ -157,17 +157,7 @@ class GameMessageContainerBase extends Component {
 
     return (
       <Grid divided='vertically' className="out-character">
-        <Grid.Row columns={2} className="message-header">
-          <Grid.Column computer={2} tablet={3} mobile={4}
-                       textAlign="center" verticalAlign="middle">
-            <UserImageAvatar user={user}/>
-          </Grid.Column>
-          <Grid.Column computer={14} tablet={13} mobile={12}
-                       className="user-name" verticalAlign="middle">
-            {gameMessage.user.name}
-          </Grid.Column>
-        </Grid.Row>
-
+        <OutOfCharacterHeader user={user}/>
         <Grid.Row>
           <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
