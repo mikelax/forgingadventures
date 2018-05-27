@@ -3,10 +3,11 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
-import { Button, Header, Icon, Grid, Image, Segment } from 'semantic-ui-react';
+import { Button, Header, Icon, Grid, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
-import RichEditor from 'components/shared/components/RichEditor/index';
+import RichEditor from 'components/shared/components/RichEditor';
+import { UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
 import { quote } from 'actions/loungeMessage';
 
 import {
@@ -123,7 +124,7 @@ class GameLoungeMessageContainer extends Component {
         <Grid.Row columns={2} className="message-header">
           <Grid.Column computer={2} tablet={3} mobile={4}
                        textAlign="center" verticalAlign="middle">
-            {this._userProfileImage()}
+            <UserImageAvatar user={user}/>
           </Grid.Column>
           <Grid.Column computer={14} tablet={13} mobile={12}
                        className="user-name" verticalAlign="middle">
@@ -220,17 +221,6 @@ class GameLoungeMessageContainer extends Component {
 
   _handleCancel = () => {
     this.setState({ editing: false });
-  };
-
-  _userProfileImage = () => {
-    const { loungeMessage: { user } } = this.props;
-    const imageUrl = _.get(user, 'profileImage.url');
-
-    if (imageUrl) {
-      return <Image avatar size="tiny" src={imageUrl} />;
-    } else {
-      return <Icon name="user" size="tiny" />;
-    }
   };
 
   _lastEdited = () => {

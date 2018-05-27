@@ -45,6 +45,7 @@ export const gameMessageFields = `
     updated_at
     character {
       name
+      labelId
       characterDetails
       profileImage {
         publicId
@@ -104,6 +105,8 @@ export const gamePlayerFields = `
     character {
       id
       name
+      labelId
+      characterDetails
       profileImage {
         publicId
         url

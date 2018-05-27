@@ -1,0 +1,26 @@
+.message-header
+  .character-name, .user-name
+    font-size 24px
+    font-weight bolder
+
+  .character-name
+    padding-bottom 2px
+
+
+  .primary-attributes, .secondary-attributes
+    line-height 1rem
+  .secondary-attributes
+    font-size 12px
+
+    .attribute
+      display inline-block
+      margin-right 8px
+
+      &:after
+        content: "\007C"
+        margin-left 8px
+
+      &:last-child
+        &:after
+          content: ""
+          margin-left 0
