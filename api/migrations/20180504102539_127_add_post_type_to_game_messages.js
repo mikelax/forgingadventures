@@ -3,7 +3,7 @@ exports.up = function (knex) {
     table.integer('characterId');
     table.foreign('characterId').references('characters.id');
 
-    table.enu('postType', ['ic', 'ooc']);
+    table.enu('postType', ['gm', 'ic', 'ooc']);
   })
     .then(() => (
       knex('game_messages')

@@ -12,6 +12,21 @@ To lint this project run the following command:
 yarn lint
 ```
 
+## Database Migrations
+
+The project uses [knex for database migrations](http://knexjs.org/#Installation-migrations). Here are the basic commands to run:
+
+```bash
+# Create a new migration file
+yarn migrate:make issuenum_migration_name
+
+# From api container, run migrations
+yarn migrate:latest
+
+# From api container, Rollback last set of migrations
+yarn migrate:rollback
+```
+
 ## Configuration Notes
 
 The project uses the [node-config](https://github.com/lorenwest/node-config) package to manage configuration files between environments.
