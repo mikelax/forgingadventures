@@ -1,6 +1,6 @@
 exports.up = function(knex) {
   return knex.schema.createTable('game_labels', (table) => {
-    table.integer('id')().notNullable().primary();
+    table.integer('id').notNullable().primary();
 
     table.string('displayName').notNullable();
     table.string('shortName', 16).notNullable();

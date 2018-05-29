@@ -42,7 +42,9 @@ class CreateGameLoungeMessage extends Component {
   }
 
   _handleOnChange = (data) => {
-    this.setState({ hasContent: data.hasContent });
+    if (data.hasContent !== this.state.hasContent) {
+      this.setState({ hasContent: data.hasContent });
+    }
   };
 
   _submit = () => {

@@ -5,6 +5,7 @@ import {
   primaryAttributes as dnd5PrimaryAttributes,
   secondaryAttributes as dnd5SecondaryAttributes
 } from '../CharacterLabelGameMessageHeaders/1_5e';
+
 import {
   primaryAttributes as pfPrimaryAttributes,
   secondaryAttributes as pfSecondaryAttributes

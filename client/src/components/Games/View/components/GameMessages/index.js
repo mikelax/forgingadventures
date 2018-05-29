@@ -10,6 +10,7 @@ import ApolloLoader from 'components/shared/components/ApolloLoader';
 import RichEditor from 'components/shared/components/RichEditor';
 import { quote } from 'actions/gameMessage';
 
+import GmHeader from './GmHeader';
 import InCharacterHeader from './InCharacterHeader';
 import OutOfCharacterHeader from './OutOfCharacterHeader';
 
@@ -113,6 +114,7 @@ class GameMessageContainerBase extends Component {
   render() {
     const { gameMessage: { postType } } = this.props;
     const messageRenderer = {
+      gm: this._gmMessageRender,
       ic: this._inCharacterMessageRender,
       ooc: this._outOfCharacterMessageRender
     }[postType];
@@ -121,6 +123,32 @@ class GameMessageContainerBase extends Component {
   }
 
   ////// private
+
+  _gmMessageRender = () => {
+    const { gameMessage, gameMessage: { user } } = this.props;
+    const { editing } = this.state;
+
+    return (
+      <Grid divided='vertically' className="in-character">
+        <GmHeader user={user} />
+        <Grid.Row>
+          <Grid.Column className="column-message">
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row columns={2} className="slim" verticalAlign="middle">
+          <Grid.Column>
+            {this._messageControls(gameMessage.user.id)}
+          </Grid.Column>
+          <Grid.Column textAlign="right" className="column-info">
+            Posted {this._relativeDate(gameMessage.created_at)}
+            {this._lastEdited()}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    );
+  };
 
   _inCharacterMessageRender = () => {
     const { editing } = this.state;
@@ -269,4 +297,3 @@ const GameMessageContainer = compose(
   graphql(meQuery, { name: 'meQuery' }),
   connect(null, mapDispatchToProps, null, { pure: false }),
 )(GameMessageContainerBase);
-
