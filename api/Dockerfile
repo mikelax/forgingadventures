@@ -1,4 +1,4 @@
-FROM node:8.9.1-alpine
+FROM node:8.11.1-alpine as builder
 
 WORKDIR /tmp/packages
 COPY ./package.json ./yarn.lock ./
@@ -9,6 +9,33 @@ WORKDIR /app
 RUN cp -R /tmp/packages/node_modules .
 COPY . /app
 
-EXPOSE 3001
+# builds production artifcats
+RUN yarn build
+RUN cp ./package.json dist && cp ./yarn.lock dist && cd dist && yarn install --production
 
-CMD yarn start
+
+
+# the deployment container
+FROM phusion/passenger-nodejs:0.9.32
+
+# Set correct environment variables.
+ENV HOME /root
+
+# enable nginx + passenger
+RUN rm -f /etc/service/nginx/down
+
+# setup nginx
+RUN rm /etc/nginx/sites-enabled/default
+COPY ./etc/nginx/main.d/env.conf /etc/nginx/main.d/secrets.conf
+COPY ./etc/nginx/sites-enabled/nginx-forging.conf /etc/nginx/sites-enabled/nginx-forging.conf
+
+# copy the environment setup script to /root - this will be used by /etc/my_init.d/30_secrets.sh
+COPY ./etc/my_init.d/30_secrets.sh /etc/my_init.d
+
+# copy the application from the build stage
+WORKDIR /home/app
+COPY ./setEnvironmentSecrets.js .
+COPY --chown=app:app --from=base /app/dist  .
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]

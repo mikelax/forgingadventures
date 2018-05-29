@@ -1,7 +1,7 @@
 {
   "auth0": {
     "faClient": {
-      "redirectUri": "http://localhost:3000",
+      "redirectUri": "https://forgingadventures.com",
       "clientId": "i7Srpetd9dL9Dx1ckMIhBLFnSxksaVcz",
       "domain": "forgingadventures-staging.auth0.com",
       "audience": "https://api-test.forgingadventures.com"
@@ -13,14 +13,14 @@
   },
   "aws": {
     "s3": {
-      "userUploadsPrefex": "development"
+      "userUploadsPrefex": "production"
     }
   },
   "database": {
     "connection": "postgresql://postgres:docker@db:5432/postgres"
   },
   "graphql": {
-    "graphiql": true
+    "graphiql": false
   },
   "redis": {
     "host": "redis"
@@ -29,3 +29,4 @@
     "apiKey": "514676315272514"
   }
 }
+
