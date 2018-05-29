@@ -65,7 +65,9 @@ class CreateMessage extends Component {
   }
 
   _handleOnChange = (data) => {
-    this.setState({ hasContent: data.hasContent });
+    if (data.hasContent !== this.state.hasContent) {
+      this.setState({ hasContent: data.hasContent });
+    }
   };
 
   _handlePostType = (postType) => {
@@ -103,14 +105,25 @@ class PostAsSelector extends Component {
   };
 
   state = {
-    ic: true
+    postType: null
   };
 
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     const character = this._getMyGamePlayerCharacter();
+    const gameMaster = this._getGameMaster();
+
+    let postType;
+
+    if (gameMaster) {
+      postType = 'gm';
+    } else if (character) {
+      postType = 'ic';
+    } else {
+      postType = 'ooc';
+    }
 
     this.setState(
-      () => ({ ic: !(_.isEmpty(character)) || !_.isEmpty(this._getGameMaster()) }),
+      () => ({ postType }),
       () => this._doOnPostTypeChange()
     );
   }
@@ -120,7 +133,9 @@ class PostAsSelector extends Component {
     const user = this._getMyGamePlayerUser();
     const gameMaster = this._getGameMaster();
 
-    const postSelector = !_.isEmpty(gameMaster) ? this._getGmSelector(gameMaster.user) : this._getPlayerSelector(user, character);
+    const postSelector = _.isEmpty(gameMaster)
+      ? this._getPlayerSelector(user, character)
+      : this._getGmSelector(gameMaster.user);
 
     return (
       <React.Fragment>
@@ -131,11 +146,13 @@ class PostAsSelector extends Component {
   }
 
   _getGmSelector = (user) => {
+    const gm = this.state.postType === 'gm';
+
     return (
       <div className="post-as-selector">
         <div className="in-character">
-          <Dimmer.Dimmable as={Segment} basic dimmed={!(this.state.ic)}>
-            <Dimmer active={!(this.state.ic)} inverted />
+          <Dimmer.Dimmable as={Segment} basic dimmed={!(gm)}>
+            <Dimmer active={!(gm)} inverted />
             <Grid>
               <GmHeader user={user} />
             </Grid>
@@ -144,12 +161,12 @@ class PostAsSelector extends Component {
         </div>
 
         <div className="selector">
-          <Radio toggle checked={this.state.ic} onChange={this._handleToggle} />
+          <Radio toggle checked={gm} onChange={this._handleToggle('gm')} />
         </div>
 
         <div className="out-character">
-          <Dimmer.Dimmable as={Segment} basic dimmed={this.state.ic}>
-            <Dimmer active={this.state.ic} inverted />
+          <Dimmer.Dimmable as={Segment} basic dimmed={gm}>
+            <Dimmer active={gm} inverted />
             <Grid>
               <OutOfCharacterHeader user={user} />
             </Grid>
@@ -158,14 +175,16 @@ class PostAsSelector extends Component {
         </div>
       </div>
     );
-  }
+  };
 
   _getPlayerSelector = (user, character) => {
+    const ic = this.state.postType === 'ic';
+
     return (
       <div className="post-as-selector">
         <div className="in-character">
-          <Dimmer.Dimmable as={Segment} basic dimmed={!(this.state.ic)}>
-            <Dimmer active={!(this.state.ic)} inverted />
+          <Dimmer.Dimmable as={Segment} basic dimmed={!(ic)}>
+            <Dimmer active={!(ic)} inverted />
             <Grid>
               <InCharacterHeader character={character} />
             </Grid>
@@ -174,12 +193,12 @@ class PostAsSelector extends Component {
         </div>
 
         <div className="selector">
-          <Radio toggle checked={this.state.ic} onChange={this._handleToggle} />
+          <Radio toggle checked={ic} onChange={this._handleToggle('ic')} />
         </div>
 
         <div className="out-character">
-          <Dimmer.Dimmable as={Segment} basic dimmed={this.state.ic}>
-            <Dimmer active={this.state.ic} inverted />
+          <Dimmer.Dimmable as={Segment} basic dimmed={ic}>
+            <Dimmer active={ic} inverted />
             <Grid>
               <OutOfCharacterHeader user={user} />
             </Grid>
@@ -188,26 +207,26 @@ class PostAsSelector extends Component {
         </div>
       </div>
     );
-  }
+  };
 
-  _handleToggle = (e, data) => {
+  _handleToggle = (selectedPostType) => (e, data) => {
     const { checked } = data;
+    const postType = checked ? selectedPostType : 'ooc';
 
     this.setState(
-      () => ({ ic: checked }),
+      () => ({ postType }),
       () => this._doOnPostTypeChange()
     );
   };
 
   _doOnPostTypeChange = () => {
-    const { ic } = this.state;
+    const { postType } = this.state;
     const { onPostTypeChange } = this.props;
     const character = this._getMyGamePlayerCharacter();
-    const gm = this._getGameMaster();
 
     const payload = {
-      postType: !_.isEmpty(gm) ? ic ? 'gm' : 'ooc' : ic ? 'ic' : 'ooc',
-      characterId: ic && _.isEmpty(gm) ? character.id : null
+      postType,
+      characterId: postType === 'ic' ? character.id : null
     };
 
     onPostTypeChange(payload);
