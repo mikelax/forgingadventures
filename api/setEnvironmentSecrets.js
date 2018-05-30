@@ -39,7 +39,7 @@ new Bluebird(async (resolve, reject) => {
 
 function getParams(nextToken) {
   const params = {
-    Path: `/${process.env.PASSENGER_APP_ENV}/${process.env.APP_NAME}`,
+    Path: `/${process.env.APP_NAME}/${process.env.PASSENGER_APP_ENV}`,
     MaxResults: 10,
     Recursive: true,
     WithDecryption: true,

@@ -8,6 +8,6 @@
     "connection": "DATABASE_URI"
   },
   "cloudinary": {
-    "apiKey": "CLOUDINARY_API_SECRET"
+    "apiSecret": "CLOUDINARY_API_SECRET"
   }
 }
