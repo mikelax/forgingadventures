@@ -51,18 +51,15 @@ app.use(cors());
 // JWT
 app.use(checkJwt());
 
-const graphqlPath = process.env.NODE_ENV === 'development' ? '/graphql' : '/api/graphql';
-const graphiqlPath = process.env.NODE_ENV === 'development' ? '/graphiql' : '/api/graphiql';
-
 // graphql endpoints
-app.use(graphqlPath, graphqlExpress((req, res) => ({
+app.use('/graphql', graphqlExpress((req, res) => ({
   schema,
   context: { req, res, loaders: loader() }
 })));
 
 if (config.get('graphql.graphiql')) {
-  app.use(graphiqlPath, graphiqlExpress({
-    endpointURL: graphqlPath,
+  app.use('/graphiql', graphiqlExpress({
+    endpointURL: '/graphql',
     subscriptionsEndpoint: 'ws://localhost:3001/subscriptions'
   }));
 }
