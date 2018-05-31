@@ -16,7 +16,7 @@ Parameters:
   SslCertificateArn:
     Type: String
     Description: SSL certificate ARN
-    Default: 	arn:aws:acm:us-east-1:466853810010:certificate/f396d6a8-2943-45cf-b232-e84a33b88b6f
+    Default: arn:aws:acm:us-east-1:466853810010:certificate/f396d6a8-2943-45cf-b232-e84a33b88b6f
   RdsUsername:
     Type: String
     Description: The database admin account username

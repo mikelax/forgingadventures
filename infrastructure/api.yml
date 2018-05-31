@@ -100,8 +100,10 @@ Resources:
       ContainerDefinitions:
         - Name: api
           Cpu: !Ref ContainerCpu
-          Command: [yarn start]
+          Command: [/sbin/my_init]
           Environment:
+            - Name: APP_NAME    # This var is used as namespace to get env. variables from Sys Manager Parameter Store.
+              Value: forgingadventures
             - Name: NODE_ENV
               Value: !Ref Environment
           Essential: true
@@ -114,7 +116,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: react-client
           PortMappings:
-            - ContainerPort: 3001
+            - ContainerPort: 80
 
   ApiService:
     Type: AWS::ECS::Service
@@ -128,7 +130,7 @@ Resources:
       HealthCheckGracePeriodSeconds: 180
       LoadBalancers:
       - ContainerName: api
-        ContainerPort: 3001
+        ContainerPort: 80
         TargetGroupArn: !Ref ElbTargetGroup
       NetworkConfiguration:
         AwsvpcConfiguration:

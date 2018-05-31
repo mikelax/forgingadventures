@@ -68,7 +68,7 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 4
       UnhealthyThresholdCount: 3
-      Port: 3001
+      Port: 80
       Protocol: HTTP
       VpcId: !Ref VpcId
       TargetGroupAttributes:
@@ -89,7 +89,7 @@ Resources:
       DefaultActions:
         - TargetGroupArn: !Ref ClientElbTargetGroup
           Type: forward
-      LoadBalancerArn: !Ref ClientElb
+      LoadBalancerArn: !Ref Elb
       Port: 80
       Protocol: HTTP
 
@@ -117,6 +117,19 @@ Resources:
             - /api/*
       ListenerArn: !Ref ElbHttpsListener
       Priority: 20
+
+  HttpsGraphqlRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref ApiElbTargetGroup
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /graphql/*
+      ListenerArn: !Ref ElbHttpsListener
+      Priority: 30
 
   Cluster:
     Type: AWS::ECS::Cluster

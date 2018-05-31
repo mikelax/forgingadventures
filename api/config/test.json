@@ -1,0 +1,28 @@
+{
+  "auth0": {
+    "faClient": {
+      "redirectUri": "https://playquest.forgingadventures.com",
+      "clientId": "i7Srpetd9dL9Dx1ckMIhBLFnSxksaVcz",
+      "domain": "forgingadventures-staging.auth0.com",
+      "audience": "https://api-test.forgingadventures.com"
+    },
+    "managementClient": {
+      "clientId": "kgZIjADJcbPou41jOS4u0j46t6C4XGud",
+      "audience": "https://forgingadventures-staging.auth0.com/api/v2/"
+    }
+  },
+  "aws": {
+    "s3": {
+      "userUploadsPrefex": "test"
+    }
+  },
+  "graphql": {
+    "graphiql": false
+  },
+  "redis": {
+    "host": "redis"
+  },
+  "cloudinary": {
+    "apiKey": "514676315272514"
+  }
+}

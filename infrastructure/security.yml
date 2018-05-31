@@ -19,7 +19,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Redis-${AWS::StackName}'
-      GroupDescription: !Sub "Allow access to redis cache for VPC ${VpcId}"
+      GroupDescription: !Sub 'Allow access to redis cache for VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
       - IpProtocol: tcp
@@ -41,7 +41,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Elb-${AWS::StackName}'
-      GroupDescription: !Sub "Allow access to ELB inbound and to VPC ${VpcId}"
+      GroupDescription: !Sub 'Allow access to ELB inbound and to VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
       - IpProtocol: tcp
@@ -62,7 +62,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Client-Ecs-${AWS::StackName}'
-      GroupDescription: !Sub "Allow access to Client ECS Tasks inbound and to VPC ${VpcId}"
+      GroupDescription: !Sub 'Allow access to Client ECS Tasks inbound and to VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
       - IpProtocol: tcp
@@ -79,7 +79,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Rds-${AWS::StackName}'
-      GroupDescription: !Join [ " ", [ 'Allow access to RDS for VPC', !Ref VpcId ] ]
+      GroupDescription: !Sub 'Allow access to RDS for VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
       - IpProtocol: tcp
@@ -97,33 +97,34 @@ Resources:
         - Key: Name
           Value: forgingadventures
 
-    SecretsKmsKey:
-      Type: AWS::KMS::Key
-      Properties:
-        Description: !Sub 'Key to encrypt ${Environment} secrets'
-        Enabled: true
-        EnableKeyRotation: false
-        KeyPolicy:
-          Version: "2012-10-17",
-          Statement:
-            -
-              Sid: "Allow administration of the key"
-              Effect: Allow
-              Principal:
-                AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
-              Action:
-                - "kms:*"
-              Resource: "*"
+  SecretsKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: !Sub 'Key to encrypt ${Environment} secrets'
+      Enabled: true
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: "key-default-1"
+        Statement:
+          - Sid: "Allow administration of the key"
+            Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action:
+              - "kms:*"
+            Resource: "*"
+      Tags:
         - Key: Environment
           Value: !Ref Environment
         - Key: Name
           Value: forgingadventures
 
-    SecretsKmsKeyAlias:
-      Type: AWS::KMS::Alias
-      Properties:
-        AliasName: !Sub 'alias/secrets/${Environment}'
-        TargetKeyId: !Ref SecretsKmsKey
+  SecretsKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub 'alias/secrets/${Environment}'
+      TargetKeyId: !Ref SecretsKmsKey
 
 Outputs:
   ClientEcsSecurityGroup:

@@ -7,11 +7,11 @@
     },
     {
       "ParameterKey": "VpcSubnetList",
-      "ParameterValue": "subnet-f17179de,subnet-fd2fce9a"
+      "ParameterValue": "subnet-6b27ee45,subnet-3113c656"
     },
     {
       "ParameterKey": "VpcSecurityGroupList",
-      "ParameterValue": "sg-f111e3b8"
+      "ParameterValue": "sg-951234dd"
     },
     {
       "ParameterKey": "ClusterName",
@@ -19,11 +19,11 @@
     },
     {
       "ParameterKey": "ContainerImage",
-      "ParameterValue": "466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g1"
+      "ParameterValue": "466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2"
     },
     {
       "ParameterKey": "ElbTargetGroup",
-      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:466853810010:targetgroup/forgi-ElbTa-JG19P4QMMNZ5/5ccff1b7b1be9528"
+      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:466853810010:targetgroup/forgi-Clien-1BBDR69J7OKMV/8a81560e1950f808"
     },
     {
       "ParameterKey": "DesiredTaskCount",
