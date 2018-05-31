@@ -8,4 +8,4 @@ fi
 mkdir -p /etc/container_environment
 
 # set secrets from AWS SSM parameter store
-node /home/app/setEnvironmentSecrets.js
+node /home/app/api/setEnvironmentSecrets.js

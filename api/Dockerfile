@@ -11,8 +11,11 @@ COPY . /app
 
 # builds production artifcats
 RUN yarn build
-RUN cp ./package.json dist && cp ./yarn.lock dist && cd dist && yarn install --production
-
+RUN cp ./package.json dist \
+    && cp ./yarn.lock dist \
+    && cp -R ./config dist \
+    && cd dist \
+    && yarn install --production
 
 
 # the deployment container
@@ -34,8 +37,9 @@ COPY ./etc/my_init.d/30_secrets.sh /etc/my_init.d
 
 # copy the application from the build stage
 WORKDIR /home/app
-COPY ./setEnvironmentSecrets.js .
-COPY --chown=app:app --from=base /app/dist  .
+RUN  mkdir api && chown app:app api
+COPY --chown=app:app --from=builder /app/setEnvironmentSecrets.js ./api
+COPY --chown=app:app --from=builder /app/dist ./api
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
