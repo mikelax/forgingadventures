@@ -32,7 +32,7 @@ RUN rm /etc/nginx/sites-enabled/default
 COPY ./etc/nginx/main.d/env.conf /etc/nginx/main.d/secrets.conf
 COPY ./etc/nginx/sites-enabled/nginx-forging.conf /etc/nginx/sites-enabled/nginx-forging.conf
 
-# copy the environment setup script to /root - this will be used by /etc/my_init.d/31_secrets.sh
+# /etc/my_init.d/31_secrets.sh calls /home/app/api/setEnvironmentSecrets.js to set secret environment on startup
 COPY ./etc/my_init.d/31_secrets.sh /etc/my_init.d
 
 # copy the application from the build stage

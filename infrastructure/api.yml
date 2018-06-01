@@ -104,7 +104,7 @@ Resources:
           Environment:
             - Name: APP_NAME    # This var is used as namespace to get env. variables from Sys Manager Parameter Store.
               Value: forgingadventures
-            - Name: NODE_ENV
+            - Name: PASSENGER_APP_ENV
               Value: !Ref Environment
           Essential: true
           Image: !Ref ContainerImage
