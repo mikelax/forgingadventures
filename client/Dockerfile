@@ -14,6 +14,7 @@ COPY /public /usr/src/app/public
 COPY /scripts /usr/src/app/scripts
 COPY /src /usr/src/app/src
 COPY .env.production .
+COPY .env.staging .
 
 RUN mkdir /usr/src/app/build
 
@@ -33,9 +34,11 @@ ENV REACT_APP_AUTH0_REDIRECT_URI=$REACT_APP_AUTH0_REDIRECT_URI
 ENV REACT_APP_WEBSOCKET_URI=$REACT_APP_WEBSOCKET_URI
 ENV REACT_APP_CLOUDINARY_CLOUDNAME=$REACT_APP_CLOUDINARY_CLOUDNAME
 
-# build using production env for optimized build
+# build using specified env for optimized build
+ARG BUILD_ENV
+
 ENV NODE_ENV production
-RUN yarn build
+RUN if [ -z ${BUILD_ENV} ]; then yarn build; else yarn "build:${BUILD_ENV}"; fi
 
 # The deployed container
 FROM nginx:1.13-alpine

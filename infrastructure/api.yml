@@ -158,7 +158,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: react-client
           PortMappings:
-            - ContainerPort: 80
+            - ContainerPort: 8000
 
   ApiService:
     Type: AWS::ECS::Service
@@ -172,7 +172,7 @@ Resources:
       HealthCheckGracePeriodSeconds: 180
       LoadBalancers:
       - ContainerName: api
-        ContainerPort: 80
+        ContainerPort: 8000
         TargetGroupArn: !Ref ElbTargetGroup
       NetworkConfiguration:
         AwsvpcConfiguration:

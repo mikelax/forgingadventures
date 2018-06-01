@@ -50,6 +50,7 @@
     "case-sensitive-paths-webpack-plugin": "2.1.1",
     "chalk": "1.1.3",
     "css-loader": "0.28.7",
+    "env-cmd": "8.0.2",
     "eslint": "4.19.1",
     "eslint-config-react-app": "2.1.0",
     "eslint-loader": "2.0.0",
@@ -83,6 +84,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "build:staging": "env-cmd .env.staging yarn build",
     "flow": "flow",
     "lint": "eslint .",
     "test": "node scripts/test.js --env=jsdom"
