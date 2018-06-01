@@ -1,6 +1,8 @@
 const path = require('path');
+/* eslint-disable import/no-extraneous-dependencies */
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
+/* eslint-enable import/no-extraneous-dependencies */
 
 function pathToSrc(...args) {
   return path.join(__dirname, path.join(...args));

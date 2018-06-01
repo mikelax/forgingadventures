@@ -34,7 +34,7 @@ new Bluebird(async (resolve, reject) => {
     fs.writeFileAsync(`/etc/container_environment/${env}`, secret.Value);
   })
   .catch((e) => {
-    console.log('Error', e);
+    console.log('Error', e); // eslint-disable-line no-console
     process.exit(1);
   });
 
