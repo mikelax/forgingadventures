@@ -29,6 +29,8 @@ RUN rm -f /etc/service/nginx/down
 
 # setup nginx
 RUN rm /etc/nginx/sites-enabled/default
+RUN rm /etc/nginx/sites-available/default
+
 COPY ./etc/nginx/main.d/env.conf /etc/nginx/main.d/secrets.conf
 COPY ./etc/nginx/sites-enabled/nginx-forging.conf /etc/nginx/sites-enabled/nginx-forging.conf
 
