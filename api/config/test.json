@@ -20,7 +20,7 @@
     "graphiql": false
   },
   "redis": {
-    "host": "redis"
+    "host": "redistest.forgingadventures.com"
   },
   "cloudinary": {
     "apiKey": "514676315272514"

@@ -44,7 +44,9 @@ docker build -t forgingadventures-client:test-ea7c2g2 \
   --build-arg REACT_APP_AUTH0_DOMAIN=forgingadventures-staging.auth0.com \
   --build-arg REACT_APP_AUTH0_CLIENT_ID=i7Srpetd9dL9Dx1ckMIhBLFnSxksaVcz \
   --build-arg REACT_APP_AUTH0_AUDIENCE=https://api-test.forgingadventures.com \
-  --build-arg REACT_APP_AUTH0_REDIRECT_URI=http://playquest.forgingadventures.com/login/callback \
+  --build-arg REACT_APP_AUTH0_REDIRECT_URI=https://playquest.forgingadventures.com/login/callback \
+  --build-arg REACT_APP_WEBSOCKET_URI=wss://playquest.forgingadventures.com/api/subscriptions \
+  --build-arg REACT_APP_CLOUDINARY_CLOUDNAME=forgingadventures \
   .
 docker tag forgingadventures-client:test-ea7c2g2 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2
 docker push 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2
@@ -79,7 +81,7 @@ aws --profile forgingadventures s3 sync . s3://forgingadventures-resources/cfn-t
 aws --profile forgingadventures cloudformation create-stack --stack-name forgingadventures-test \
   --region us-east-1 --on-failure DO_NOTHING --capabilities CAPABILITY_IAM \
   --template-url https://s3.amazonaws.com/forgingadventures-resources/cfn-templates/test.yml \
-  --cli-input-json file://forgingadventures-test-parameters.json
+  --cli-input-json file://infrastructure/forgingadventures-test-parameters.json
 ```
 
 ### Create or Update the Application Stacks

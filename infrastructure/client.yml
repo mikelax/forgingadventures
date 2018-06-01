@@ -63,7 +63,7 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: forgingadventures-client
-      ExecutionRoleArn: !Ref EcsTaskExecutionRole
+      ExecutionRoleArn: !GetAtt EcsTaskExecutionRole.Arn
       Cpu: !Ref ContainerCpu
       Memory: !Ref ContainerMemory
       NetworkMode: awsvpc

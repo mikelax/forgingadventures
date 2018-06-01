@@ -41,18 +41,16 @@ Resources:
       VpcSecurityGroupIds: !Ref VpcSecurityGroupList
       CacheSubnetGroupName: !Ref CacheSubnetGroup
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
   RedisDNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !Ref HostedZoneId
-      Name: !Join [ ".", [ redis, !Ref Environment, forgingadventures.com. ] ]
+      Name: !Sub "redis${Environment}.forgingadventures.com."
       Type: CNAME
       TTL: '900'
       ResourceRecords:
