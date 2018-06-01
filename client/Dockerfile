@@ -13,8 +13,10 @@ COPY /config /usr/src/app/config
 COPY /public /usr/src/app/public
 COPY /scripts /usr/src/app/scripts
 COPY /src /usr/src/app/src
+
+# copy specific build target env files
 COPY .env.production .
-COPY .env.staging .
+COPY .env.playquest .
 
 RUN mkdir /usr/src/app/build
 
@@ -34,11 +36,11 @@ ENV REACT_APP_AUTH0_REDIRECT_URI=$REACT_APP_AUTH0_REDIRECT_URI
 ENV REACT_APP_WEBSOCKET_URI=$REACT_APP_WEBSOCKET_URI
 ENV REACT_APP_CLOUDINARY_CLOUDNAME=$REACT_APP_CLOUDINARY_CLOUDNAME
 
-# build using specified env for optimized build
-ARG BUILD_ENV
+# build using specified env for optimized build - defaults to production if not specified
+ARG BUILD_TARGET
 
 ENV NODE_ENV production
-RUN if [ -z ${BUILD_ENV} ]; then yarn build; else yarn "build:${BUILD_ENV}"; fi
+RUN if [ -z ${BUILD_TARGET} ]; then yarn build; else yarn "build:${BUILD_TARGET}"; fi
 
 # The deployed container
 FROM nginx:1.13-alpine

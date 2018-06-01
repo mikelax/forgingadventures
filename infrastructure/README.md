@@ -37,27 +37,14 @@ docker push 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-api:e
 
 ### Client
 
-The build args used in the example commands below are for the *test* environment. Notice that also applies for the docker label as well.
-
+By default, the `client` docker build defaults to the `production` environment for deployment
+to `play.forgingadventures.com`. To build the client for`playquest.forgingadventures.com`, use the following:
+   
 ```bash
-docker build -t forgingadventures-client:test-ea7c2g2 \
-  --build-arg REACT_APP_AUTH0_DOMAIN=forgingadventures-staging.auth0.com \
-  --build-arg REACT_APP_AUTH0_CLIENT_ID=i7Srpetd9dL9Dx1ckMIhBLFnSxksaVcz \
-  --build-arg REACT_APP_AUTH0_AUDIENCE=https://api-test.forgingadventures.com \
-  --build-arg REACT_APP_AUTH0_REDIRECT_URI=https://playquest.forgingadventures.com/login/callback \
-  --build-arg REACT_APP_WEBSOCKET_URI=wss://playquest.forgingadventures.com/api/subscriptions \
-  --build-arg REACT_APP_CLOUDINARY_CLOUDNAME=forgingadventures \
-  .
+docker build -t forgingadventures-client:test-ea7c2g2 --build-arg BUILD_TARGET=playquest . 
 docker tag forgingadventures-client:test-ea7c2g2 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2
 docker push 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2
-```
-
-Alternatively, the `playquest` client container can be built as follows:
-
-```bash
-docker build -t forgingadventures-client:test-ea7c2g2 --build-arg BUILD_ENV=staging . 
-
-```
+```   
 
 ## Global Resources
 
