@@ -29,7 +29,10 @@ new Bluebird(async (resolve, reject) => {
     }
   }
 })
-  .each(secret => fs.writeFileAsync(`/etc/container_environment/${secret.Name}`, secret.Value))
+  .each((secret) => {
+    const env = _(secret.Name).split('/').last();
+    fs.writeFileAsync(`/etc/container_environment/${env}`, secret.Value);
+  })
   .catch((e) => {
     console.log('Error', e);
     process.exit(1);
