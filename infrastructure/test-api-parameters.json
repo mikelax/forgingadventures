@@ -23,7 +23,7 @@
     },
     {
       "ParameterKey": "ElbTargetGroup",
-      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:466853810010:targetgroup/forgi-ApiEl-IG1SBXDZ8WPF/c27799d32e205469"
+      "ParameterValue": "arn:aws:elasticloadbalancing:us-east-1:466853810010:targetgroup/forgi-ApiEl-12IYVUW8PAT92/9820ab3d99905bc9"
     },
     {
       "ParameterKey": "DesiredTaskCount",

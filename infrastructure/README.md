@@ -39,12 +39,12 @@ docker push 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-api:e
 
 By default, the `client` docker build defaults to the `production` environment for deployment
 to `play.forgingadventures.com`. To build the client for`playquest.forgingadventures.com`, use the following:
-   
+
 ```bash
-docker build -t forgingadventures-client:test-ea7c2g2 --build-arg BUILD_TARGET=playquest . 
+docker build -t forgingadventures-client:test-ea7c2g2 --build-arg BUILD_TARGET=playquest .
 docker tag forgingadventures-client:test-ea7c2g2 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2
 docker push 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2
-```   
+```
 
 ## Global Resources
 

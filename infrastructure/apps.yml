@@ -68,7 +68,7 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 4
       UnhealthyThresholdCount: 3
-      Port: 80
+      Port: 8000
       Protocol: HTTP
       VpcId: !Ref VpcId
       TargetGroupAttributes:
