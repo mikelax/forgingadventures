@@ -34,9 +34,9 @@ const authLink = setContext((__, { headers }) => {
   };
 });
 
-const httpLink = new HttpLink();
+const httpLink = new HttpLink({ uri: '/api/graphql' });
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:3001/subscriptions',
+  uri: process.env.REACT_APP_WEBSOCKET_URI,
   options: {
     reconnect: true,
     connectionParams: {
