@@ -92,6 +92,7 @@ Resources:
             Action:
               - "ssm:GetParameters"
               - "ssm:DescribeParameters"
+              - "ssm:GetParametersByPath"
             Resource:
               - "*"
       Roles:

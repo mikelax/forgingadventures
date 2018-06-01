@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: "Top Level Stack for test environment resources"
 
 Parameters:
   Environment:
@@ -95,8 +96,8 @@ Resources:
       Parameters:
         Environment: !Ref Environment
         HostedZoneId: !Ref HostedZoneId
-        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
-        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId] ]
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2 ] ]
+        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId, !GetAtt Security.Outputs.DevelopersSecurityGroupId ] ]
         Username: !Ref RdsUsername
         Password: !Ref RdsPassword
         StorageType: standard
@@ -115,8 +116,8 @@ Resources:
       Parameters:
         Environment: !Ref Environment
         HostedZoneId: !Ref HostedZoneId
-        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
-        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RedisSecurityGroupId] ]
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2 ] ]
+        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RedisSecurityGroupId, !GetAtt Security.Outputs.DevelopersSecurityGroupId ] ]
       Tags:
         - Key: Environment
           Value: !Ref Environment
