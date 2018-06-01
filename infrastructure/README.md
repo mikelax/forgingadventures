@@ -52,6 +52,13 @@ docker tag forgingadventures-client:test-ea7c2g2 466853810010.dkr.ecr.us-east-1.
 docker push 466853810010.dkr.ecr.us-east-1.amazonaws.com/forgingadventures-client:test-ea7c2g2
 ```
 
+Alternatively, the `playquest` client container can be built as follows:
+
+```bash
+docker build -t forgingadventures-client:test-ea7c2g2 --build-arg BUILD_ENV=staging . 
+
+```
+
 ## Global Resources
 
 The `global.yml` template creates AWS Objects that are common across environments. Examples of this could be common S3 buckets, ECS Repositories, etc. There should ever only be *ONE* copy of this template created.
