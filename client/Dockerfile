@@ -13,18 +13,25 @@ COPY /config /usr/src/app/config
 COPY /public /usr/src/app/public
 COPY /scripts /usr/src/app/scripts
 COPY /src /usr/src/app/src
+COPY .env.production .
 
 RUN mkdir /usr/src/app/build
 
-# Set env variables before build
+# Set env variables before build - these are picked up from ./.env.production
+# but can be overriden during docker build via --build-env X=Y
 ARG REACT_APP_AUTH0_DOMAIN
 ARG REACT_APP_AUTH0_CLIENT_ID
 ARG REACT_APP_AUTH0_AUDIENCE
 ARG REACT_APP_AUTH0_REDIRECT_URI
+ARG REACT_APP_WEBSOCKET_URI
+ARG REACT_APP_CLOUDINARY_CLOUDNAME
+
 ENV REACT_APP_AUTH0_DOMAIN=$REACT_APP_AUTH0_DOMAIN
 ENV REACT_APP_AUTH0_CLIENT_ID=$REACT_APP_AUTH0_CLIENT_ID
 ENV REACT_APP_AUTH0_AUDIENCE=$REACT_APP_AUTH0_AUDIENCE
 ENV REACT_APP_AUTH0_REDIRECT_URI=$REACT_APP_AUTH0_REDIRECT_URI
+ENV REACT_APP_WEBSOCKET_URI=$REACT_APP_WEBSOCKET_URI
+ENV REACT_APP_CLOUDINARY_CLOUDNAME=$REACT_APP_CLOUDINARY_CLOUDNAME
 
 # build using production env for optimized build
 ENV NODE_ENV production
