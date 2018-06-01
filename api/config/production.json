@@ -1,0 +1,28 @@
+{
+  "auth0": {
+    "faClient": {
+      "redirectUri": "https://forgingadventures.com",
+      "clientId": "AQ9U63ZdGNMfttXnztEiV5n7C8ZLwQSg",
+      "domain": "forgingadventures.auth0.com",
+      "audience": "https://api.forgingadventures.com"
+    },
+    "managementClient": {
+      "clientId": "muP5kUgBAXY2M9w7UDo9jzhxrAlU8gQs",
+      "audience": "https://forgingadventures.auth0.com/api/v2/"
+    }
+  },
+  "aws": {
+    "s3": {
+      "userUploadsPrefex": "production"
+    }
+  },
+  "graphql": {
+    "graphiql": false
+  },
+  "redis": {
+    "host": "redisproduction.forgingadventures.com"
+  },
+  "cloudinary": {
+    "apiKey": "514676315272514"
+  }
+}

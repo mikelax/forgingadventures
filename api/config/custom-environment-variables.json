@@ -1,0 +1,13 @@
+{
+  "auth0": {
+    "managementClient": {
+      "clientSecret": "AUTH0_MANAGEMENT_CLIENT_SECRET"
+    }
+  },
+  "database": {
+    "connection": "DATABASE_URI"
+  },
+  "cloudinary": {
+    "apiSecret": "CLOUDINARY_API_SECRET"
+  }
+}

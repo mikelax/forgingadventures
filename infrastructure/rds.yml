@@ -94,11 +94,9 @@ Resources:
       DBSubnetGroupDescription: The subnet group for RDS
       SubnetIds: !Ref VpcSubnetList
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
   PostgresRds:
@@ -119,18 +117,16 @@ Resources:
       DBSubnetGroupName: !Ref RdsSubnetGroup
       VPCSecurityGroups: !Ref VpcSecurityGroupList
       Tags:
-        -
-          Key: Environment
+        - Key: Environment
           Value: !Ref Environment
-        -
-          Key: Name
+        - Key: Name
           Value: forgingadventures
 
   RdsDNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !Ref HostedZoneId
-      Name: !Join [ ".", [ postgres, !Ref Environment, forgingadventures.com. ] ]
+      Name: !Sub "rds${Environment}.forgingadventures.com."
       Type: CNAME
       TTL: '900'
       ResourceRecords:

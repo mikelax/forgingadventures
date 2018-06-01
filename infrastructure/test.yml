@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: "Top Level Stack for test environment resources"
 
 Parameters:
   Environment:
@@ -16,7 +17,7 @@ Parameters:
   SslCertificateArn:
     Type: String
     Description: SSL certificate ARN
-    Default: 	arn:aws:acm:us-east-1:466853810010:certificate/f396d6a8-2943-45cf-b232-e84a33b88b6f
+    Default: arn:aws:acm:us-east-1:466853810010:certificate/f396d6a8-2943-45cf-b232-e84a33b88b6f
   RdsUsername:
     Type: String
     Description: The database admin account username
@@ -88,40 +89,40 @@ Resources:
       Name: playquest.forgingadventures.com.
       Type: A
 
-  # Rds:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/rds.yml"
-  #     Parameters:
-  #       Environment: !Ref Environment
-  #       HostedZoneId: !Ref HostedZoneId
-  #       VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
-  #       VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId] ]
-  #       Username: !Ref RdsUsername
-  #       Password: !Ref RdsPassword
-  #       StorageType: standard
-  #       AllocatedStorage: 5
-  #       PubliclyAccessible: true
-  #     Tags:
-  #       - Key: Environment
-  #         Value: !Ref Environment
-  #       - Key: Name
-  #         Value: forgingadventures
+  Rds:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/rds.yml"
+      Parameters:
+        Environment: !Ref Environment
+        HostedZoneId: !Ref HostedZoneId
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2 ] ]
+        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RdsSecurityGroupId, !GetAtt Security.Outputs.DevelopersSecurityGroupId ] ]
+        Username: !Ref RdsUsername
+        Password: !Ref RdsPassword
+        StorageType: standard
+        AllocatedStorage: 5
+        PubliclyAccessible: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
 
-  # Cache:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/redis.yml"
-  #     Parameters:
-  #       Environment: !Ref Environment
-  #       HostedZoneId: !Ref HostedZoneId
-  #       VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2] ]
-  #       VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RedisSecurityGroupId] ]
-  #     Tags:
-  #       - Key: Environment
-  #         Value: !Ref Environment
-  #       - Key: Name
-  #         Value: forgingadventures
+  Cache:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "https://s3.amazonaws.com/${S3TemplateBucket}/cfn-templates/redis.yml"
+      Parameters:
+        Environment: !Ref Environment
+        HostedZoneId: !Ref HostedZoneId
+        VpcSubnetList: !Join [ ",", [ !GetAtt VPC.Outputs.PublicSubnet1, !GetAtt VPC.Outputs.PublicSubnet2 ] ]
+        VpcSecurityGroupList: !Join [ ",", [ !GetAtt Security.Outputs.RedisSecurityGroupId, !GetAtt Security.Outputs.DevelopersSecurityGroupId ] ]
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
 
 Outputs:
   ClusterName:

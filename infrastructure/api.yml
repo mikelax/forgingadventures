@@ -82,6 +82,48 @@ Resources:
       Roles:
         - !Ref EcsTaskRole
 
+  SecretsIamPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${AWS::StackName}-secrets"
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - "ssm:GetParameters"
+              - "ssm:DescribeParameters"
+              - "ssm:GetParametersByPath"
+            Resource:
+              - "*"
+      Roles:
+        - !Ref EcsTaskRole
+
+  S3IamPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${AWS::StackName}-s3"
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - "s3:ListAllMyBuckets"
+            Resource:
+              - "*"
+          - Effect: Allow
+            Action:
+              - "s3:PutObject"
+              - "s3:ListBucket"
+              - "s3:GetObjectAcl"
+              - "s3:GetObject"
+              - "s3:DeleteObject"
+              - "s3:GetBucketLocation"
+              - "s3:PutObjectAcl"
+            Resource:
+              - "arn:aws:s3:::imagesforgingadventures-user-uploads"
+              - "arn:aws:s3:::forgingadventures-user-uploads/*"
+      Roles:
+        - !Ref EcsTaskRole
+
   ApiCloudwatchLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -92,17 +134,20 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: forgingadventures-api
-      ExecutionRoleArn: !Ref EcsTaskExecutionRole
+      ExecutionRoleArn: !GetAtt EcsTaskExecutionRole.Arn
       Cpu: !Ref ContainerCpu
       Memory: !Ref ContainerMemory
       NetworkMode: awsvpc
       RequiresCompatibilities: [FARGATE]
+      TaskRoleArn: !GetAtt EcsTaskRole.Arn
       ContainerDefinitions:
         - Name: api
           Cpu: !Ref ContainerCpu
-          Command: [yarn start]
+          Command: [/sbin/my_init]
           Environment:
-            - Name: NODE_ENV
+            - Name: APP_NAME    # This var is used as namespace to get env. variables from Sys Manager Parameter Store.
+              Value: forgingadventures
+            - Name: PASSENGER_APP_ENV
               Value: !Ref Environment
           Essential: true
           Image: !Ref ContainerImage
@@ -114,7 +159,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: react-client
           PortMappings:
-            - ContainerPort: 3001
+            - ContainerPort: 8000
 
   ApiService:
     Type: AWS::ECS::Service
@@ -128,7 +173,7 @@ Resources:
       HealthCheckGracePeriodSeconds: 180
       LoadBalancers:
       - ContainerName: api
-        ContainerPort: 3001
+        ContainerPort: 8000
         TargetGroupArn: !Ref ElbTargetGroup
       NetworkConfiguration:
         AwsvpcConfiguration:

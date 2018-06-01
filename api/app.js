@@ -52,15 +52,16 @@ app.use(cors());
 app.use(checkJwt());
 
 // graphql endpoints
-app.use('/graphql', graphqlExpress((req, res) => ({
+app.use('/api/graphql', graphqlExpress((req, res) => ({
   schema,
   context: { req, res, loaders: loader() }
 })));
 
 if (config.get('graphql.graphiql')) {
   app.use('/graphiql', graphiqlExpress({
-    endpointURL: '/graphql',
-    subscriptionsEndpoint: 'ws://localhost:3001/subscriptions'
+    endpointURL: '/api/graphql',
+    // note that graphiql is only enabled on dev hence the hardcoded following line
+    subscriptionsEndpoint: 'ws://localhost:3001/api/subscriptions'
   }));
 }
 
@@ -83,7 +84,7 @@ server.listen(app.get('port'), () => {
     }
   }, {
     server,
-    path: '/subscriptions'
+    path: '/api/subscriptions'
   });
 });
 

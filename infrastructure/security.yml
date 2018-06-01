@@ -19,18 +19,18 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Redis-${AWS::StackName}'
-      GroupDescription: !Sub "Allow access to redis cache for VPC ${VpcId}"
+      GroupDescription: !Sub 'Allow access to redis cache for VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 6379
-        ToPort: 6379
-        CidrIp: !Ref VpcCidrBlock
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
+          CidrIp: !Ref VpcCidrBlock
       SecurityGroupEgress:
-      - IpProtocol: tcp
-        FromPort: 0
-        ToPort: 65535
-        CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Environment
           Value: !Ref Environment
@@ -41,34 +41,38 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Elb-${AWS::StackName}'
-      GroupDescription: !Sub "Allow access to ELB inbound and to VPC ${VpcId}"
+      GroupDescription: !Sub 'Allow access to ELB inbound and to VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: 443
-        ToPort: 443
-        CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Environment
           Value: !Ref Environment
         - Key: Name
           Value: forgingadventures
 
-  ClientEcsSecurityGroup:
+  EcsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub 'Client-Ecs-${AWS::StackName}'
-      GroupDescription: !Sub "Allow access to Client ECS Tasks inbound and to VPC ${VpcId}"
+      GroupName: !Sub 'Ecs-${AWS::StackName}'
+      GroupDescription: !Sub 'Allow access to ECS Tasks inbound and to VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 3000
-        ToPort: 3000
-        SourceSecurityGroupId: !Ref ElbSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          SourceSecurityGroupId: !Ref ElbSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          SourceSecurityGroupId: !Ref ElbSecurityGroup
       Tags:
         - Key: Environment
           Value: !Ref Environment
@@ -79,56 +83,88 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub 'Rds-${AWS::StackName}'
-      GroupDescription: !Join [ " ", [ 'Allow access to RDS for VPC', !Ref VpcId ] ]
+      GroupDescription: !Sub 'Allow access to RDS for VPC ${VpcId}'
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 5432
-        ToPort: 5432
-        CidrIp: !Ref VpcCidrBlock
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: !Ref VpcCidrBlock
       SecurityGroupEgress:
-      - IpProtocol: tcp
-        FromPort: 0
-        ToPort: 65535
-        CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Environment
           Value: !Ref Environment
         - Key: Name
           Value: forgingadventures
 
-    SecretsKmsKey:
-      Type: AWS::KMS::Key
-      Properties:
-        Description: !Sub 'Key to encrypt ${Environment} secrets'
-        Enabled: true
-        EnableKeyRotation: false
-        KeyPolicy:
-          Version: "2012-10-17",
-          Statement:
-            -
-              Sid: "Allow administration of the key"
-              Effect: Allow
-              Principal:
-                AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
-              Action:
-                - "kms:*"
-              Resource: "*"
+  DevelopersSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow developers access to resources
+      VpcId: !Ref VpcId
+      Tags:
         - Key: Environment
           Value: !Ref Environment
         - Key: Name
           Value: forgingadventures
 
-    SecretsKmsKeyAlias:
-      Type: AWS::KMS::Alias
-      Properties:
-        AliasName: !Sub 'alias/secrets/${Environment}'
-        TargetKeyId: !Ref SecretsKmsKey
+  MichaelDeveloperIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Michael Ingress
+      GroupId: !Ref DevelopersSecurityGroup
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+      CidrIp: 71.187.54.101/32
+
+  NazarDeveloperIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Nazar Ingress
+      GroupId: !Ref DevelopersSecurityGroup
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+      CidrIp: 82.69.30.21/32
+
+  SecretsKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: !Sub 'Key to encrypt ${Environment} secrets'
+      Enabled: true
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: "key-default-1"
+        Statement:
+          - Sid: "Allow administration of the key"
+            Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action:
+              - "kms:*"
+            Resource: "*"
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: forgingadventures
+
+  SecretsKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub 'alias/secrets/${Environment}'
+      TargetKeyId: !Ref SecretsKmsKey
 
 Outputs:
-  ClientEcsSecurityGroup:
-    Description: ECS Client Group ID
-    Value: !Ref ClientEcsSecurityGroup
+  EcsSecurityGroup:
+    Description: ECS Group ID
+    Value: !Ref EcsSecurityGroup
   ElbSecurityGroupId:
     Description: Elb Group ID
     Value: !Ref ElbSecurityGroup
@@ -138,6 +174,9 @@ Outputs:
   RdsSecurityGroupId:
     Description: RDS Security Group ID
     Value: !Ref RdsSecurityGroup
+  DevelopersSecurityGroupId:
+    Description: Developer Access
+    Value: !Ref DevelopersSecurityGroup
   SecretsKmsKeyArn:
     Description: SecretsKmsKey ARN
     Value: !GetAtt SecretsKmsKey.Arn

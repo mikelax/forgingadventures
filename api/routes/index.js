@@ -10,10 +10,6 @@ const uploader = multer({
   limits: { fileSize: 5000000 } // limit max upload file to 5MB
 });
 
-router.get('/', (req, res) => {
-  res.send('API Index');
-});
-
 router.post('/upload-image', uploader.single('picture'), setDbUserByToken, uploadUserPicture);
 
 

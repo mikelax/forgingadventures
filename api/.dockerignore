@@ -1,4 +1,7 @@
 .idea
 dist
+dev
 node_modules
+seeds
+migrations
 npm-debug.log

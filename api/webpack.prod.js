@@ -1,14 +1,11 @@
-const _ = require('lodash');
 const path = require('path');
-const webpack = require('webpack');
-const fs = require('fs');
 
-const nodeModules = _(fs.readdirSync('node_modules'))
-  .filter(x => ['.bin'].indexOf(x) === -1)
-  .transform((result, mod) => {
-    result[mod] = `commonjs ${mod}`;
-  }, {})
-  .value();
+/* eslint-disable import/no-extraneous-dependencies */
+const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
+/* eslint-enable import/no-extraneous-dependencies */
+
 
 function pathToSrc(...args) {
   return path.join(__dirname, path.join(...args));
@@ -21,8 +18,8 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: 'index.js'
   },
-  devtool: '#cheap-module-source-map',
-  externals: nodeModules,
+  devtool: 'source-map',
+  externals: nodeExternals(),
   node: {
     __filename: true,
     __dirname: true
@@ -32,6 +29,14 @@ module.exports = {
       banner: 'require("source-map-support").install({environment: \'node\'});',
       raw: true,
       entryOnly: false
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
+    new UglifyJsPlugin({
+      sourceMap: true
     })
   ],
   resolve: {
