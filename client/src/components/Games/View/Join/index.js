@@ -122,17 +122,22 @@ const JoinGame = class JoinGame extends Component {
   _setCharacter = (character) => {
     const value = _.get(character, 'value', null);
 
-    const { store } = this.state;
-    _.set(store, 'characterId', value);
-    this.setState({ ...this.state, store });
+    this.setState(prevState => {
+      const { store } = prevState;
+      _.set(store, 'characterId', value);
+
+      return { store };
+    });
   };
 
   _formInput = (stateKey) => {
     return (e) => {
-      const { store } = this.state;
+      this.setState(prevState => {
+        const { store } = prevState;
+        _.set(store, stateKey, e.target.value);
 
-      _.set(store, stateKey, e.target.value);
-      this.setState({ ...this.state, store });
+        return { store };
+      });
     };
   };
 

@@ -65,7 +65,7 @@ class NavBarMobile extends Component {
   }
 
   _toggleMenu = () => {
-    this.setState({ visible: !this.state.visible });
+    this.setState(prevState => ({ visible: !prevState.visible }));
   };
 
 }

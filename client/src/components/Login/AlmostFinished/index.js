@@ -123,11 +123,12 @@ class AlmostFinished extends Component {
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      const { store } = this.state;
+      this.setState(prevState => {
+        const { store } = prevState;
+        store.profileImageUrl = reader.result;
 
-      store.profileImageUrl = reader.result;
-
-      this.setState({ ...this.state, store });
+        return { store };
+      });
       this.setState({ file });
     };
 
@@ -167,19 +168,24 @@ class AlmostFinished extends Component {
 
   _formInput = (stateKey) => {
     return (e) => {
-      const { store } = this.state;
+      this.setState(prevState => {
+        const { store } = prevState;
+        _.set(store, stateKey, e.target.value);
 
-      _.set(store, stateKey, e.target.value);
-      this.setState({ ...this.state, store });
+        return { store };
+      });
     };
   };
 
   _setTimezone = (timezone) => {
     const value = _.get(timezone, 'value', null);
 
-    const { store } = this.state;
-    _.set(store, 'timezone', value);
-    this.setState({ ...this.state, store });
+    this.setState(prevState => {
+      const { store } = prevState;
+      _.set(store, 'timezone', value);
+
+      return { store };
+    });
   };
 
   _formValue = (stateKey) => {
@@ -246,4 +252,3 @@ export default compose(
   }),
   connect(null, mapDispatchToProps, null, { pure: false }),
 )(AlmostFinished);
-

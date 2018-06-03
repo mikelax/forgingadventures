@@ -71,8 +71,10 @@ class CreateMessage extends Component {
   };
 
   _handlePostType = (postType) => {
-    const form = _.merge({}, this.state.form, postType);
-    this.setState({ form });
+    this.setState(prevState => {
+      const form = _.merge({}, prevState.form, postType);
+      return { form };
+    });
   };
 
   _submit = () => {
