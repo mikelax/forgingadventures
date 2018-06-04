@@ -5,7 +5,7 @@ import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { Button, Container, Form, Grid, 
+import { Button, Container, Form, Grid,
   Header, Icon, Image, Label, Menu, Message } from 'semantic-ui-react';
 
 import SuccessToast from '../shared/components/SuccessToast';
@@ -16,7 +16,7 @@ import { getProfile } from '../../services/webAuth';
 import { getMyDetails } from '../../actions/me';
 
 class Settings extends Component {
-  state = { 
+  state = {
     activeItem: 'profile',
     displaySuccess: false,
     // the form control state
@@ -30,22 +30,22 @@ class Settings extends Component {
     errors: {}
   };
 
-  componentWillMount() {
-    return getProfile()
+  componentDidMount() {
+    getProfile()
       .then(profile => {
         this.setState({ profile });
       });
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
+  static getDerivedStateFromProps(props) {
+    return {
       store: {
-        username: _.get(nextProps.data, 'me.username') || '',
-        name: _.get(nextProps.data, 'me.name') || '',
-        timezone: _.get(nextProps.data, 'me.timezone') || '',
-        profileImageUrl: _.get(nextProps.data, 'me.profileImage.url') || ''
+        username: _.get(props.data, 'me.username') || '',
+        name: _.get(props.data, 'me.name') || '',
+        timezone: _.get(props.data, 'me.timezone') || '',
+        profileImageUrl: _.get(props.data, 'me.profileImage.url') || ''
       }
-    });
+    };
   }
 
   render() {
@@ -116,7 +116,7 @@ class Settings extends Component {
                       readOnly
                       width={6}
                     />
-                    {emailVerified ? 
+                    {emailVerified ?
                       (<Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>) :
                       <Button>Resend Verification Email</Button>
                     }
@@ -163,11 +163,12 @@ class Settings extends Component {
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      const { store } = this.state;
+      this.setState(prevState => {
+        const { store } = prevState;
+        store.profileImageUrl = reader.result;
 
-      store.profileImageUrl = reader.result;
-
-      this.setState({ ...this.state, store });
+        return { store };
+      });
       this.setState({ file });
     };
 
@@ -207,19 +208,24 @@ class Settings extends Component {
 
   _formInput = (stateKey) => {
     return (e) => {
-      const { store } = this.state;
+      this.setState(prevState => {
+        const { store } = prevState;
+        _.set(store, stateKey, e.target.value);
 
-      _.set(store, stateKey, e.target.value);
-      this.setState({ ...this.state, store });
+        return { store };
+      });
     };
   };
 
   _setTimezone = (timezone) => {
     const value = _.get(timezone, 'value', null);
 
-    const { store } = this.state;
-    _.set(store, 'timezone', value);
-    this.setState({ ...this.state, store });
+    this.setState(prevState => {
+      const { store } = prevState;
+      _.set(store, 'timezone', value);
+
+      return { store };
+    });
   };
 
   _formValue = (stateKey) => {

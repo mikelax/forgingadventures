@@ -214,18 +214,22 @@ class GameDetailsForm extends Component {
 
   _formInput = (stateKey) => {
     return (e) => {
-      const { store } = this.state;
+      this.setState(prevState => {
+        const { store } = prevState;
+        _.set(store, stateKey, e.target.value);
 
-      _.set(store, stateKey, e.target.value);
-      this.setState({ ...this.state, store });
+        return { store };
+      });
     };
   };
 
   _handleOverview = (message) => {
-    const { store } = this.state;
+    this.setState(prevState => {
+      const { store } = prevState;
+      _.set(store, 'overview', message.content);
 
-    _.set(store, 'overview', message.content);
-    this.setState({ ...this.state, store });
+      return { store };
+    });
   };
 
   _formValue = (stateKey) => {
