@@ -14,6 +14,9 @@ import ViewGameMessages from './View/ViewGameMessages';
 
 import AuthGuard from '../shared/components/AuthGuard';
 
+import './View/assets/ViewGame.styl';
+
+
 export default class Campaigns extends Component {
 
   render() {

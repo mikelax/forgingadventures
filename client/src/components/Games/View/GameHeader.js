@@ -9,8 +9,6 @@ import ApolloLoader from 'components/shared/components/ApolloLoader';
 
 import { gameQuery } from '../queries';
 
-import './assets/ViewGame.styl';
-
 
 function GameHeader(props) {
   const { match, data: { game } } = props;
