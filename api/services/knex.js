@@ -30,7 +30,7 @@ knex
     const elapsedTime = endTime - startTime;
     const bindings = _(query.bindings).map((b) => { return _.isObject(b) ? JSON.stringify(b) : b; }).join(',');
 
-    logger.info(query.sql, `- [${bindings}] - ${elapsedTime.toFixed(3)} ms`);
+    logger.sql(query.sql, `- [${bindings}] - ${elapsedTime.toFixed(3)} ms`);
 
     delete times[uid];
   });

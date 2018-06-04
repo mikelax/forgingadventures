@@ -7,7 +7,7 @@ export default function () {
   const logging = morgan(':method :url :status :res[content-length] - :response-time ms - :requestPayload', {
     stream: {
       write: (message) => {
-        logger.info(message);
+        logger.request(message);
       }
     }
   });
@@ -22,7 +22,7 @@ export default function () {
     }
 
     try {
-      payload = JSON.stringify(payload, passwordRemover, ' ');
+      payload = JSON.stringify(payload, passwordRemover, 2);
     } catch (e) {
       payload = 'Not stringifiable';
     }
