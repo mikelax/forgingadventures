@@ -13,7 +13,6 @@
     "auth0-lock": "11.5.2",
     "axios": "0.18.0",
     "bluebird": "^3.5.1",
-    "cloudinary-react": "1.0.6",
     "dotenv": "4.0.0",
     "formik": "v1.0.0-alpha.6",
     "graphql": "0.13.0",

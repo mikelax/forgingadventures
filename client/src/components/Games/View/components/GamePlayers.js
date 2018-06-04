@@ -146,6 +146,7 @@ class GamePlayers extends Component {
               <Icon name="remove" />
               Leave Game
             </Menu.Item>
+
             {
               _.isEmpty(character) && (
                 <Menu.Item onClick={this._selectCharacter(playerId)}>

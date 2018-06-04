@@ -34,9 +34,7 @@ function GameDetailsView(props) {
       </Segment>
 
       <Segment>
-        <Header as='h2'>
-          <GamePlayers gameId={game.id} status={['game-master', 'pending', 'accepted']}/>
-        </Header>
+        <GamePlayers gameId={game.id} status={['game-master', 'pending', 'accepted']}/>
       </Segment>
     </React.Fragment>
   );
