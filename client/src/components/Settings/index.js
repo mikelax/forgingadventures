@@ -16,15 +16,6 @@ import { getProfile } from '../../services/webAuth';
 import { getMyDetails } from '../../actions/me';
 
 class Settings extends Component {
-  constructor() {
-    super();
-
-    getProfile()
-      .then(profile => {
-        this.setState({ profile });
-      });
-  }
-
   state = {
     activeItem: 'profile',
     displaySuccess: false,
@@ -38,6 +29,13 @@ class Settings extends Component {
     // the form validity state
     errors: {}
   };
+
+  componentDidMount() {
+    getProfile()
+      .then(profile => {
+        this.setState({ profile });
+      });
+  }
 
   static getDerivedStateFromProps(props) {
     return {
