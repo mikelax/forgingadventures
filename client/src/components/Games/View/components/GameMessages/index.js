@@ -7,7 +7,9 @@ import { connect } from 'react-redux';
 import { Header, Button, Grid, Segment } from 'semantic-ui-react';
 
 import ApolloLoader from 'components/shared/components/ApolloLoader';
+import InlineItemsLoader from 'components/shared/components/InlineItemsLoader';
 import RichEditor from 'components/shared/components/RichEditor';
+
 import { quote } from 'actions/gameMessage';
 
 import GmHeader from './GmHeader';
@@ -30,18 +32,24 @@ class GameMessages extends Component {
   }
 
   render() {
-    const { data: { gameMessages } } = this.props;
+    const { data: { gameMessages }, loading } = this.props;
 
-    return <div className='game-messages'>
-      <Header as="h1">Messages</Header>
+    return (
+      <InlineItemsLoader items={gameMessages} loading={loading}>
+        <Segment>
+          <div className='game-messages'>
+            <Header as="h1">Messages</Header>
 
-      {_.map(gameMessages, (gameMessage) => (
-        <Segment key={`message-${gameMessage.id}`} className='game-message'>
-          <GameMessageContainer gameMessage={gameMessage}/>
+            {_.map(gameMessages, (gameMessage) => (
+              <Segment key={`message-${gameMessage.id}`} className='game-message'>
+                <GameMessageContainer gameMessage={gameMessage}/>
+              </Segment>
+            ))}
+
+          </div>
         </Segment>
-      ))}
-
-    </div>;
+      </InlineItemsLoader>
+    );
   }
 
   _setupSubscriptions() {
@@ -130,10 +138,10 @@ class GameMessageContainerBase extends Component {
 
     return (
       <Grid divided='vertically' className="in-character">
-        <GmHeader user={user} />
+        <GmHeader user={user}/>
         <Grid.Row>
           <Grid.Column className="column-message">
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
 

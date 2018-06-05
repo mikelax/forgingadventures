@@ -5,6 +5,7 @@ import { compose, pure } from 'recompose';
 
 import { graphql } from 'react-apollo';
 
+import GameHeader from './GameHeader';
 import CreateMessage from './components/GameMessages/CreateMessage';
 import GamesMessages from './components/GameMessages';
 
@@ -27,9 +28,9 @@ function ViewGameMessages(props) {
 
   return (
     <React.Fragment>
-      <Segment>
-        <GamesMessages gameId={game.id}/>
-      </Segment>
+      <GameHeader game={game} />
+
+      <GamesMessages gameId={game.id}/>
 
       <Segment>
         {editorBlock}
