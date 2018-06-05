@@ -113,12 +113,12 @@ class RichTextDisplayEditor extends Component {
   insertCursorPlaceholderAtEnd() {
     //add an empty span with a unique id
     const spanId = _.uniqueId('editorEndPlaceholder');
-    this.editor.dom.add(this.editor.getBody(), 'span', { 'id': spanId }, '&nbsp;');
+    this.editor.dom.add(this.editor.getBody(), 'p', { 'id': spanId }, '&nbsp;');
 
     //select that span
-    const newNode = this.editor.dom.select('span#' + spanId);
+    const newNode = this.editor.dom.select('p#' + spanId);
     this.editor.selection.select(newNode[0]);
-    this.editor.selection.collapse(false);
+    this.editor.selection.collapse(true);
   }
 
   _handleOnChange = (content) => {
