@@ -118,6 +118,7 @@ class RichTextDisplayEditor extends Component {
     //select that span
     const newNode = this.editor.dom.select('span#' + spanId);
     this.editor.selection.select(newNode[0]);
+    this.editor.selection.collapse(false);
   }
 
   _handleOnChange = (content) => {
