@@ -27,12 +27,12 @@ function ViewGameMessages(props) {
 
   return (
     <React.Fragment>
-      <Segment className="rich-editor-sticky">
-        {editorBlock}
+      <Segment>
+        <GamesMessages gameId={game.id}/>
       </Segment>
 
       <Segment>
-        <GamesMessages gameId={game.id}/>
+        {editorBlock}
       </Segment>
     </React.Fragment>
   );

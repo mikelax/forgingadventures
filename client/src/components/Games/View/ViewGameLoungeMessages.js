@@ -9,12 +9,12 @@ export default function GameLoungeMessagesView (props) {
 
   return (
     <React.Fragment>
-      <Segment className="rich-editor-sticky">
-        <CreateLoungeMessage gameId={id}/>
+      <Segment>
+        <GameLoungeMessages gameId={id}/>
       </Segment>
 
       <Segment>
-        <GameLoungeMessages gameId={id}/>
+        <CreateLoungeMessage gameId={id}/>
       </Segment>
     </React.Fragment>
   );
