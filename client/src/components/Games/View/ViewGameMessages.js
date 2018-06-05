@@ -18,16 +18,16 @@ function ViewGameMessages(props) {
     return _.includes(['game-master', 'accepted'], value.status);
   });
 
-  const editorBlock = playerOrGm ?
-    <CreateMessage gameId={game.id}/> :
-    <Message info
+  const editorBlock = playerOrGm
+    ? <CreateMessage gameId={game.id}/>
+    : <Message info
              header='Please Login or Join Game to Post'
              content='While games are viewable by everyone, only players are able to post Game Messages. Try posting a message in the Game Lounge, or searching for another open game.'
     />;
 
   return (
     <React.Fragment>
-      <Segment>
+      <Segment className="rich-editor-sticky">
         {editorBlock}
       </Segment>
 

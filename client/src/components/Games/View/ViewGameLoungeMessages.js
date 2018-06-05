@@ -9,7 +9,7 @@ export default function GameLoungeMessagesView (props) {
 
   return (
     <React.Fragment>
-      <Segment>
+      <Segment className="rich-editor-sticky">
         <CreateLoungeMessage gameId={id}/>
       </Segment>
 

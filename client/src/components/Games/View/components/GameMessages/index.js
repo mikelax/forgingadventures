@@ -237,9 +237,9 @@ class GameMessageContainerBase extends Component {
   };
 
   _handleQuote = () => {
-    const { quoteGameMessage } = this.props;
+    const { quoteGameMessage, gameMessage } = this.props;
 
-    quoteGameMessage(this.editor.current.getEditorMessage());
+    quoteGameMessage(gameMessage);
   };
 
   _handleSubmit = () => {
