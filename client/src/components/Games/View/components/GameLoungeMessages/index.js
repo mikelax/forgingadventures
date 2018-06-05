@@ -34,7 +34,7 @@ class GameLoungeMessages extends Component {
     if (_.get(gameLoungeMessages, 'length')) {
       return (
         <div className="game-lounge-messages">
-          <Header as="h2" dividing>Lounge Messages</Header>
+          <Header as="h2">Lounge Messages</Header>
 
           {_.map(gameLoungeMessages, (loungeMessage) => (
             <Segment key={`lounge-message-${loungeMessage.id}`} className='game-lounge-message'>

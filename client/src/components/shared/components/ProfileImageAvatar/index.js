@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react';
-import { Image, Transformation } from 'cloudinary-react';
 import { Icon, Image as SemanticImage } from 'semantic-ui-react';
 
 
@@ -40,10 +39,7 @@ function CloudinaryImageAvatar(props) {
   }[size];
 
   return (
-    <Image publicId={publicId} cloudName={cloudName}>
-      <Transformation width={width*4} height={width*4} gravity="auto" radius="max" crop="crop"/>
-      <Transformation width={width} crop="fill"/>
-    </Image>
+    <img src={`https://res.cloudinary.com/${cloudName}/image/upload/c_crop,g_auto,h_${width*4},r_max,w_${width*4}/c_fill,w_${width}/${publicId}`} alt=""/>
   );
 }
 
