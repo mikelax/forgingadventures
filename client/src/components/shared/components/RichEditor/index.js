@@ -39,8 +39,8 @@ export default class RichTextDisplay extends Component {
     const { message, readOnly } = this.props;
 
     const displayComponent = readOnly ?
-      <RenderMessage message={message} /> :
-      <RichTextDisplayEditor ref={this.editor} message={message} onChange={this._handleOnChange} />;
+      <RenderMessage message={message}/> :
+      <RichTextDisplayEditor ref={this.editor} message={message} onChange={this._handleOnChange}/>;
 
     return (
       <div className="rich-text-display">
@@ -62,6 +62,7 @@ export default class RichTextDisplay extends Component {
     const quote = `<blockquote>${content}</blockquote>`;
 
     this.editor.current.insertHtml(quote);
+    setTimeout(() => this.editor.current.insertCursorPlaceholderAtEnd());
   }
 
   _handleOnChange = (meta) => {
@@ -75,13 +76,13 @@ export default class RichTextDisplay extends Component {
     }
 
     this.messageContent = meta.content;
-  }
+  };
 
 }
 
 function RenderMessage({ message }) {
   return (
-    <div dangerouslySetInnerHTML={{ __html: message }} />
+    <div dangerouslySetInnerHTML={{ __html: message }}/>
   );
 }
 
@@ -107,6 +108,17 @@ class RichTextDisplayEditor extends Component {
 
   insertHtml(html) {
     this.editor.insertContent(html);
+  }
+
+  insertCursorPlaceholderAtEnd() {
+    //add an empty span with a unique id
+    const spanId = _.uniqueId('editorEndPlaceholder');
+    this.editor.dom.add(this.editor.getBody(), 'p', { 'id': spanId }, '&nbsp;');
+
+    //select that span
+    const newNode = this.editor.dom.select('p#' + spanId);
+    this.editor.selection.select(newNode[0]);
+    this.editor.selection.collapse(true);
   }
 
   _handleOnChange = (content) => {
@@ -152,6 +164,6 @@ class RichTextDisplayEditor extends Component {
         `${window.PUBLIC_URL}/editor.css`
       ]
     };
-  }
+  };
 
 }

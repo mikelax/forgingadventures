@@ -4,9 +4,10 @@ import { Container, Segment, Header, Label, Button, Message } from 'semantic-ui-
 import { compose, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 
+import GameHeader from './GameHeader';
 import GamePlayers from './components/GamePlayers';
 
-import ApolloLoader from '../../shared/components/ApolloLoader';
+import ApolloLoader from 'components/shared/components/ApolloLoader';
 
 import { gameQuery, myGamePlayerQuery } from '../queries';
 
@@ -15,6 +16,8 @@ function GameDetailsView(props) {
 
   return (
     <React.Fragment>
+      <GameHeader game={game} />
+
       <Segment>
         <Header as='h2' dividing>
           Scenario

@@ -208,10 +208,10 @@ class Settings extends Component {
 
   _formInput = (stateKey) => {
     return (e) => {
-      this.setState(prevState => {
-        const { store } = prevState;
-        _.set(store, stateKey, e.target.value);
+      const value = e.target.value;
 
+      this.setState(({ store }) => {
+        _.set(store, stateKey, value);
         return { store };
       });
     };

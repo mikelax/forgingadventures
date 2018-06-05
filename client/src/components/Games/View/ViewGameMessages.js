@@ -5,6 +5,7 @@ import { compose, pure } from 'recompose';
 
 import { graphql } from 'react-apollo';
 
+import GameHeader from './GameHeader';
 import CreateMessage from './components/GameMessages/CreateMessage';
 import GamesMessages from './components/GameMessages';
 
@@ -18,21 +19,21 @@ function ViewGameMessages(props) {
     return _.includes(['game-master', 'accepted'], value.status);
   });
 
-  const editorBlock = playerOrGm ?
-    <CreateMessage gameId={game.id}/> :
-    <Message info
+  const editorBlock = playerOrGm
+    ? <CreateMessage gameId={game.id}/>
+    : <Message info
              header='Please Login or Join Game to Post'
              content='While games are viewable by everyone, only players are able to post Game Messages. Try posting a message in the Game Lounge, or searching for another open game.'
     />;
 
   return (
     <React.Fragment>
-      <Segment>
-        {editorBlock}
-      </Segment>
+      <GameHeader game={game} />
+
+      <GamesMessages gameId={game.id}/>
 
       <Segment>
-        <GamesMessages gameId={game.id}/>
+        {editorBlock}
       </Segment>
     </React.Fragment>
   );
