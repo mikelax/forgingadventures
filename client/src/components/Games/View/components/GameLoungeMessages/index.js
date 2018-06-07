@@ -6,6 +6,7 @@ import { compose } from 'recompose';
 import { Button, Header, Icon, Grid, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
+import InlineItemsLoader from 'components/shared/components/InlineItemsLoader';
 import RichEditor from 'components/shared/components/RichEditor';
 import { UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
 import { quote } from 'actions/loungeMessage';
@@ -29,23 +30,23 @@ class GameLoungeMessages extends Component {
   }
 
   render() {
-    const { data: { gameLoungeMessages } } = this.props;
+    const { data: { gameLoungeMessages }, loading } = this.props;
 
-    if (_.get(gameLoungeMessages, 'length')) {
-      return (
-        <div className="game-lounge-messages">
-          <Header as="h2">Lounge Messages</Header>
+    return (
+      <InlineItemsLoader items={gameLoungeMessages} loading={loading}>
+        <Segment>
+          <div className="game-lounge-messages">
+            <Header as="h2">Lounge Messages</Header>
 
-          {_.map(gameLoungeMessages, (loungeMessage) => (
-            <Segment key={`lounge-message-${loungeMessage.id}`} className='game-lounge-message'>
-              <GameLoungeMessageContainerData key={loungeMessage.id} loungeMessage={loungeMessage} />
-            </Segment>
-          ))}
-        </div>
-      );
-    } else {
-      return null;
-    }
+            {_.map(gameLoungeMessages, (loungeMessage) => (
+              <Segment key={`lounge-message-${loungeMessage.id}`} className='game-lounge-message'>
+                <GameLoungeMessageContainerData key={loungeMessage.id} loungeMessage={loungeMessage} />
+              </Segment>
+            ))}
+          </div>
+        </Segment>
+      </InlineItemsLoader>
+    );
 
   }
 

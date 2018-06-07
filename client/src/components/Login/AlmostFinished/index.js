@@ -168,10 +168,10 @@ class AlmostFinished extends Component {
 
   _formInput = (stateKey) => {
     return (e) => {
-      this.setState(prevState => {
-        const { store } = prevState;
-        _.set(store, stateKey, e.target.value);
+      const value = e.target.value;
 
+      this.setState(({ store }) => {
+        _.set(store, stateKey, value);
         return { store };
       });
     };
@@ -180,10 +180,8 @@ class AlmostFinished extends Component {
   _setTimezone = (timezone) => {
     const value = _.get(timezone, 'value', null);
 
-    this.setState(prevState => {
-      const { store } = prevState;
+    this.setState(({ store }) => {
       _.set(store, 'timezone', value);
-
       return { store };
     });
   };
