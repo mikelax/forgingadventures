@@ -14,6 +14,8 @@ import OutOfCharacterHeader from '../OutOfCharacterHeader';
 
 import { createGameMessageMutation, myGamePlayerQuery } from 'components/Games/queries';
 
+import DiceIcon from './dice.svg';
+
 import './CreateMessage.styl';
 
 class CreateMessage extends Component {
@@ -50,7 +52,7 @@ class CreateMessage extends Component {
             </Query>
 
             <label>Add Message</label>
-            <RichEditor ref={this.editor} onChange={this._handleOnChange}/>
+            <RichEditor ref={this.editor} onChange={this._handleOnChange} customButtons={this._customButtons()}/>
           </Form.Field>
 
           <Button primary
@@ -63,6 +65,18 @@ class CreateMessage extends Component {
       </div>
     );
   }
+
+  _customButtons = () => {
+    return [{
+      title: 'Add dice rolls',
+      image: DiceIcon,
+      onClick: this._showDiceModal
+    }];
+  };
+
+  _showDiceModal = () => {
+    console.log('hai')
+  };
 
   _handleOnChange = (data) => {
     if (data.hasContent !== this.state.hasContent) {

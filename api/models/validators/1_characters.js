@@ -1,8 +1,9 @@
 import Joi from 'joi';
+import Yup from 'yup';
 
 import { meta } from './index';
 
-const label1 = meta.keys({
+export const character = meta.keys({
   primaryLevel: Joi.number().integer().min(1).required(),
   proficiency: Joi.number().integer().min(2).required(),
   xp: Joi.number().integer().min(0).required(),
@@ -68,4 +69,11 @@ const label1 = meta.keys({
   })
 });
 
-export default label1;
+export const message = Yup.object().shape({
+  rolls: Yup.array.of(
+    Yup.object().shape({
+      input: Yup.string().required(),
+      label: Yup.string().required()
+    })
+  )
+});

@@ -10,6 +10,7 @@ import './assets/RichEditor.styl';
 export default class RichTextDisplay extends Component {
 
   static propTypes = {
+    customButtons: PropTypes.array,
     message: PropTypes.string,
     readOnly: PropTypes.bool,
     onChange: PropTypes.func
@@ -36,11 +37,16 @@ export default class RichTextDisplay extends Component {
   }
 
   render() {
-    const { message, readOnly } = this.props;
+    const { message, customButtons, readOnly } = this.props;
 
-    const displayComponent = readOnly ?
-      <RenderMessage message={message}/> :
-      <RichTextDisplayEditor ref={this.editor} message={message} onChange={this._handleOnChange}/>;
+    const displayComponent = readOnly
+      ? <RenderMessage message={message}/>
+      : <RichTextDisplayEditor
+        ref={this.editor}
+        message={message}
+        customButtons={customButtons}
+        onChange={this._handleOnChange}
+      />;
 
     return (
       <div className="rich-text-display">
@@ -138,6 +144,8 @@ class RichTextDisplayEditor extends Component {
   };
 
   _initEditor = () => {
+    const { customButtons } = this.props;
+
     return {
       menubar: false,
       branding: false,
@@ -159,10 +167,21 @@ class RichTextDisplayEditor extends Component {
         'fullscreen media imagetools',
         'directionality textcolor textcolor colorpicker textpattern'
       ],
-      toolbar: 'bold italic underline | alignleft aligncenter alignright | formatselect | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image',
+      toolbar: 'bold italic underline | alignleft aligncenter alignright | formatselect | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image | custombuttons',
       content_css: [
         `${window.PUBLIC_URL}/editor.css`
-      ]
+      ],
+      setup: (editor) => {
+        _.each(customButtons, (button) => {
+          editor.addButton('custombuttons', {
+            title: button.title,
+            text: button.text,
+            icon: button.icon,
+            image: button.image,
+            onclick: button.onClick
+          });
+        });
+      }
     };
   };
 
