@@ -80,7 +80,7 @@ function DiceRoll(props) {
     <FieldArray
       name="rolls"
       render={arrayHelpers => (
-        <Form as={FormikForm} size="mini" className="dice-roller">
+        <Form as={FormikForm}>
           { _.map(rolls, (roll, index) => (
             <DiceRollItem
               key={`dice-roll-item-${index}`}
@@ -104,18 +104,18 @@ function DiceRollItem(props) {
   const labelFieldName = `rolls.${index}.label`;
 
   return (
-    <Segment className="dice-roll-item">
+    <Segment className="dice-roll-item" size="tiny">
       <Form.Field>
         <Dice onSelectDice={die => setFieldValue(inputFieldName, die)} />
       </Form.Field>
 
       <Form.Group widths='equal'>
-        <Form.Field>
+        <Form.Field required>
           <label>Roll</label>
           <Field name={inputFieldName} placeholder="Dice roll code" />
         </Form.Field>
 
-        <Form.Field>
+        <Form.Field required>
           <label>Description</label>
           <Field name={labelFieldName} placeholder="Dice roll type or description" />
         </Form.Field>
