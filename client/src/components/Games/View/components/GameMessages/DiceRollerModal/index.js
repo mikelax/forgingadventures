@@ -5,10 +5,9 @@ import { Formik, Form as FormikForm, Field, FieldArray } from 'formik';
 import yup from 'yup';
 import Roll from 'roll';
 
+import FormFieldErrorMessage from 'components/shared/components/FormFieldErrorMessage';
+
 export default class DiceRollerModal extends Component {
-  state = {
-    rolls: []
-  };
 
   render() {
     const { active } = this.props;
@@ -18,23 +17,22 @@ export default class DiceRollerModal extends Component {
         open={active}
         closeOnDimmerClick={false}
         closeOnDocumentClick={false}
-        onClose={this._handleClose}
+        onClose={this._handleCancel}
       >
         <DiceRollForm onSave={this._handleSave} onCancel={this._handleCancel} />
       </Modal>
     );
   }
 
-  _handleClose = (e) => {
+  _handleSave = (rolls) => {
     const { onDiceRolled } = this.props;
-    const { rolls } = this.state;
 
-    onDiceRolled({ rolls });
+    onDiceRolled(rolls);
   };
 
   _handleCancel = () => {
-    const { onDiceRolled } = this.props;
-    onDiceRolled();
+    const { onCancel } = this.props;
+    onCancel();
   };
 }
 
@@ -56,7 +54,11 @@ function DiceRollForm(props) {
           </Modal.Content>
 
           <Modal.Actions>
-            <Button primary disabled={!(props.isValid)}>
+            <Button
+              type="submit" primary
+              disabled={!(props.isValid)}
+              onClick={() => props.submitForm()}
+            >
               Save
             </Button>
             <Button onClick={onCancel}>
@@ -69,13 +71,16 @@ function DiceRollForm(props) {
   );
 
   function handleSubmit(values) {
+    const { onSave } = props;
+    const { rolls } = values;
 
+    onSave(rolls);
   }
 }
 
 function DiceRoll(props) {
-  const { formik: { setFieldValue, values, values: { rolls } } } = props;
-  console.log('values', values)
+  const { formik: { setFieldValue, values: { rolls } } } = props;
+
   return (
     <FieldArray
       name="rolls"
@@ -113,11 +118,13 @@ function DiceRollItem(props) {
         <Form.Field required>
           <label>Roll</label>
           <Field name={inputFieldName} placeholder="Dice roll code" />
+          <FormFieldErrorMessage name={inputFieldName} />
         </Form.Field>
 
         <Form.Field required>
           <label>Description</label>
           <Field name={labelFieldName} placeholder="Dice roll type or description" />
+          <FormFieldErrorMessage name={labelFieldName} />
         </Form.Field>
       </Form.Group>
 
@@ -169,16 +176,30 @@ function Dice(props) {
 
 }
 
+const diceRollSchema = yup.object().shape({
+  input: yup.string()
+    .test('valid-roll', '${value} is not a valid dice roll', diceRollTest) //eslint-disable-line
+    .required()
+    .label('Roll'),
+  label: yup.string().required().label('Description')
+}).default(() => ({
+  input: '',
+  label: ''
+}));
+
 const validationSchema = yup.object().shape({
   rolls: yup.array().of(
-    yup.object().shape({
-      input: yup.string().required().label('Roll'),
-      label: yup.string().required().label('Description')
-    })
-  ).default([{
-    input: '',
-    label: ''
-  }])
+    diceRollSchema
+  ).default([diceRollSchema.default()])
 });
+
+function diceRollTest(value) {
+  if (value) {
+    const roll = new Roll();
+
+    return roll.validate(value);
+  }
+}
+
 
 

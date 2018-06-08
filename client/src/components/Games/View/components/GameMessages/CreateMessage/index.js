@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import RichEditor from 'components/shared/components/RichEditor';
 
 import DiceRollerModal from '../DiceRollerModal';
+import DiceRollFormSummary from '../DiceRollFormSummary';
 import GmHeader from '../GmHeader';
 import InCharacterHeader from '../InCharacterHeader';
 import OutOfCharacterHeader from '../OutOfCharacterHeader';
@@ -24,7 +25,7 @@ class CreateMessage extends Component {
   state = {
     hasContent: false,
     saving: false,
-    form: null,
+    form: {},
     rollingDice: false
   };
 
@@ -39,8 +40,9 @@ class CreateMessage extends Component {
   }
 
   render() {
-    const { saving, rollingDice } = this.state;
+    const { saving, rollingDice, form: { meta } } = this.state;
     const { gameId } = this.props;
+    const rolls = _.get(meta, 'rolls');
 
     return (
       <div className="create-message">
@@ -57,6 +59,8 @@ class CreateMessage extends Component {
             <RichEditor ref={this.editor} onChange={this._handleOnChange} customButtons={this._customButtons()}/>
           </Form.Field>
 
+          <DiceRollFormSummary rolls={rolls} onRemove={this._handleRemoveDie} />
+
           <Button primary
                   onClick={this._submit}
                   loading={saving}
@@ -65,7 +69,11 @@ class CreateMessage extends Component {
           </Button>
         </Form>
 
-        <DiceRollerModal active={rollingDice} onDiceRolled={this._handleDiceRoll}/>
+        <DiceRollerModal
+          active={rollingDice}
+          onCancel={this._closeDiceForm}
+          onDiceRolled={this._handleDiceRoll}
+        />
       </div>
     );
   }
@@ -84,8 +92,20 @@ class CreateMessage extends Component {
     ic && this.setState({ rollingDice: true });
   };
 
-  _handleDiceRoll = () => {
+  _handleDiceRoll = (rolls) => {
+    this.setState(({ form }) => ({
+      form: { ...form, meta: { rolls } }
+    }), () => this._closeDiceForm());
+  };
+
+  _closeDiceForm = () => {
     this.setState({ rollingDice: false });
+  };
+
+  _handleRemoveDie = (die) => {
+    this.setState(({ form  }) => ( {
+      form: { ...form, meta: { rolls: _.reject(form.meta.rolls, die) } }
+    } ));
   };
 
   _handleOnChange = (data) => {
@@ -104,9 +124,9 @@ class CreateMessage extends Component {
   _submit = () => {
     const { hasContent } = this.state;
     const { mutate, gameId } = this.props;
-    const { form: { postType, characterId } } = this.state;
+    const { form: { postType, characterId, meta } } = this.state;
 
-    this.setState({ saving: hasContent });
+    this.setState((state) => ({ saving: state.hasContent }));
 
     return hasContent && mutate({
       variables: {
@@ -114,12 +134,13 @@ class CreateMessage extends Component {
           message: this.editor.current.getEditorMessage(),
           gameId,
           postType,
-          characterId
+          characterId,
+          meta
         }
       }
     })
       .then(() => this.editor.current.clear())
-      .finally(() => this.setState({ saving: false }));
+      .finally(() => this.setState({ saving: false, form: {} }));
   };
 }
 
