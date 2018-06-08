@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 
 import RichEditor from 'components/shared/components/RichEditor';
 
+import DiceRollerModal from '../DiceRollerModal';
 import GmHeader from '../GmHeader';
 import InCharacterHeader from '../InCharacterHeader';
 import OutOfCharacterHeader from '../OutOfCharacterHeader';
@@ -23,7 +24,8 @@ class CreateMessage extends Component {
   state = {
     hasContent: false,
     saving: false,
-    form: null
+    form: null,
+    rollingDice: false
   };
 
   editor = React.createRef();
@@ -37,7 +39,7 @@ class CreateMessage extends Component {
   }
 
   render() {
-    const { saving } = this.state;
+    const { saving, rollingDice } = this.state;
     const { gameId } = this.props;
 
     return (
@@ -62,6 +64,8 @@ class CreateMessage extends Component {
             Submit
           </Button>
         </Form>
+
+        <DiceRollerModal active={rollingDice} onDiceRolled={this._handleDiceRoll}/>
       </div>
     );
   }
@@ -75,7 +79,13 @@ class CreateMessage extends Component {
   };
 
   _showDiceModal = () => {
-    console.log('hai')
+    const ic = _.get(this.state, 'form.postType') === 'ic';
+    // only show the modal if ic
+    ic && this.setState({ rollingDice: true });
+  };
+
+  _handleDiceRoll = () => {
+    this.setState({ rollingDice: false });
   };
 
   _handleOnChange = (data) => {
