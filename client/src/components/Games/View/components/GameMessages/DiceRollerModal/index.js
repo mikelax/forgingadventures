@@ -20,21 +20,7 @@ export default class DiceRollerModal extends Component {
         closeOnDocumentClick={false}
         onClose={this._handleClose}
       >
-        <Modal.Header>Roll the Dice!</Modal.Header>
-        <Modal.Content scrolling>
-          <Modal.Description>
-            <DiceRollForm />
-          </Modal.Description>
-        </Modal.Content>
-
-        <Modal.Actions>
-          <Button primary>
-            Save
-          </Button>
-          <Button>
-            Cancel
-          </Button>
-        </Modal.Actions>
+        <DiceRollForm onSave={this._handleSave} onCancel={this._handleCancel} />
       </Modal>
     );
   }
@@ -44,17 +30,41 @@ export default class DiceRollerModal extends Component {
     const { rolls } = this.state;
 
     onDiceRolled({ rolls });
-  }
+  };
+
+  _handleCancel = () => {
+    const { onDiceRolled } = this.props;
+    onDiceRolled();
+  };
 }
 
 function DiceRollForm(props) {
+  const { onCancel } = props;
+
   return (
     <Formik
-      enableReinitialize={true}
       initialValues={validationSchema.default()}
       onSubmit={handleSubmit}
       validationSchema={validationSchema}
-      render={(props) => <DiceRoll formik={props} />}
+      render={(props) => (
+        <React.Fragment>
+          <Modal.Header>Roll the Dice!</Modal.Header>
+          <Modal.Content scrolling>
+            <Modal.Description>
+              <DiceRoll formik={props} />
+            </Modal.Description>
+          </Modal.Content>
+
+          <Modal.Actions>
+            <Button primary disabled={!(props.isValid)}>
+              Save
+            </Button>
+            <Button onClick={onCancel}>
+              Cancel
+            </Button>
+          </Modal.Actions>
+        </React.Fragment>
+      )}
     />
   );
 
@@ -90,22 +100,26 @@ function DiceRoll(props) {
 
 function DiceRollItem(props) {
   const { index, canRemove, onAdd, onRemove, setFieldValue } = props;
+  const inputFieldName = `rolls.${index}.input`;
+  const labelFieldName = `rolls.${index}.label`;
 
   return (
     <Segment className="dice-roll-item">
       <Form.Field>
-        <Dice onSelectDice={die => setFieldValue(`rolls.${index}.input`, die)} />
+        <Dice onSelectDice={die => setFieldValue(inputFieldName, die)} />
       </Form.Field>
 
-      <Form.Field>
-        <label>Roll</label>
-        <Field name={`rolls.${index}.input`} placeholder="Dice roll code" />
-      </Form.Field>
+      <Form.Group widths='equal'>
+        <Form.Field>
+          <label>Roll</label>
+          <Field name={inputFieldName} placeholder="Dice roll code" />
+        </Form.Field>
 
-      <Form.Field>
-        <label>Description</label>
-        <Field name={`rolls.${index}.label`} placeholder="Dice roll type or description" />
-      </Form.Field>
+        <Form.Field>
+          <label>Description</label>
+          <Field name={labelFieldName} placeholder="Dice roll type or description" />
+        </Form.Field>
+      </Form.Group>
 
       <Button.Group basic size='mini'>
         <Button type="button" onClick={onAdd}>Add another roll</Button>
@@ -158,8 +172,8 @@ function Dice(props) {
 const validationSchema = yup.object().shape({
   rolls: yup.array().of(
     yup.object().shape({
-      input: yup.string().default('').required(),
-      label: yup.string().default('').required()
+      input: yup.string().required().label('Roll'),
+      label: yup.string().required().label('Description')
     })
   ).default([{
     input: '',
