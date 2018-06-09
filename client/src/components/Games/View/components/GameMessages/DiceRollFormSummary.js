@@ -12,7 +12,7 @@ export default function DiceRollFormSummary(props) {
       <Segment className="dice-roll-summary">
         <Header size='tiny'>Will roll the following dice</Header>
 
-        <List>
+        <List divided verticalAlign="middle">
           {renderSummary()}
         </List>
       </Segment>
