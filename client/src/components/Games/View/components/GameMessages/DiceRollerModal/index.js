@@ -79,7 +79,7 @@ function DiceRollForm(props) {
 }
 
 function DiceRoll(props) {
-  const { formik: { setFieldValue, values: { rolls } } } = props;
+  const { formik: { setFieldValue, values, values: { rolls } } } = props;
 
   return (
     <FieldArray
@@ -92,6 +92,7 @@ function DiceRoll(props) {
               roll={roll}
               index={index}
               setFieldValue={setFieldValue}
+              values={values}
               canRemove={rolls.length > 1}
               onAdd={() => arrayHelpers.insert(index+1, { input: '', label: '' })}
               onRemove={() => arrayHelpers.remove(index)}
@@ -142,7 +143,7 @@ function DiceRollItem(props) {
     const currentDice = _.get(values, inputFieldName);
 
     if (currentDice) {
-      setFieldValue(inputFieldName, `+${die}`);
+      setFieldValue(inputFieldName, `${currentDice}+${die}`);
     } else {
       setFieldValue(inputFieldName, die);
     }
