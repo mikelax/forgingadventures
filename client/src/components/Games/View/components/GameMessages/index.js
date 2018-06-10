@@ -134,17 +134,26 @@ class GameMessage extends Component {
   ////// private
 
   _gmMessageRender = () => {
-    const { gameMessage, gameMessage: { user } } = this.props;
+    const { gameMessage, gameMessage: { meta, user } } = this.props;
     const { editing } = this.state;
+    const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided='vertically' className="in-character">
         <GmHeader user={user}/>
-        <Grid.Row>
+        <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
+
+        <InlineItemsLoader items={rolls}>
+          <Grid.Row columns={1} className="slim">
+            <Grid.Column>
+              <DieRollResult rolls={rolls} />
+            </Grid.Column>
+          </Grid.Row>
+        </InlineItemsLoader>
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
@@ -160,15 +169,13 @@ class GameMessage extends Component {
   };
 
   _inCharacterMessageRender = () => {
-    const { editing } = this.state;
-
     const { gameMessage, gameMessage: { character, meta } } = this.props;
+    const { editing } = this.state;
     const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided="vertically" className="in-character">
         <InCharacterHeader character={character}/>
-
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
@@ -198,17 +205,26 @@ class GameMessage extends Component {
   };
 
   _outOfCharacterMessageRender = () => {
-    const { gameMessage, gameMessage: { user } } = this.props;
+    const { gameMessage, gameMessage: { meta, user } } = this.props;
     const { editing } = this.state;
+    const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided='vertically' className="out-character">
         <OutOfCharacterHeader user={user}/>
-        <Grid.Row>
+        <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
+
+        <InlineItemsLoader items={rolls}>
+          <Grid.Row columns={1} className="slim">
+            <Grid.Column>
+              <DieRollResult rolls={rolls} />
+            </Grid.Column>
+          </Grid.Row>
+        </InlineItemsLoader>
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>

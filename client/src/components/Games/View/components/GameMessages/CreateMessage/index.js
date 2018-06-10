@@ -87,9 +87,7 @@ class CreateMessage extends Component {
   };
 
   _showDiceModal = () => {
-    const ic = _.get(this.state, 'form.postType') === 'ic';
-    // only show the modal if ic
-    ic && this.setState({ rollingDice: true });
+    this.setState({ rollingDice: true });
   };
 
   _handleDiceRoll = (rolls) => {
