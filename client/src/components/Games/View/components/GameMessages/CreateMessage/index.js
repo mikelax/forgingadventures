@@ -94,7 +94,7 @@ class CreateMessage extends Component {
 
   _handleDiceRoll = (rolls) => {
     this.setState(({ form }) => ({
-      form: { ...form, meta: { rolls } }
+      form: { ...form, meta: { rolls: [...form.meta.rolls, ...rolls] } }
     }), () => this._closeDiceForm());
   };
 

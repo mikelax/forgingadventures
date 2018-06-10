@@ -104,14 +104,14 @@ function DiceRoll(props) {
 }
 
 function DiceRollItem(props) {
-  const { index, canRemove, onAdd, onRemove, setFieldValue } = props;
+  const { index, canRemove, onAdd, onRemove } = props;
   const inputFieldName = `rolls.${index}.input`;
   const labelFieldName = `rolls.${index}.label`;
 
   return (
     <Segment className="dice-roll-item" size="tiny">
       <Form.Field>
-        <Dice onSelectDice={die => setFieldValue(inputFieldName, die)} />
+        <Dice onSelectDice={handleOnAddDice} />
       </Form.Field>
 
       <Form.Group widths='equal'>
@@ -136,6 +136,17 @@ function DiceRollItem(props) {
       </Button.Group>
     </Segment>
   );
+
+  function handleOnAddDice(die) {
+    const { values, setFieldValue } = props;
+    const currentDice = _.get(values, inputFieldName);
+
+    if (currentDice) {
+      setFieldValue(inputFieldName, `+${die}`);
+    } else {
+      setFieldValue(inputFieldName, die);
+    }
+  }
 }
 
 function Dice(props) {
