@@ -12,6 +12,7 @@ import RichEditor from 'components/shared/components/RichEditor';
 
 import { quote } from 'actions/gameMessage';
 
+import DieRollResult from './DiceRollResult';
 import GmHeader from './GmHeader';
 import InCharacterHeader from './InCharacterHeader';
 import OutOfCharacterHeader from './OutOfCharacterHeader';
@@ -111,7 +112,7 @@ export default compose(
 
 /// private
 
-class GameMessageContainerBase extends Component {
+class GameMessage extends Component {
 
   state = {
     editing: false
@@ -133,17 +134,26 @@ class GameMessageContainerBase extends Component {
   ////// private
 
   _gmMessageRender = () => {
-    const { gameMessage, gameMessage: { user } } = this.props;
+    const { gameMessage, gameMessage: { meta, user } } = this.props;
     const { editing } = this.state;
+    const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided='vertically' className="in-character">
         <GmHeader user={user}/>
-        <Grid.Row>
+        <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
+
+        <InlineItemsLoader items={rolls}>
+          <Grid.Row columns={1} className="slim">
+            <Grid.Column>
+              <DieRollResult rolls={rolls} />
+            </Grid.Column>
+          </Grid.Row>
+        </InlineItemsLoader>
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
@@ -159,19 +169,26 @@ class GameMessageContainerBase extends Component {
   };
 
   _inCharacterMessageRender = () => {
+    const { gameMessage, gameMessage: { character, meta } } = this.props;
     const { editing } = this.state;
-
-    const { gameMessage, gameMessage: { character } } = this.props;
+    const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided="vertically" className="in-character">
         <InCharacterHeader character={character}/>
-
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
+
+        <InlineItemsLoader items={rolls}>
+          <Grid.Row columns={1} className="slim">
+            <Grid.Column>
+              <DieRollResult rolls={rolls}/>
+            </Grid.Column>
+          </Grid.Row>
+        </InlineItemsLoader>
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
@@ -188,17 +205,26 @@ class GameMessageContainerBase extends Component {
   };
 
   _outOfCharacterMessageRender = () => {
-    const { gameMessage, gameMessage: { user } } = this.props;
+    const { gameMessage, gameMessage: { meta, user } } = this.props;
     const { editing } = this.state;
+    const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided='vertically' className="out-character">
         <OutOfCharacterHeader user={user}/>
-        <Grid.Row>
+        <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
           </Grid.Column>
         </Grid.Row>
+
+        <InlineItemsLoader items={rolls}>
+          <Grid.Row columns={1} className="slim">
+            <Grid.Column>
+              <DieRollResult rolls={rolls} />
+            </Grid.Column>
+          </Grid.Row>
+        </InlineItemsLoader>
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
@@ -304,4 +330,4 @@ const GameMessageContainer = compose(
   }),
   graphql(meQuery, { name: 'meQuery' }),
   connect(null, mapDispatchToProps, null, { pure: false }),
-)(GameMessageContainerBase);
+)(GameMessage);

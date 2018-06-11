@@ -41,6 +41,7 @@ export const gameMessageFields = `
     message
     numberEdits
     postType
+    meta
     created_at
     updated_at
     character {

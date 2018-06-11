@@ -8,11 +8,15 @@ import { connect } from 'react-redux';
 
 import RichEditor from 'components/shared/components/RichEditor';
 
+import DiceRollerModal from '../DiceRollerModal';
+import DiceRollFormSummary from '../DiceRollFormSummary';
 import GmHeader from '../GmHeader';
 import InCharacterHeader from '../InCharacterHeader';
 import OutOfCharacterHeader from '../OutOfCharacterHeader';
 
 import { createGameMessageMutation, myGamePlayerQuery } from 'components/Games/queries';
+
+import DiceIcon from './dice.svg';
 
 import './CreateMessage.styl';
 
@@ -21,7 +25,8 @@ class CreateMessage extends Component {
   state = {
     hasContent: false,
     saving: false,
-    form: null
+    form: {},
+    rollingDice: false
   };
 
   editor = React.createRef();
@@ -35,8 +40,9 @@ class CreateMessage extends Component {
   }
 
   render() {
-    const { saving } = this.state;
+    const { saving, rollingDice, form: { meta } } = this.state;
     const { gameId } = this.props;
+    const rolls = _.get(meta, 'rolls');
 
     return (
       <div className="create-message">
@@ -50,8 +56,10 @@ class CreateMessage extends Component {
             </Query>
 
             <label>Add Message</label>
-            <RichEditor ref={this.editor} onChange={this._handleOnChange}/>
+            <RichEditor ref={this.editor} onChange={this._handleOnChange} customButtons={this._customButtons()}/>
           </Form.Field>
+
+          <DiceRollFormSummary rolls={rolls} onRemove={this._handleRemoveDie} />
 
           <Button primary
                   onClick={this._submit}
@@ -60,9 +68,50 @@ class CreateMessage extends Component {
             Submit
           </Button>
         </Form>
+
+        <DiceRollerModal
+          active={rollingDice}
+          onCancel={this._closeDiceForm}
+          onDiceRolled={this._handleDiceRoll}
+        />
       </div>
     );
   }
+
+  _customButtons = () => {
+    return [{
+      title: 'Add dice rolls',
+      image: DiceIcon,
+      onClick: this._showDiceModal
+    }];
+  };
+
+  _showDiceModal = () => {
+    this.setState({ rollingDice: true });
+  };
+
+  _handleDiceRoll = (rolls) => {
+    this.setState(({ form }) => {
+      const prevRolls = _.get(form, 'meta.rolls', []);
+
+      return {
+        form : {
+          ...form,
+          meta: { rolls: [...prevRolls, ...rolls] }
+        }
+      };
+    }, () => this._closeDiceForm());
+  };
+
+  _closeDiceForm = () => {
+    this.setState({ rollingDice: false });
+  };
+
+  _handleRemoveDie = (die) => {
+    this.setState(({ form  }) => ( {
+      form: { ...form, meta: { rolls: _.reject(form.meta.rolls, die) } }
+    } ));
+  };
 
   _handleOnChange = (data) => {
     if (data.hasContent !== this.state.hasContent) {
@@ -80,9 +129,9 @@ class CreateMessage extends Component {
   _submit = () => {
     const { hasContent } = this.state;
     const { mutate, gameId } = this.props;
-    const { form: { postType, characterId } } = this.state;
+    const { form: { postType, characterId, meta } } = this.state;
 
-    this.setState({ saving: hasContent });
+    this.setState((state) => ({ saving: state.hasContent }));
 
     return hasContent && mutate({
       variables: {
@@ -90,12 +139,13 @@ class CreateMessage extends Component {
           message: this.editor.current.getEditorMessage(),
           gameId,
           postType,
-          characterId
+          characterId,
+          meta
         }
       }
     })
       .then(() => this.editor.current.clear())
-      .finally(() => this.setState({ saving: false }));
+      .finally(() => this.setState({ saving: false, form: {} }));
   };
 }
 

@@ -3,10 +3,13 @@ import { withFilter } from 'graphql-subscriptions';
 import { raw } from 'objection';
 
 import GameMessage from 'models/gameMessage';
-import schemaScopeGate from 'services/schemaScopeGate';
 
+import schemaScopeGate from 'services/schemaScopeGate';
+import CreateGameMessage from 'services/gameMessages/createGameMessage';
 import { getUser } from 'services/user';
 import pubsub from 'services/pubsub';
+
+import serviceExecutor from 'utils/serviceExecutor';
 
 export const TOPIC_MESSAGE_ADDED = 'topic_message_added';
 export const TOPIC_MESSAGE_UPDATED = 'topic_message_updated';
@@ -22,6 +25,7 @@ export const gameMessageTypeDefs = `
     message: String!,
     numberEdits: Int!,
     postType: String!,
+    meta: JSON,
     updated_at: GraphQLDateTime,
     created_at: GraphQLDateTime
   }
@@ -30,7 +34,8 @@ export const gameMessageTypeDefs = `
     gameId: ID!,
     characterId: ID,
     postType: String!,
-    message: String!
+    message: String!,
+    meta: JSON
   }
   
   input UpdateGameMessageInput {
@@ -57,20 +62,11 @@ export const gameMessageResolvers = {
       schemaScopeGate(['create:posts'], context, () => {
         return getUser(context.req.user.sub)
           .then((user) => {
-            const payload = _.merge({}, input, {
-              userId: user.id
-            });
-
-            return GameMessage
-              .query()
-              .insert(payload)
-              .returning('*')
-              .execute()
-              .tap((gameMessage) => {
-                pubsub.publish(TOPIC_MESSAGE_ADDED, {
-                  messageAdded: gameMessage
-                });
-              });
+            return serviceExecutor(CreateGameMessage, {
+              user,
+              input
+            })
+              .tap(messageAdded => pubsub.publish(TOPIC_MESSAGE_ADDED, { messageAdded }));
           });
       }),
 
