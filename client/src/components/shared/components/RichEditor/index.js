@@ -37,7 +37,7 @@ export default class RichTextDisplay extends Component {
   }
 
   render() {
-    const { message, customButtons, readOnly } = this.props;
+    const { message, customButtons, customStyles, readOnly } = this.props;
 
     const displayComponent = readOnly
       ? <RenderMessage message={message}/>
@@ -45,6 +45,7 @@ export default class RichTextDisplay extends Component {
         ref={this.editor}
         message={message}
         customButtons={customButtons}
+        customStyles={customStyles}
         onChange={this._handleOnChange}
       />;
 
@@ -144,7 +145,11 @@ class RichTextDisplayEditor extends Component {
   };
 
   _initEditor = () => {
-    const { customButtons } = this.props;
+    const { customButtons , customStyles: style_formats } = this.props;
+    const toolbarTemplate = _.template('bold italic underline | alignleft aligncenter alignright | formatselect ${styleselect} | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image | custombuttons'); //eslint-disable-line
+    const toolbarSwitches = {
+      styleselect: _.isEmpty(style_formats) ? '' : 'styleselect'
+    };
 
     return {
       menubar: false,
@@ -161,16 +166,17 @@ class RichTextDisplayEditor extends Component {
           })
           .catch(failure);
       },
-      block_formats: 'Paragraph=p;Header 2=h2;Header 3=h3',
+      block_formats: 'Paragraph=p;Header=h2',
       plugins: [
         'link image lists colorpicker',
         'fullscreen media imagetools',
         'directionality textcolor textcolor colorpicker textpattern'
       ],
-      toolbar: 'bold italic underline | alignleft aligncenter alignright | formatselect | bullist numlist | outdent indent blockquote forecolor backcolor | undo redo | image | custombuttons',
+      toolbar: toolbarTemplate(toolbarSwitches),
       content_css: [
         `${window.PUBLIC_URL}/editor.css`
       ],
+      style_formats,
       setup: (editor) => {
         _.each(customButtons, (button) => {
           editor.addButton('custombuttons', {

@@ -56,10 +56,15 @@ class CreateMessage extends Component {
             </Query>
 
             <label>Add Message</label>
-            <RichEditor ref={this.editor} onChange={this._handleOnChange} customButtons={this._customButtons()}/>
+            <RichEditor
+              ref={this.editor}
+              onChange={this._handleOnChange}
+              customButtons={this._customButtons()}
+              customStyles={this._gameMessageStyles()}
+            />
           </Form.Field>
 
-          <DiceRollFormSummary rolls={rolls} onRemove={this._handleRemoveDie} />
+          <DiceRollFormSummary rolls={rolls} onRemove={this._handleRemoveDie}/>
 
           <Button primary
                   onClick={this._submit}
@@ -86,6 +91,42 @@ class CreateMessage extends Component {
     }];
   };
 
+  _gameMessageStyles = () => {
+    return [
+      {
+        title: 'Talking',
+        inline: 'span',
+        classes: 'talking',
+        styles: {
+          'font-weight': 'bold',
+          color: 'darkblue'
+        }
+      },
+      {
+        title: 'Thinking',
+        inline: 'span',
+        classes: 'thinking',
+        styles: {
+          'font-style': 'italic',
+          'font-weight': 'bold',
+          color: 'darkgrey'
+        }
+      },
+      {
+        title: 'Singing',
+        block: 'div',
+        classes: 'singing',
+        styles: {
+          'font-style': 'italic',
+          'font-weight': 'bold',
+          color: 'darkgreen'
+        },
+        wrapper: true
+      }
+
+    ];
+  };
+
   _showDiceModal = () => {
     this.setState({ rollingDice: true });
   };
@@ -95,7 +136,7 @@ class CreateMessage extends Component {
       const prevRolls = _.get(form, 'meta.rolls', []);
 
       return {
-        form : {
+        form: {
           ...form,
           meta: { rolls: [...prevRolls, ...rolls] }
         }
@@ -108,9 +149,9 @@ class CreateMessage extends Component {
   };
 
   _handleRemoveDie = (die) => {
-    this.setState(({ form  }) => ( {
+    this.setState(({ form }) => ({
       form: { ...form, meta: { rolls: _.reject(form.meta.rolls, die) } }
-    } ));
+    }));
   };
 
   _handleOnChange = (data) => {
@@ -145,7 +186,14 @@ class CreateMessage extends Component {
       }
     })
       .then(() => this.editor.current.clear())
-      .finally(() => this.setState({ saving: false, form: {} }));
+      .finally(() => this.setState(state => ({
+          saving: false,
+          form: {
+            postType: state.form.postType,
+            characterId: state.form.characterId
+          }
+        }))
+      );
   };
 }
 
@@ -204,23 +252,23 @@ class PostAsSelector extends Component {
       <div className="post-as-selector">
         <div className="in-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={!(gm)}>
-            <Dimmer active={!(gm)} inverted />
+            <Dimmer active={!(gm)} inverted/>
             <Grid>
-              <GmHeader user={user} />
+              <GmHeader user={user}/>
             </Grid>
           </Dimmer.Dimmable>
 
         </div>
 
         <div className="selector">
-          <Radio toggle checked={gm} onChange={this._handleToggle('gm')} />
+          <Radio toggle checked={gm} onChange={this._handleToggle('gm')}/>
         </div>
 
         <div className="out-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={gm}>
-            <Dimmer active={gm} inverted />
+            <Dimmer active={gm} inverted/>
             <Grid>
-              <OutOfCharacterHeader user={user} />
+              <OutOfCharacterHeader user={user}/>
             </Grid>
           </Dimmer.Dimmable>
 
@@ -236,23 +284,23 @@ class PostAsSelector extends Component {
       <div className="post-as-selector">
         <div className="in-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={!(ic)}>
-            <Dimmer active={!(ic)} inverted />
+            <Dimmer active={!(ic)} inverted/>
             <Grid>
-              <InCharacterHeader character={character} />
+              <InCharacterHeader character={character}/>
             </Grid>
           </Dimmer.Dimmable>
 
         </div>
 
         <div className="selector">
-          <Radio toggle checked={ic} onChange={this._handleToggle('ic')} />
+          <Radio toggle checked={ic} onChange={this._handleToggle('ic')}/>
         </div>
 
         <div className="out-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={ic}>
-            <Dimmer active={ic} inverted />
+            <Dimmer active={ic} inverted/>
             <Grid>
-              <OutOfCharacterHeader user={user} />
+              <OutOfCharacterHeader user={user}/>
             </Grid>
           </Dimmer.Dimmable>
 
