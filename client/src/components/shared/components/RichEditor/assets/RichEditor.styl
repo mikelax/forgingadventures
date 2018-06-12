@@ -22,58 +22,49 @@
     p
       display block
 
+  .talking, .thinking
+    &:before, &:after
+      display inline-block
+      content ""
+      width 14px
+      height 14px
+      background-repeat no-repeat
+      background-size cover
+      margin-right 4px
+      margin-left 4px
 
-  .talking:after {
-    display: inline-block;
-    content: "";
-    margin-left: 4px;
-    width: 14px;
-    height: 14px;
-    background: transparent url('/static-assets/editor/images/speech-bubble.svg') no-repeat;
-    background-size: cover;
-  }
+    &:before
+      transform scaleX(-1)
 
-  .thinking:after {
-    display: inline-block;
-    content: "";
-    margin-left: 4px;
-    width: 14px;
-    height: 14px;
-    background: transparent url('/static-assets/editor/images/thought-bubble.svg') no-repeat;
-    background-size: cover;
-  }
+  .talking
+    &:before, &:after
+      background-image url('/static-assets/editor/images/speech-bubble.svg')
 
-  .singing {
+  .thinking
+    &:before, &:after
+      background-image url('/static-assets/editor/images/thought-bubble.svg')
+
+  .singing
     margin-left: 32px;
     display: inline-block;
     position: relative;
-  }
 
-  .singing p {
-    margin-top: 4px;
-    margin-bottom: 4px;
-  }
+    &:before, &:after
+      display: inline-block;
+      position: absolute;
+      content: "";
+      width: 14px;
+      height: 14px;
+      background: transparent url('/static-assets/editor/images/singing.svg') no-repeat;
+      background-size: cover;
 
-  .singing:before {
-    display: inline-block;
-    position: absolute;
-    top: 7px;
-    left: -18px;
-    content: "";
-    width: 14px;
-    height: 14px;
-    background: transparent url('/static-assets/editor/images/singing.svg') no-repeat;
-    background-size: cover;
-  }
+    &:before
+      top: 7px;
+      left: -18px;
+    &:after
+      bottom: 7px;
+      right: -18px;
 
-  .singing:after {
-    display: inline-block;
-    position: absolute;
-    bottom: 7px;
-    right: -18px;
-    content: "";
-    width: 14px;
-    height: 14px;
-    background: transparent url('/static-assets/editor/images/singing.svg') no-repeat;
-    background-size: cover;
-  }
+    p
+      margin-top: 4px;
+      margin-bottom: 4px;

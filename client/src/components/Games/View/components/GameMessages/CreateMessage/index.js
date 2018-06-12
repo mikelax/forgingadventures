@@ -13,6 +13,7 @@ import DiceRollFormSummary from '../DiceRollFormSummary';
 import GmHeader from '../GmHeader';
 import InCharacterHeader from '../InCharacterHeader';
 import OutOfCharacterHeader from '../OutOfCharacterHeader';
+import gameMessageStyles from '../gameMessageStyles';
 
 import { createGameMessageMutation, myGamePlayerQuery } from 'components/Games/queries';
 
@@ -40,9 +41,10 @@ class CreateMessage extends Component {
   }
 
   render() {
-    const { saving, rollingDice, form: { meta } } = this.state;
+    const { saving, rollingDice, form: { meta, postType } } = this.state;
     const { gameId } = this.props;
     const rolls = _.get(meta, 'rolls');
+    const showCustomFormats = postType !== 'ooc';
 
     return (
       <div className="create-message">
@@ -60,7 +62,7 @@ class CreateMessage extends Component {
               ref={this.editor}
               onChange={this._handleOnChange}
               customButtons={this._customButtons()}
-              customStyles={this._gameMessageStyles()}
+              customStyles={showCustomFormats ? gameMessageStyles : null}
             />
           </Form.Field>
 
@@ -89,42 +91,6 @@ class CreateMessage extends Component {
       image: DiceIcon,
       onClick: this._showDiceModal
     }];
-  };
-
-  _gameMessageStyles = () => {
-    return [
-      {
-        title: 'Talking',
-        inline: 'span',
-        classes: 'talking',
-        styles: {
-          'font-weight': 'bold',
-          color: 'darkblue'
-        }
-      },
-      {
-        title: 'Thinking',
-        inline: 'span',
-        classes: 'thinking',
-        styles: {
-          'font-style': 'italic',
-          'font-weight': 'bold',
-          color: 'darkgrey'
-        }
-      },
-      {
-        title: 'Singing',
-        block: 'div',
-        classes: 'singing',
-        styles: {
-          'font-style': 'italic',
-          'font-weight': 'bold',
-          color: 'darkgreen'
-        },
-        wrapper: true
-      }
-
-    ];
   };
 
   _showDiceModal = () => {

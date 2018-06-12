@@ -1,0 +1,33 @@
+[
+  {
+    "title": "Talking",
+    "inline": "span",
+    "classes": "talking",
+    "styles": {
+      "font-weight": "bold",
+      "color": "darkblue"
+    },
+    "exact": true
+  },
+  {
+    "title": "Thinking",
+    "inline": "span",
+    "classes": "thinking",
+    "styles": {
+      "font-style": "italic",
+      "font-weight": "bold",
+      "color": "darkgrey"
+    }
+  },
+  {
+    "title": "Singing",
+    "block": "div",
+    "classes": "singing",
+    "styles": {
+      "font-style": "italic",
+      "font-weight": "bold",
+      "color": "darkgreen"
+    },
+    "wrapper": true
+  }
+]

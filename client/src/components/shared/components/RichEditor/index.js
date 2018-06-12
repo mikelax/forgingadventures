@@ -11,6 +11,7 @@ export default class RichTextDisplay extends Component {
 
   static propTypes = {
     customButtons: PropTypes.array,
+    customStyles: PropTypes.array,
     message: PropTypes.string,
     readOnly: PropTypes.bool,
     onChange: PropTypes.func
@@ -156,6 +157,7 @@ class RichTextDisplayEditor extends Component {
       branding: false,
       elementpath: false,
       theme: 'modern',
+      end_container_on_empty_block: true,
       init_instance_callback: this._handleInit,
       images_upload_handler: (blobInfo, success, failure) => {
         uploadImage(blobInfo.blob(), 'messageImage')
