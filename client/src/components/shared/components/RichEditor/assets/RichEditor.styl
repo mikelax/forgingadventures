@@ -37,14 +37,27 @@
       transform scaleX(-1)
 
   .talking
+    color darkblue
+    font-weight bold
+
     &:before, &:after
       background-image url('/static-assets/editor/images/speech-bubble.svg')
 
   .thinking
+    color darkgrey
+    font-weight bold
+    font-style italic
+
     &:before, &:after
+      width 16px
+      height 14px
       background-image url('/static-assets/editor/images/thought-bubble.svg')
 
   .singing
+    color darkgreen
+    font-weight bold
+    font-style italic
+
     margin-left: 32px;
     display: inline-block;
     position: relative;

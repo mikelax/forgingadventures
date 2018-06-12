@@ -14,3 +14,26 @@ blockquote:before {
     margin-right: 0.25em;
     vertical-align: -0.4em;
 }
+
+.talking {
+    color: darkblue;
+    font-weight: bold;
+}
+
+.thinking {
+    color: darkgrey;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.singing {
+    color: darkgreen;
+    font-weight: bold;
+    font-style: italic;
+    margin-left: 32px;
+}
+
+.singing p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}

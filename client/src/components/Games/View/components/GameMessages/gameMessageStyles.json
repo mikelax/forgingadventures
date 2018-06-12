@@ -2,32 +2,17 @@
   {
     "title": "Talking",
     "inline": "span",
-    "classes": "talking",
-    "styles": {
-      "font-weight": "bold",
-      "color": "darkblue"
-    },
-    "exact": true
+    "classes": "talking"
   },
   {
     "title": "Thinking",
     "inline": "span",
-    "classes": "thinking",
-    "styles": {
-      "font-style": "italic",
-      "font-weight": "bold",
-      "color": "darkgrey"
-    }
+    "classes": "thinking"
   },
   {
     "title": "Singing",
     "block": "div",
     "classes": "singing",
-    "styles": {
-      "font-style": "italic",
-      "font-weight": "bold",
-      "color": "darkgreen"
-    },
     "wrapper": true
   }
 ]
