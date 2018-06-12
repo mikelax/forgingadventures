@@ -52,7 +52,7 @@ class CreateMessage extends Component {
               query={myGamePlayerQuery}
               variables={{ gameId }}
             >
-              {({ data }) => <PostAsSelector data={data} onPostTypeChange={this._handlePostType}/>}
+              {({ data }) => <PostAsSelector data={data} onPostTypeChange={this._handlePostType} />}
             </Query>
 
             <label>Add Message</label>
@@ -64,7 +64,7 @@ class CreateMessage extends Component {
             />
           </Form.Field>
 
-          <DiceRollFormSummary rolls={rolls} onRemove={this._handleRemoveDie}/>
+          <DiceRollFormSummary rolls={rolls} onRemove={this._handleRemoveDie} />
 
           <Button primary
                   onClick={this._submit}
@@ -252,23 +252,23 @@ class PostAsSelector extends Component {
       <div className="post-as-selector">
         <div className="in-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={!(gm)}>
-            <Dimmer active={!(gm)} inverted/>
+            <Dimmer active={!(gm)} inverted />
             <Grid>
-              <GmHeader user={user}/>
+              <GmHeader user={user} />
             </Grid>
           </Dimmer.Dimmable>
 
         </div>
 
         <div className="selector">
-          <Radio toggle checked={gm} onChange={this._handleToggle('gm')}/>
+          <Radio toggle checked={gm} onChange={this._handleToggle('gm')} />
         </div>
 
         <div className="out-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={gm}>
-            <Dimmer active={gm} inverted/>
+            <Dimmer active={gm} inverted />
             <Grid>
-              <OutOfCharacterHeader user={user}/>
+              <OutOfCharacterHeader user={user} />
             </Grid>
           </Dimmer.Dimmable>
 
@@ -284,23 +284,23 @@ class PostAsSelector extends Component {
       <div className="post-as-selector">
         <div className="in-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={!(ic)}>
-            <Dimmer active={!(ic)} inverted/>
+            <Dimmer active={!(ic)} inverted />
             <Grid>
-              <InCharacterHeader character={character}/>
+              <InCharacterHeader character={character} />
             </Grid>
           </Dimmer.Dimmable>
 
         </div>
 
         <div className="selector">
-          <Radio toggle checked={ic} onChange={this._handleToggle('ic')}/>
+          <Radio toggle checked={ic} onChange={this._handleToggle('ic')} />
         </div>
 
         <div className="out-character">
           <Dimmer.Dimmable as={Segment} basic dimmed={ic}>
-            <Dimmer active={ic} inverted/>
+            <Dimmer active={ic} inverted />
             <Grid>
-              <OutOfCharacterHeader user={user}/>
+              <OutOfCharacterHeader user={user} />
             </Grid>
           </Dimmer.Dimmable>
 
