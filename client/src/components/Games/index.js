@@ -25,19 +25,28 @@ export default class Campaigns extends Component {
       <div className="games">
         <Container>
           <Switch>
-            <Route exact path={`${match.url}`} component={ListGames}/>
-            <Route exact path={`${match.url}/create`} component={AuthGuard(CreateGame)}/>
-
-            <div className="ViewGame">
-              <Route exact path={`${match.url}/:id`} component={ViewGameDetails} />
-              <Route path={`${match.url}/:id/edit`} component={AuthGuard(EditGame)}/>
-              <Route path={`${match.url}/:id/lounge`} component={ViewGameLoungeMessages} />
-              <Route path={`${match.url}/:id/messages`} component={ViewGameMessages} />
-              <Route path={`${match.url}/:id/join`} component={AuthGuard(JoinGame)}/>
-            </div>
+            <Route path={`${match.url}/create`} component={AuthGuard(CreateGame)}/>
+            <Route strict path={`${match.url}/`} component={ViewGamePaths}/>
+            <Route strict exact path={`${match.url}`} component={ListGames}/>
           </Switch>
         </Container>
       </div>
     );
   }
+}
+
+function ViewGamePaths(props) {
+  const { match } = props;
+
+  return (
+    <div className="ViewGame">
+      <Switch>
+        <Route path={`${match.url}:id/edit`} component={AuthGuard(EditGame)}/>
+        <Route path={`${match.url}:id/lounge`} component={ViewGameLoungeMessages} />
+        <Route path={`${match.url}:id/messages`} component={ViewGameMessages} />
+        <Route path={`${match.url}:id/join`} component={AuthGuard(JoinGame)}/>
+        <Route path={`${match.url}:id`} component={ViewGameDetails} />
+      </Switch>
+    </div>
+  );
 }
