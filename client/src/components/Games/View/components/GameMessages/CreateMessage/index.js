@@ -13,6 +13,7 @@ import DiceRollFormSummary from '../DiceRollFormSummary';
 import GmHeader from '../GmHeader';
 import InCharacterHeader from '../InCharacterHeader';
 import OutOfCharacterHeader from '../OutOfCharacterHeader';
+import gameMessageStyles from '../gameMessageStyles';
 
 import { createGameMessageMutation, myGamePlayerQuery } from 'components/Games/queries';
 
@@ -40,9 +41,10 @@ class CreateMessage extends Component {
   }
 
   render() {
-    const { saving, rollingDice, form: { meta } } = this.state;
+    const { saving, rollingDice, form: { meta, postType } } = this.state;
     const { gameId } = this.props;
     const rolls = _.get(meta, 'rolls');
+    const showCustomFormats = postType !== 'ooc';
 
     return (
       <div className="create-message">
@@ -52,11 +54,16 @@ class CreateMessage extends Component {
               query={myGamePlayerQuery}
               variables={{ gameId }}
             >
-              {({ data }) => <PostAsSelector data={data} onPostTypeChange={this._handlePostType}/>}
+              {({ data }) => <PostAsSelector data={data} onPostTypeChange={this._handlePostType} />}
             </Query>
 
             <label>Add Message</label>
-            <RichEditor ref={this.editor} onChange={this._handleOnChange} customButtons={this._customButtons()}/>
+            <RichEditor
+              ref={this.editor}
+              onChange={this._handleOnChange}
+              customButtons={this._customButtons()}
+              customStyles={showCustomFormats ? gameMessageStyles : null}
+            />
           </Form.Field>
 
           <DiceRollFormSummary rolls={rolls} onRemove={this._handleRemoveDie} />
@@ -95,7 +102,7 @@ class CreateMessage extends Component {
       const prevRolls = _.get(form, 'meta.rolls', []);
 
       return {
-        form : {
+        form: {
           ...form,
           meta: { rolls: [...prevRolls, ...rolls] }
         }
@@ -108,9 +115,9 @@ class CreateMessage extends Component {
   };
 
   _handleRemoveDie = (die) => {
-    this.setState(({ form  }) => ( {
+    this.setState(({ form }) => ({
       form: { ...form, meta: { rolls: _.reject(form.meta.rolls, die) } }
-    } ));
+    }));
   };
 
   _handleOnChange = (data) => {
@@ -145,7 +152,14 @@ class CreateMessage extends Component {
       }
     })
       .then(() => this.editor.current.clear())
-      .finally(() => this.setState({ saving: false, form: {} }));
+      .finally(() => this.setState(state => ({
+          saving: false,
+          form: {
+            postType: state.form.postType,
+            characterId: state.form.characterId
+          }
+        }))
+      );
   };
 }
 

@@ -16,6 +16,7 @@ import DieRollResult from './DiceRollResult';
 import GmHeader from './GmHeader';
 import InCharacterHeader from './InCharacterHeader';
 import OutOfCharacterHeader from './OutOfCharacterHeader';
+import gameMessageStyles from './gameMessageStyles';
 
 import { meQuery } from 'queries/users';
 
@@ -143,7 +144,12 @@ class GameMessage extends Component {
         <GmHeader user={user}/>
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
+            <RichEditor
+              message={gameMessage.message}
+              customStyles={gameMessageStyles}
+              ref={this.editor}
+              readOnly={!(editing)}
+            />
           </Grid.Column>
         </Grid.Row>
 
@@ -178,7 +184,12 @@ class GameMessage extends Component {
         <InCharacterHeader character={character}/>
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
+            <RichEditor
+              message={gameMessage.message}
+              ref={this.editor}
+              readOnly={!(editing)}
+              customStyles={gameMessageStyles}
+            />
           </Grid.Column>
         </Grid.Row>
 
