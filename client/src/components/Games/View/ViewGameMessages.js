@@ -8,9 +8,9 @@ import { graphql } from 'react-apollo';
 import GameHeader from './GameHeader';
 import CreateMessage from './components/GameMessages/CreateMessage';
 import GamesMessages from './components/GameMessages';
-
-import ApolloLoader from '../../shared/components/ApolloLoader';
 import { gameQuery, myGamePlayerQuery } from '../queries';
+
+import ApolloLoader from 'components/shared/ApolloLoader';
 
 function ViewGameMessages(props) {
   const { data: { game } } = props;

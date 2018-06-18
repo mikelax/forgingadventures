@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
 
-import { UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
+import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
 
 
 export default function (props) {

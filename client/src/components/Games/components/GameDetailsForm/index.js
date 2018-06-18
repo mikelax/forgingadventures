@@ -6,11 +6,12 @@ import { withRouter } from 'react-router';
 import { compose } from 'recompose';
 import { Button, Form, Image } from 'semantic-ui-react';
 
-import { createGameMutation } from '../../queries';
-import { skillLevels, postingFrequencies } from '../../utils/gameSettings';
 import GameLabelsSelect from '../GameLabelsSelect';
-import { uploadImage } from '../../../../services/image';
-import RichEditor from '../../../shared/components/RichEditor';
+import { skillLevels, postingFrequencies } from '../../utils/gameSettings';
+import { createGameMutation } from '../../queries';
+
+import RichEditor from 'components/shared/RichEditor';
+import { uploadImage } from 'services/image';
 
 class GameDetailsForm extends Component {
 

@@ -8,9 +8,9 @@ import { Button, Form, Grid, Header, Label, Menu, Statistic } from 'semantic-ui-
 import { gamePlayersQuery, gameQuery, updateGameMutation, updateGameStatusMutation } from '../queries';
 import GamePlayers from '../View/components/GamePlayers';
 import GameDetailsForm from '../components/GameDetailsForm';
-
-import OwnerGuard from '../../shared/components/OwnerGuard';
 import { gameStatus, gameStatuses } from '../utils/gameSettings';
+
+import OwnerGuard from 'components/shared/OwnerGuard';
 
 class EditGame extends Component {
   state = { activeItem: 'details' };

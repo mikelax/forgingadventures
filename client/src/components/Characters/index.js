@@ -5,7 +5,7 @@ import { Container } from 'semantic-ui-react';
 import CreateCharacter from './Create';
 import EditCharacter from './Edit';
 
-import AuthGuard from '../shared/components/AuthGuard';
+import AuthGuard from 'components/shared/AuthGuard';
 
 export default class Characters extends Component {
 

@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 import { Router, Route, Switch } from 'react-router-dom';
 
 import About from '../About';
-import AuthGuard from '../shared/components/AuthGuard';
+import AuthGuard from '../shared/AuthGuard';
 import Characters from '../Characters';
 import Header from '../Header';
 import Home from '../Home';

@@ -11,7 +11,7 @@ import {
   secondaryAttributes as pfSecondaryAttributes
 } from '../CharacterLabelGameMessageHeaders/2_pathFinder';
 
-import { CharacterImageAvatar } from 'components/shared/components/ProfileImageAvatar';
+import { CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
 
 import './InCharacterHeader.styl';
 

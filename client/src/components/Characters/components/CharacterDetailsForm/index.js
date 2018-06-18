@@ -5,9 +5,9 @@ import { Form as FormikForm, Formik } from 'formik';
 import { Form, Image, Segment } from 'semantic-ui-react';
 import Yup from 'yup';
 
-import GameLabelsSelect from '../../../Games/components/GameLabelsSelect';
-import { uploadImage } from '../../../../services/image';
-import FormFieldErrorMessage from '../../../../components/shared/components/FormFieldErrorMessage';
+import GameLabelsSelect from 'components/Games/components/GameLabelsSelect';
+import { uploadImage } from 'services/image';
+import FormFieldErrorMessage from 'components/shared/FormFieldErrorMessage';
 
 // label forms
 

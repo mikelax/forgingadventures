@@ -7,7 +7,7 @@ import { graphql } from 'react-apollo';
 import GameHeader from './GameHeader';
 import GamePlayers from './components/GamePlayers';
 
-import ApolloLoader from 'components/shared/components/ApolloLoader';
+import ApolloLoader from 'components/shared/ApolloLoader';
 
 import { gameQuery, myGamePlayerQuery } from '../queries';
 

@@ -5,7 +5,7 @@ import { Form, Button } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
-import RichEditor from '../../../shared/components/RichEditor';
+import RichEditor from 'components/shared/RichEditor';
 
 import { createGameLoungeMessageMutation } from '../../queries';
 

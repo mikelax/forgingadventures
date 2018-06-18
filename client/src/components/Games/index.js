@@ -11,7 +11,7 @@ import ViewGameDetails from './View/ViewGameDetails';
 import ViewGameLoungeMessages from './View/ViewGameLoungeMessages';
 import ViewGameMessages from './View/ViewGameMessages';
 
-import AuthGuard from '../shared/components/AuthGuard';
+import AuthGuard from 'components/shared/AuthGuard';
 
 import './View/assets/ViewGame.styl';
 

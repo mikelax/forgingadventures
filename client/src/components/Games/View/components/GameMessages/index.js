@@ -6,9 +6,9 @@ import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
 import { Header, Button, Grid, Segment } from 'semantic-ui-react';
 
-import ApolloLoader from 'components/shared/components/ApolloLoader';
-import InlineItemsLoader from 'components/shared/components/InlineItemsLoader';
-import RichEditor from 'components/shared/components/RichEditor';
+import ApolloLoader from 'components/shared/ApolloLoader';
+import InlineItemsLoader from 'components/shared/InlineItemsLoader';
+import RichEditor from 'components/shared/RichEditor';
 
 import { quote } from 'actions/gameMessage';
 

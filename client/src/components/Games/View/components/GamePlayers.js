@@ -7,10 +7,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Header, Image, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-react';
 
-import CharactersSelect from '../../../shared/components/CharactersSelect';
+import CharactersSelect from 'components/shared/CharactersSelect';
+import ApolloLoader from 'components/shared/ApolloLoader';
+import { getFullImageUrl } from 'services/image';
+
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
-import ApolloLoader from '../../../shared/components/ApolloLoader';
-import { getFullImageUrl } from '../../../../services/image';
 
 import './assets/GamePlayers.styl';
 

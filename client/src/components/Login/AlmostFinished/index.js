@@ -7,10 +7,10 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
-import TimezoneSelect from '../../shared/components/TimezoneSelect';
-import { meQuery, updateMeMutation, validUsernameQuery } from '../../../queries/users';
-import { uploadImage } from '../../../services/image';
-import { getMyDetails } from '../../../actions/me';
+import TimezoneSelect from 'components/shared/TimezoneSelect';
+import { meQuery, updateMeMutation, validUsernameQuery } from 'queries/users';
+import { uploadImage } from 'services/image';
+import { getMyDetails } from 'actions/me';
 
 import './AlmostFinished.styl';
 

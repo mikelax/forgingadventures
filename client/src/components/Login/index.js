@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router';
 
+import AuthGuard from 'components/shared/AuthGuard';
+
 import AlmostFinished from './AlmostFinished';
-import AuthGuard from '../shared/components/AuthGuard';
 import Callback from './Callback';
 import Login from './Login';
 
