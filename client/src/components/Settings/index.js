@@ -8,12 +8,12 @@ import { compose } from 'recompose';
 import { Button, Container, Form, Grid,
   Header, Icon, Image, Label, Menu, Message } from 'semantic-ui-react';
 
-import SuccessToast from '../shared/components/SuccessToast';
-import TimezoneSelect from '../shared/components/TimezoneSelect';
-import { meQuery, updateMeMutation, validUsernameQuery } from '../../queries/users';
-import { uploadImage } from '../../services/image';
-import { getProfile } from '../../services/webAuth';
-import { getMyDetails } from '../../actions/me';
+import SuccessToast from 'components/shared/SuccessToast';
+import TimezoneSelect from 'components/shared/TimezoneSelect';
+import { meQuery, updateMeMutation, validUsernameQuery } from 'queries/users';
+import { uploadImage } from 'services/image';
+import { getProfile } from 'services/webAuth';
+import { getMyDetails } from 'actions/me';
 
 class Settings extends Component {
   state = {

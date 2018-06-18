@@ -12,13 +12,23 @@ import { gameMessageTypeDefs, gameMessageResolvers } from './gameMessage';
 import { gamePlayerTypeDefs, gamePlayerResolvers } from './gamePlayer';
 import { userTypeDefs, userResolvers } from './user';
 
-import queries from './queries';
-import mutations from './mutations';
-import subscriptions from './subscriptions';
-
 const scalars = `
   scalar JSON
   scalar GraphQLDateTime
+`;
+
+// define base types here so that we can include Query, Mutation and Subscription
+// in each typeDef file
+const Query = `
+  type Query {
+    _empty: String
+  }
+  type Mutation {
+    _empty: String
+  }
+  type Subscription {
+    _empty: String
+  }
 `;
 
 const ScalerResolvers = {
@@ -28,6 +38,7 @@ const ScalerResolvers = {
 
 export default makeExecutableSchema({
   typeDefs: [
+    Query,
     characterTypeDefs,
     gameTypeDefs,
     gameLabelTypeDefs,
@@ -35,9 +46,6 @@ export default makeExecutableSchema({
     gameMessageTypeDefs,
     gamePlayerTypeDefs,
     userTypeDefs,
-    queries,
-    mutations,
-    subscriptions,
     scalars
   ],
   resolvers: _.merge(

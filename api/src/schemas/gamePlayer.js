@@ -1,5 +1,7 @@
 import { withFilter } from 'graphql-subscriptions';
+
 import GamePlayer from 'models/gamePlayer';
+
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 import pubsub from 'services/pubsub';
@@ -8,6 +10,23 @@ export const GAME_PLAYER_ADDED = 'game_player_added';
 export const GAME_PLAYER_UPDATED = 'game_player_updated';
 
 export const gamePlayerTypeDefs = `
+
+  extend type Query {
+    gamePlayer(id: ID!): GamePlayer!,
+    myGamePlayer(gameId: ID!): [GamePlayer]
+    myGamePlayers: [GamePlayer]
+    gamePlayers(gameId: ID!, status: [String]): [GamePlayer!]
+  }
+  
+  extend type Mutation {
+    createGamePlayer(input: CreateGamePlayerInput): GamePlayer
+    updateGamePlayer(id: ID!, input: UpdateGamePlayerInput): GamePlayer
+  }
+  
+  extend type Subscription {
+    gamePlayerAdded(gameId: ID!): GamePlayer!
+    gamePlayerUpdated(gameId: ID!): GamePlayer!
+  }
 
   type GamePlayer {
     id: ID!,

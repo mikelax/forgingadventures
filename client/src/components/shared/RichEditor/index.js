@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Editor } from '@tinymce/tinymce-react';
 
-import { uploadImage } from '../../../../services/image';
+import { uploadImage } from 'services/image';
 
 import './assets/RichEditor.styl';
 

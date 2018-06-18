@@ -2,12 +2,7 @@
     "compilerOptions": {
       "baseUrl": ".",
       "paths": {
-        "middleware/*": ["./middleware/*"],
-        "models/*": ["./models/*"],
-        "routes/*": ["./routes/*"],
-        "schemas/*": ["./schemas/*"],
-        "services/*": ["./services/*"],
-        "utils/*": ["./utils/*"]
+        "*": ["src/*"]
       }
     }
   }

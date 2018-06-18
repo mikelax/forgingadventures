@@ -1,4 +1,5 @@
 import Bluebird from 'bluebird';
+
 import UserUpload from 'models/userUpload';
 
 /**

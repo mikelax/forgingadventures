@@ -5,9 +5,11 @@ import { Helmet } from 'react-helmet';
 import { Button, Form, Header } from 'semantic-ui-react';
 import { compose } from 'recompose';
 
-import RichEditor from '../../../shared/components/RichEditor';
+import RichEditor from 'components/shared/RichEditor';
+import CharactersSelect from 'components/shared/CharactersSelect';
+
 import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
-import CharactersSelect from '../../../shared/components/CharactersSelect';
+
 
 const JoinGame = class JoinGame extends Component {
 

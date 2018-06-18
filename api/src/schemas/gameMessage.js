@@ -16,6 +16,21 @@ export const TOPIC_MESSAGE_UPDATED = 'topic_message_updated';
 
 export const gameMessageTypeDefs = `
 
+  extend type Query {
+    gameMessage(id: ID!): GameMessage!
+    gameMessages(gameId: ID!): [GameMessage!]
+  }
+  
+  extend type Mutation {
+    createGameMessage(input: CreateGameMessageInput): GameMessage
+    updateGameMessage(id: ID!, input: UpdateGameMessageInput): GameMessage
+  }
+
+  extend type Subscription {
+    messageAdded(gameId: ID!): GameMessage!
+    messageUpdated(gameId: ID!): GameMessage!
+  }
+
   type GameMessage {
     id: ID!,
     gameId: ID!,

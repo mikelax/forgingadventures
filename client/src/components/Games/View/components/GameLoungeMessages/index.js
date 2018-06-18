@@ -6,9 +6,9 @@ import { compose } from 'recompose';
 import { Button, Header, Icon, Grid, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
-import InlineItemsLoader from 'components/shared/components/InlineItemsLoader';
-import RichEditor from 'components/shared/components/RichEditor';
-import { UserImageAvatar } from 'components/shared/components/ProfileImageAvatar';
+import InlineItemsLoader from 'components/shared/InlineItemsLoader';
+import RichEditor from 'components/shared/RichEditor';
+import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
 import { quote } from 'actions/loungeMessage';
 
 import {
@@ -19,7 +19,7 @@ import {
 } from '../../../queries';
 import { meQuery } from 'queries/users';
 
-import ApolloLoader from 'components/shared/components/ApolloLoader';
+import ApolloLoader from 'components/shared/ApolloLoader';
 
 import './gameLoungeMessages.styl';
 

@@ -1,6 +1,6 @@
 import { compose, Model } from 'objection';
 
-import setUpdatedAt from './plugins/setUpdatedAt';
+import setUpdatedAt from 'models/plugins/setUpdatedAt';
 
 const mixins = compose(setUpdatedAt);
 

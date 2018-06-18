@@ -6,7 +6,7 @@ import { Form, Button, Segment, Radio, Dimmer, Grid } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
-import RichEditor from 'components/shared/components/RichEditor';
+import RichEditor from 'components/shared/RichEditor';
 
 import DiceRollerModal from '../DiceRollerModal';
 import DiceRollFormSummary from '../DiceRollFormSummary';

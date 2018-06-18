@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { Segment, List, Header, Button } from 'semantic-ui-react';
 
-import InlineItemsLoader from 'components/shared/components/InlineItemsLoader';
+import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 
 export default function DiceRollFormSummary(props) {
   const { rolls } = props;

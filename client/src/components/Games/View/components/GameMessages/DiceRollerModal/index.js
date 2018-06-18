@@ -5,7 +5,7 @@ import { Formik, Form as FormikForm, Field, FieldArray } from 'formik';
 import yup from 'yup';
 import Roll from 'roll';
 
-import FormFieldErrorMessage from 'components/shared/components/FormFieldErrorMessage';
+import FormFieldErrorMessage from 'components/shared/FormFieldErrorMessage';
 
 export default class DiceRollerModal extends Component {
 

@@ -15,6 +15,21 @@ export const LOUNGE_MESSAGE_UPDATED = 'lounge_message_updated';
 
 export const gameLoungeTypeDefs = `
 
+  extend type Query {
+    gameLoungeMessage(id: ID!): GameLoungeMessage!
+    gameLoungeMessages(gameId: ID!): [GameLoungeMessage!]
+  }
+  
+  extend type Mutation {
+    createGameLoungeMessage(input: CreateGameLoungeMessageInput): GameLoungeMessage
+    updateGameLoungeMessage(id: ID!, input: UpdateGameLoungeMessageInput): GameLoungeMessage
+  }
+  
+  extend type Subscription {
+    gameLoungeMessageAdded(gameId: ID!): GameLoungeMessage!
+    gameLoungeMessageUpdated(gameId: ID!): GameLoungeMessage!
+  }
+
   type GameLoungeMessage {
     id: ID!,
     user: User!,

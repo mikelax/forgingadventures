@@ -6,8 +6,8 @@ import { Form, Grid, Segment } from 'semantic-ui-react';
 import Yup from 'yup';
 
 import { propsChanged, propsBase } from 'services/props';
-import FormFieldErrorMessage from 'components/shared/components/FormFieldErrorMessage';
-import RadioInput from 'components/shared/components/RadioInput';
+import FormFieldErrorMessage from 'components/shared/FormFieldErrorMessage';
+import RadioInput from 'components/shared/RadioInput';
 
 
 export default class CharacterDetails5e_1_0_0 extends Component {

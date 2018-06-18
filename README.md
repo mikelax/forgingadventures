@@ -62,7 +62,7 @@ An [introduction](http://graphql.org/learn/) to GraphQL language and schema synt
 definitions can be be found [here](http://graphql.org/graphql-js/).
 
 This project uses [Apollo graphql-tools](https://www.apollographql.com/docs/graphql-tools/) to define graphQL
-schemas in the [schemas](./api/schemas) folder.
+schemas in the [schemas](api/src/schemas) folder.
 
 ## Additional Libraries & Integrations
 

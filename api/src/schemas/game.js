@@ -6,11 +6,24 @@ import GamePlayer from 'models/gamePlayer';
 import schemaScopeGate from 'services/schemaScopeGate';
 import GetGames from 'services/games/getGames';
 import { getUser, runIfContextHasUser } from 'services/user';
-import sanitiseHtml from 'utils/sanitiseHtml';
 
+import sanitiseHtml from 'utils/sanitiseHtml';
 import serviceExecutor from 'utils/serviceExecutor';
 
 export const gameTypeDefs = `
+
+  extend type Query {
+    game(id: ID!): Game!
+    games(offset: Int, searchOptions: SearchOptions): [Game]
+    myGames(status: [String]): [Game]
+  }
+  
+  extend type Mutation {
+    createGame(input: CreateGameInput): Game
+    updateGame(id: ID!, input: UpdateGameInput): Game
+    updateGameStatus(id: ID!, gameStatus: Int): Game
+  }
+
   type GameSetting {
     minPlayers: Int!,
     maxPlayers: Int!,

@@ -7,7 +7,7 @@ import { Button, Segment } from 'semantic-ui-react';
 
 import { characterQuery, updateCharacterMutation } from '../queries';
 import CharacterDetailsForm from '../components/CharacterDetailsForm';
-import OwnerGuard from '../../shared/components/OwnerGuard';
+import OwnerGuard from '../../shared/OwnerGuard';
 
 import './EditCharacter.styl';
 

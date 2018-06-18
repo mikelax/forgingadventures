@@ -1,6 +1,12 @@
 import GameLabel from 'models/gameLabel';
 
 export const gameLabelTypeDefs = `
+
+  extend type Query {
+    gameLabel(id: ID!): GameLabel!
+    gameLabels: [GameLabel]
+  }
+  
   type GameLabel {
     id: ID!,
     displayName: String!,
