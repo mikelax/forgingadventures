@@ -5,6 +5,18 @@ import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 
 export const characterTypeDefs = `
+
+  extend type Query {
+    character(id: ID!): Character!
+    availableCharacters(gameId: Int!): [Character]
+    myCharacters: [Character]
+  }
+  
+  extend type Mutation {
+    createCharacter(input: CreateCharacterInput): Character
+    updateCharacter(id: ID!, input: UpdateCharacterInput): Character
+  }
+  
   type Character {
     id: ID!,
     name: String!,

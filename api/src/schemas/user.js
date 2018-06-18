@@ -3,6 +3,15 @@ import User from 'models/user';
 
 export const userTypeDefs = `
 
+  extend type Query {
+    me: User
+  }
+  
+  extend type Mutation {
+    updateMe(input: UpdateUserDetailsInput): User!
+    validUsername(username: String!): Boolean
+  }
+
   type User {
     id: Int!,
     name: String,
