@@ -1,5 +1,5 @@
 import { updateUserAndAuth0, runIfContextHasUser } from 'services/user';
-import User from '../models/user';
+import User from 'models/user';
 
 export const userTypeDefs = `
 

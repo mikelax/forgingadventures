@@ -22,7 +22,7 @@ import logger from 'services/logger';
 import logging from 'middleware/logging';
 import { checkJwt } from 'middleware/security';
 
-import loader from './loaders';
+import loader from 'loaders';
 
 const app = express();
 const server = createServer(app);

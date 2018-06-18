@@ -6,8 +6,8 @@ import GamePlayer from 'models/gamePlayer';
 import schemaScopeGate from 'services/schemaScopeGate';
 import GetGames from 'services/games/getGames';
 import { getUser, runIfContextHasUser } from 'services/user';
-import sanitiseHtml from 'utils/sanitiseHtml';
 
+import sanitiseHtml from 'utils/sanitiseHtml';
 import serviceExecutor from 'utils/serviceExecutor';
 
 export const gameTypeDefs = `

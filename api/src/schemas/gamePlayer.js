@@ -1,5 +1,7 @@
 import { withFilter } from 'graphql-subscriptions';
+
 import GamePlayer from 'models/gamePlayer';
+
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 import pubsub from 'services/pubsub';

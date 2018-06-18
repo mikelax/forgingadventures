@@ -3,7 +3,7 @@ import config from 'config';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 
-import { getUser } from '../services/user';
+import { getUser } from 'services/user';
 
 export function checkJwt() {
   return jwt({

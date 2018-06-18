@@ -7,10 +7,6 @@ const nodeExternals = require('webpack-node-externals');
 /* eslint-enable import/no-extraneous-dependencies */
 
 
-function pathToSrc(...args) {
-  return path.join(__dirname, path.join(...args));
-}
-
 module.exports = {
   entry: './app.js',
   target: 'node',
@@ -40,18 +36,7 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['.js'],
-    alias: {
-      // application aliases
-      middleware: pathToSrc('middleware'),
-      models: pathToSrc('models'),
-      routes: pathToSrc('routes'),
-      schemas: pathToSrc('schemas'),
-      services: pathToSrc('services'),
-      utils: pathToSrc('utils'),
-
-      app: pathToSrc('app.js')
-    }
+    extensions: ['.js']
   },
   module: {
     rules: [{

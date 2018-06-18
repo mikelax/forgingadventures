@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import Bluebird from 'bluebird';
+
 import User from 'models/user';
+
 import { getAuth0User, patchAuth0Metadata } from './auth0';
 
 /**
