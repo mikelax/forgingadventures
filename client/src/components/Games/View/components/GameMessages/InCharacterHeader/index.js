@@ -34,7 +34,7 @@ export default function(props) {
                    verticalAlign="middle"
                    className="profile-image"
       >
-        <CharacterImageAvatar character={character}/>
+        <CharacterImageAvatar character={character} size="tiny" />
       </Grid.Column>
 
       <Grid.Column computer={14} tablet={13} mobile={12}

@@ -5,12 +5,11 @@ import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Header, Image, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-react';
+import { Button, Header, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-react';
 
 import CharactersSelect from 'components/shared/CharactersSelect';
 import ApolloLoader from 'components/shared/ApolloLoader';
 import { UserImageAvatar, CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
-import { getFullImageUrl } from 'services/image';
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
 
@@ -50,7 +49,7 @@ class GamePlayers extends Component {
               <Table.Row key={gamePlayer.id}>
                 <Table.Cell>
                   <Header as='h3' image>
-                    <UserImageAvatar user={gamePlayer.user} size="players"/>
+                    <UserImageAvatar user={gamePlayer.user}/>
                     <Header.Content>
                         {gamePlayer.user.name}
                       <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
@@ -188,7 +187,7 @@ class GamePlayers extends Component {
     } else {
       return (
         <Header as='h3' image>
-          <CharacterImageAvatar character={character} className="avatar image ui" />
+          <CharacterImageAvatar character={character} />
           <Header.Content>
               {name}
           </Header.Content>
