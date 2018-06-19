@@ -109,18 +109,20 @@ class Settings extends Component {
                     </Message>
                   </Form.Field>
 
-                  <Form.Group inline>
-                    <Form.Input
-                      label='Email'
-                      value={email}
-                      readOnly
-                      width={6}
-                    />
-                    {emailVerified ?
-                      (<Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>) :
-                      <Button>Resend Verification Email</Button>
-                    }
-                  </Form.Group>
+                  { email && (
+                    <Form.Group inline>
+                      <Form.Input
+                        label='Email'
+                        value={email}
+                        readOnly
+                        width={6}
+                      />
+                      {emailVerified ?
+                        (<Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>) :
+                        <Button>Resend Verification Email</Button>
+                      }
+                    </Form.Group>
+                  )}
 
                   <Form.Field required>
                     <label>Name</label>
