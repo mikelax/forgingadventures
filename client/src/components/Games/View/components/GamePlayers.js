@@ -50,7 +50,7 @@ class GamePlayers extends Component {
               <Table.Row key={gamePlayer.id}>
                 <Table.Cell>
                   <Header as='h3' image>
-                    <UserImageAvatar user={gamePlayer.user} className="ui avatar image"/>
+                    <UserImageAvatar user={gamePlayer.user} size="players"/>
                     <Header.Content>
                         {gamePlayer.user.name}
                       <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
