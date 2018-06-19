@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import config from 'config';
+import { knexSnakeCaseMappers } from 'objection';
 
 import logger from 'services/logger';
 
@@ -7,7 +8,8 @@ const knex = require('knex')({
   client: 'pg',
   connection: config.get('database.connection'),
   searchPath: config.get('database.searchPath'),
-  pool: config.get('database.pool')
+  pool: config.get('database.pool'),
+  ...knexSnakeCaseMappers()
 });
 
 export default knex;

@@ -11,7 +11,7 @@ exports.up = function(knex) {
     // maxPlayers
     // skillLevel
     // postingFrequency
-    table.jsonb('gameSettings').notNullable();
+    table.jsonb('game_settings').notNullable();
 
     table.text('notes');
 
