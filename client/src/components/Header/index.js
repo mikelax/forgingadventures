@@ -135,7 +135,7 @@ class RightMenuItemsBase extends Component {
 
     return me && (
       <span>
-        <UserImageAvatar user={me} className="ui image avatar"/>
+        <UserImageAvatar user={me} className="avatar" size="header"/>
         {username}
       </span>
     );

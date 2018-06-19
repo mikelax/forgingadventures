@@ -9,7 +9,7 @@ import { Button, Header, Image, Menu, Popup, Icon, Table, Modal } from 'semantic
 
 import CharactersSelect from 'components/shared/CharactersSelect';
 import ApolloLoader from 'components/shared/ApolloLoader';
-import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
+import { UserImageAvatar, CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
 import { getFullImageUrl } from 'services/image';
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
@@ -164,8 +164,6 @@ class GamePlayers extends Component {
 
   _characterCell = (player) => {
     const { character } = player;
-    const publicId = _.get(character, 'profileImage.publicId');
-    const imageUrl = getFullImageUrl(publicId, 'profileImage');
     const name = _.get(character, 'name');
     const playerUserId = _.get(player, 'user.id');
     const currentUserId = _.get(this.props, 'me.me.id');
@@ -190,10 +188,7 @@ class GamePlayers extends Component {
     } else {
       return (
         <Header as='h3' image>
-          {
-            imageUrl ? <Image avatar src={imageUrl} /> :
-              <Icon size='big' name='user circle' />
-          }
+          <CharacterImageAvatar character={character} className="avatar image ui" />
           <Header.Content>
               {name}
           </Header.Content>
