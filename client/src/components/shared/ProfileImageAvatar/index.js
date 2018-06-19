@@ -37,7 +37,7 @@ function CloudinaryImageAvatar(props) {
   const width = {
     small: 80,
     tiny: 45
-  }[size || 'small'];
+  }[size || 'tiny'];
 
   const url = `https://res.cloudinary.com/${cloudName}/image/upload/c_crop,g_auto,h_${width*4},r_max,w_${width*4}/c_fill,w_${width}/${publicId}`;
 
