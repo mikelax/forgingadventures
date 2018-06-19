@@ -9,6 +9,7 @@ import { Button, Header, Image, Menu, Popup, Icon, Table, Modal } from 'semantic
 
 import CharactersSelect from 'components/shared/CharactersSelect';
 import ApolloLoader from 'components/shared/ApolloLoader';
+import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
 import { getFullImageUrl } from 'services/image';
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
@@ -49,7 +50,7 @@ class GamePlayers extends Component {
               <Table.Row key={gamePlayer.id}>
                 <Table.Cell>
                   <Header as='h3' image>
-                    <Image avatar src={_.get(gamePlayer, 'user.profileImage.url')} />
+                    <UserImageAvatar user={gamePlayer.user} className="ui avatar image"/>
                     <Header.Content>
                         {gamePlayer.user.name}
                       <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
