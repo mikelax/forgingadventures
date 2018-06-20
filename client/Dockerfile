@@ -15,8 +15,7 @@ COPY /scripts /usr/src/app/scripts
 COPY /src /usr/src/app/src
 
 # copy specific build target env files
-COPY .env.production .
-COPY .env.playquest .
+COPY .env.* .
 
 RUN mkdir /usr/src/app/build
 
