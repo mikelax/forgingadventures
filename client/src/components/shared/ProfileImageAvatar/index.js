@@ -35,11 +35,10 @@ function CloudinaryImageAvatar(props) {
   const { publicId, size } = props;
   const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUDNAME;
   const width = {
-    small: 80,
-    tiny: 45
-  }[size || 'tiny'];
+    small: 80
+  }[size] || 45;
 
-  const url = `https://res.cloudinary.com/${cloudName}/image/upload/c_crop,g_auto,h_${width*4},r_max,w_${width*4}/c_fill,w_${width}/${publicId}`;
+  const url = `https://res.cloudinary.com/${cloudName}/image/upload/c_fill,g_auto,h_${width*2},r_max,w_${width*2}/${publicId}`;
 
   return (
     <Image avatar size={size} src={url} />
