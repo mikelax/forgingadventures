@@ -145,7 +145,7 @@ class GameLoungeMessageContainer extends Component {
           </Grid.Column>
 
           <Grid.Column textAlign="right" className="column-info">
-            Posted {this._relativeDate(loungeMessage.created_at)}
+            Posted {this._relativeDate(loungeMessage.createdAt)}
             {this._lastEdited()}
           </Grid.Column>
         </Grid.Row>
@@ -230,7 +230,7 @@ class GameLoungeMessageContainer extends Component {
     if (loungeMessage.numberEdits) {
       return (
         <div className="edited">
-          <div className="last-edited">Updated {this._relativeDate(loungeMessage.updated_at)}</div>
+          <div className="last-edited">Updated {this._relativeDate(loungeMessage.updatedAt)}</div>
           <div className="number-edits">Edits: {loungeMessage.numberEdits}</div>
         </div>
       );

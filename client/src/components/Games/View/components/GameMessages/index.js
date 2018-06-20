@@ -166,7 +166,7 @@ class GameMessage extends Component {
             {this._messageControls(gameMessage.user.id)}
           </Grid.Column>
           <Grid.Column textAlign="right" className="column-info">
-            Posted {this._relativeDate(gameMessage.created_at)}
+            Posted {this._relativeDate(gameMessage.createdAt)}
             {this._lastEdited()}
           </Grid.Column>
         </Grid.Row>
@@ -207,7 +207,7 @@ class GameMessage extends Component {
           </Grid.Column>
 
           <Grid.Column textAlign="right" className="column-info">
-            Posted {this._relativeDate(gameMessage.created_at)}
+            Posted {this._relativeDate(gameMessage.createdAt)}
             {this._lastEdited()}
           </Grid.Column>
         </Grid.Row>
@@ -242,7 +242,7 @@ class GameMessage extends Component {
             {this._messageControls(gameMessage.user.id)}
           </Grid.Column>
           <Grid.Column textAlign="right" className="column-info">
-            Posted {this._relativeDate(gameMessage.created_at)}
+            Posted {this._relativeDate(gameMessage.createdAt)}
             {this._lastEdited()}
           </Grid.Column>
         </Grid.Row>
@@ -311,7 +311,7 @@ class GameMessage extends Component {
     if (gameMessage.numberEdits) {
       return (
         <div className="edited">
-          <div className="last-edited">Updated {this._relativeDate(gameMessage.updated_at)}</div>
+          <div className="last-edited">Updated {this._relativeDate(gameMessage.updatedAt)}</div>
           <div className="number-edits">Edits: {gameMessage.numberEdits}</div>
         </div>
       );

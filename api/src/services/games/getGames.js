@@ -44,13 +44,13 @@ function doGameSettingsSearch() {
     const { skillLevel, postingFrequency, gameStatus } = gameSettings;
 
     if (skillLevel) {
-      this.gameQuery.whereJsonSupersetOf('gameSettings', { skillLevel });
+      this.gameQuery.whereJsonSupersetOf('game_settings', { skillLevel });
     }
     if (postingFrequency) {
-      this.gameQuery.whereJsonSupersetOf('gameSettings', { postingFrequency });
+      this.gameQuery.whereJsonSupersetOf('game_settings', { postingFrequency });
     }
     if (gameStatus) {
-      this.gameQuery.whereJsonSupersetOf('gameSettings', { gameStatus });
+      this.gameQuery.whereJsonSupersetOf('game_settings', { gameStatus });
     }
   }
 }
