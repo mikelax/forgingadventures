@@ -42,8 +42,8 @@ export const gameMessageFields = `
     numberEdits
     postType
     meta
-    created_at
-    updated_at
+    createdAt
+    updatedAt
     character {
       name
       labelId
@@ -75,14 +75,14 @@ export const gameLoungeMessageFields = `
     message
     numberEdits
     meta
-    created_at
-    updated_at
+    createdAt
+    updatedAt
     user {
       id
       name
       profileImage {
         publicId
-        url 
+        url
       }
     }
   }
@@ -231,7 +231,7 @@ export const updateGameMessageMutation = gql`
     updateGameMessage(id: $id, input: $input) {
       id
       message
-      updated_at      
+      updatedAt
     }
   }
 `;
@@ -251,7 +251,7 @@ export const onGameMessageUpdated = gql`
       id
       message
       numberEdits
-      updated_at
+      updatedAt
     }
   }
 `;
@@ -291,9 +291,9 @@ export const createGameLoungeMessageMutation = gql`
   mutation createGameLoungeMessage($input: CreateGameLoungeMessageInput) {
     createGameLoungeMessage(input: $input) {
       ...gameLoungeMessagesFields
-    }      
+    }
   }
-  ${gameLoungeMessageFields}    
+  ${gameLoungeMessageFields}
 `;
 
 export const updateGameLoungeMessageMutation = gql`
@@ -302,9 +302,9 @@ export const updateGameLoungeMessageMutation = gql`
       id
       message
       numberEdits
-      updated_at
-    }      
-  }    
+      updatedAt
+    }
+  }
 `;
 
 
@@ -314,7 +314,7 @@ export const onGameLoungeMessageAdded = gql`
       ...gameLoungeMessagesFields
     }
   }
-  ${gameLoungeMessageFields} 
+  ${gameLoungeMessageFields}
 `;
 
 export const onGameLoungeMessageUpdated = gql`
@@ -323,7 +323,7 @@ export const onGameLoungeMessageUpdated = gql`
       id
       message
       numberEdits
-      updated_at
+      updatedAt
     }
   }
 `;

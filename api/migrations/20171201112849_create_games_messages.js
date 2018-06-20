@@ -2,8 +2,8 @@ exports.up = function(knex) {
   return knex.schema.createTable('game_messages', (table) => {
     table.increments().primary();
 
-    table.integer('gameId').unsigned().notNullable();
-    table.foreign('gameId').references('games.id');
+    table.integer('game_id').unsigned().notNullable();
+    table.foreign('game_id').references('games.id');
 
     table.text('message');
 

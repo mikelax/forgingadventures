@@ -12,8 +12,8 @@ export const userFields = `
     }
     completedAt
     timezone
-    
-    updated_at
+
+    updatedAt
   }
 `;
 
@@ -49,4 +49,3 @@ export const updateMeMutation = gql`
   }
   ${userFields}
 `;
-
