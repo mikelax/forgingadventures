@@ -1,11 +1,11 @@
 exports.up = function(knex) {
   return knex.schema.table('characters', (table) => {
-    table.jsonb('characterDetails');
+    table.jsonb('character_details');
   });
 };
 
 exports.down = function(knex) {
   return knex.schema.table('characters', (table) => {
-    table.dropColumn('characterDetails');
+    table.dropColumn('character_details');
   });
 };

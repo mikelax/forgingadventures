@@ -1,9 +1,9 @@
 exports.up = function (knex) {
   return knex.schema.table('game_messages', (table) => {
-    table.integer('characterId');
-    table.foreign('characterId').references('characters.id');
+    table.integer('character_id');
+    table.foreign('character_id').references('characters.id');
 
-    table.enu('postType', ['ic', 'ooc']);
+    table.enu('post_type', ['ic', 'ooc']);
   })
     .then(() => (
       knex('game_messages')
@@ -13,14 +13,14 @@ exports.up = function (knex) {
     ))
     .then(() => (
       knex.schema.alterTable('game_messages', (table) => {
-        table.text('postType').notNullable().alter();
+        table.text('post_type').notNullable().alter();
       })
     ));
 };
 
 exports.down = function (knex) {
   return knex.schema.table('game_messages', (table) => {
-    table.dropColumn('postType');
-    table.dropColumn('characterId');
+    table.dropColumn('post_type');
+    table.dropColumn('character_id');
   });
 };

@@ -3,27 +3,27 @@ exports.up = function(knex) {
     table.increments().primary();
 
     table.string('name', 128).notNullable();
-    table.jsonb('profileImage');
-    table.integer('userId').unsigned().notNullable();
-    table.foreign('userId').references('users.id');
-    table.integer('labelId').unsigned().notNullable();
-    table.foreign('labelId').references('game_labels.id');
+    table.jsonb('profile_image');
+    table.integer('user_id').unsigned().notNullable();
+    table.foreign('user_id').references('users.id');
+    table.integer('label_id').unsigned().notNullable();
+    table.foreign('label_id').references('game_labels.id');
 
     table.timestamp('deleted_at');
     table.timestamps(true, true);
   })
     .then(() => {
       return knex.schema.table('game_players', (table) => {
-        table.integer('characterId');
-        table.foreign('characterId').references('characters.id');
+        table.integer('character_id');
+        table.foreign('character_id').references('characters.id');
       });
     });
 };
 
 exports.down = function(knex) {
   return knex.schema.table('game_players', (table) => {
-    table.dropForeign('characterId');
-    table.dropColumn('characterId');
+    table.dropForeign('character_id');
+    table.dropColumn('character_id');
   })
     .then(() => {
       return knex.schema.dropTable('characters');

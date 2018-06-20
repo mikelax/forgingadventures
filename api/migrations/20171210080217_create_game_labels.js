@@ -2,10 +2,10 @@ exports.up = function(knex) {
   return knex.schema.createTable('game_labels', (table) => {
     table.integer('id').notNullable().primary();
 
-    table.string('displayName').notNullable();
-    table.string('shortName', 16).notNullable();
+    table.string('display_name').notNullable();
+    table.string('short_name', 16).notNullable();
     table.jsonb('aliases');
-    table.integer('displayOrder').notNullable().defaultTo(100);
+    table.integer('display_order').notNullable().defaultTo(100);
 
     table.timestamp('deleted_at');
     table.timestamps(true, true);
