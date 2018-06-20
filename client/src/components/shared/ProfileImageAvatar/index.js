@@ -1,31 +1,31 @@
 import _ from 'lodash';
 import React from 'react';
-import { Icon, Image as SemanticImage } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 
 
 export function UserImageAvatar(props) {
-  const { user: { profileImage }, size = 'normal' } = props;
+  const { user: { profileImage }, size } = props;
   const publicId = _.get(profileImage, 'publicId');
   const url = _.get(profileImage, 'url');
 
   if (publicId) {
-    return <CloudinaryImageAvatar publicId={publicId} size={size}/>;
+    return <CloudinaryImageAvatar publicId={publicId} size={size} />;
   } else if (url) {
     return <UrlImageAvatar url={url} size={size}/>;
   } else {
-    return <NoAvatarIcon size={size}/>;
+    return <NoProfileIcon size={size} />;
   }
 
 }
 
 export function CharacterImageAvatar(props) {
-  const { character: { profileImage }, size = 'normal' } = props;
+  const { character: { profileImage }, size } = props;
   const publicId = _.get(profileImage, 'publicId');
 
   if (publicId) {
-    return <CloudinaryImageAvatar publicId={publicId} size={size}/>;
+    return <CloudinaryImageAvatar publicId={publicId} size={size} />;
   } else {
-    return <NoAvatarIcon size={size}/>;
+    return <NoAvatarIcon size={size} />;
   }
 }
 
@@ -35,32 +35,38 @@ function CloudinaryImageAvatar(props) {
   const { publicId, size } = props;
   const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUDNAME;
   const width = {
-    normal: 80
-  }[size];
+    small: 80
+  }[size] || 45;
+
+  const url = `https://res.cloudinary.com/${cloudName}/image/upload/c_fill,g_auto,h_${width*2},r_max,w_${width*2}/${publicId}`;
 
   return (
-    <img src={`https://res.cloudinary.com/${cloudName}/image/upload/c_crop,g_auto,h_${width*4},r_max,w_${width*4}/c_fill,w_${width}/${publicId}`} alt=""/>
+    <Image avatar size={size} src={url} />
   );
 }
 
 function UrlImageAvatar(props) {
   const { url, size } = props;
-  const avatarSize = {
-    normal: 'tiny'
-  }[size];
 
   return (
-    <SemanticImage avatar size={avatarSize} src={url}/>
+    <Image avatar size={size} src={url} />
   );
 }
 
 function NoAvatarIcon(props) {
   const { size } = props;
-  const fontSize = {
-    normal: '40px'
-  }[size];
+  const publicId = process.env.REACT_APP_CLOUDINARY_AVATAR_PLACEHOLDER;
 
   return (
-    <Icon circular inverted name="user" size="big" style={{ fontSize }}/>
+    <CloudinaryImageAvatar publicId={publicId} size={size} />
+  );
+}
+
+function NoProfileIcon(props) {
+  const { size } = props;
+  const publicId = process.env.REACT_APP_CLOUDINARY_PROFILE_PLACEHOLDER;
+
+  return (
+    <CloudinaryImageAvatar publicId={publicId} size={size} />
   );
 }

@@ -11,7 +11,7 @@ export default function (props) {
     <Grid.Row columns={2} className="message-header">
       <Grid.Column computer={2} tablet={3} mobile={4}
         textAlign="center" verticalAlign="middle">
-        <UserImageAvatar user={user} />
+        <UserImageAvatar user={user} size="tiny" />
       </Grid.Column>
       <Grid.Column computer={14} tablet={13} mobile={12}
         className="user-name" verticalAlign="middle">

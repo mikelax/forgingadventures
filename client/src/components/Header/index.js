@@ -2,13 +2,15 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Container, Dropdown, Icon, Image, Menu, Responsive } from 'semantic-ui-react';
+
+import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
+import { logout } from 'actions/auth';
 
 import logo from './logo.png';
 import './Header.styl';
 
-import { Container, Dropdown, Icon, Image, Menu, Responsive } from 'semantic-ui-react';
 
-import { logout } from '../../actions/auth';
 
 const NavBarDesktop = () => (
     <Menu inverted>
@@ -129,16 +131,14 @@ class RightMenuItemsBase extends Component {
 
   _userLogo() {
     const { me: { me } } = this.props;
-    const userProfileImageUrl = _.get(me, 'profileImage.url');
     const username = _.get(me, 'username');
 
-    if (userProfileImageUrl) {
-      return (
-        <span>
-          <Image avatar src={userProfileImageUrl} /> {username}
-        </span>
-      );
-    }
+    return me && (
+      <span>
+        <UserImageAvatar user={me} size="mini"/>
+        {username}
+      </span>
+    );
   }
 }
 

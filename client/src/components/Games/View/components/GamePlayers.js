@@ -5,11 +5,11 @@ import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Header, Image, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-react';
+import { Button, Header, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-react';
 
 import CharactersSelect from 'components/shared/CharactersSelect';
 import ApolloLoader from 'components/shared/ApolloLoader';
-import { getFullImageUrl } from 'services/image';
+import { UserImageAvatar, CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
 
 import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
 
@@ -49,7 +49,7 @@ class GamePlayers extends Component {
               <Table.Row key={gamePlayer.id}>
                 <Table.Cell>
                   <Header as='h3' image>
-                    <Image avatar src={_.get(gamePlayer, 'user.profileImage.url')} />
+                    <UserImageAvatar user={gamePlayer.user}/>
                     <Header.Content>
                         {gamePlayer.user.name}
                       <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
@@ -163,8 +163,6 @@ class GamePlayers extends Component {
 
   _characterCell = (player) => {
     const { character } = player;
-    const publicId = _.get(character, 'profileImage.publicId');
-    const imageUrl = getFullImageUrl(publicId, 'profileImage');
     const name = _.get(character, 'name');
     const playerUserId = _.get(player, 'user.id');
     const currentUserId = _.get(this.props, 'me.me.id');
@@ -189,10 +187,7 @@ class GamePlayers extends Component {
     } else {
       return (
         <Header as='h3' image>
-          {
-            imageUrl ? <Image avatar src={imageUrl} /> :
-              <Icon size='big' name='user circle' />
-          }
+          <CharacterImageAvatar character={character} />
           <Header.Content>
               {name}
           </Header.Content>
