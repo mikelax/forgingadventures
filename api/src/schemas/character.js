@@ -11,12 +11,12 @@ export const characterTypeDefs = `
     availableCharacters(gameId: Int!): [Character]
     myCharacters: [Character]
   }
-  
+
   extend type Mutation {
     createCharacter(input: CreateCharacterInput): Character
     updateCharacter(id: ID!, input: UpdateCharacterInput): Character
   }
-  
+
   type Character {
     id: ID!,
     name: String!,
@@ -27,8 +27,8 @@ export const characterTypeDefs = `
     characterDetails: JSON,
     gamePlayer: [GamePlayer],
     activeGamePlayer: GamePlayer,
-    updated_at: GraphQLDateTime,
-    created_at: GraphQLDateTime
+    updatedAt: GraphQLDateTime,
+    createdAt: GraphQLDateTime
   }
 
   input CreateCharacterInput {

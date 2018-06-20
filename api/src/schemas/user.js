@@ -6,7 +6,7 @@ export const userTypeDefs = `
   extend type Query {
     me: User
   }
-  
+
   extend type Mutation {
     updateMe(input: UpdateUserDetailsInput): User!
     validUsername(username: String!): Boolean
@@ -19,29 +19,29 @@ export const userTypeDefs = `
     timezone: String,
     completedAt: GraphQLDateTime,
     profileImage: ProfileImage,
-    created_at: GraphQLDateTime,
-    updated_at: GraphQLDateTime
+    createdAt: GraphQLDateTime,
+    updatedAt: GraphQLDateTime
   }
-  
+
   type ProfileImage {
     url: String,
     publicId: String,
     userUploadId: Int
   }
-  
+
   input ProfileImageInput {
     publicId: String,
     userUploadId: Int,
     url: String
   }
-  
+
   input UpdateUserDetailsInput {
     name: String!,
     username: String,
     timezone: String,
     profileImage: ProfileImageInput
   }
-  
+
 `;
 
 export const userResolvers = {

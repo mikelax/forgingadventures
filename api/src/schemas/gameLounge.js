@@ -19,12 +19,12 @@ export const gameLoungeTypeDefs = `
     gameLoungeMessage(id: ID!): GameLoungeMessage!
     gameLoungeMessages(gameId: ID!): [GameLoungeMessage!]
   }
-  
+
   extend type Mutation {
     createGameLoungeMessage(input: CreateGameLoungeMessageInput): GameLoungeMessage
     updateGameLoungeMessage(id: ID!, input: UpdateGameLoungeMessageInput): GameLoungeMessage
   }
-  
+
   extend type Subscription {
     gameLoungeMessageAdded(gameId: ID!): GameLoungeMessage!
     gameLoungeMessageUpdated(gameId: ID!): GameLoungeMessage!
@@ -37,16 +37,16 @@ export const gameLoungeTypeDefs = `
     message: String!,
     numberEdits: Int!,
     meta: String,
-    updated_at: GraphQLDateTime,
-    created_at: GraphQLDateTime
+    updatedAt: GraphQLDateTime,
+    createdAt: GraphQLDateTime
   }
-  
+
   input CreateGameLoungeMessageInput {
     gameId: ID!,
     message: String!,
     meta: String
   }
-  
+
   input UpdateGameLoungeMessageInput {
     message: String!
   }
@@ -100,7 +100,7 @@ export const gameLoungeResolvers = {
                 .query()
                 .patch({
                   message: sanitiseHtml(input.message),
-                  numberEdits: raw('"numberEdits" + 1')
+                  numberEdits: raw('"number_edits" + 1')
                 })
                 .where('id', gameLounge.id)
                 .first()

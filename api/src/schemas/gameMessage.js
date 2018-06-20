@@ -20,7 +20,7 @@ export const gameMessageTypeDefs = `
     gameMessage(id: ID!): GameMessage!
     gameMessages(gameId: ID!): [GameMessage!]
   }
-  
+
   extend type Mutation {
     createGameMessage(input: CreateGameMessageInput): GameMessage
     updateGameMessage(id: ID!, input: UpdateGameMessageInput): GameMessage
@@ -41,10 +41,10 @@ export const gameMessageTypeDefs = `
     numberEdits: Int!,
     postType: String!,
     meta: JSON,
-    updated_at: GraphQLDateTime,
-    created_at: GraphQLDateTime
+    updatedAt: GraphQLDateTime,
+    createdAt: GraphQLDateTime
   }
-  
+
   input CreateGameMessageInput {
     gameId: ID!,
     characterId: ID,
@@ -52,7 +52,7 @@ export const gameMessageTypeDefs = `
     message: String!,
     meta: JSON
   }
-  
+
   input UpdateGameMessageInput {
     message: String!
   }
@@ -104,7 +104,7 @@ export const gameMessageResolvers = {
                 .query()
                 .patch({
                   message: input.message,
-                  numberEdits: raw('"numberEdits" + 1')
+                  numberEdits: raw('"number_edits" + 1')
                 })
                 .where('id', id)
                 .first()

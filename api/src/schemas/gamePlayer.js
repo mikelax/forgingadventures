@@ -17,12 +17,12 @@ export const gamePlayerTypeDefs = `
     myGamePlayers: [GamePlayer]
     gamePlayers(gameId: ID!, status: [String]): [GamePlayer!]
   }
-  
+
   extend type Mutation {
     createGamePlayer(input: CreateGamePlayerInput): GamePlayer
     updateGamePlayer(id: ID!, input: UpdateGamePlayerInput): GamePlayer
   }
-  
+
   extend type Subscription {
     gamePlayerAdded(gameId: ID!): GamePlayer!
     gamePlayerUpdated(gameId: ID!): GamePlayer!
@@ -34,16 +34,16 @@ export const gamePlayerTypeDefs = `
     game: Game!,
     status: String!,
     character: Character,
-    updated_at: GraphQLDateTime,
-    created_at: GraphQLDateTime
+    updatedAt: GraphQLDateTime,
+    createdAt: GraphQLDateTime
   }
-  
+
   input CreateGamePlayerInput {
     gameId: ID!,
     status: String!,
     characterId: Int
   }
-  
+
   input UpdateGamePlayerInput {
     status: String,
     characterId: Int
@@ -100,9 +100,7 @@ export const gamePlayerResolvers = {
     updateGamePlayer: (obj, { id, input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
-          .then((user) => {
-            input.userId = user.id;
-
+          .then(() => {
             return GamePlayer
               .query()
               .patch(input)
