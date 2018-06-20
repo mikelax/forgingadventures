@@ -69,7 +69,7 @@ export const characterResolvers = {
             .where({ userId: user.id }).whereNotNull('characterId')
             .whereIn('status', ['pending', 'accepted']))
           .where({ userId: user.id })
-          .orderBy('updated_at', 'desc');
+          .orderBy('updatedAt', 'desc');
       });
     },
     character: (obj, { id }) => Character.query().findById(id),
@@ -78,7 +78,7 @@ export const characterResolvers = {
         return Character
           .query()
           .where({ userId: user.id })
-          .orderBy('updated_at', 'desc');
+          .orderBy('updatedAt', 'desc');
       });
     }
   },

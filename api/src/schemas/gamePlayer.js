@@ -62,7 +62,7 @@ export const gamePlayerResolvers = {
     gamePlayers: (obj, { gameId, status = ['pending', 'accepted'] }) => GamePlayer.query()
       .where({ gameId })
       .whereIn('status', status)
-      .orderBy('created_at'),
+      .orderBy('createdAt'),
     myGamePlayer: (obj, { gameId }, context) => {
       return runIfContextHasUser(context, (user) => {
         return GamePlayer

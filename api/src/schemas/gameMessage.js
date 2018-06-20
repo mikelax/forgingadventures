@@ -70,7 +70,7 @@ export const gameMessageResolvers = {
       GameMessage.query().findById(id),
 
     gameMessages: (obj, { gameId }) =>
-      GameMessage.query().where({ gameId }).orderBy('created_at')
+      GameMessage.query().where({ gameId }).orderBy('createdAt')
   },
   Mutation: {
     createGameMessage: (obj, { input }, context) =>

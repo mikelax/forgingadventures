@@ -58,7 +58,7 @@ export const gameLoungeResolvers = {
   },
   Query: {
     gameLoungeMessage: (obj, { id }) => GameLounge.query().findById(id),
-    gameLoungeMessages: (obj, { gameId }) => GameLounge.query().where({ gameId }).orderBy('created_at')
+    gameLoungeMessages: (obj, { gameId }) => GameLounge.query().where({ gameId }).orderBy('createdAt')
   },
   Mutation: {
     createGameLoungeMessage: (obj, { input }, context) =>

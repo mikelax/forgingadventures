@@ -8,7 +8,7 @@ export default (Model) => {
       return Bluebird
         .resolve(maybePromise)
         .then(() => {
-          this.updated_at = new Date().toISOString();
+          this.updatedAt = new Date().toISOString();
         });
     }
   };
