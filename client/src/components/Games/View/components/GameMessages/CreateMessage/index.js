@@ -245,6 +245,7 @@ class PostAsSelector extends Component {
 
   _getPlayerSelector = (user, character) => {
     const ic = this.state.postType === 'ic';
+    const { characterDetails } = character;
 
     return (
       <div className="post-as-selector">
@@ -252,7 +253,7 @@ class PostAsSelector extends Component {
           <Dimmer.Dimmable as={Segment} basic dimmed={!(ic)}>
             <Dimmer active={!(ic)} inverted />
             <Grid>
-              <InCharacterHeader character={character} />
+              <InCharacterHeader characterDetails={characterDetails} character={character} />
             </Grid>
           </Dimmer.Dimmable>
 

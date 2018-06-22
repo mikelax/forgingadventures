@@ -29,7 +29,7 @@ import './GameMessages.styl';
 
 class GameMessages extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     this._setupSubscriptions();
   }
 
@@ -175,13 +175,13 @@ class GameMessage extends Component {
   };
 
   _inCharacterMessageRender = () => {
-    const { gameMessage, gameMessage: { character, meta } } = this.props;
+    const { gameMessage, gameMessage: { characterLog: { character, characterDetails }, meta } } = this.props;
     const { editing } = this.state;
     const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided="vertically" className="in-character">
-        <InCharacterHeader character={character}/>
+        <InCharacterHeader characterDetails={characterDetails} character={character} />
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor

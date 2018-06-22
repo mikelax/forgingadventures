@@ -34,9 +34,12 @@ export const gameMessageTypeDefs = `
   type GameMessage {
     id: ID!,
     gameId: ID!,
+    characterLogId: ID,
+    characterId: ID,
     game: Game!,
     user: User!,
     character: Character,
+    characterLog: CharacterLog,
     message: String!,
     numberEdits: Int!,
     postType: String!,
@@ -62,6 +65,8 @@ export const gameMessageResolvers = {
   GameMessage: {
     character: (gameMessage, vars, context) => gameMessage.characterId &&
       context.loaders.characters.load(gameMessage.characterId),
+    characterLog: (gameMessage, vars, context) => gameMessage.characterLogId &&
+      context.loaders.characterLogs.load(gameMessage.characterLogId),
     game: (gameMessage, vars, context) => context.loaders.games.load(gameMessage.gameId),
     user: (gameMessage, vars, context) => context.loaders.users.load(gameMessage.userId)
   },

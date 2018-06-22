@@ -4,7 +4,7 @@ import React from 'react';
 import { signedNumber } from 'services/format';
 
 export const primaryAttributes = (props) => {
-  const { character: { characterDetails } } = props;
+  const { characterDetails } = props;
 
   return characterDetails && (
     <div className="primary-attributes">
@@ -15,7 +15,7 @@ export const primaryAttributes = (props) => {
 };
 
 export const secondaryAttributes = (props) => {
-  const { character: { characterDetails } } = props;
+  const { characterDetails } = props;
 
   if (characterDetails) {
     const attributes = [

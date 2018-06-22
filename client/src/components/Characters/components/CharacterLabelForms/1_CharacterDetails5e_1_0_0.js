@@ -28,7 +28,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
         initialValues={characterToValues(characterDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, dirty, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange, submitCount }) => (
+        render={({ values, dirty, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange, submitCount, isSubmitting }) => (
           <React.Fragment>
             <Segment>
               <Form className="character-details" as={FormikForm} loading={loading}>
@@ -350,7 +350,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
               </Form>
             </Segment>
 
-            {renderActions({ validateForm, submitForm, resetForm, isValid, dirty, submitCount })}
+            {renderActions({ validateForm, submitForm, resetForm, isValid, dirty, submitCount, isSubmitting })}
           </React.Fragment>
         )}
       />

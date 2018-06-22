@@ -1,8 +1,11 @@
 import Character from 'models/character';
 import Game from 'models/game';
 import GamePlayer from 'models/gamePlayer';
+
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
+import createCharacter from 'services/characters/createCharacter';
+import updateCharacter from 'services/characters/updateCharacter';
 
 export const characterTypeDefs = `
 
@@ -19,10 +22,11 @@ export const characterTypeDefs = `
 
   type Character {
     id: ID!,
+    lastCharacterLogId: ID!,
+    labelId: ID!,
     name: String!,
     profileImage: ProfileImage,
     user: User!,
-    labelId: ID!,
     label: GameLabel!,
     characterDetails: JSON,
     gamePlayer: [GamePlayer],
@@ -50,10 +54,12 @@ export const characterResolvers = {
   Character: {
     label: (character, vars, context) => context.loaders.gameLabels.load(character.labelId),
     gamePlayer: (character) => {
+      // FIXME use loader here to prevent multiple queries
       return GamePlayer.query()
         .where({ characterId: character.id });
     },
     activeGamePlayer: (character) => {
+      // FIXME use loader here to prevent multiple queries
       return GamePlayer.query()
         .whereIn('status', ['pending', 'accepted'])
         .where({ characterId: character.id })
@@ -86,33 +92,16 @@ export const characterResolvers = {
     createCharacter: (obj, { input }, context) =>
       schemaScopeGate(['create:characters'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
-          .then((user) => {
-            input.userId = user.id;
-
-            return Character
-              .query()
-              .insert(input)
-              .returning('*')
-              .execute();
-          });
+          .then(user => createCharacter({
+            user, input
+          }));
       }),
     updateCharacter: (obj, { id, input }, context) =>
       schemaScopeGate(['create:characters'], context, () => {
         return runIfContextHasUser(context, (user) => {
-          return Character
-            .query()
-            .where({ id, userId: user.id })
-            .first()
-            .then((character) => {
-              if (character) {
-                return Character
-                  .query()
-                  .update(input)
-                  .where({ id })
-                  .returning('*')
-                  .first();
-              }
-            });
+          return updateCharacter({
+            id, input, user
+          });
         });
       })
   }
