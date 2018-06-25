@@ -6,7 +6,7 @@ import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 import createCharacter from 'services/characters/createCharacter';
 import updateCharacter from 'services/characters/updateCharacter';
-import engineLoader from 'services/engine'
+import engineLoader from 'engine';
 
 export const characterTypeDefs = `
 

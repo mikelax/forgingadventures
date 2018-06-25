@@ -5,7 +5,7 @@ import Roll from 'roll';
 
 import Character from 'models/character';
 import GameMessage from 'models/gameMessage';
-import { gameMessageMetaValidation } from 'services/engine';
+import { gameMessageMetaValidation } from 'engine';
 
 export default class {
   constructor(options) {
