@@ -8,7 +8,7 @@ import { processLockCallback } from '../../../services/login';
 
 class Callback extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     processLockCallback();
   }
 

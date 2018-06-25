@@ -52,7 +52,7 @@ export default function({ user, input, engine }) {
   function createCharacterLog() {
     const payload = {
       characterId: character.id,
-      changeDescription: 'Character is are born',
+      changeDescription: 'Character is born',
       characterDetails
     };
 

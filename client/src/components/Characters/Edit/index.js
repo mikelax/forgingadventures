@@ -31,11 +31,11 @@ class EditCharacter extends Component {
             character={character}
             loading={loading}
             lockLabel={true}
-            renderActions={({ isValid, submitCount, submitForm }) => (
+            renderActions={({ errors, submitCount, submitForm }) => (
               <Segment>
-                {(!(isValid) && (submitCount > 0)) && (
+                {(!_.isEmpty(errors)) && (
                   <Segment inverted color='orange' tertiary>
-                    Please fill in all required fields
+                    Please review form for highlighted errors
                   </Segment>
                 )}
 

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
@@ -23,11 +24,11 @@ class CreateCharacter extends Component {
 
           <CharacterDetailsForm
             onSubmit={this._onSave}
-            renderActions={({ isValid, submitForm, submitCount, isSubmitting }) => (
+            renderActions={({ errors, submitForm, submitCount, isSubmitting }) => (
               <Segment>
-                { (!(isValid) && (submitCount > 0)) && (
+                { (!_.isEmpty(errors)) && (
                   <Segment inverted color='orange' tertiary>
-                    Please fill in all required fields
+                    Please review form for highlighted errors
                   </Segment>
                 )}
                 <Button primary onClick={submitForm} disabled={isSubmitting}>Submit</Button>

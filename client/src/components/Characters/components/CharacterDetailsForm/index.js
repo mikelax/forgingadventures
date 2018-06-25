@@ -41,7 +41,7 @@ class CharacterDetailsForm extends Component {
         initialValues={characterToValues(character) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, dirty: dirtyMain, handleChange, setFieldValue, submitForm: submitFormMain, isValid: isValidMain, submitCount: submitCountMain, isSubmitting: isSubmittingMain }) => (
+        render={({ values, dirty: dirtyMain, handleChange, setFieldValue, submitForm: submitFormMain, errors: errorsMain, submitCount: submitCountMain, isSubmitting: isSubmittingMain }) => (
           <div className="character-detail-form">
             <Segment>
               <Form as={FormikForm} loading={loading}>
@@ -88,10 +88,10 @@ class CharacterDetailsForm extends Component {
               characterDetails={_.get(character, 'characterDetails')}
               setFieldValue={setFieldValue}
               onSubmit={this._handleLabelSubmit}
-              renderActions={({ submitForm: submitFormLabel, isValid: isValidLabel, dirty: dirtyLabel, submitCount: submitCountLabel, isSubmitting: isSubmittingLabel }) => (
+              renderActions={({ submitForm: submitFormLabel, errors: errorsLabel, dirty: dirtyLabel, submitCount: submitCountLabel, isSubmitting: isSubmittingLabel }) => (
                 renderActions({
                   submitForm: this._handleFormSubmits(submitFormLabel, submitFormMain),
-                  isValid: isValidMain && isValidLabel,
+                  errors: _.merge({}, errorsMain, errorsLabel),
                   isDirty: dirtyMain || dirtyLabel,
                   submitCount: submitCountMain + submitCountLabel,
                   isSubmitting: isSubmittingMain || isSubmittingLabel
