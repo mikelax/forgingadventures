@@ -32,7 +32,7 @@ class CreateMessage extends Component {
 
   editor = React.createRef();
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const gameMessage = _.get(nextProps, 'gameMessage.message');
 
     if (gameMessage) {

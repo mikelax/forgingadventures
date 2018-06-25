@@ -3,13 +3,18 @@ import { transaction } from 'objection';
 import CharacterLog from 'models/characterLog';
 import Character from 'models/character';
 
-export default function ({ id, user, input }) {
+export default function ({
+  id, user, input, engine
+}) {
   let character;
+  let characterDetails;
   let characterLog;
   let previousCharacterLog;
+
   let trx;
 
   return startTransaction()
+    .then(validateCharacterDetails)
     .then(updateCharacter)
     .then(getPreviousCharacterLog)
     .then(saveCharacterLog)
@@ -26,9 +31,15 @@ export default function ({ id, user, input }) {
       .then(t => (trx = t));
   }
 
-  function updateCharacter() {
-    // FIXME hook in yup validation here
+  function validateCharacterDetails() {
+    const { characterDetails: characterDetailsInput } = input;
 
+    return engine
+      .validateCharacterDetails(characterDetailsInput)
+      .then(cd => (characterDetails = cd));
+  }
+
+  function updateCharacter() {
     return Character
       .query(trx)
       .patch(input)
@@ -50,7 +61,6 @@ export default function ({ id, user, input }) {
   }
 
   function saveCharacterLog() {
-    const { characterDetails } = character;
     const { changeDescription } = input;
 
     const payload = {

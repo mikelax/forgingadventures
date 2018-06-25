@@ -374,6 +374,9 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 }
 
 const validationSchema = Yup.object().shape({
+  meta: Yup.object().shape({
+    version: Yup.string().default('1.0.0').required()
+  }),
   primaryLevel: Yup.number().integer().default(1).min(1).required(),
   proficiency: Yup.number().integer().default(2).min(2).required(),
   xp: Yup.number().integer().default(0).min(0).required(),

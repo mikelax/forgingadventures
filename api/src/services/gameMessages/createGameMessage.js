@@ -5,6 +5,7 @@ import Roll from 'roll';
 
 import Character from 'models/character';
 import GameMessage from 'models/gameMessage';
+import { gameMessageMetaValidation } from 'services/engine';
 
 export default class {
   constructor(options) {
@@ -12,6 +13,7 @@ export default class {
     this.input = options.input;
 
     this.trx = null;
+    this.meta = null;
     this.rolls = null;
     this.character = null;
   }
@@ -20,8 +22,9 @@ export default class {
     return Bluebird
       .bind(this)
       .then(startTransaction)
-      .then(calculateDiceRolls)
       .then(getLatestCharacterLog)
+      .then(validateGameMessageMeta)
+      .then(calculateDiceRolls)
       .then(createGameMessage)
       .tap(() => this.trx.commit())
       .tapCatch(() => this.trx.rollback());
@@ -43,6 +46,33 @@ function getLatestCharacterLog() {
     .query(this.trx)
     .findById(characterId)
     .then(character => (this.character = character));
+}
+
+function validateGameMessageMeta() {
+  const { labelId } = this.character;
+  const { meta } = this.input;
+
+  return gameMessageMetaValidation({ labelId, meta })
+    .then(m => (this.meta = m));
+}
+
+function calculateDiceRolls() {
+  const { meta } = this;
+  const rolls = _.get(meta, 'rolls');
+
+  this.rolls = _.map(rolls, ({ label, input }) => {
+    return {
+      label,
+      input,
+      result: calculateRoll(input)
+    };
+  });
+
+  function calculateRoll(input) {
+    const roll = new Roll();
+
+    return roll.roll(input);
+  }
 }
 
 function createGameMessage() {
@@ -68,23 +98,4 @@ function createGameMessage() {
     .insert(payload)
     .returning('*')
     .execute();
-}
-
-function calculateDiceRolls() {
-  const { input: { meta } } = this;
-  const rolls = _.get(meta, 'rolls');
-
-  this.rolls = _.map(rolls, ({ label, input }) => {
-    return {
-      label,
-      input,
-      result: calculateRoll(input)
-    };
-  });
-
-  function calculateRoll(input) {
-    const roll = new Roll();
-
-    return roll.roll(input);
-  }
 }

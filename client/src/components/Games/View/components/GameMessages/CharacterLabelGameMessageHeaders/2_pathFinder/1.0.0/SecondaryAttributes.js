@@ -3,18 +3,7 @@ import React from 'react';
 
 import { signedNumber } from 'services/format';
 
-export const primaryAttributes = (props) => {
-  const { characterDetails } = props;
-
-  return characterDetails && (
-    <div className="primary-attributes">
-      {_.capitalize(characterDetails.traits.race)}&nbsp;
-      {_.capitalize(characterDetails.traits.primaryClass)} level {characterDetails.primaryLevel}
-    </div>
-  );
-};
-
-export const secondaryAttributes = (props) => {
+export default function SecondaryAttributes(props) {
   const { characterDetails } = props;
 
   if (characterDetails) {
@@ -39,4 +28,4 @@ export const secondaryAttributes = (props) => {
     return signedNumber(result);
   }
 
-};
+}

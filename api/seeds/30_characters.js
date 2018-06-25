@@ -2,6 +2,9 @@ exports.seed = function (knex, Promise) {
   return knex('characters').del()
     .then(() => {
       const characterDetails = {
+        meta: {
+          version: '1.0.0'
+        },
         xp: 10,
         ac: 5,
         health: { hitDie: '5d', maxHitPoints: 1, currentHitPoints: 0 },
@@ -83,6 +86,9 @@ exports.seed = function (knex, Promise) {
     })
     .then(() => {
       const characterDetails = {
+        meta: {
+          version: '1.0.0'
+        },
         xp: 0,
         ac: 5,
         health: { hitDie: '4d', maxHitPoints: 1, currentHitPoints: 0 },

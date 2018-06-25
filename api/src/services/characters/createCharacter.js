@@ -4,12 +4,14 @@ import { transaction } from 'objection';
 import CharacterLog from 'models/characterLog';
 import Character from 'models/character';
 
-export default function({ user, input }) {
+export default function({ user, input, engine }) {
   let character;
+  let characterDetails;
   let characterLog;
   let trx;
 
   return startTransaction()
+    .then(validateCharacterDetails)
     .then(createCharacter)
     .then(createCharacterLog)
     .then(setLastCharacterLogId)
@@ -25,9 +27,17 @@ export default function({ user, input }) {
       .then(t => (trx = t));
   }
 
+  function validateCharacterDetails() {
+    const { characterDetails: characterDetailsInput } = input;
+
+    return engine
+      .validateCharacterDetails(characterDetailsInput)
+      .then(cd => (characterDetails = cd));
+  }
+
   function createCharacter() {
-    // FIXME hook in yup validation here
     const payload = _.merge({}, input, {
+      characterDetails,
       userId: user.id
     });
 
@@ -40,8 +50,6 @@ export default function({ user, input }) {
   }
 
   function createCharacterLog() {
-    const { characterDetails } = character;
-
     const payload = {
       characterId: character.id,
       changeDescription: 'Character is are born',

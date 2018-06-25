@@ -17,17 +17,17 @@ import { CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
 import './InCharacterHeader.styl';
 
 export default function InCharacterHeader(props) {
-  const { characterDetails, character, character: { labelId  } } = props;
+  const { characterDetails, character, character: { labelId  }, characterDetails: { meta: { version } } } = props;
 
   const PrimaryAttributes = {
     1: dnd5PrimaryAttributes,
     2: pfPrimaryAttributes
-  }[labelId];
+  }[labelId](version);
 
   const SecondaryAttributes = {
     1: dnd5SecondaryAttributes,
     2: pfSecondaryAttributes
-  }[labelId];
+  }[labelId](version);
 
   return (
     <Grid.Row columns={2} className="message-header">

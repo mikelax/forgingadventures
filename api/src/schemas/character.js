@@ -6,6 +6,7 @@ import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 import createCharacter from 'services/characters/createCharacter';
 import updateCharacter from 'services/characters/updateCharacter';
+import engineLoader from 'services/engine'
 
 export const characterTypeDefs = `
 
@@ -30,7 +31,7 @@ export const characterTypeDefs = `
     label: GameLabel!,
     characterDetails: JSON,
     gamePlayer: [GamePlayer],
-    activeGamePlayer: [GamePlayer],
+    activeGamePlayer: GamePlayer,
     updatedAt: GraphQLDateTime,
     createdAt: GraphQLDateTime
   }
@@ -59,13 +60,13 @@ export const characterResolvers = {
       .where({ characterId: character.id })
       .execute()
       .map(gamePlayer => gamePlayer && context.loaders.gamePlayers.load(gamePlayer.id)),
-
+    // TODO reconsider this association and consider just using `gamePlayer` in the UI
     activeGamePlayer: (character, vars, context) => GamePlayer.query()
       .select('id')
       .whereIn('status', ['pending', 'accepted'])
       .where({ characterId: character.id })
-      .execute()
-      .map(gamePlayer => context.loaders.gamePlayers.load(gamePlayer.id))
+      .first()
+      .then(gamePlayer => gamePlayer && context.loaders.gamePlayers.load(gamePlayer.id))
   },
   Query: {
     availableCharacters: (obj, { gameId }, context) => {
@@ -93,15 +94,23 @@ export const characterResolvers = {
     createCharacter: (obj, { input }, context) =>
       schemaScopeGate(['create:characters'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
-          .then(user => createCharacter({
-            user, input
-          }));
+          .then((user) => {
+            const { labelId, characterDetails: { meta: { version } } } = input;
+            const engine = engineLoader({ labelId, version });
+
+            return createCharacter({
+              user, input, engine
+            });
+          });
       }),
     updateCharacter: (obj, { id, input }, context) =>
       schemaScopeGate(['create:characters'], context, () => {
         return runIfContextHasUser(context, (user) => {
+          const { labelId, characterDetails: { meta: { version } } } = input;
+          const engine = engineLoader({ labelId, version });
+
           return updateCharacter({
-            id, input, user
+            id, input, user, engine
           });
         });
       })

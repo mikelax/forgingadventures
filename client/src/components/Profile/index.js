@@ -15,6 +15,8 @@ import { meQuery, myGamePlayersQuery } from '../../queries/users';
 
 import './Profile.css';
 
+// TODO refactor this view to utilise routes for each tab to reduce API queries
+
 class Profile extends Component {
 
   render() {

@@ -2,8 +2,9 @@
   "rules": {
     "newline-per-chained-call": [2,
       {
-        "ignoreChainWithDepth": 5
+        "ignoreChainWithDepth": 10
       }
-    ]
+    ],
+    "camelcase": 0
   }
 }
