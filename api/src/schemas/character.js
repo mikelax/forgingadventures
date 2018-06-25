@@ -30,7 +30,7 @@ export const characterTypeDefs = `
     label: GameLabel!,
     characterDetails: JSON,
     gamePlayer: [GamePlayer],
-    activeGamePlayer: GamePlayer,
+    activeGamePlayer: [GamePlayer],
     updatedAt: GraphQLDateTime,
     createdAt: GraphQLDateTime
   }
@@ -53,18 +53,19 @@ export const characterTypeDefs = `
 export const characterResolvers = {
   Character: {
     label: (character, vars, context) => context.loaders.gameLabels.load(character.labelId),
-    gamePlayer: (character) => {
-      // FIXME use loader here to prevent multiple queries
-      return GamePlayer.query()
-        .where({ characterId: character.id });
-    },
-    activeGamePlayer: (character) => {
-      // FIXME use loader here to prevent multiple queries
-      return GamePlayer.query()
-        .whereIn('status', ['pending', 'accepted'])
-        .where({ characterId: character.id })
-        .first();
-    }
+
+    gamePlayer: (character, vars, context) => GamePlayer.query()
+      .select('id')
+      .where({ characterId: character.id })
+      .execute()
+      .map(gamePlayer => gamePlayer && context.loaders.gamePlayers.load(gamePlayer.id)),
+
+    activeGamePlayer: (character, vars, context) => GamePlayer.query()
+      .select('id')
+      .whereIn('status', ['pending', 'accepted'])
+      .where({ characterId: character.id })
+      .execute()
+      .map(gamePlayer => context.loaders.gamePlayers.load(gamePlayer.id))
   },
   Query: {
     availableCharacters: (obj, { gameId }, context) => {

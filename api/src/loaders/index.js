@@ -13,7 +13,7 @@ export default function(options) {
     characters: new DataLoader(ids => modelIdFetcher(Character, ids), options),
     games: new DataLoader(ids => modelIdFetcher(Game, ids), options),
     gameLabels: new DataLoader(ids => modelIdFetcher(GameLabel, ids), options),
-    GamePlayer: new DataLoader(ids => modelIdFetcher(GamePlayer, ids), options),
+    gamePlayers: new DataLoader(ids => modelIdFetcher(GamePlayer, ids), options),
     users: new DataLoader(ids => modelIdFetcher(User, ids), options)
   };
 }
