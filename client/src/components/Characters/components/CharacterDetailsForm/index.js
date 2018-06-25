@@ -148,7 +148,10 @@ class CharacterDetailsForm extends Component {
           setSubmitting(false);
 
           return onSubmit(payload);
-        });
+        })
+        .catch((e) => setSubmitting(false));
+    } else {
+      setSubmitting(false);
     }
   };
 

@@ -363,12 +363,14 @@ export default class CharacterDetails5e_1_0_0 extends Component {
     const payload = validationSchema.noUnknown().cast(values);
 
     setSubmitting(true);
+
     try {
       onSubmit(payload);
     } catch (e) {
-      setSubmitting(false);
       setErrors(e);
     }
+
+    setSubmitting(false);
   };
 
 }
@@ -401,42 +403,42 @@ const validationSchema = Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
+      modifier: Yup.number().integer().default(-5).min(-5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     dexterity: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
+      modifier: Yup.number().integer().default(-5).min(-5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     constitution: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
+      modifier: Yup.number().integer().default(-5).min(-5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     intelligence: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
+      modifier: Yup.number().integer().default(-5).min(-5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     wisdom: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
+      modifier: Yup.number().integer().default(-5).min(-5).required(),
       savingThrows: Yup.boolean().default(false)
     }),
     charisma: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required(),
+      modifier: Yup.number().integer().default(-5).min(-5).required(),
       savingThrows: Yup.boolean().default(false)
     })
   })

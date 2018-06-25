@@ -23,16 +23,15 @@ class CreateCharacter extends Component {
 
           <CharacterDetailsForm
             onSubmit={this._onSave}
-            renderActions={({ isValid, submitForm, submitCount }) => (
+            renderActions={({ isValid, submitForm, submitCount, isSubmitting }) => (
               <Segment>
                 { (!(isValid) && (submitCount > 0)) && (
                   <Segment inverted color='orange' tertiary>
                     Please fill in all required fields
                   </Segment>
                 )}
-
-                <Button primary onClick={submitForm}>Submit</Button>
-                <Button onClick={this._onCancel}>Cancel</Button>
+                <Button primary onClick={submitForm} disabled={isSubmitting}>Submit</Button>
+                <Button onClick={this._onCancel} disabled={isSubmitting}>Cancel</Button>
               </Segment>
             )}
           />

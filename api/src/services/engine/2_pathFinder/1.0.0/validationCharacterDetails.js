@@ -27,37 +27,37 @@ export default Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').min(1).required(),
       raceBonus: Yup.number().integer().min(0),
       total: Yup.number().integer().min(1).required(),
-      modifier: Yup.number().integer().min(-5).max(5).required()
+      modifier: Yup.number().integer().min(-5).required()
     }),
     dexterity: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').min(1).required(),
       raceBonus: Yup.number().integer().min(0),
       total: Yup.number().integer().min(1).required(),
-      modifier: Yup.number().integer().min(-5).max(5).required()
+      modifier: Yup.number().integer().min(-5).required()
     }),
     constitution: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').min(1).required(),
       raceBonus: Yup.number().integer().min(0),
       total: Yup.number().integer().min(1).required(),
-      modifier: Yup.number().integer().min(-5).max(5).required()
+      modifier: Yup.number().integer().min(-5).required()
     }),
     intelligence: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').min(1).required(),
       raceBonus: Yup.number().integer().min(0),
       total: Yup.number().integer().min(1).required(),
-      modifier: Yup.number().integer().min(-5).max(5).required()
+      modifier: Yup.number().integer().min(-5).required()
     }),
     wisdom: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').min(1).required(),
       raceBonus: Yup.number().integer().min(0),
       total: Yup.number().integer().min(1).required(),
-      modifier: Yup.number().integer().min(-5).max(5).required()
+      modifier: Yup.number().integer().min(-5).required()
     }),
     charisma: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').min(1).required(),
       raceBonus: Yup.number().integer().min(0),
       total: Yup.number().integer().min(1).required(),
-      modifier: Yup.number().integer().min(-5).max(5).required()
+      modifier: Yup.number().integer().min(-5).required()
     })
   }).required()
 });
