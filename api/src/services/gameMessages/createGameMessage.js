@@ -4,6 +4,7 @@ import Bluebird from 'bluebird';
 import Roll from 'roll';
 
 import Character from 'models/character';
+import Game from 'models/game';
 import GameMessage from 'models/gameMessage';
 import { gameMessageMetaValidation } from 'engine';
 
@@ -11,8 +12,11 @@ export default class {
   constructor(options) {
     this.user = options.user;
     this.input = options.input;
+    this.inCharacterPost = options.input.postType === 'ic';
+    this.gameId = options.input.gameId;
 
     this.trx = null;
+    this.game = null;
     this.meta = null;
     this.rolls = null;
     this.character = null;
@@ -22,6 +26,7 @@ export default class {
     return Bluebird
       .bind(this)
       .then(startTransaction)
+      .then(getGame)
       .then(getLatestCharacterLog)
       .then(validateGameMessageMeta)
       .then(calculateDiceRolls)
@@ -39,17 +44,26 @@ function startTransaction() {
     .then(t => (this.trx = t));
 }
 
-function getLatestCharacterLog() {
-  const { characterId } = this.input;
+function getGame() {
+  return Game
+    .query()
+    .findById(this.gameId)
+    .then(game => (this.game = game));
+}
 
-  return Character
-    .query(this.trx)
-    .findById(characterId)
-    .then(character => (this.character = character));
+function getLatestCharacterLog() {
+  if (this.inCharacterPost) {
+    const { characterId } = this.input;
+
+    return Character
+      .query(this.trx)
+      .findById(characterId)
+      .then(character => (this.character = character));
+  }
 }
 
 function validateGameMessageMeta() {
-  const { labelId } = this.character;
+  const { labelId } = this.game;
   const { meta } = this.input;
 
   return gameMessageMetaValidation({ labelId, meta })
@@ -86,7 +100,7 @@ function createGameMessage() {
     meta: { rolls: this.rolls }
   };
 
-  if (postType === 'ic') {
+  if (this.inCharacterPost) {
     const { lastCharacterLogId, id: characterId } = this.character;
 
     payload.characterId = characterId;
