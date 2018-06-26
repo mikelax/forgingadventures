@@ -33,6 +33,14 @@ export const myCharactersQuery = gql`
   ${characterFields}
 `;
 
+export const myCharactersSummaryQuery = gql`
+  query {
+    myCharactersSummary {
+      charactersCount
+    }
+  }
+`;
+
 export const characterQuery = gql`
   query character($id: ID!) {
     character(id: $id) {

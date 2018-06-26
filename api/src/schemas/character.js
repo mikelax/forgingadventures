@@ -10,6 +10,7 @@ export const characterTypeDefs = `
     character(id: ID!): Character!
     availableCharacters(gameId: Int!): [Character]
     myCharacters: [Character]
+    myCharactersSummary: CharacterSummary
   }
 
   extend type Mutation {
@@ -29,6 +30,11 @@ export const characterTypeDefs = `
     activeGamePlayer: GamePlayer,
     updatedAt: GraphQLDateTime,
     createdAt: GraphQLDateTime
+  }
+
+  type CharacterSummary {
+    id: ID!,
+    charactersCount: String
   }
 
   input CreateCharacterInput {
@@ -79,6 +85,16 @@ export const characterResolvers = {
           .query()
           .where({ userId: user.id })
           .orderBy('updatedAt', 'desc');
+      });
+    },
+    myCharactersSummary: (obj, variables, context) => {
+      return runIfContextHasUser(context, (user) => {
+        return Character
+          .query()
+          .select({ id: 1 })
+          .count({ charactersCount: 1 })
+          .where({ userId: user.id })
+          .first();
       });
     }
   },

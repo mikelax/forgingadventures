@@ -16,6 +16,7 @@ export const gameTypeDefs = `
     game(id: ID!): Game!
     games(offset: Int, searchOptions: SearchOptions): [Game]
     myGames(status: [String]): [Game]
+    myGamesSummary: [GamePlayerSummary]
   }
   
   extend type Mutation {
@@ -42,6 +43,11 @@ export const gameTypeDefs = `
     gameSettings: GameSetting!,
     gameImage: ProfileImage,
     user: User!
+  }
+  
+  type GamePlayerSummary {
+    status: String!,
+    statusCount: Int!
   }
   
   input CreateGameInput {
@@ -90,14 +96,31 @@ export const gameResolvers = {
   Query: {
     game: (parent, { id }) => Game.query().findById(id),
     games: (parent, { offset, searchOptions }) => serviceExecutor(GetGames, { offset, searchOptions }),
-    myGames: (obj, { status = ['game-master', 'accepted'] }, context) => {
+    myGames: (obj, { status }, context) => {
       return runIfContextHasUser(context, (user) => {
-        return Game
+        const query = Game
           .query()
           .select('games.*')
           .join('game_players as gp', 'games.id', 'gp.gameId')
-          .whereIn('gp.status', status)
           .where('gp.userId', user.id);
+
+        if (status) {
+          query
+            .whereIn('gp.status', status);
+        }
+
+        return query;
+      });
+    },
+    myGamesSummary: (obj, input, context) => {
+      return runIfContextHasUser(context, (user) => {
+        return Game
+          .query()
+          .select('game_players.status')
+          .count({ statusCount: 1 })
+          .join('game_players', 'games.id', 'game_players.gameId')
+          .where('game_players.userId', user.id)
+          .groupBy('game_players.status');
       });
     }
   },
