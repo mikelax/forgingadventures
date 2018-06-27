@@ -2,16 +2,21 @@
 
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, Query } from 'react-apollo';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
-import { Card, Container, Header, Icon, Image, Label, Menu, Tab } from 'semantic-ui-react';
+import { Container, Header, Icon, Image, Label, Menu } from 'semantic-ui-react';
+import { Route, Switch } from 'react-router-dom';
 
-import GameCard from '../Games/components/GameCard';
-import { myCharactersQuery } from '../Characters/queries';
-import { myGamesQuery } from '../Games/queries';
-import { meQuery, myGamePlayersQuery } from '../../queries/users';
+import Games from './Games';
+import Characters from './Characters';
+import PendingGames from './PendingGames';
+import KickedGames from './KickedGames';
+
+import { myCharactersSummaryQuery } from 'components/Characters/queries';
+import { myGamesSummaryQuery } from 'components/Games/queries';
+import { meQuery } from 'queries/users';
 
 import './Profile.css';
 
@@ -20,132 +25,122 @@ import './Profile.css';
 class Profile extends Component {
 
   render() {
+    const { match } = this.props;
     const user = _.get(this.props, 'me.me');
-
-    const panes = this._getTabs();
 
     if (user) {
       return (
-      <React.Fragment>
-        <Helmet>
-          <title>{user.name} Profile on Forging Adventures</title>
-        </Helmet>
+        <React.Fragment>
+          <Helmet>
+            <title>{user.name} Profile on Forging Adventures</title>
+          </Helmet>
 
-        <Container>
-          <Header as='h1'>
-            <Image circular src={user.profileImage.url} />
-            <Header.Content>
-              {user.name}
-              <Header.Subheader>
-                {user.username}
-                <br />{user.timezone}
-              </Header.Subheader>
-            </Header.Content>
-          </Header>
+          <Container>
+            <Header as='h1'>
+              <Image circular src={user.profileImage.url} />
+              <Header.Content>
+                {user.name}
+                <Header.Subheader>
+                  {user.username}
+                  <br />{user.timezone}
+                </Header.Subheader>
+              </Header.Content>
+            </Header>
 
-          <Tab menu={{ pointing: true }} defaultActiveIndex='1' panes={panes}/>
-        </Container>
-      </React.Fragment>
+            <Query query={myGamesSummaryQuery}>
+              {({ data: dataGamesSummary, loading: loadingSummary }) => (
+                <Query query={myCharactersSummaryQuery}>
+                  {({ data: dataCharacters, loading: loadingCharacters }) => (
+                    <ProfileHeader
+                      match={match}
+                      user={user}
+                      loadingSummary={loadingSummary}
+                      loadingCharacters={loadingCharacters}
+                      dataCharacters={dataCharacters.myCharactersSummary}
+                      dataGamesSummary={dataGamesSummary.myGamesSummary}
+                    />
+                  )}
+                </Query>
+              )}
+            </Query>
+
+            <Switch>
+              <Route exact path={match.url} component={Games} />
+              <Route path={`${match.url}/characters`} component={Characters} />
+              <Route path={`${match.url}/pending-games`} component={PendingGames} />
+              <Route path={`${match.url}/kicked-games`} component={KickedGames} />
+            </Switch>
+
+          </Container>
+        </React.Fragment>
       );
     } else {
       return null;
     }
   }
 
-  _getTabs() {
-    const { myCharacters: myCharactersProp, myGames: myGamesProp, myGamePlayers: myGamePlayersProp } = this.props;
-
-    const { loading: loadingCharacter, myCharacters } = myCharactersProp;
-    const { loading: loadingGame, myGames } = myGamesProp;
-    const { loading: loadingMyGamePlayers, myGamePlayers } = myGamePlayersProp;
-
-    const gamesBreakdown = _.groupBy(myGamePlayers, 'status');
-    const pendingGamesCount = _.get(gamesBreakdown, 'pending.length', 0);
-    const kickedGamesCount = _.get(gamesBreakdown, 'kicked.length', 0);
-
-    return [
-      { menuItem: <Menu.Item key='characters'><Icon name='users' />Characters<Label>{_.size(myCharacters)}</Label></Menu.Item>,
-        render: () => <Characters loading={loadingCharacter} />
-      },
-      { menuItem: <Menu.Item key='games'><Icon loading={loadingGame} name='comments' />Current Games<Label>{_.size(myGames)}</Label></Menu.Item>,
-        render: () => <GamesByState status={['game-master', 'accepted']}/>
-      },
-      { menuItem: <Menu.Item key='pending'><Icon loading={loadingMyGamePlayers} name='wait' />Pending Games<Label>{pendingGamesCount}</Label></Menu.Item>,
-        render: () => <GamesByState status={['pending']}/>
-      },
-      { menuItem: <Menu.Item key='kicked'><Icon loading={loadingMyGamePlayers} name='dont' />Kicked<Label>{kickedGamesCount}</Label></Menu.Item>,
-        render: () => <GamesByState status={['kicked']}/>
-      }
-    ];
-  }
 }
 
-function charactersBase(props) {
-  const { myCharacters: { myCharacters, loading } } = props;
+function ProfileHeader(props) {
+  const { match } = props;
+  const { dataGamesSummary, loadingSummary, loadingCharacters } = props;
+
+  const charactersCount = _.get(props, 'dataCharacters.charactersCount');
+  const pendingGamesCount = _.find(dataGamesSummary, { status: 'pending' });
+  const kickedGamesCount = _.find(dataGamesSummary, { status: 'kicked' });
 
   return (
-    <Tab.Pane loading={loading}>
-      <Card.Group stackable={true} itemsPerRow={3}>
-        {_.map(myCharacters, (character) => (
-          <Card key={character.id} link>
-            <Link to={`/characters/${character.id}/edit`}>
-              <Image src={_.get(character, 'profileImage.url')}
-                label={{ as: 'a', color: 'red', content: character.label.shortName, ribbon: true }}
-              />
-            </Link>
-            <Card.Content>
-              <Card.Header>
-                <Link to={`/characters/${character.id}/edit`}>{character.name}</Link>
-              </Card.Header>
-            </Card.Content>
-            <Card.Content extra>
-              <Icon name='comments' />
-              { character.activeGamePlayer &&
-                  <Link to={`/games/${character.activeGamePlayer.game.id}`}>{character.activeGamePlayer.game.title}</Link>
-              }
-              {
-                !character.activeGamePlayer &&
-                  'Not in Game'
-              }
-            </Card.Content>
-          </Card>
-        ))}
-      </Card.Group>
-    </Tab.Pane>
+    <div className="user-profile-header">
+      <Menu pointing style={{ marginBottom: '16px' }}>
+        <Menu.Item
+          as={NavLink}
+          to={`${match.url}/characters`}
+        >
+          <Icon name='users' loading={loadingCharacters} />
+          Characters
+          <Label>
+            {charactersCount}
+          </Label>
+        </Menu.Item>
+
+        <Menu.Item
+          as={NavLink}
+          to={`${match.url}`}
+          exact
+        >
+          <Icon name='comments' loading={loadingSummary} />
+          Current Games
+          <Label>
+            {_.size(dataGamesSummary)}
+          </Label>
+        </Menu.Item>
+
+        <Menu.Item
+          as={NavLink}
+          to={`${match.url}/pending-games`}
+        >
+          <Icon name='wait' loading={loadingSummary} />
+          Pending Games
+          <Label>
+            {_.get(pendingGamesCount, 'statusCount', 0)}
+          </Label>
+        </Menu.Item>
+
+        <Menu.Item
+          as={NavLink}
+          to={`${match.url}/kicked-games`}
+        >
+          <Icon name='dont' loading={loadingSummary} />
+          Kicked
+          <Label>
+            {_.get(kickedGamesCount, 'statusCount', 0)}
+          </Label>
+        </Menu.Item>
+      </Menu>
+    </div>
   );
 }
-
-function gamesByStatesBase(props) {
-  const { myGames: { myGames, loading } } = props;
-
-  return (
-    <Tab.Pane loading={loading}>
-      <Card.Group stackable={true} itemsPerRow={3}>
-        {_.map(myGames, (game) => (
-          <GameCard key={game.id} game={game} />
-        ))}
-      </Card.Group>
-    </Tab.Pane>
-  );
-}
-
-const Characters = graphql(myCharactersQuery, {
-  name: 'myCharacters'
-})(charactersBase);
-
-const GamesByState = graphql(myGamesQuery, {
-  name: 'myGames',
-  options: ( { status } ) => ({ variables: { status } })
-})(gamesByStatesBase);
 
 export default compose(
-  graphql(myCharactersQuery, { name: 'myCharacters' }),
   graphql(meQuery, { name: 'me' }),
-  graphql(myGamesQuery, {
-    name: 'myGames',
-    options: ({ variables: { status: ['game-master', 'accepted'] } })
-  }),
-  graphql(myGamePlayersQuery, {
-    name: 'myGamePlayers'
-  })
 )(Profile);
