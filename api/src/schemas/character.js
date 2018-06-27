@@ -1,8 +1,12 @@
 import Character from 'models/character';
 import Game from 'models/game';
 import GamePlayer from 'models/gamePlayer';
+
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
+import createCharacter from 'services/characters/createCharacter';
+import updateCharacter from 'services/characters/updateCharacter';
+import engineLoader from 'engine';
 
 export const characterTypeDefs = `
 
@@ -19,10 +23,11 @@ export const characterTypeDefs = `
 
   type Character {
     id: ID!,
+    lastCharacterLogId: ID!,
+    labelId: ID!,
     name: String!,
     profileImage: ProfileImage,
     user: User!,
-    labelId: ID!,
     label: GameLabel!,
     characterDetails: JSON,
     gamePlayer: [GamePlayer],
@@ -49,16 +54,19 @@ export const characterTypeDefs = `
 export const characterResolvers = {
   Character: {
     label: (character, vars, context) => context.loaders.gameLabels.load(character.labelId),
-    gamePlayer: (character) => {
-      return GamePlayer.query()
-        .where({ characterId: character.id });
-    },
-    activeGamePlayer: (character) => {
-      return GamePlayer.query()
-        .whereIn('status', ['pending', 'accepted'])
-        .where({ characterId: character.id })
-        .first();
-    }
+
+    gamePlayer: (character, vars, context) => GamePlayer.query()
+      .select('id')
+      .where({ characterId: character.id })
+      .execute()
+      .map(gamePlayer => gamePlayer && context.loaders.gamePlayers.load(gamePlayer.id)),
+    // TODO reconsider this association and consider just using `gamePlayer` in the UI
+    activeGamePlayer: (character, vars, context) => GamePlayer.query()
+      .select('id')
+      .whereIn('status', ['pending', 'accepted'])
+      .where({ characterId: character.id })
+      .first()
+      .then(gamePlayer => gamePlayer && context.loaders.gamePlayers.load(gamePlayer.id))
   },
   Query: {
     availableCharacters: (obj, { gameId }, context) => {
@@ -87,32 +95,23 @@ export const characterResolvers = {
       schemaScopeGate(['create:characters'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
           .then((user) => {
-            input.userId = user.id;
+            const { labelId, characterDetails: { meta: { version } } } = input;
+            const engine = engineLoader({ labelId, version });
 
-            return Character
-              .query()
-              .insert(input)
-              .returning('*')
-              .execute();
+            return createCharacter({
+              user, input, engine
+            });
           });
       }),
     updateCharacter: (obj, { id, input }, context) =>
       schemaScopeGate(['create:characters'], context, () => {
         return runIfContextHasUser(context, (user) => {
-          return Character
-            .query()
-            .where({ id, userId: user.id })
-            .first()
-            .then((character) => {
-              if (character) {
-                return Character
-                  .query()
-                  .update(input)
-                  .where({ id })
-                  .returning('*')
-                  .first();
-              }
-            });
+          const { labelId, characterDetails: { meta: { version } } } = input;
+          const engine = engineLoader({ labelId, version });
+
+          return updateCharacter({
+            id, input, user, engine
+          });
         });
       })
   }

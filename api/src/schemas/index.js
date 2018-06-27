@@ -5,6 +5,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { GraphQLDateTime } from 'graphql-iso-date';
 
 import { characterTypeDefs, characterResolvers } from './character';
+import { characterLogTypeDefs, characterTypeResolvers } from './characterLog';
 import { gameTypeDefs, gameResolvers } from './game';
 import { gameLabelTypeDefs, gameLabelResolvers } from './gameLabel';
 import { gameLoungeTypeDefs, gameLoungeResolvers } from './gameLounge';
@@ -40,6 +41,7 @@ export default makeExecutableSchema({
   typeDefs: [
     Query,
     characterTypeDefs,
+    characterLogTypeDefs,
     gameTypeDefs,
     gameLabelTypeDefs,
     gameLoungeTypeDefs,
@@ -51,6 +53,7 @@ export default makeExecutableSchema({
   resolvers: _.merge(
     ScalerResolvers,
     characterResolvers,
+    characterTypeResolvers,
     gameResolvers,
     gameLabelResolvers,
     gameLoungeResolvers,

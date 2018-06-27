@@ -44,18 +44,23 @@ export const gameMessageFields = `
     meta
     createdAt
     updatedAt
-    character {
-      name
-      labelId
+
+    characterLog {
       characterDetails
-      profileImage {
-        publicId
-        url
+      character {
+        name
+        labelId
+        profileImage {
+          publicId
+          url
+        }
       }
     }
+    
     game {
       labelId
     }
+    
     user {
       id
       name

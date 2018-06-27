@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Grid } from 'semantic-ui-react';
 
 import {
@@ -15,17 +16,18 @@ import { CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
 
 import './InCharacterHeader.styl';
 
-export default function(props) {
-  const { character, character: { labelId } } = props;
+export default function InCharacterHeader(props) {
+  const { characterDetails, character, character: { labelId  }, characterDetails: { meta: { version } } } = props;
 
   const PrimaryAttributes = {
     1: dnd5PrimaryAttributes,
     2: pfPrimaryAttributes
-  }[labelId];
+  }[labelId](version);
+
   const SecondaryAttributes = {
     1: dnd5SecondaryAttributes,
     2: pfSecondaryAttributes
-  }[labelId];
+  }[labelId](version);
 
   return (
     <Grid.Row columns={2} className="message-header">
@@ -45,10 +47,10 @@ export default function(props) {
               {character.name}
             </Grid.Column>
             <Grid.Column>
-              <PrimaryAttributes character={character}/>
+              <PrimaryAttributes characterDetails={characterDetails}/>
             </Grid.Column>
             <Grid.Column>
-              <SecondaryAttributes character={character}/>
+              <SecondaryAttributes characterDetails={characterDetails}/>
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -56,3 +58,8 @@ export default function(props) {
     </Grid.Row>
   );
 }
+
+InCharacterHeader.propTypes = {
+  characterDetails: PropTypes.object.isRequired,
+  character: PropTypes.object.isRequired
+};

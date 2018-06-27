@@ -27,7 +27,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
         initialValues={characterToValues(characterDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, dirty, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange, submitCount }) => (
+        render={({ values, dirty, setFieldValue, validateForm, submitForm, resetForm, isValid, handleChange, submitCount, isSubmitting }) => (
           <React.Fragment>
             <Segment>
               <Form className="character-details" as={FormikForm} loading={loading}>
@@ -314,7 +314,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                 </Grid>
               </Form>
             </Segment>
-            {renderActions({ validateForm, submitForm, resetForm, isValid, dirty, submitCount })}
+            {renderActions({ validateForm, submitForm, resetForm, isValid, dirty, submitCount, isSubmitting })}
           </React.Fragment>
         )}
       />
@@ -330,14 +330,18 @@ export default class CharacterDetails5e_1_0_0 extends Component {
     try {
       onSubmit(payload);
     } catch (e) {
-      setSubmitting(false);
       setErrors(e);
     }
+
+    setSubmitting(false);
   };
 
 }
 
 const validationSchema = Yup.object().shape({
+  meta: Yup.object().shape({
+    version: Yup.string().default('1.0.0').required()
+  }),
   primaryLevel: Yup.number().integer().default(1).min(1).required(),
   proficiency: Yup.number().integer().default(2).min(2).required(),
   xp: Yup.number().integer().default(0).min(0).required(),
@@ -361,37 +365,37 @@ const validationSchema = Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
+      modifier: Yup.number().integer().default(-5).min(-5).required()
     }),
     dexterity: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
+      modifier: Yup.number().integer().default(-5).min(-5).required()
     }),
     constitution: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
+      modifier: Yup.number().integer().default(-5).min(-5).required()
     }),
     intelligence: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
+      modifier: Yup.number().integer().default(-5).min(-5).required()
     }),
     wisdom: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
+      modifier: Yup.number().integer().default(-5).min(-5).required()
     }),
     charisma: Yup.object().shape({
       baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
       raceBonus: Yup.number().integer().default(0).min(0),
       total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).max(5).required()
+      modifier: Yup.number().integer().default(-5).min(-5).required()
     })
   })
 });
