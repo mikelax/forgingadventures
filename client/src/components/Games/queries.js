@@ -214,12 +214,20 @@ export const gameLabelsQuery = gql`
 // game messages
 
 export const gameMessagesQuery = gql`
-  query gameMessages($gameId: ID!) {
-    gameMessages(gameId: $gameId) {
+  query gameMessages($gameId: ID!, $page: Int, $perPage: Int) {
+    gameMessages(gameId: $gameId, page: $page, perPage: $perPage) {
       ...gameMessagesFields
     }
   }
   ${gameMessageFields}
+`;
+
+export const gameMessagesSummaryQuery = gql`
+  query gameMessagesSummary($gameId: ID!) {
+    gameMessagesSummary(gameId: $gameId) {
+      countMessages
+    }
+  }
 `;
 
 export const createGameMessageMutation = gql`

@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
-import { compose, pure } from 'recompose';
+import { graphql, Query } from 'react-apollo';
+import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Header, Button, Grid, Segment } from 'semantic-ui-react';
+import { Header, Button, Grid, Segment, Pagination } from 'semantic-ui-react';
+import { withRouter } from 'react-router';
+import queryString from 'query-string';
 
-import ApolloLoader from 'components/shared/ApolloLoader';
 import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 import RichEditor from 'components/shared/RichEditor';
 
@@ -21,43 +22,99 @@ import gameMessageStyles from './gameMessageStyles';
 import { meQuery } from 'queries/users';
 
 import {
-  gameMessagesQuery, updateGameMessageMutation,
+  gameMessagesQuery, gameMessagesSummaryQuery, updateGameMessageMutation,
   onGameMessageAdded, onGameMessageUpdated
 } from 'components/Games/queries';
 
 import './GameMessages.styl';
 
+const perPage = 20;
+
 class GameMessages extends Component {
+
+  render() {
+    const { gameId } = this.props;
+
+    return (
+      <Query
+        query={gameMessagesSummaryQuery}
+        variables={{ gameId }}
+      >
+        {({ data, loading }) => {
+          const { location: { search } } = this.props;
+          const { gameMessagesSummary } = data;
+
+          const totalPages = _.ceil(_.get(gameMessagesSummary, 'countMessages', 0) / perPage);
+          const locationPage = queryString.parse(search);
+          const activePage = _.get(locationPage, 'page', totalPages);
+          const page = activePage - 1;
+
+          return !loading && (
+            <Query
+              query={gameMessagesQuery}
+              variables={{ gameId, page , perPage }}
+            >
+              {({ data: { gameMessages }, loading: loadingMessages, subscribeToMore, refetch }) => (
+                <React.Fragment>
+                  { totalPages > 1 && (
+                    <Pagination totalPages={totalPages} activePage={activePage} onPageChange={this._handlePageChange(refetch)} />
+                  ) }
+
+                  <Segment loading={loading || loadingMessages}>
+                    <div className='game-messages'>
+                      <Header as="h1">Messages</Header>
+
+                      <MessagesRenderer
+                        gameMessages={gameMessages}
+                        subscribeToMore={subscribeToMore}
+                        page={page}
+                        gameId={gameId}
+                      />
+                    </div>
+                  </Segment>
+
+                  { totalPages > 1 && (
+                    <Pagination totalPages={totalPages} activePage={activePage} onPageChange={this._handlePageChange(refetch)} />
+                  ) }
+                </React.Fragment>
+              )}
+            </Query>
+          );
+        }}
+      </Query>);
+  }
+
+  _handlePageChange = (refetch) => (e, { activePage }) => {
+    const { history, match: { url } } = this.props;
+    const page = queryString.stringify({ page: activePage });
+
+    history.push(`${url}?${page}`);
+
+    return refetch({ page: activePage - 1 });
+  };
+}
+
+class MessagesRenderer extends Component {
 
   componentDidMount() {
     this._setupSubscriptions();
   }
 
   render() {
-    const { data: { gameMessages }, loading } = this.props;
+    const { gameMessages } = this.props;
 
-    return (
-      <InlineItemsLoader items={gameMessages} loading={loading}>
-        <Segment>
-          <div className='game-messages'>
-            <Header as="h1">Messages</Header>
+    return _.map(gameMessages, (gameMessage) => (
+      <Segment key={`message-${gameMessage.id}`} className='game-message'>
+        <GameMessageContainer gameMessage={gameMessage} />
+      </Segment>
+    ));
 
-            {_.map(gameMessages, (gameMessage) => (
-              <Segment key={`message-${gameMessage.id}`} className='game-message'>
-                <GameMessageContainer gameMessage={gameMessage}/>
-              </Segment>
-            ))}
-
-          </div>
-        </Segment>
-      </InlineItemsLoader>
-    );
   }
 
   _setupSubscriptions() {
-    const { gameId, data } = this.props;
+    const { gameId, subscribeToMore } = this.props;
 
-    data.subscribeToMore({
+    subscribeToMore({
       document: onGameMessageAdded,
       variables: {
         gameId
@@ -75,7 +132,7 @@ class GameMessages extends Component {
       }
     });
 
-    data.subscribeToMore({
+    subscribeToMore({
       document: onGameMessageUpdated,
       variables: {
         gameId
@@ -104,11 +161,7 @@ class GameMessages extends Component {
 }
 
 export default compose(
-  graphql(gameMessagesQuery, {
-    options: ({ gameId }) => ({ variables: { gameId } })
-  }),
-  ApolloLoader,
-  pure,
+  withRouter,
 )(GameMessages);
 
 /// private
@@ -141,7 +194,7 @@ class GameMessage extends Component {
 
     return (
       <Grid divided='vertically' className="in-character">
-        <GmHeader user={user}/>
+        <GmHeader user={user} />
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor
@@ -196,7 +249,7 @@ class GameMessage extends Component {
         <InlineItemsLoader items={rolls}>
           <Grid.Row columns={1} className="slim">
             <Grid.Column>
-              <DieRollResult rolls={rolls}/>
+              <DieRollResult rolls={rolls} />
             </Grid.Column>
           </Grid.Row>
         </InlineItemsLoader>
@@ -222,10 +275,10 @@ class GameMessage extends Component {
 
     return (
       <Grid divided='vertically' className="out-character">
-        <OutOfCharacterHeader user={user}/>
+        <OutOfCharacterHeader user={user} />
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Grid.Column>
         </Grid.Row>
 
