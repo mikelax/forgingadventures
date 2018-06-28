@@ -1,38 +1,11 @@
-// import Auth0Lock from 'auth0-lock';
-import Auth0 from 'auth0-js';
+import auth0 from 'auth0-js';
 import Bluebird from 'bluebird';
 
 import { scheduleRenewal, clearRenewalTimer, renewToken, logout } from './webAuth';
 
 export const requestedScopes = 'openid profile email create:characters delete:characters create:games delete:games create:posts delete:posts view:gamelabels';
 
-// const lock = new Auth0Lock(process.env.REACT_APP_AUTH0_CLIENT_ID, process.env.REACT_APP_AUTH0_DOMAIN, {
-//   container: 'auth0Lock',
-//   initialScreen: 'login',
-//   theme: {
-//     logo: 'https://s3.amazonaws.com/forgingadventures-resources/auth0/fa_logo.png',
-//     primaryColor: '#6FA1BA', // default #ea5323
-//     authButtons: {
-//       'twitch': {
-//         primaryColor: '#6441A4',  // Twitch Purple
-//         icon: 'https://s3.amazonaws.com/forgingadventures-resources/auth0/twitch_glitch_wh_logo.svg'
-//       }
-//     }
-//   },
-//   languageDictionary: {
-//     title: 'Let\'s get started!'
-//   },
-//   auth: {
-//     redirectUrl: process.env.REACT_APP_AUTH0_REDIRECT_URI,
-//     responseType: 'token id_token',
-//     audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-//     params: {
-//       scope: requestedScopes
-//     }
-//   }
-// });
-
-const hostedAuth = new Auth0.WebAuth({
+const hostedAuth = new auth0.WebAuth({
   domain: process.env.REACT_APP_AUTH0_DOMAIN,
   clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
   redirectUri: process.env.REACT_APP_AUTH0_REDIRECT_URI,
@@ -47,14 +20,6 @@ export function showLogin() {
 }
 
 export function processLockCallback() {
-  // lock.on('authenticated', (authResult) => {
-  //   setSession(authResult);
-  // });
-
-  // lock.on('authorization_error', (e) => {
-  //   console.log('lock error', e);
-  // });
-
   hostedAuth.parseHash((err, authResult) => {
     if (authResult && authResult.accessToken && authResult.idToken) {
       setSession(authResult);
