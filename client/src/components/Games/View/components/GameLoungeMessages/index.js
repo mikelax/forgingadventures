@@ -49,7 +49,7 @@ export default function GameLoungeMessages(props) {
 
             {_.isEmpty(items) && (
               <Message positive>
-                <Message.Header>No Game Luounge messages yet</Message.Header>
+                <Message.Header>No Game Lounge messages yet</Message.Header>
                 <p>
                   Be the first to post
                 </p>
