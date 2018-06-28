@@ -15,7 +15,6 @@ const hostedAuth = new auth0.WebAuth({
 });
 
 export function showLogin() {
-  // return lock.show();
   hostedAuth.authorize();
 }
 
