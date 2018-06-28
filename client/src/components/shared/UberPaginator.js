@@ -24,7 +24,7 @@ class UberPaginator extends Component {
     }).isRequired,
 
     children: PropTypes.func.isRequired,
-    perPage: PropTypes.integer
+    perPage: PropTypes.number
   };
 
   static defaultProps = {
@@ -45,7 +45,7 @@ class UberPaginator extends Component {
           const totalPages = _.ceil(_.get(data, summaryQuery.dataKey, 0) / perPage);
           const locationPage = queryString.parse(search);
           const activePage = _.get(locationPage, 'page', totalPages);
-          const page = activePage - 1;
+          const page = activePage ? activePage - 1 : activePage;
 
           return !loadingSummary && (
             <Query

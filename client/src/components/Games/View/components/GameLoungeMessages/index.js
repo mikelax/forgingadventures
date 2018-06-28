@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
-import { Button, Header, Icon, Grid, Segment } from 'semantic-ui-react';
+import { Button, Header, Icon, Grid, Segment, Message } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 import RichEditor from 'components/shared/RichEditor';
@@ -46,6 +46,15 @@ export default function GameLoungeMessages(props) {
         <Segment loading={loading}>
           <div className='game-lounge-messages'>
             <Header as="h1">Lounge Messages</Header>
+
+            {_.isEmpty(items) && (
+              <Message positive>
+                <Message.Header>No Game Luounge messages yet</Message.Header>
+                <p>
+                  Be the first to post
+                </p>
+              </Message>
+            )}
 
             <LoungeMessagesRenderer
               gameLoungeMessages={items}

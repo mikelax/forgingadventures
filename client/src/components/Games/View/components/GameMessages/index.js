@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Header, Button, Grid, Segment } from 'semantic-ui-react';
+import { Header, Button, Grid, Segment, Message } from 'semantic-ui-react';
 
 import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 import RichEditor from 'components/shared/RichEditor';
@@ -51,6 +51,15 @@ export default function GameMessages(props) {
         <Segment loading={loading}>
           <div className='game-messages'>
             <Header as="h1">Messages</Header>
+
+            {_.isEmpty(items) && (
+              <Message positive>
+                <Message.Header>No Game messages yet</Message.Header>
+                <p>
+                  Be the first to post
+                </p>
+              </Message>
+            )}
 
             <MessagesRenderer
               gameMessages={items}
