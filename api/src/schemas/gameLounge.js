@@ -64,7 +64,7 @@ export const gameLoungeResolvers = {
   Query: {
     gameLoungeMessage: (obj, { id }) => GameLounge.query().findById(id),
 
-    gameLoungeMessages: (obj, { gameId, page, perPage }) => GameLounge.query()
+    gameLoungeMessages: (obj, { gameId, page = 0, perPage = 20 }) => GameLounge.query()
       .where({ gameId })
       .orderBy('createdAt')
       .offset(page * perPage)

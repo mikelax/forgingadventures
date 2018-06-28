@@ -79,7 +79,7 @@ export const gameMessageResolvers = {
     gameMessage: (obj, { id }) =>
       GameMessage.query().findById(id),
 
-    gameMessages: (obj, { gameId, page, perPage }) =>
+    gameMessages: (obj, { gameId, page = 0, perPage = 20 }) =>
       GameMessage.query()
         .where({ gameId })
         .orderBy('createdAt')
