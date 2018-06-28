@@ -292,12 +292,20 @@ export const myGamePlayerQuery = gql`
 // game lounge messages
 
 export const gameLoungeMessagesQuery = gql`
-  query gameLoungeMessages($gameId: ID!) {
-    gameLoungeMessages(gameId: $gameId) {
+  query gameLoungeMessages($gameId: ID!, $page: Int, $perPage: Int) {
+    gameLoungeMessages(gameId: $gameId, page: $page, perPage: $perPage) {
       ...gameLoungeMessagesFields
     }
   }
   ${gameLoungeMessageFields}
+`;
+
+export const gameLoungeMessagesSummaryQuery = gql`
+  query gameLoungeMessagesSummary($gameId: ID!) {
+    gameLoungeMessagesSummary(gameId: $gameId) {
+      countMessages
+    }
+  }
 `;
 
 export const createGameLoungeMessageMutation = gql`

@@ -1,15 +1,14 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { graphql, Query } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Header, Button, Grid, Segment, Pagination } from 'semantic-ui-react';
-import { withRouter } from 'react-router';
-import queryString from 'query-string';
+import { Header, Button, Grid, Segment } from 'semantic-ui-react';
 
 import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 import RichEditor from 'components/shared/RichEditor';
+import UberPaginator from 'components/shared/UberPaginator';
 
 import { quote } from 'actions/gameMessage';
 
@@ -28,70 +27,41 @@ import {
 
 import './GameMessages.styl';
 
-const perPage = 20;
 
-class GameMessages extends Component {
+export default function GameMessages(props) {
+  const { gameId } = props;
 
-  render() {
-    const { gameId } = this.props;
-
-    return (
-      <Query
-        query={gameMessagesSummaryQuery}
-        variables={{ gameId }}
-      >
-        {({ data, loading }) => {
-          const { location: { search } } = this.props;
-          const { gameMessagesSummary } = data;
-
-          const totalPages = _.ceil(_.get(gameMessagesSummary, 'countMessages', 0) / perPage);
-          const locationPage = queryString.parse(search);
-          const activePage = _.get(locationPage, 'page', totalPages);
-          const page = activePage - 1;
-
-          return !loading && (
-            <Query
-              query={gameMessagesQuery}
-              variables={{ gameId, page , perPage }}
-            >
-              {({ data: { gameMessages }, loading: loadingMessages, subscribeToMore, refetch }) => (
-                <React.Fragment>
-                  { totalPages > 1 && (
-                    <Pagination totalPages={totalPages} activePage={activePage} onPageChange={this._handlePageChange(refetch)} />
-                  ) }
-
-                  <Segment loading={loading || loadingMessages}>
-                    <div className='game-messages'>
-                      <Header as="h1">Messages</Header>
-
-                      <MessagesRenderer
-                        gameMessages={gameMessages}
-                        subscribeToMore={subscribeToMore}
-                        page={page}
-                        gameId={gameId}
-                      />
-                    </div>
-                  </Segment>
-
-                  { totalPages > 1 && (
-                    <Pagination totalPages={totalPages} activePage={activePage} onPageChange={this._handlePageChange(refetch)} />
-                  ) }
-                </React.Fragment>
-              )}
-            </Query>
-          );
-        }}
-      </Query>);
-  }
-
-  _handlePageChange = (refetch) => (e, { activePage }) => {
-    const { history, match: { url } } = this.props;
-    const page = queryString.stringify({ page: activePage });
-
-    history.push(`${url}?${page}`);
-
-    return refetch({ page: activePage - 1 });
+  const summaryQuery = {
+    query: gameMessagesSummaryQuery,
+    variables: { gameId },
+    dataKey: 'gameMessagesSummary.countMessages'
   };
+  const itemsQuery = {
+    query: gameMessagesQuery,
+    variables: { gameId },
+    dataKey: 'gameMessages'
+  };
+
+  return (
+    <UberPaginator
+      summaryQuery={summaryQuery}
+      itemsQuery={itemsQuery}
+    >
+      {({ items, loading, subscribeToMore }) => (
+        <Segment loading={loading}>
+          <div className='game-messages'>
+            <Header as="h1">Messages</Header>
+
+            <MessagesRenderer
+              gameMessages={items}
+              subscribeToMore={subscribeToMore}
+              gameId={gameId}
+            />
+          </div>
+        </Segment>
+      )}
+    </UberPaginator>
+  );
 }
 
 class MessagesRenderer extends Component {
@@ -159,10 +129,6 @@ class MessagesRenderer extends Component {
   }
 
 }
-
-export default compose(
-  withRouter,
-)(GameMessages);
 
 /// private
 

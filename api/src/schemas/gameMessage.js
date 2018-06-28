@@ -80,7 +80,9 @@ export const gameMessageResolvers = {
       GameMessage.query().findById(id),
 
     gameMessages: (obj, { gameId, page, perPage }) =>
-      GameMessage.query().where({ gameId }).orderBy('createdAt')
+      GameMessage.query()
+        .where({ gameId })
+        .orderBy('createdAt')
         .offset(page * perPage)
         .limit(perPage),
 

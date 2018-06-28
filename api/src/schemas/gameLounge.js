@@ -17,7 +17,8 @@ export const gameLoungeTypeDefs = `
 
   extend type Query {
     gameLoungeMessage(id: ID!): GameLoungeMessage!
-    gameLoungeMessages(gameId: ID!): [GameLoungeMessage!]
+    gameLoungeMessages(gameId: ID!, page: Int, perPage: Int): [GameLoungeMessage!]
+    gameLoungeMessagesSummary(gameId: ID!): GameLoungeMessageSummary
   }
 
   extend type Mutation {
@@ -40,6 +41,10 @@ export const gameLoungeTypeDefs = `
     updatedAt: GraphQLDateTime,
     createdAt: GraphQLDateTime
   }
+  
+  type GameLoungeMessageSummary {
+    countMessages: Int!
+  }
 
   input CreateGameLoungeMessageInput {
     gameId: ID!,
@@ -58,7 +63,15 @@ export const gameLoungeResolvers = {
   },
   Query: {
     gameLoungeMessage: (obj, { id }) => GameLounge.query().findById(id),
-    gameLoungeMessages: (obj, { gameId }) => GameLounge.query().where({ gameId }).orderBy('createdAt')
+
+    gameLoungeMessages: (obj, { gameId, page, perPage }) => GameLounge.query()
+      .where({ gameId })
+      .orderBy('createdAt')
+      .offset(page * perPage)
+      .limit(perPage),
+
+    gameLoungeMessagesSummary: (obj, { gameId }) =>
+      GameLounge.query().where({ gameId }).count({ countMessages: 'id' }).first()
   },
   Mutation: {
     createGameLoungeMessage: (obj, { input }, context) =>
