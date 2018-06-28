@@ -495,22 +495,23 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-auth0-js@9.4.2, auth0-js@^9.4.2:
-  version "9.4.2"
-  resolved "https://registry.yarnpkg.com/auth0-js/-/auth0-js-9.4.2.tgz#44363933266781fb9447ce09503c6f783b86a474"
+auth0-js@9.6.1, auth0-js@^9.6.1:
+  version "9.6.1"
+  resolved "https://registry.yarnpkg.com/auth0-js/-/auth0-js-9.6.1.tgz#908e1bc5e9a7c6f787b019ad53d7688caaa2f48e"
   dependencies:
     base64-js "^1.2.0"
     idtoken-verifier "^1.2.0"
+    js-cookie "^2.2.0"
     qs "^6.4.0"
     superagent "^3.8.2"
     url-join "^1.1.0"
     winchan "^0.2.0"
 
-auth0-lock@11.5.2:
-  version "11.5.2"
-  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-11.5.2.tgz#4d39f3e1d53f199f80c9f74e16c694ef76f17ea4"
+auth0-lock@11.7.2:
+  version "11.7.2"
+  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-11.7.2.tgz#0af2c07e8b95dd71317484d132191cdb2701c301"
   dependencies:
-    auth0-js "^9.4.2"
+    auth0-js "^9.6.1"
     blueimp-md5 "2.3.1"
     fbjs "^0.3.1"
     immutable "^3.7.3"
@@ -4280,6 +4281,10 @@ jquery@x.*:
 js-base64@^2.1.9:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.0.tgz#9e566fee624751a1d720c966cd6226d29d4025aa"
+
+js-cookie@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.2.0.tgz#1b2c279a6eece380a12168b92485265b35b1effb"
 
 js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
