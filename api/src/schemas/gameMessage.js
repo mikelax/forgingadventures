@@ -18,7 +18,8 @@ export const gameMessageTypeDefs = `
 
   extend type Query {
     gameMessage(id: ID!): GameMessage!
-    gameMessages(gameId: ID!): [GameMessage!]
+    gameMessages(gameId: ID!, page: Int, perPage: Int): [GameMessage!]
+    gameMessagesSummary(gameId: ID!): GameMessageSummary
   }
 
   extend type Mutation {
@@ -47,6 +48,10 @@ export const gameMessageTypeDefs = `
     updatedAt: GraphQLDateTime,
     createdAt: GraphQLDateTime
   }
+  
+  type GameMessageSummary {
+    countMessages: Int!
+  }
 
   input CreateGameMessageInput {
     gameId: ID!,
@@ -74,8 +79,15 @@ export const gameMessageResolvers = {
     gameMessage: (obj, { id }) =>
       GameMessage.query().findById(id),
 
-    gameMessages: (obj, { gameId }) =>
-      GameMessage.query().where({ gameId }).orderBy('createdAt')
+    gameMessages: (obj, { gameId, page = 0, perPage = 20 }) =>
+      GameMessage.query()
+        .where({ gameId })
+        .orderBy('createdAt')
+        .offset(page * perPage)
+        .limit(perPage),
+
+    gameMessagesSummary: (obj, { gameId }) =>
+      GameMessage.query().where({ gameId }).count({ countMessages: 'id' }).first()
   },
   Mutation: {
     createGameMessage: (obj, { input }, context) =>

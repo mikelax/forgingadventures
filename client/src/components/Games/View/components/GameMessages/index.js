@@ -2,13 +2,13 @@ import _ from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { compose, pure } from 'recompose';
+import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Header, Button, Grid, Segment } from 'semantic-ui-react';
+import { Header, Button, Grid, Segment, Message } from 'semantic-ui-react';
 
-import ApolloLoader from 'components/shared/ApolloLoader';
 import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 import RichEditor from 'components/shared/RichEditor';
+import UberPaginator from 'components/shared/UberPaginator';
 
 import { quote } from 'actions/gameMessage';
 
@@ -21,43 +21,79 @@ import gameMessageStyles from './gameMessageStyles';
 import { meQuery } from 'queries/users';
 
 import {
-  gameMessagesQuery, updateGameMessageMutation,
+  gameMessagesQuery, gameMessagesSummaryQuery, updateGameMessageMutation,
   onGameMessageAdded, onGameMessageUpdated
 } from 'components/Games/queries';
 
 import './GameMessages.styl';
 
-class GameMessages extends Component {
+
+export default function GameMessages(props) {
+  const { gameId } = props;
+
+  const summaryQuery = {
+    query: gameMessagesSummaryQuery,
+    variables: { gameId },
+    dataKey: 'gameMessagesSummary.countMessages'
+  };
+  const itemsQuery = {
+    query: gameMessagesQuery,
+    variables: { gameId },
+    dataKey: 'gameMessages'
+  };
+
+  return (
+    <UberPaginator
+      summaryQuery={summaryQuery}
+      itemsQuery={itemsQuery}
+    >
+      {({ items, loading, subscribeToMore }) => (
+        <Segment loading={loading}>
+          <div className='game-messages'>
+            <Header as="h1">Messages</Header>
+
+            {_.isEmpty(items) && (
+              <Message positive>
+                <Message.Header>No Game messages yet</Message.Header>
+                <p>
+                  Be the first to post
+                </p>
+              </Message>
+            )}
+
+            <MessagesRenderer
+              gameMessages={items}
+              subscribeToMore={subscribeToMore}
+              gameId={gameId}
+            />
+          </div>
+        </Segment>
+      )}
+    </UberPaginator>
+  );
+}
+
+class MessagesRenderer extends Component {
 
   componentDidMount() {
     this._setupSubscriptions();
   }
 
   render() {
-    const { data: { gameMessages }, loading } = this.props;
+    const { gameMessages } = this.props;
 
-    return (
-      <InlineItemsLoader items={gameMessages} loading={loading}>
-        <Segment>
-          <div className='game-messages'>
-            <Header as="h1">Messages</Header>
+    return _.map(gameMessages, (gameMessage) => (
+      <Segment key={`message-${gameMessage.id}`} className='game-message'>
+        <GameMessageContainer gameMessage={gameMessage} />
+      </Segment>
+    ));
 
-            {_.map(gameMessages, (gameMessage) => (
-              <Segment key={`message-${gameMessage.id}`} className='game-message'>
-                <GameMessageContainer gameMessage={gameMessage}/>
-              </Segment>
-            ))}
-
-          </div>
-        </Segment>
-      </InlineItemsLoader>
-    );
   }
 
   _setupSubscriptions() {
-    const { gameId, data } = this.props;
+    const { gameId, subscribeToMore } = this.props;
 
-    data.subscribeToMore({
+    subscribeToMore({
       document: onGameMessageAdded,
       variables: {
         gameId
@@ -75,7 +111,7 @@ class GameMessages extends Component {
       }
     });
 
-    data.subscribeToMore({
+    subscribeToMore({
       document: onGameMessageUpdated,
       variables: {
         gameId
@@ -102,14 +138,6 @@ class GameMessages extends Component {
   }
 
 }
-
-export default compose(
-  graphql(gameMessagesQuery, {
-    options: ({ gameId }) => ({ variables: { gameId } })
-  }),
-  ApolloLoader,
-  pure,
-)(GameMessages);
 
 /// private
 
@@ -141,7 +169,7 @@ class GameMessage extends Component {
 
     return (
       <Grid divided='vertically' className="in-character">
-        <GmHeader user={user}/>
+        <GmHeader user={user} />
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor
@@ -196,7 +224,7 @@ class GameMessage extends Component {
         <InlineItemsLoader items={rolls}>
           <Grid.Row columns={1} className="slim">
             <Grid.Column>
-              <DieRollResult rolls={rolls}/>
+              <DieRollResult rolls={rolls} />
             </Grid.Column>
           </Grid.Row>
         </InlineItemsLoader>
@@ -222,10 +250,10 @@ class GameMessage extends Component {
 
     return (
       <Grid divided='vertically' className="out-character">
-        <OutOfCharacterHeader user={user}/>
+        <OutOfCharacterHeader user={user} />
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
-            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)}/>
+            <RichEditor message={gameMessage.message} ref={this.editor} readOnly={!(editing)} />
           </Grid.Column>
         </Grid.Row>
 

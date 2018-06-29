@@ -3,57 +3,93 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
-import { Button, Header, Icon, Grid, Segment } from 'semantic-ui-react';
+import { Button, Header, Icon, Grid, Segment, Message } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
-import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 import RichEditor from 'components/shared/RichEditor';
 import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
+import UberPaginator from 'components/shared/UberPaginator';
 import { quote } from 'actions/loungeMessage';
 
 import {
   gameLoungeMessagesQuery,
   updateGameLoungeMessageMutation,
   onGameLoungeMessageAdded,
-  onGameLoungeMessageUpdated
-} from '../../../queries';
-import { meQuery } from 'queries/users';
+  onGameLoungeMessageUpdated,
+  gameLoungeMessagesSummaryQuery
+} from 'components/Games/queries';
 
-import ApolloLoader from 'components/shared/ApolloLoader';
+import { meQuery } from 'queries/users';
 
 import './gameLoungeMessages.styl';
 
-class GameLoungeMessages extends Component {
+export default function GameLoungeMessages(props) {
+  const { gameId } = props;
 
-  componentWillMount() {
+  const summaryQuery = {
+    query: gameLoungeMessagesSummaryQuery,
+    variables: { gameId },
+    dataKey: 'gameLoungeMessagesSummary.countMessages'
+  };
+  const itemsQuery = {
+    query: gameLoungeMessagesQuery,
+    variables: { gameId },
+    dataKey: 'gameLoungeMessages'
+  };
+
+  return (
+    <UberPaginator
+      summaryQuery={summaryQuery}
+      itemsQuery={itemsQuery}
+    >
+      {({ items, loading, subscribeToMore }) => (
+        <Segment loading={loading}>
+          <div className='game-lounge-messages'>
+            <Header as="h1">Lounge Messages</Header>
+
+            {_.isEmpty(items) && (
+              <Message positive>
+                <Message.Header>No Game Lounge messages yet</Message.Header>
+                <p>
+                  Be the first to post
+                </p>
+              </Message>
+            )}
+
+            <LoungeMessagesRenderer
+              gameLoungeMessages={items}
+              subscribeToMore={subscribeToMore}
+              gameId={gameId}
+            />
+          </div>
+        </Segment>
+      )}
+    </UberPaginator>
+  );
+}
+
+// private
+
+class LoungeMessagesRenderer extends Component {
+
+  componentDidMount() {
     this._setupSubscriptions();
   }
 
   render() {
-    const { data: { gameLoungeMessages }, loading } = this.props;
+    const { gameLoungeMessages } = this.props;
 
-    return (
-      <InlineItemsLoader items={gameLoungeMessages} loading={loading}>
-        <Segment>
-          <div className="game-lounge-messages">
-            <Header as="h2">Lounge Messages</Header>
-
-            {_.map(gameLoungeMessages, (loungeMessage) => (
-              <Segment key={`lounge-message-${loungeMessage.id}`} className='game-lounge-message'>
-                <GameLoungeMessageContainerData key={loungeMessage.id} loungeMessage={loungeMessage} />
-              </Segment>
-            ))}
-          </div>
-        </Segment>
-      </InlineItemsLoader>
-    );
-
+    return _.map(gameLoungeMessages, (loungeMessage) => (
+      <Segment key={`lounge-message-${loungeMessage.id}`} className='game-lounge-message'>
+        <GameLoungeMessageContainerData key={loungeMessage.id} loungeMessage={loungeMessage} />
+      </Segment>
+    ));
   }
 
-  _setupSubscriptions = () => {
-    const { gameId, data } = this.props;
+  _setupSubscriptions() {
+    const { gameId, subscribeToMore } = this.props;
 
-    data.subscribeToMore({
+    subscribeToMore({
       document: onGameLoungeMessageAdded,
       variables: {
         gameId
@@ -71,7 +107,7 @@ class GameLoungeMessages extends Component {
       }
     });
 
-    data.subscribeToMore({
+    subscribeToMore({
       document: onGameLoungeMessageUpdated,
       variables: {
         gameId
@@ -95,17 +131,9 @@ class GameLoungeMessages extends Component {
         });
       }
     });
-  };
+  }
+
 }
-
-export default compose(
-  graphql(gameLoungeMessagesQuery, {
-    options: ({ gameId }) => ({ variables: { gameId } })
-  }),
-  ApolloLoader,
-)(GameLoungeMessages);
-
-// private
 
 class GameLoungeMessageContainer extends Component {
 
