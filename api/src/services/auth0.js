@@ -24,6 +24,26 @@ export function getAuth0User(userId, fields) {
 }
 
 /**
+ * Call Auth0 Management API to resend User Verify Email
+ * @param {string} userId - The Auth0 user id (sub)
+ */
+export function resendVerificationEmail(userId) {
+  return getAccessToken()
+    .then((accessToken) => {
+      return axios.post(`${config.get('auth0.managementClient.audience')}jobs/verification-email`,
+        {
+          user_id: userId
+        },
+        {
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+    });
+}
+
+/**
  * Using Auth0 Management API Update the user_metadata and app_metadata fields for the given Auth0 user
  * @param {string} userId - The Auth0 user id (sub)
  * @param {object} userData - The new user_metadata object to save
@@ -70,4 +90,3 @@ function getAccessToken() {
     })
     .then(response => response.data.access_token);
 }
-

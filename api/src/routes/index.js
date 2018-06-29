@@ -1,5 +1,6 @@
 import multer from 'multer';
 
+import { resendVerificationEmail } from 'services/auth0';
 import uploadUserPicture from './imageUploadImpl';
 import { setDbUserByToken } from '../middleware/security';
 
@@ -11,6 +12,15 @@ const uploader = multer({
 });
 
 router.post('/upload-image', uploader.single('picture'), setDbUserByToken, uploadUserPicture);
+router.post('/verify-email', (req, res, next) => {
+  return resendVerificationEmail(req.user.sub)
+    .then((responseData) => {
+      return res.json(responseData.data);
+    })
+    .catch((error) => {
+      return next(error);
+    });
+});
 
 
 export default router;

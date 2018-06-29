@@ -10,9 +10,11 @@ import { Button, Container, Form, Grid,
 
 import SuccessToast from 'components/shared/SuccessToast';
 import TimezoneSelect from 'components/shared/TimezoneSelect';
+
 import { meQuery, updateMeMutation, validUsernameQuery } from 'queries/users';
 import { uploadImage } from 'services/image';
 import { getProfile } from 'services/webAuth';
+import { axiosApi } from 'services/api';
 import { getMyDetails } from 'actions/me';
 
 class Settings extends Component {
@@ -51,7 +53,6 @@ class Settings extends Component {
   render() {
     const { activeItem, displaySuccess, store: { profileImageUrl } } = this.state;
     const email = _.get(this.state, 'profile.email');
-    const emailVerified = _.get(this.state, 'profile.email_verified');
     const { loading } = _.get(this.props, 'data');
 
     return (
@@ -63,9 +64,8 @@ class Settings extends Component {
         <div className="Settings">
           <Container>
             {
-              displaySuccess ? (
+              displaySuccess &&
                 <SuccessToast text='Your changes have been saved, now back to the adventure!' />
-              ) : null
             }
 
             <Grid>
@@ -117,10 +117,7 @@ class Settings extends Component {
                         readOnly
                         width={6}
                       />
-                      {emailVerified ?
-                        (<Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>) :
-                        <Button>Resend Verification Email</Button>
-                      }
+                      { this._emailVerification() }
                     </Form.Group>
                   )}
 
@@ -158,6 +155,15 @@ class Settings extends Component {
     );
   };
 
+  _emailVerification = () => {
+    const emailVerified = _.get(this.state, 'profile.email_verified');
+    const displayVerifyEmailButton = _.has(this.state, 'profile.email_verified');
+
+    return displayVerifyEmailButton && !emailVerified ?
+      <Button onClick={this._handleResendEmailVerification}>Resend Verification Email</Button> :
+      <Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>;
+  };
+
   _handleImage = (e) => {
     e.preventDefault();
 
@@ -175,6 +181,12 @@ class Settings extends Component {
     };
 
     reader.readAsDataURL(file);
+  };
+
+  _handleResendEmailVerification = () => {
+    return axiosApi
+      .post('/verify-email')
+      .then(() => this.setState({ displaySuccess: true }));
   };
 
   _valid = () => {
