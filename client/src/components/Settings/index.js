@@ -64,9 +64,8 @@ class Settings extends Component {
         <div className="Settings">
           <Container>
             {
-              displaySuccess ? (
+              displaySuccess &&
                 <SuccessToast text='Your changes have been saved, now back to the adventure!' />
-              ) : null
             }
 
             <Grid>
@@ -158,15 +157,11 @@ class Settings extends Component {
 
   _emailVerification = () => {
     const emailVerified = _.get(this.state, 'profile.email_verified');
-    const hasEmailVerifiedKey = _.chain(this.state).get('profile').keys().includes('email_verified').value();
+    const displayVerifyEmailButton = _.has(this.state, 'profile.email_verified');
 
-    if (hasEmailVerifiedKey) {
-      return !emailVerified
-        ? (<Button>Resend Verification Email</Button>)
-        : (<Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>)
-    } else {
-      return null;
-    }
+    return displayVerifyEmailButton && !emailVerified ?
+      <Button onClick={this._handleResendEmailVerification}>Resend Verification Email</Button> :
+      <Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>;
   };
 
   _handleImage = (e) => {
@@ -190,7 +185,8 @@ class Settings extends Component {
 
   _handleResendEmailVerification = () => {
     return axiosApi
-      .post('/verify-email');
+      .post('/verify-email')
+      .then(() => this.setState({ displaySuccess: true }));
   };
 
   _valid = () => {
