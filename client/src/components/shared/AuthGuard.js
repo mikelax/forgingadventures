@@ -12,7 +12,7 @@ export default function(ProtectedComponent) {
     branch(
       props => props.authorisation.isAuthenticated,
       renderComponent(ProtectedComponent),
-      renderComponent(() => <Redirect to="/login"/>)
+      renderComponent(() => <Redirect to="/"/>)
     )
   )(ProtectedComponent);
 };
