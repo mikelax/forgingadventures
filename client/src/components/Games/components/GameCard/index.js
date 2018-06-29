@@ -6,6 +6,7 @@ import { Card, Icon, Image } from 'semantic-ui-react';
 
 import { postingFrequency, skillLevel } from '../../utils/gameSettings';
 import dragons from './dragons.jpg';
+import './gameCard.styl';
 
 export default class GameCard extends Component {
 
@@ -19,7 +20,7 @@ export default class GameCard extends Component {
     const imageSrc = _.get(game, 'gameImage.url') || dragons;
 
     return (
-      <Card>
+      <Card className="game-card-component">
         <Image src={imageSrc}
                label={{ as: 'a', color: 'red', content: shortName, ribbon: true }}
         />
@@ -31,7 +32,7 @@ export default class GameCard extends Component {
             {game.scenario}
           </Card.Meta>
           <Card.Description>
-            <div dangerouslySetInnerHTML={{ __html: game.overview }} />
+            <div className="truncated" dangerouslySetInnerHTML={{ __html: game.overview }} />
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
