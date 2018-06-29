@@ -38,8 +38,7 @@ export function resendVerificationEmail(userId) {
           headers: {
             'content-type': 'application/json',
             Authorization: `Bearer ${accessToken}`
-          },
-          responseType: 'json'
+          }
         });
     });
 }

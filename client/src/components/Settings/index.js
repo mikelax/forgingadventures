@@ -10,9 +10,11 @@ import { Button, Container, Form, Grid,
 
 import SuccessToast from 'components/shared/SuccessToast';
 import TimezoneSelect from 'components/shared/TimezoneSelect';
+
 import { meQuery, updateMeMutation, validUsernameQuery } from 'queries/users';
 import { uploadImage } from 'services/image';
 import { getProfile } from 'services/webAuth';
+import { axiosApi } from 'services/api';
 import { getMyDetails } from 'actions/me';
 
 class Settings extends Component {
@@ -51,7 +53,6 @@ class Settings extends Component {
   render() {
     const { activeItem, displaySuccess, store: { profileImageUrl } } = this.state;
     const email = _.get(this.state, 'profile.email');
-    const emailVerified = _.get(this.state, 'profile.email_verified');
     const { loading } = _.get(this.props, 'data');
 
     return (
@@ -117,10 +118,7 @@ class Settings extends Component {
                         readOnly
                         width={6}
                       />
-                      {emailVerified ?
-                        (<Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>) :
-                        <Button>Resend Verification Email</Button>
-                      }
+                      { this._emailVerification() }
                     </Form.Group>
                   )}
 
@@ -158,6 +156,19 @@ class Settings extends Component {
     );
   };
 
+  _emailVerification = () => {
+    const emailVerified = _.get(this.state, 'profile.email_verified');
+    const hasEmailVerifiedKey = _.chain(this.state).get('profile').keys().includes('email_verified').value();
+
+    if (hasEmailVerifiedKey) {
+      return !emailVerified
+        ? (<Button>Resend Verification Email</Button>)
+        : (<Label pointing='left'>Verified <Icon color='green' size='big' name='check circle' /></Label>)
+    } else {
+      return null;
+    }
+  };
+
   _handleImage = (e) => {
     e.preventDefault();
 
@@ -175,6 +186,11 @@ class Settings extends Component {
     };
 
     reader.readAsDataURL(file);
+  };
+
+  _handleResendEmailVerification = () => {
+    return axiosApi
+      .post('/verify-email');
   };
 
   _valid = () => {

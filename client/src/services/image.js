@@ -1,6 +1,5 @@
 import Bluebird from 'bluebird';
-import axios from 'axios/index';
-import { getAccessToken } from './login';
+import { axiosApi } from 'services/api';
 
 export function uploadImage(file, imageType) {
   return Bluebird.try(() => {
@@ -10,13 +9,8 @@ export function uploadImage(file, imageType) {
       data.append('picture', file);
       data.append('imageType', imageType);
 
-      // fixme - might need to add baseUrl to configs depending on API url when deploying
-      // todo - setup an axios interceptor to automatically inject the Authorisation header
-      return axios.post('/api/upload-image', data, {
-        headers: {
-          Authorization: `Bearer ${getAccessToken()}`
-        }
-      })
+      return axiosApi
+        .post('/upload-image', data)
         .then(res => res.data);
     }
   });
@@ -35,7 +29,7 @@ export function getFullImageUrl(publicId, type) {
   };
 
   const options = imageTypes[type];
-  return publicId ? 
+  return publicId ?
     `https://res.cloudinary.com/forgingadventures/image/upload/${options}/${publicId}.png`
     : null;
 }
