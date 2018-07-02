@@ -153,7 +153,7 @@ function QuickEditCharacterForm(props) {
       <Modal.Content>
         <Form.Group inline>
           <Form.Field>
-            <label>Hit Points</label>
+            <label>Hit Points. Hit Die: {values.health.hitDie}</label>
 
             <Field
               name="health.currentHitPoints"
@@ -168,10 +168,6 @@ function QuickEditCharacterForm(props) {
           </Form.Field>
           <FormFieldErrorMessage name="health.currentHitPoints" />
         </Form.Group>
-
-        <div className="hit-die">
-          Hit Die: {values.health.hitDie}
-        </div>
 
         <Form.Field>
           <label>Change Description</label>
