@@ -36,6 +36,7 @@ export default function GameMessages(props) {
     variables: { gameId },
     dataKey: 'gameMessagesSummary.countMessages'
   };
+
   const itemsQuery = {
     query: gameMessagesQuery,
     variables: { gameId },
@@ -122,15 +123,17 @@ class MessagesRenderer extends Component {
         }
 
         const { messageUpdated } = subscriptionData.data;
-        // fixme - this mutates the existing object. refactor
-        // fixme - https://redux.js.org/docs/recipes/reducers/ImmutableUpdatePatterns.html#updating-an-item-in-an-array
-        _.chain(prev.gameMessages)
-          .find({ id: messageUpdated.id })
-          .merge(messageUpdated)
-          .value();
+        const oldMessageIndex = _.findIndex(prev.gameMessages, { id: messageUpdated.id });
 
-        return Object.assign({}, prev, {
-          gameMessages: [...prev.gameMessages]
+        return _.map(prev.gameMessages, (gameMessage, index) => {
+          if (index !== oldMessageIndex) {
+            return gameMessage;
+          } else {
+            return {
+              ...prev.gameMessages[oldMessageIndex],
+              ...messageUpdated
+            };
+          }
         });
       }
     });
@@ -203,13 +206,13 @@ class GameMessage extends Component {
   };
 
   _inCharacterMessageRender = () => {
-    const { gameMessage, gameMessage: { characterLog: { character, characterDetails }, meta } } = this.props;
+    const { gameMessage, gameMessage: { gameId, characterLog: { character, characterDetails }, meta } } = this.props;
     const { editing } = this.state;
     const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided="vertically" className="in-character">
-        <InCharacterHeader characterDetails={characterDetails} character={character} />
+        <InCharacterHeader characterDetails={characterDetails} character={character} gameId={gameId} />
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor

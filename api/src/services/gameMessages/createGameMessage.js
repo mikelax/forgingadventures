@@ -15,7 +15,7 @@ export default class {
     this.inCharacterPost = options.input.postType === 'ic';
     this.gameId = options.input.gameId;
 
-    this.trx = null;
+    this.trx = options.transaction;
     this.game = null;
     this.meta = null;
     this.rolls = null;
@@ -31,17 +31,21 @@ export default class {
       .then(validateGameMessageMeta)
       .then(calculateDiceRolls)
       .then(createGameMessage)
-      .tap(() => this.trx.commit())
-      .tapCatch(() => this.trx.rollback());
+      .tap(commit)
+      .tapCatch(rollback);
   }
 }
 
 // private
 
 function startTransaction() {
-  return transaction
-    .start(Character.knex())
-    .then(t => (this.trx = t));
+  if (!(this.trx)) {
+    this.externalTransaction = true;
+
+    return transaction
+      .start(Character.knex())
+      .then(t => (this.trx = t));
+  }
 }
 
 function getGame() {
@@ -112,4 +116,16 @@ function createGameMessage() {
     .insert(payload)
     .returning('*')
     .execute();
+}
+
+function commit() {
+  if (!(this.externalTransaction)) {
+    return this.trx.commit();
+  }
+}
+
+function rollback() {
+  if (!(this.externalTransaction)) {
+    return this.trx.rollback();
+  }
 }

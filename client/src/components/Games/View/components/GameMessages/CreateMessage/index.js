@@ -54,7 +54,7 @@ class CreateMessage extends Component {
               query={myGamePlayerQuery}
               variables={{ gameId }}
             >
-              {({ data }) => <PostAsSelector data={data} onPostTypeChange={this._handlePostType} />}
+              {({ data }) => <PostAsSelector data={data} gameId={gameId} onPostTypeChange={this._handlePostType} />}
             </Query>
 
             <label>Add Message</label>
@@ -245,6 +245,7 @@ class PostAsSelector extends Component {
 
   _getPlayerSelector = (user, character) => {
     const ic = this.state.postType === 'ic';
+    const { gameId } = this.props;
     const { characterDetails } = character;
 
     return (
@@ -253,7 +254,7 @@ class PostAsSelector extends Component {
           <Dimmer.Dimmable as={Segment} basic dimmed={!(ic)}>
             <Dimmer active={!(ic)} inverted />
             <Grid>
-              <InCharacterHeader characterDetails={characterDetails} character={character} />
+              <InCharacterHeader characterDetails={characterDetails} character={character} gameId={gameId} />
             </Grid>
           </Dimmer.Dimmable>
 

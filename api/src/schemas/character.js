@@ -2,10 +2,15 @@ import Character from 'models/character';
 import Game from 'models/game';
 import GamePlayer from 'models/gamePlayer';
 
+import pubsub from 'services/pubsub';
 import schemaScopeGate from 'services/schemaScopeGate';
 import { getOrCreateUserByAuth0Id, runIfContextHasUser } from 'services/user';
 import createCharacter from 'services/characters/createCharacter';
 import updateCharacter from 'services/characters/updateCharacter';
+import quickUpdateCharacterAndAddUpdateGameMessage from 'services/characters/quickUpdateCharacterAndAddUpdateGameMessage'; //eslint-disable-line
+
+import { TOPIC_MESSAGE_ADDED } from './gameMessage';
+
 import engineLoader from 'engine';
 
 export const characterTypeDefs = `
@@ -53,7 +58,9 @@ export const characterTypeDefs = `
     characterDetails: JSON!,
     name: String!,
     labelId: Int!,
-    profileImage: ProfileImageInput
+    profileImage: ProfileImageInput,
+    changeDescription: String,
+    changeMeta: JSON
   }
 `;
 
@@ -125,9 +132,23 @@ export const characterResolvers = {
           const { labelId, characterDetails: { meta: { version } } } = input;
           const engine = engineLoader({ labelId, version });
 
-          return updateCharacter({
-            id, input, user, engine
-          });
+          // input.changeMeta is included when quick editing a character in a game mesage
+          // manage these differently to record the update and also generate a game message
+          if (input.changeMeta) {
+            return quickUpdateCharacterAndAddUpdateGameMessage({
+              id, input, user, engine
+            })
+              .tap(({ gameMessage: messageAdded }) => {
+                if (messageAdded) {
+                  pubsub.publish(TOPIC_MESSAGE_ADDED, { messageAdded });
+                }
+              })
+              .then(({ character }) => character);
+          } else {
+            return updateCharacter({
+              id, input, user, engine
+            });
+          }
         });
       })
   }

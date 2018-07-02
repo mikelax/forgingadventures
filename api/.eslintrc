@@ -25,7 +25,8 @@
     "no-use-before-define": [2, "nofunc"],
     "no-param-reassign": [2, { "props": false }],
     "no-cond-assign": [2, "except-parens"],
-    "no-return-assign": [2, "except-parens"]
+    "no-return-assign": [2, "except-parens"],
+    "no-else-return": [0]
   },
   "settings": {
     "import/resolver": {
