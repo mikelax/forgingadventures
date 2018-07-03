@@ -76,3 +76,12 @@ export const updateCharacterMutation = gql`
   }
   ${characterFields}
 `;
+
+export const quickUpdateCharacterMutation = gql`
+  mutation quickUpdateCharacter($id: ID!, $input: QuickUpdateCharacterInput) {
+    quickUpdateCharacter(id: $id, input: $input) {
+      ...characterFields
+    }
+  }
+  ${characterFields}
+`;

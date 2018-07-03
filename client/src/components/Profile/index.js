@@ -6,7 +6,7 @@ import { graphql, Query } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
-import { Container, Header, Icon, Image, Label, Menu } from 'semantic-ui-react';
+import { Container, Header, Icon, Label, Menu } from 'semantic-ui-react';
 import { Route, Switch } from 'react-router-dom';
 
 import Games from './Games';
@@ -16,11 +16,11 @@ import KickedGames from './KickedGames';
 
 import { myCharactersSummaryQuery } from 'components/Characters/queries';
 import { myGamesSummaryQuery } from 'components/Games/queries';
+import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
+
 import { meQuery } from 'queries/users';
 
 import './Profile.css';
-
-// TODO refactor this view to utilise routes for each tab to reduce API queries
 
 class Profile extends Component {
 
@@ -37,7 +37,7 @@ class Profile extends Component {
 
           <Container>
             <Header as='h1'>
-              <Image circular src={user.profileImage.url} />
+              <UserImageAvatar user={user} />
               <Header.Content>
                 {user.name}
                 <Header.Subheader>

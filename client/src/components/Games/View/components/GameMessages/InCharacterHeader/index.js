@@ -39,7 +39,7 @@ export default function InCharacterHeader(props) {
                    verticalAlign="middle"
                    className="profile-image"
       >
-        <InCharacterMenu character={character} gameId={gameId}>
+        <InCharacterMenu character={character} characterDetails={characterDetails} gameId={gameId}>
           <CharacterImageAvatar character={character} size="tiny" />
         </InCharacterMenu>
       </Grid.Column>
@@ -76,7 +76,7 @@ class InCharacterMenu extends Component {
   };
 
   render() {
-    const { children, character, gameId } = this.props;
+    const { children, character, characterDetails, gameId } = this.props;
     const { quickEditingCharacter } = this.state;
     const open = quickEditingCharacter ? { open: false } : {};
 
@@ -106,6 +106,7 @@ class InCharacterMenu extends Component {
           <QuickEditCharacterModal
             open={quickEditingCharacter}
             character={character}
+            characterDetails={characterDetails}
             gameId={gameId}
             onClose={this._closeQuickEdit}
             onCancel={this._closeQuickEdit}

@@ -1,3 +1,5 @@
+import engineLoader from 'engine';
+
 import Character from 'models/character';
 import Game from 'models/game';
 import GamePlayer from 'models/gamePlayer';
@@ -11,8 +13,6 @@ import quickUpdateCharacterAndAddUpdateGameMessage from 'services/characters/qui
 
 import { TOPIC_MESSAGE_ADDED } from './gameMessage';
 
-import engineLoader from 'engine';
-
 export const characterTypeDefs = `
 
   extend type Query {
@@ -23,8 +23,9 @@ export const characterTypeDefs = `
   }
 
   extend type Mutation {
-    createCharacter(input: CreateCharacterInput): Character
-    updateCharacter(id: ID!, input: UpdateCharacterInput): Character
+    createCharacter(input: CreateCharacterInput): Character!
+    updateCharacter(id: ID!, input: UpdateCharacterInput): Character!
+    quickUpdateCharacter(id: ID!, input: QuickUpdateCharacterInput): Character!
   }
 
   type Character {
@@ -59,8 +60,16 @@ export const characterTypeDefs = `
     name: String!,
     labelId: Int!,
     profileImage: ProfileImageInput,
+    changeDescription: String
+  }
+
+  input QuickUpdateCharacterInput {
+    characterDetails: JSON!,
+    name: String!,
+    labelId: Int!,
+    profileImage: ProfileImageInput,
     changeDescription: String,
-    changeMeta: JSON
+    changeMeta: JSON!
   }
 `;
 
@@ -126,7 +135,21 @@ export const characterResolvers = {
             });
           });
       }),
+
     updateCharacter: (obj, { id, input }, context) =>
+      schemaScopeGate(['create:characters'], context, () => {
+        return runIfContextHasUser(context, (user) => {
+          const { labelId, characterDetails: { meta: { version } } } = input;
+          const engine = engineLoader({ labelId, version });
+
+          // fixme - only character owner can update with this mutation
+          return updateCharacter({
+            id, input, user, engine
+          });
+        });
+      }),
+
+    quickUpdateCharacter: (obj, { id, input }, context) =>
       schemaScopeGate(['create:characters'], context, () => {
         return runIfContextHasUser(context, (user) => {
           const { labelId, characterDetails: { meta: { version } } } = input;
@@ -134,21 +157,18 @@ export const characterResolvers = {
 
           // input.changeMeta is included when quick editing a character in a game mesage
           // manage these differently to record the update and also generate a game message
-          if (input.changeMeta) {
-            return quickUpdateCharacterAndAddUpdateGameMessage({
-              id, input, user, engine
+
+          // fixme - only character owner or current game GM can use this mutation
+
+          return quickUpdateCharacterAndAddUpdateGameMessage({
+            id, input, user, engine
+          })
+            .tap(({ gameMessage: messageAdded }) => {
+              if (messageAdded) {
+                pubsub.publish(TOPIC_MESSAGE_ADDED, { messageAdded });
+              }
             })
-              .tap(({ gameMessage: messageAdded }) => {
-                if (messageAdded) {
-                  pubsub.publish(TOPIC_MESSAGE_ADDED, { messageAdded });
-                }
-              })
-              .then(({ character }) => character);
-          } else {
-            return updateCharacter({
-              id, input, user, engine
-            });
-          }
+            .then(({ character }) => character);
         });
       })
   }

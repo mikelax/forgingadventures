@@ -6,6 +6,8 @@ import Roll from 'roll';
 import Character from 'models/character';
 import Game from 'models/game';
 import GameMessage from 'models/gameMessage';
+
+import sanitiseHtml from 'utils/sanitiseHtml';
 import { gameMessageMetaValidation } from 'engine';
 
 export default class {
@@ -39,9 +41,9 @@ export default class {
 // private
 
 function startTransaction() {
-  if (!(this.trx)) {
+  if (this.trx) {
     this.externalTransaction = true;
-
+  } else {
     return transaction
       .start(Character.knex())
       .then(t => (this.trx = t));
@@ -99,7 +101,7 @@ function createGameMessage() {
   const payload = {
     gameId,
     userId: this.user.id,
-    message,
+    message: sanitiseHtml(message),
     postType,
     meta: { rolls: this.rolls }
   };
