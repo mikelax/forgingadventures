@@ -30,7 +30,7 @@ class App extends Component {
     authSuccess: PropTypes.func.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { authSuccess, authFailure, getMyDetails } = this.props;
 
     return processAuth()

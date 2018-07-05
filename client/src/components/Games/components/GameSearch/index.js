@@ -15,7 +15,7 @@ class GameSearch extends Component {
     gamesSearch: PropTypes.object.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState(this.props.gamesSearch);
   }
 

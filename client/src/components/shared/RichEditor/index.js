@@ -25,7 +25,7 @@ export default class RichTextDisplay extends Component {
 
   messageContent = null;
 
-  componentWillMount() {
+  componentDidMount() {
     const { message } = this.props;
 
     this.setState({ message });

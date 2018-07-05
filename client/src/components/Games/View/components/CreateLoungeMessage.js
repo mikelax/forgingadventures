@@ -17,7 +17,7 @@ class CreateGameLoungeMessage extends Component {
 
   editor = React.createRef();
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     const loungeMessage = _.get(nextProps, 'loungeMessage.message');
 
     if (loungeMessage) {

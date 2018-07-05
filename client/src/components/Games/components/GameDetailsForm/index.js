@@ -40,7 +40,7 @@ class GameDetailsForm extends Component {
     errors: {}
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { game } = this.props;
 
     this._saveGameToState(game);
