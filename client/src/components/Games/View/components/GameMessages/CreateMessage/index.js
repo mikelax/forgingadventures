@@ -254,7 +254,11 @@ class PostAsSelector extends Component {
           <Dimmer.Dimmable as={Segment} basic dimmed={!(ic)}>
             <Dimmer active={!(ic)} inverted />
             <Grid>
-              <InCharacterHeader characterDetails={characterDetails} character={character} gameId={gameId} />
+              <InCharacterHeader
+                characterDetails={characterDetails}
+                character={character} gameId={gameId}
+                characterEditEnabled={true}
+              />
             </Grid>
           </Dimmer.Dimmable>
 

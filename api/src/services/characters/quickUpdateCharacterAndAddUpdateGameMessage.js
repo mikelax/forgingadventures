@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Bluebird from 'bluebird';
 import { transaction as knexTransaction } from 'objection';
+import tsml from 'tsml';
 
 import Character from 'models/character';
 
@@ -37,7 +38,7 @@ export default function ({
   function doUpdateCharacter() {
     const cleanInput = _(input)
       .chain()
-      .omit(['changeDescription', 'changeMeta'])
+      .omit(['changeMeta'])
       .value();
 
     return updateCharacter({
@@ -52,13 +53,13 @@ export default function ({
     const changeMessageContent = _(changeMeta)
       .chain()
       .map((change) => {
-        return (`
-          <div class="change-meta">
+        return (tsml`
+          <p class="change-meta">
             <strong>${changeDescription || 'Changed'}</strong>: 
             changed ${change.attributeDescription} 
             from <span class="before">${change.oldValue} 
             to <span class="after">${change.newValue}</span></span>    
-          </div> 
+          </p> 
         `);
       })
       .join()

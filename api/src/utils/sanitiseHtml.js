@@ -8,7 +8,8 @@ export default function (input) {
     allowedAttributes: {
       a: ['href'],
       img: ['src', 'width', 'height'],
-      span: ['style']
+      p: ['class'],
+      span: ['style', 'class']
     }
   });
 }

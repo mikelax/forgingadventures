@@ -71,5 +71,5 @@ export default compose(
     options: ( { match: { params: { id } } } ) => ({ variables: { id } })
   }),
   graphql(updateCharacterMutation, { name: 'updateCharacter' }),
-  OwnerGuard('data.game.user.id')
+  OwnerGuard('data.character.userId')
 )(EditCharacter);

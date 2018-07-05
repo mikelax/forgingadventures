@@ -52,6 +52,7 @@ export default function ({
   function updateCharacter() {
     const payload = _(input)
       .chain()
+      .omit(['changeDescription'])
       // merge in the sanitized (sp) characterDetails
       .merge({}, { characterDetails })
       .value();

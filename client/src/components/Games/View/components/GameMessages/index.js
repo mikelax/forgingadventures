@@ -194,7 +194,7 @@ class GameMessage extends Component {
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
-            {this._messageControls(gameMessage.user.id)}
+            {this._messageControls()}
           </Grid.Column>
           <Grid.Column textAlign="right" className="column-info">
             Posted {this._relativeDate(gameMessage.createdAt)}
@@ -212,7 +212,13 @@ class GameMessage extends Component {
 
     return (
       <Grid divided="vertically" className="in-character">
-        <InCharacterHeader characterDetails={characterDetails} character={character} gameId={gameId} />
+        <InCharacterHeader
+          characterDetails={characterDetails}
+          character={character}
+          gameId={gameId}
+          characterEditEnabled={this._isMyMessage()}
+        />
+
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor
@@ -234,7 +240,7 @@ class GameMessage extends Component {
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
-            {this._messageControls(gameMessage.user.id)}
+            {this._messageControls()}
           </Grid.Column>
 
           <Grid.Column textAlign="right" className="column-info">
@@ -270,7 +276,7 @@ class GameMessage extends Component {
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
-            {this._messageControls(gameMessage.user.id)}
+            {this._messageControls()}
           </Grid.Column>
           <Grid.Column textAlign="right" className="column-info">
             Posted {this._relativeDate(gameMessage.createdAt)}
@@ -281,14 +287,14 @@ class GameMessage extends Component {
     );
   };
 
-  _messageControls = (messageUserId) => {
+  _messageControls = () => {
     const { editing } = this.state;
 
-    return editing ? this._editingControls() : this._viewingControls(messageUserId);
+    return editing ? this._editingControls() : this._viewingControls();
   };
 
-  _viewingControls = (messageUserId) => {
-    const canEdit = _.eq(messageUserId, _.get(this.props.meQuery, 'me.id'));
+  _viewingControls = () => {
+    const canEdit = this._isMyMessage();
     const canPost = _.get(this.props, ('meQuery.me.id'));
 
     if (canPost) {
@@ -307,6 +313,13 @@ class GameMessage extends Component {
       <Button size="tiny" onClick={this._handleCancel}>Cancel</Button>
     </React.Fragment>
   );
+
+  _isMyMessage = () => {
+    const { gameMessage: { user: { id } } } = this.props;
+    const myUserId = _.get(this.props.meQuery, 'me.id');
+
+    return Number(id) === Number(myUserId);
+  };
 
   _handleEdit = () => {
     this.setState({ editing: true });

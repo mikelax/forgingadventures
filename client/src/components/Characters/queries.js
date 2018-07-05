@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export const characterFields = `
   fragment characterFields on Character {
     id
+    userId
     name
     labelId
     label {

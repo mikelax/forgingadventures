@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Popup, Menu, Icon } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
 
 import {
   primaryAttributes as dnd5PrimaryAttributes,
@@ -21,6 +22,7 @@ import './InCharacterHeader.styl';
 
 export default function InCharacterHeader(props) {
   const { characterDetails, character, character: { labelId  }, gameId, characterDetails: { meta: { version } } } = props;
+  const { characterEditEnabled } = props;
 
   const PrimaryAttributes = {
     1: dnd5PrimaryAttributes,
@@ -39,7 +41,12 @@ export default function InCharacterHeader(props) {
                    verticalAlign="middle"
                    className="profile-image"
       >
-        <InCharacterMenu character={character} characterDetails={characterDetails} gameId={gameId}>
+        <InCharacterMenu
+          enabled={characterEditEnabled}
+          character={character}
+          characterDetails={characterDetails}
+          gameId={gameId}
+        >
           <CharacterImageAvatar character={character} size="tiny" />
         </InCharacterMenu>
       </Grid.Column>
@@ -76,14 +83,15 @@ class InCharacterMenu extends Component {
   };
 
   render() {
-    const { children, character, characterDetails, gameId } = this.props;
+    const { children, character, characterDetails, gameId, enabled } = this.props;
     const { quickEditingCharacter } = this.state;
-    const open = quickEditingCharacter ? { open: false } : {};
+    const open = (quickEditingCharacter || !(enabled)) ? { open: false } : {};
+    const cx = classNames({ 'popup-trigger': enabled });
 
     return (
       <React.Fragment>
         <Popup
-          trigger={<div className="popup-trigger">{children}</div>}
+          trigger={<div className={cx}>{children}</div>}
           hideOnScroll
           position="right center"
           hoverable
