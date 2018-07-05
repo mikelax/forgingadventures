@@ -157,6 +157,7 @@ class GameMessage extends Component {
     const messageRenderer = {
       gm: this._gmMessageRender,
       ic: this._inCharacterMessageRender,
+      icm: this._inCharacterMessageRender,
       ooc: this._outOfCharacterMessageRender
     }[postType];
 
@@ -294,7 +295,7 @@ class GameMessage extends Component {
   };
 
   _viewingControls = () => {
-    const canEdit = this._isMyMessage();
+    const canEdit = this._isMyMessage() && this._editableMessage();
     const canPost = _.get(this.props, ('meQuery.me.id'));
 
     if (canPost) {
@@ -319,6 +320,12 @@ class GameMessage extends Component {
     const myUserId = _.get(this.props.meQuery, 'me.id');
 
     return Number(id) === Number(myUserId);
+  };
+
+  _editableMessage = () => {
+    const { gameMessage: { postType } } = this.props;
+
+    return postType !== 'icm';
   };
 
   _handleEdit = () => {

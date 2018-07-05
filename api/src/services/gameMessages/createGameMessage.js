@@ -14,7 +14,7 @@ export default class {
   constructor(options) {
     this.user = options.user;
     this.input = options.input;
-    this.inCharacterPost = options.input.postType === 'ic';
+    this.inCharacterPost = _.includes(['ic', 'icm'], options.input.postType);
     this.gameId = options.input.gameId;
 
     this.trx = options.transaction;

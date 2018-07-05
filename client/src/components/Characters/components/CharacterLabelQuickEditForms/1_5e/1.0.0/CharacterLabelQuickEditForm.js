@@ -44,7 +44,7 @@ export default function (props) {
   }
 
   function handleSubmit(character) {
-    return (values, { setSubmitting }) => {
+    return (values, { setSubmitting, setErrors }) => {
       const { changeDescription } = values;
 
       const characterDetails = _.merge({}, character.characterDetails, {
@@ -56,19 +56,24 @@ export default function (props) {
 
       const changeMeta = calculateChangeMeta(character, values);
 
-      const payload = {
-        changeDescription,
-        characterDetails,
-        changeMeta,
-        name: character.name,
-        labelId: character.labelId,
-        profileImage: stripStoreVars(character.profileImage)
-      };
+      if (_.isEmpty(changeMeta)) {
+        setErrors({ 'health.currentHitPoints': 'Please change HP' });
+        setSubmitting(false);
+      } else {
+        const payload = {
+          changeDescription,
+          characterDetails,
+          changeMeta,
+          name: character.name,
+          labelId: character.labelId,
+          profileImage: stripStoreVars(character.profileImage)
+        };
 
-      setSubmitting(true);
+        setSubmitting(true);
 
-      return onSave(payload)
-        .catch(() => setSubmitting(false));
+        return onSave(payload)
+          .catch(() => setSubmitting(false));
+      }
     };
   }
 
@@ -135,8 +140,8 @@ function QuickEditCharacterForm(props) {
             <span className="max">
               {values.health.maxHitPoints}
             </span>
+            <FormFieldErrorMessage name="health.currentHitPoints" />
           </Form.Field>
-          <FormFieldErrorMessage name="health.currentHitPoints" />
         </Form.Group>
 
         <Form.Field>

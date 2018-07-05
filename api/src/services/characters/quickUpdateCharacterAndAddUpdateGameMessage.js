@@ -72,7 +72,7 @@ export default function ({
         user,
         input: {
           gameId,
-          postType: 'ic',
+          postType: 'icm',
           characterId: character.id,
           message: changeMessageContent
         },
