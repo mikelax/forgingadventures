@@ -118,16 +118,17 @@ class LoungeMessagesRenderer extends Component {
         }
 
         const { gameLoungeMessageUpdated } = subscriptionData.data;
-        // fixme - this mutates the existing object. refactor
-        // fixme - https://redux.js.org/docs/recipes/reducers/ImmutableUpdatePatterns.html#updating-an-item-in-an-array
-        _.chain(prev.gameLoungeMessages)
-          .find({ id: gameLoungeMessageUpdated.id })
-          .merge(gameLoungeMessageUpdated)
-          .value();
+        const oldMessageIndex = _.findIndex(prev.gameLoungeMessages, { id: gameLoungeMessageUpdated.id });
 
-
-        return Object.assign({}, prev, {
-          gameLoungeMessages: [...prev.gameLoungeMessages]
+        return _.map(prev.gameLoungeMessages, (gameLoungeMessage, index) => {
+          if (index !== oldMessageIndex) {
+            return gameLoungeMessage;
+          } else {
+            return {
+              ...prev.gameLoungeMessages[oldMessageIndex],
+              ...gameLoungeMessageUpdated
+            };
+          }
         });
       }
     });

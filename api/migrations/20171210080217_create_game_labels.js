@@ -24,12 +24,6 @@ exports.up = function(knex) {
           displayName: 'Pathfinder Roleplaying Game',
           shortName: 'Pathfinder',
           displayOrder: 50
-        },
-        {
-          id: 3,
-          displayName: 'Starfinder',
-          shortName: 'Starfinder',
-          displayOrder: 100
         }
       ]);
     });

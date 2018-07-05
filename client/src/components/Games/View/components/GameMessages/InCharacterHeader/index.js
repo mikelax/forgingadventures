@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Grid } from 'semantic-ui-react';
+import { Grid, Popup, Menu, Icon } from 'semantic-ui-react';
+import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
 
 import {
   primaryAttributes as dnd5PrimaryAttributes,
@@ -14,10 +16,13 @@ import {
 
 import { CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
 
+import QuickEditCharacterModal from '../QuickEditCharacterModal';
+
 import './InCharacterHeader.styl';
 
 export default function InCharacterHeader(props) {
-  const { characterDetails, character, character: { labelId  }, characterDetails: { meta: { version } } } = props;
+  const { characterDetails, character, character: { labelId  }, gameId, characterDetails: { meta: { version } } } = props;
+  const { characterEditEnabled } = props;
 
   const PrimaryAttributes = {
     1: dnd5PrimaryAttributes,
@@ -36,7 +41,14 @@ export default function InCharacterHeader(props) {
                    verticalAlign="middle"
                    className="profile-image"
       >
-        <CharacterImageAvatar character={character} size="tiny" />
+        <InCharacterMenu
+          enabled={characterEditEnabled}
+          character={character}
+          characterDetails={characterDetails}
+          gameId={gameId}
+        >
+          <CharacterImageAvatar character={character} size="tiny" />
+        </InCharacterMenu>
       </Grid.Column>
 
       <Grid.Column computer={14} tablet={13} mobile={12}
@@ -63,3 +75,61 @@ InCharacterHeader.propTypes = {
   characterDetails: PropTypes.object.isRequired,
   character: PropTypes.object.isRequired
 };
+
+class InCharacterMenu extends Component {
+
+  state={
+    quickEditingCharacter: false
+  };
+
+  render() {
+    const { children, character, characterDetails, gameId, enabled } = this.props;
+    const { quickEditingCharacter } = this.state;
+    const open = (quickEditingCharacter || !(enabled)) ? { open: false } : {};
+    const cx = classNames({ 'popup-trigger': enabled });
+
+    return (
+      <React.Fragment>
+        <Popup
+          trigger={<div className={cx}>{children}</div>}
+          hideOnScroll
+          position="right center"
+          hoverable
+          {...open}
+        >
+          <Menu vertical compact size="tiny">
+            <Menu.Item onClick={this._showQuickEditModal}>
+              <Icon icon="edit outline" />
+              Quick Edit Character
+            </Menu.Item>
+
+            <Menu.Item as={NavLink} to={`/characters/${character.id}/edit`} target="_blank">
+              <Icon icon="edit" />
+              Edit Character
+            </Menu.Item>
+          </Menu>
+        </Popup>
+
+        { quickEditingCharacter && (
+          <QuickEditCharacterModal
+            open={quickEditingCharacter}
+            character={character}
+            characterDetails={characterDetails}
+            gameId={gameId}
+            onClose={this._closeQuickEdit}
+            onCancel={this._closeQuickEdit}
+          />
+        ) }
+
+      </React.Fragment>
+    );
+  }
+
+  _showQuickEditModal = () => {
+    this.setState({ quickEditingCharacter: true });
+  };
+
+  _closeQuickEdit = () => {
+    this.setState({ quickEditingCharacter: false });
+  };
+}

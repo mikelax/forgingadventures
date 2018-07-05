@@ -10,6 +10,9 @@ export default class {
   }
 
   validateCharacterDetails(input) {
-    return this.validationCharacterDetails.validate(input);
+    return this.validationCharacterDetails.validate(input, {
+      strict: true,
+      stripUnknown: true
+    });
   }
 }
