@@ -22,6 +22,8 @@ class GameDetailsForm extends Component {
     onCancel: PropTypes.func.isRequired
   };
 
+  // fixme convert to Formik so we don't need componentDidMount and componentDidUpdate
+
   state = {
     // the form control state
     store: {
@@ -40,13 +42,15 @@ class GameDetailsForm extends Component {
     errors: {}
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { game } = this.props;
 
     this._saveGameToState(game);
   }
 
-  componentWillReceiveProps(nextProps) {
+  // need to use UNSAFE here to set game details before a render cycle otherwise
+  // the timing on componentDidUpdate throws off tinyMCE editor
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { game } = nextProps;
 
     this._saveGameToState(game);

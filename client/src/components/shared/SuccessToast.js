@@ -17,10 +17,12 @@ export default class SuccessToast extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { open } = nextProps;
+  componentDidUpdate() {
+    const { open } = this.props;
 
-    this.setState({ open });
+    if (open !== this.state.open) {
+      this.setState({ open });
+    }
   }
 
   render() {

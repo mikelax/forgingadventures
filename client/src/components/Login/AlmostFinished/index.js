@@ -28,15 +28,15 @@ class AlmostFinished extends Component {
     errors: {}
   };
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
+  static getDerivedStateFromProps(props) {
+    return {
       store: {
-        username: _.get(nextProps.data, 'me.username') || '',
-        name: _.get(nextProps.data, 'me.name') || '',
-        timezone: _.get(nextProps.data, 'me.timezone') || '',
-        profileImageUrl: _.get(nextProps.data, 'me.profileImage.url') || ''
+        username: _.get(props.data, 'me.username') || '',
+        name: _.get(props.data, 'me.name') || '',
+        timezone: _.get(props.data, 'me.timezone') || '',
+        profileImageUrl: _.get(props.data, 'me.profileImage.url') || ''
       }
-    });
+    };
   }
 
   render() {

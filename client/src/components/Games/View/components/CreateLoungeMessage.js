@@ -17,7 +17,9 @@ class CreateGameLoungeMessage extends Component {
 
   editor = React.createRef();
 
-  componentWillReceiveProps(nextProps) {
+  // need UNSAFE_componentWillReceiveProps otherwise timing on quoting blocks breaks
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const loungeMessage = _.get(nextProps, 'loungeMessage.message');
 
     if (loungeMessage) {
