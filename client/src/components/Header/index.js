@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Container, Dropdown, Icon, Image, Menu, Responsive } from 'semantic-ui-react';
 
 import { UserImageAvatar } from 'components/shared/ProfileImageAvatar';
-import { logout } from 'actions/auth';
+import { authLogout } from 'services/login';
 
 import logo from './logo.png';
 import './Header.styl';
@@ -87,7 +87,7 @@ const LeftMenuItemsBase = ({ authorisation: { isAuthenticated } }) => {
 
 class RightMenuItemsBase extends Component {
   render() {
-    const { authorisation: { isAuthenticated }, logout } = this.props;
+    const { authorisation: { isAuthenticated } } = this.props;
     const meLoading = _.get(this.props, 'me.loading');
 
     const createNewMenu = (
@@ -108,7 +108,7 @@ class RightMenuItemsBase extends Component {
             <Menu.Item as={NavLink} name="Profile" to="/profile"/>
             <Menu.Item as={NavLink} name="Settings" to="/settings"/>
             <Dropdown.Divider />
-            <Menu.Item as="a" name="Logout" onClick={logout}/>
+            <Menu.Item as="a" name="Logout" onClick={authLogout}/>
           </Dropdown.Menu>
         </Dropdown>
       </Menu.Item>
@@ -142,10 +142,6 @@ class RightMenuItemsBase extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout())
-});
-
 const mapStateToProps = state => ({
   authorisation: state.authorisation,
   me: state.me
@@ -156,8 +152,7 @@ const LeftMenuItems = connect(
 )(LeftMenuItemsBase);
 
 const RightMenuItems = connect(
-  mapStateToProps,
-  mapDispatchToProps, null, { pure: false }
+  mapStateToProps, null, null, { pure: false }
 )(RightMenuItemsBase);
 
 export default class Header extends Component {

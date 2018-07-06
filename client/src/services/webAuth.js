@@ -77,8 +77,7 @@ export function renewToken() {
 export function logout() {
   webAuth.logout({
     clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
-    // fixme - add the following to a base url .env.local
-    returnTo: 'http://localhost:3000'
+    returnTo: process.env.REACT_APP_AUTH0_REDIRECT_LOGOUT
   });
 }
 
