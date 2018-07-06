@@ -48,6 +48,7 @@ export const gameMessageFields = `
     characterLog {
       characterDetails
       character {
+        id
         name
         labelId
         profileImage {

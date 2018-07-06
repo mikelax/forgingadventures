@@ -36,6 +36,7 @@ export default function GameMessages(props) {
     variables: { gameId },
     dataKey: 'gameMessagesSummary.countMessages'
   };
+
   const itemsQuery = {
     query: gameMessagesQuery,
     variables: { gameId },
@@ -122,15 +123,17 @@ class MessagesRenderer extends Component {
         }
 
         const { messageUpdated } = subscriptionData.data;
-        // fixme - this mutates the existing object. refactor
-        // fixme - https://redux.js.org/docs/recipes/reducers/ImmutableUpdatePatterns.html#updating-an-item-in-an-array
-        _.chain(prev.gameMessages)
-          .find({ id: messageUpdated.id })
-          .merge(messageUpdated)
-          .value();
+        const oldMessageIndex = _.findIndex(prev.gameMessages, { id: messageUpdated.id });
 
-        return Object.assign({}, prev, {
-          gameMessages: [...prev.gameMessages]
+        return _.map(prev.gameMessages, (gameMessage, index) => {
+          if (index !== oldMessageIndex) {
+            return gameMessage;
+          } else {
+            return {
+              ...prev.gameMessages[oldMessageIndex],
+              ...messageUpdated
+            };
+          }
         });
       }
     });
@@ -154,6 +157,7 @@ class GameMessage extends Component {
     const messageRenderer = {
       gm: this._gmMessageRender,
       ic: this._inCharacterMessageRender,
+      icm: this._inCharacterMessageRender,
       ooc: this._outOfCharacterMessageRender
     }[postType];
 
@@ -191,7 +195,7 @@ class GameMessage extends Component {
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
-            {this._messageControls(gameMessage.user.id)}
+            {this._messageControls()}
           </Grid.Column>
           <Grid.Column textAlign="right" className="column-info">
             Posted {this._relativeDate(gameMessage.createdAt)}
@@ -203,13 +207,19 @@ class GameMessage extends Component {
   };
 
   _inCharacterMessageRender = () => {
-    const { gameMessage, gameMessage: { characterLog: { character, characterDetails }, meta } } = this.props;
+    const { gameMessage, gameMessage: { gameId, characterLog: { character, characterDetails }, meta } } = this.props;
     const { editing } = this.state;
     const rolls = _.get(meta, 'rolls');
 
     return (
       <Grid divided="vertically" className="in-character">
-        <InCharacterHeader characterDetails={characterDetails} character={character} />
+        <InCharacterHeader
+          characterDetails={characterDetails}
+          character={character}
+          gameId={gameId}
+          characterEditEnabled={this._isMyMessage()}
+        />
+
         <Grid.Row columns={1}>
           <Grid.Column className="column-message">
             <RichEditor
@@ -231,7 +241,7 @@ class GameMessage extends Component {
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
-            {this._messageControls(gameMessage.user.id)}
+            {this._messageControls()}
           </Grid.Column>
 
           <Grid.Column textAlign="right" className="column-info">
@@ -267,7 +277,7 @@ class GameMessage extends Component {
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
-            {this._messageControls(gameMessage.user.id)}
+            {this._messageControls()}
           </Grid.Column>
           <Grid.Column textAlign="right" className="column-info">
             Posted {this._relativeDate(gameMessage.createdAt)}
@@ -278,14 +288,14 @@ class GameMessage extends Component {
     );
   };
 
-  _messageControls = (messageUserId) => {
+  _messageControls = () => {
     const { editing } = this.state;
 
-    return editing ? this._editingControls() : this._viewingControls(messageUserId);
+    return editing ? this._editingControls() : this._viewingControls();
   };
 
-  _viewingControls = (messageUserId) => {
-    const canEdit = _.eq(messageUserId, _.get(this.props.meQuery, 'me.id'));
+  _viewingControls = () => {
+    const canEdit = this._isMyMessage() && this._editableMessage();
     const canPost = _.get(this.props, ('meQuery.me.id'));
 
     if (canPost) {
@@ -304,6 +314,19 @@ class GameMessage extends Component {
       <Button size="tiny" onClick={this._handleCancel}>Cancel</Button>
     </React.Fragment>
   );
+
+  _isMyMessage = () => {
+    const { gameMessage: { user: { id } } } = this.props;
+    const myUserId = _.get(this.props.meQuery, 'me.id');
+
+    return Number(id) === Number(myUserId);
+  };
+
+  _editableMessage = () => {
+    const { gameMessage: { postType } } = this.props;
+
+    return postType !== 'icm';
+  };
 
   _handleEdit = () => {
     this.setState({ editing: true });

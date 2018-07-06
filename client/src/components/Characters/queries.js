@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export const characterFields = `
   fragment characterFields on Character {
     id
+    userId
     name
     labelId
     label {
@@ -71,6 +72,15 @@ export const createCharacterMutation = gql`
 export const updateCharacterMutation = gql`
   mutation updateCharacter($id: ID!, $input: UpdateCharacterInput) {
     updateCharacter(id: $id, input: $input) {
+      ...characterFields
+    }
+  }
+  ${characterFields}
+`;
+
+export const quickUpdateCharacterMutation = gql`
+  mutation quickUpdateCharacter($id: ID!, $input: QuickUpdateCharacterInput) {
+    quickUpdateCharacter(id: $id, input: $input) {
       ...characterFields
     }
   }

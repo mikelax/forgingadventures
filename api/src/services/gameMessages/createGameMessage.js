@@ -6,16 +6,18 @@ import Roll from 'roll';
 import Character from 'models/character';
 import Game from 'models/game';
 import GameMessage from 'models/gameMessage';
+
+import sanitiseHtml from 'utils/sanitiseHtml';
 import { gameMessageMetaValidation } from 'engine';
 
 export default class {
   constructor(options) {
     this.user = options.user;
     this.input = options.input;
-    this.inCharacterPost = options.input.postType === 'ic';
+    this.inCharacterPost = _.includes(['ic', 'icm'], options.input.postType);
     this.gameId = options.input.gameId;
 
-    this.trx = null;
+    this.trx = options.transaction;
     this.game = null;
     this.meta = null;
     this.rolls = null;
@@ -31,17 +33,21 @@ export default class {
       .then(validateGameMessageMeta)
       .then(calculateDiceRolls)
       .then(createGameMessage)
-      .tap(() => this.trx.commit())
-      .tapCatch(() => this.trx.rollback());
+      .tap(commit)
+      .tapCatch(rollback);
   }
 }
 
 // private
 
 function startTransaction() {
-  return transaction
-    .start(Character.knex())
-    .then(t => (this.trx = t));
+  if (this.trx) {
+    this.externalTransaction = true;
+  } else {
+    return transaction
+      .start(Character.knex())
+      .then(t => (this.trx = t));
+  }
 }
 
 function getGame() {
@@ -95,7 +101,7 @@ function createGameMessage() {
   const payload = {
     gameId,
     userId: this.user.id,
-    message,
+    message: sanitiseHtml(message),
     postType,
     meta: { rolls: this.rolls }
   };
@@ -112,4 +118,16 @@ function createGameMessage() {
     .insert(payload)
     .returning('*')
     .execute();
+}
+
+function commit() {
+  if (!(this.externalTransaction)) {
+    return this.trx.commit();
+  }
+}
+
+function rollback() {
+  if (!(this.externalTransaction)) {
+    return this.trx.rollback();
+  }
 }

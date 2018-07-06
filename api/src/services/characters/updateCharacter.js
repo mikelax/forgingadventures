@@ -1,19 +1,25 @@
-import { transaction } from 'objection';
+import _ from 'lodash';
+import Bluebird from 'bluebird';
+import { transaction as knexTransaction } from 'objection';
 
 import CharacterLog from 'models/characterLog';
 import Character from 'models/character';
 
+
 export default function ({
-  id, user, input, engine
+  id, user, input, engine, transaction
 }) {
   let character;
   let characterDetails;
   let characterLog;
   let previousCharacterLog;
 
-  let trx;
+  let trx = transaction;
+  let externalTransaction;
 
-  return startTransaction()
+  return Bluebird
+    .resolve()
+    .then(startTransaction)
     .then(validateCharacterDetails)
     .then(updateCharacter)
     .then(getPreviousCharacterLog)
@@ -26,9 +32,13 @@ export default function ({
   // helpers
 
   function startTransaction() {
-    return transaction
-      .start(CharacterLog.knex())
-      .then(t => (trx = t));
+    if (trx) {
+      externalTransaction = true;
+    } else {
+      return knexTransaction
+        .start(CharacterLog.knex())
+        .then(t => (trx = t));
+    }
   }
 
   function validateCharacterDetails() {
@@ -40,9 +50,16 @@ export default function ({
   }
 
   function updateCharacter() {
+    const payload = _(input)
+      .chain()
+      .omit(['changeDescription'])
+      // merge in the sanitized (sp) characterDetails
+      .merge({}, { characterDetails })
+      .value();
+
     return Character
       .query(trx)
-      .patch(input)
+      .patch(payload)
       .where({ id, userId: user.id })
       .first()
       .returning('*')
@@ -94,10 +111,10 @@ export default function ({
   }
 
   function commitTransaction() {
-    return trx.commit();
+    return !(externalTransaction) && trx.commit();
   }
 
   function rollbackTransaction() {
-    return trx.rollback();
+    return !(externalTransaction) && trx.rollback();
   }
 }

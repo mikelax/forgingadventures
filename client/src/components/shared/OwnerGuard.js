@@ -18,7 +18,7 @@ export default function(objectOwnerKeyPath) {
 
         // only return true when both ownerId and currentUserId are available and NOT equal
         // to render the left branch - otherwise fall through to the default render via the right branch
-        return ownerId && currentUserId && (ownerId !== currentUserId);
+        return ownerId && currentUserId && (Number(ownerId) !== Number(currentUserId));
       },
       renderComponent((props) => {
         const { history } = props;

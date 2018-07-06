@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Bluebird from 'bluebird';
 import { transaction } from 'objection';
 
 import CharacterLog from 'models/characterLog';
@@ -10,7 +11,9 @@ export default function({ user, input, engine }) {
   let characterLog;
   let trx;
 
-  return startTransaction()
+  return Bluebird
+    .resolve()
+    .then(startTransaction)
     .then(validateCharacterDetails)
     .then(createCharacter)
     .then(createCharacterLog)

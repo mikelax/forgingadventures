@@ -1,0 +1,17 @@
+.quick-char-edit
+  // Modal.Content and Modal.Actions must be directly nested under a Modal otherwise the styles don't take
+  // this isn't possible when using a Form with Modal so set styles manually here
+  .form
+    & > .content
+      display: block;
+      width: 100%;
+      font-size: 1em;
+      line-height: 1.4;
+      padding: 1.5rem;
+      background: #fff;
+
+    & > .actions
+      background: #f9fafb;
+      padding: 1rem 1rem;
+      border-top: 1px solid rgba(34,36,38,.15);
+      text-align: right;
