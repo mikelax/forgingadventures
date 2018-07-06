@@ -15,11 +15,13 @@ class GameSearch extends Component {
     gamesSearch: PropTypes.object.isRequired
   };
 
+  // fixme convert over to formik to get rid of componentDidMount and UNSAFE_componentWillReceiveProps
+
   componentDidMount() {
     this.setState(this.props.gamesSearch);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.gamesSearch);
   }
 

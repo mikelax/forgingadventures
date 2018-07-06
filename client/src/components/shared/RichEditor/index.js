@@ -31,10 +31,12 @@ export default class RichTextDisplay extends Component {
     this.setState({ message });
   }
 
-  componentWillReceiveProps(nextProp) {
-    const { message } = nextProp;
+  componentDidUpdate() {
+    const { message } = this.props;
 
-    this.setState({ message });
+    if (message && ( message !== this.state.message )) {
+      this.setState({ message });
+    }
   }
 
   render() {
