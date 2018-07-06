@@ -1,6 +1,5 @@
 export const AUTH_FAILURE = 'auth_failure';
 export const AUTH_SUCCESS = 'auth_success';
-export const LOGOUT_SUCCESS = 'logout_success';
 
 export function authFailure(error) {
   return {
