@@ -375,6 +375,35 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 
 }
 
+const abilityShape = {
+  baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
+  raceBonus: Yup.number().integer().default(0).min(0),
+  total: Yup.number().integer().default(1).min(1).required(),
+  modifier: Yup.number().integer().default(-5).min(-5).required(),
+  savingThrows: Yup.boolean().default(false)
+};
+
+const skillShape = {
+  proficient: Yup.boolean().default(false),
+  bonus: Yup.number().integer().default(0)
+};
+
+const dexSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('dexterity').oneOf(['dexterity'])
+});
+const intSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('intelligence').oneOf(['intelligence'])
+});
+const wisSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('wisdom').oneOf(['wisdom'])
+});
+const charSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('charisma').oneOf(['charisma'])
+});
+const strSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('strength').oneOf(['strength'])
+});
+
 const validationSchema = Yup.object().shape({
   meta: Yup.object().shape({
     version: Yup.string().default('1.0.0').required()
@@ -399,48 +428,31 @@ const validationSchema = Yup.object().shape({
     hitDie: Yup.string().label('hit die').default('').required()
   }),
   abilities: Yup.object().shape({
-    strength: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    dexterity: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    constitution: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    intelligence: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    wisdom: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    charisma: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    })
+    dexterity: Yup.object().shape(abilityShape),
+    constitution: Yup.object().shape(abilityShape),
+    intelligence: Yup.object().shape(abilityShape),
+    wisdom: Yup.object().shape(abilityShape),
+    charisma: Yup.object().shape(abilityShape)
+  }),
+  skills: Yup.object().shape({
+    acrobatics: Yup.object().shape(dexSkillShape),
+    animalHandling: Yup.object().shape(wisSkillShape),
+    arcana: Yup.object().shape(intSkillShape),
+    athletics: Yup.object().shape(strSkillShape),
+    deception: Yup.object().shape(charSkillShape),
+    history: Yup.object().shape(intSkillShape),
+    insight: Yup.object().shape(wisSkillShape),
+    intimidation: Yup.object().shape(charSkillShape),
+    investigation: Yup.object().shape(intSkillShape),
+    medicine: Yup.object().shape(wisSkillShape),
+    nature: Yup.object().shape(intSkillShape),
+    perception: Yup.object().shape(wisSkillShape),
+    performance: Yup.object().shape(charSkillShape),
+    persuasion: Yup.object().shape(charSkillShape),
+    religion: Yup.object().shape(intSkillShape),
+    sleightOfHand: Yup.object().shape(dexSkillShape),
+    stealth: Yup.object().shape(dexSkillShape),
+    survival: Yup.object().shape(wisSkillShape)
   })
 });
 
