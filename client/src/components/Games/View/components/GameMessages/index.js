@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
@@ -73,6 +74,10 @@ export default function GameMessages(props) {
     </UberPaginator>
   );
 }
+
+GameMessages.propTypes = {
+  gameId: PropTypes.number.isRequired
+};
 
 class MessagesRenderer extends Component {
 

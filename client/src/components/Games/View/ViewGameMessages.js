@@ -7,7 +7,7 @@ import { graphql } from 'react-apollo';
 
 import GameHeader from './GameHeader';
 import CreateMessage from './components/GameMessages/CreateMessage';
-import GamesMessages from './components/GameMessages';
+import GameMessages from './components/GameMessages';
 import { gameQuery, myGamePlayerQuery } from '../queries';
 
 import ApolloLoader from 'components/shared/ApolloLoader';
@@ -20,7 +20,7 @@ function ViewGameMessages(props) {
     <React.Fragment>
       <GameHeader game={game} />
 
-      <GamesMessages gameId={game.id}/>
+      <GameMessages gameId={_.toInteger(game.id)}/>
 
       <Segment>
         <EditorBlock myGamePlayer={myGamePlayer} game={game}/>
