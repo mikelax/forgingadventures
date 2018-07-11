@@ -20,7 +20,7 @@ function ViewGameMessages(props) {
     <React.Fragment>
       <GameHeader game={game} />
 
-      <GameMessages gameId={_.toInteger(game.id)}/>
+      <GameMessages gameId={game.id}/>
 
       <Segment>
         <EditorBlock myGamePlayer={myGamePlayer} game={game}/>

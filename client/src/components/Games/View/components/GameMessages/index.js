@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, Query } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { Header, Button, Grid, Segment, Message } from 'semantic-ui-react';
@@ -23,7 +23,7 @@ import { meQuery } from 'queries/users';
 
 import {
   gameMessagesQuery, gameMessagesSummaryQuery, updateGameMessageMutation,
-  onGameMessageAdded, onGameMessageUpdated
+  onGameMessageAdded, onGameMessageUpdated, myGamePlayerQuery
 } from 'components/Games/queries';
 
 import './GameMessages.styl';
@@ -76,7 +76,7 @@ export default function GameMessages(props) {
 }
 
 GameMessages.propTypes = {
-  gameId: PropTypes.number.isRequired
+  gameId: PropTypes.string.isRequired
 };
 
 class MessagesRenderer extends Component {
@@ -86,15 +86,49 @@ class MessagesRenderer extends Component {
   }
 
   render() {
-    const { gameMessages } = this.props;
+    const { gameMessages, gameId } = this.props;
 
-    return _.map(gameMessages, (gameMessage) => (
-      <Segment key={`message-${gameMessage.id}`} className='game-message'>
-        <GameMessageContainer gameMessage={gameMessage} />
-      </Segment>
-    ));
+    return (
+      <Query
+        query={myGamePlayerQuery}
+        variables={{ gameId }}
+      >
+        {({ data: myGamePlayerData }) => (
+          <Query
+            query={meQuery}
+          >
+            {({ data: meQueryData }) => {
+              return _.map(gameMessages, (gameMessage) => (
+                <Segment key={`message-${gameMessage.id}`} className='game-message'>
+                  <GameMessageContainer
+                    gameMessage={gameMessage}
+                    isMemberOfGame={this._isMemberOfGame(meQueryData, myGamePlayerData)}
+                    isCurrentUserMessage={this._messageBelongsToCurrentUser(gameMessage, meQueryData)}
+                  />
+                </Segment>
+              ));
+            }}
+          </Query>
+
+        )}
+      </Query>
+    );
 
   }
+
+  _isMemberOfGame = _.memoize((meQueryData, myGamePlayerData) => {
+    const { myGamePlayer } = myGamePlayerData;
+    const currentUserId = _.get(meQueryData, 'me.id');
+
+    return _.some(myGamePlayer, mgp => Number(mgp.user.id) === Number(currentUserId));
+  });
+
+  _messageBelongsToCurrentUser = (gameMessage, meQueryData) => {
+    const { user: { id: userId } } = gameMessage;
+    const currentUserId = _.get(meQueryData, 'me.id');
+
+    return Number(userId) === Number(currentUserId);
+  };
 
   _setupSubscriptions() {
     const { gameId, subscribeToMore } = this.props;
@@ -213,6 +247,7 @@ class GameMessage extends Component {
 
   _inCharacterMessageRender = () => {
     const { gameMessage, gameMessage: { gameId, characterLog: { character, characterDetails }, meta } } = this.props;
+    const { isCurrentUserMessage } = this.props;
     const { editing } = this.state;
     const rolls = _.get(meta, 'rolls');
 
@@ -222,7 +257,7 @@ class GameMessage extends Component {
           characterDetails={characterDetails}
           character={character}
           gameId={gameId}
-          characterEditEnabled={this._isMyMessage()}
+          characterEditEnabled={isCurrentUserMessage}
         />
 
         <Grid.Row columns={1}>
@@ -300,10 +335,10 @@ class GameMessage extends Component {
   };
 
   _viewingControls = () => {
-    const canEdit = this._isMyMessage() && this._editableMessage();
-    const canPost = _.get(this.props, ('meQuery.me.id'));
+    const { isCurrentUserMessage, isMemberOfGame } = this.props;
+    const canEdit = isCurrentUserMessage && this._editableMessage();
 
-    if (canPost) {
+    if (isMemberOfGame) {
       return (
         <React.Fragment>
           {canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
@@ -319,13 +354,6 @@ class GameMessage extends Component {
       <Button size="tiny" onClick={this._handleCancel}>Cancel</Button>
     </React.Fragment>
   );
-
-  _isMyMessage = () => {
-    const { gameMessage: { user: { id } } } = this.props;
-    const myUserId = _.get(this.props.meQuery, 'me.id');
-
-    return Number(id) === Number(myUserId);
-  };
 
   _editableMessage = () => {
     const { gameMessage: { postType } } = this.props;
@@ -395,6 +423,5 @@ const GameMessageContainer = compose(
   graphql(updateGameMessageMutation, {
     name: 'updateMessage'
   }),
-  graphql(meQuery, { name: 'meQuery' }),
   connect(null, mapDispatchToProps, null, { pure: false }),
 )(GameMessage);
