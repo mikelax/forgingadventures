@@ -86,9 +86,14 @@ function ProfileHeader(props) {
   const { dataGamesSummary, loadingSummary, loadingCharacters } = props;
 
   const charactersCount = _.get(props, 'dataCharacters.charactersCount');
-  const activeGamesCount = _.find(dataGamesSummary, ({ status }) => _.includes(['accepted', 'game-master'], status));
   const pendingGamesCount = _.find(dataGamesSummary, { status: 'pending' });
   const kickedGamesCount = _.find(dataGamesSummary, { status: 'kicked' });
+  
+  const activeGamesCount = _.chain(dataGamesSummary)
+    .filter(({ status }) => _.includes(['accepted', 'game-master'], status))
+    .map('statusCount')
+    .sum()
+    .value();
 
   return (
     <div className="user-profile-header">
