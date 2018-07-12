@@ -86,6 +86,7 @@ function ProfileHeader(props) {
   const { dataGamesSummary, loadingSummary, loadingCharacters } = props;
 
   const charactersCount = _.get(props, 'dataCharacters.charactersCount');
+  const activeGamesCount = _.find(dataGamesSummary, (summary) => _.includes(['accepted', 'games-master'], summary.status));
   const pendingGamesCount = _.find(dataGamesSummary, { status: 'pending' });
   const kickedGamesCount = _.find(dataGamesSummary, { status: 'kicked' });
 
@@ -111,7 +112,7 @@ function ProfileHeader(props) {
           <Icon name='comments' loading={loadingSummary} />
           Current Games
           <Label>
-            {_.size(dataGamesSummary)}
+            {_.get(activeGamesCount, 'statusCount', 0)}
           </Label>
         </Menu.Item>
 
