@@ -6,6 +6,7 @@ import Roll from 'roll';
 import Character from 'models/character';
 import Game from 'models/game';
 import GameMessage from 'models/gameMessage';
+import GamePlayer from 'models/gamePlayer';
 
 import sanitiseHtml from 'utils/sanitiseHtml';
 import { gameMessageMetaValidation } from 'engine';
@@ -29,6 +30,7 @@ export default class {
       .bind(this)
       .then(startTransaction)
       .then(getGame)
+      .then(checkIfUserIsInGame)
       .then(getLatestCharacterLog)
       .then(validateGameMessageMeta)
       .then(calculateDiceRolls)
@@ -55,6 +57,23 @@ function getGame() {
     .query()
     .findById(this.gameId)
     .then(game => (this.game = game));
+}
+
+function checkIfUserIsInGame() {
+  return GamePlayer
+    .query()
+    .count('id')
+    .where({
+      gameId: this.gameId,
+      userId: this.user.id
+    })
+    .whereIn('status', ['accepted', 'game-master'])
+    .first()
+    .then(({ count }) => {
+      if (!(count > 0)) {
+        throw new Error('Must be member of game to post');
+      }
+    });
 }
 
 function getLatestCharacterLog() {

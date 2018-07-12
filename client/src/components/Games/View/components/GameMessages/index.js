@@ -120,7 +120,10 @@ class MessagesRenderer extends Component {
     const { myGamePlayer } = myGamePlayerData;
     const currentUserId = _.get(meQueryData, 'me.id');
 
-    return _.some(myGamePlayer, mgp => Number(mgp.user.id) === Number(currentUserId));
+    return _.some(myGamePlayer, mgp =>
+      Number(mgp.user.id) === Number(currentUserId)
+        && _.includes(['accepted', 'game-master'], mgp.status)
+    );
   });
 
   _messageBelongsToCurrentUser = (gameMessage, meQueryData) => {
