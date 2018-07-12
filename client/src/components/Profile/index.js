@@ -88,7 +88,7 @@ function ProfileHeader(props) {
   const charactersCount = _.get(props, 'dataCharacters.charactersCount');
   const pendingGamesCount = _.find(dataGamesSummary, { status: 'pending' });
   const kickedGamesCount = _.find(dataGamesSummary, { status: 'kicked' });
-  
+
   const activeGamesCount = _.chain(dataGamesSummary)
     .filter(({ status }) => _.includes(['accepted', 'game-master'], status))
     .map('statusCount')
@@ -117,7 +117,7 @@ function ProfileHeader(props) {
           <Icon name='comments' loading={loadingSummary} />
           Current Games
           <Label>
-            {_.get(activeGamesCount, 'statusCount', 0)}
+            {activeGamesCount}
           </Label>
         </Menu.Item>
 
