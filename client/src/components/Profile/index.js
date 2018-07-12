@@ -89,6 +89,12 @@ function ProfileHeader(props) {
   const pendingGamesCount = _.find(dataGamesSummary, { status: 'pending' });
   const kickedGamesCount = _.find(dataGamesSummary, { status: 'kicked' });
 
+  const activeGamesCount = _.chain(dataGamesSummary)
+    .filter(({ status }) => _.includes(['accepted', 'game-master'], status))
+    .map('statusCount')
+    .sum()
+    .value();
+
   return (
     <div className="user-profile-header">
       <Menu pointing style={{ marginBottom: '16px' }}>
@@ -111,7 +117,7 @@ function ProfileHeader(props) {
           <Icon name='comments' loading={loadingSummary} />
           Current Games
           <Label>
-            {_.size(dataGamesSummary)}
+            {activeGamesCount}
           </Label>
         </Menu.Item>
 

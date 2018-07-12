@@ -34,15 +34,13 @@ GameLoungeMessagesView.propTypes = {
   }).isRequired
 };
 
-function LoginToPostMessage() {
-  return (
-    <Message
-      info
-      header='Please Login to Post'
-      content='While the Game Lounge is viewable by everyone, you must be logged in to post a new Message.'
-    />
-  );
-}
+const LoginToPostMessage = () => (
+  <Message
+    info
+    header='Please Login to Post'
+    content='While the Game Lounge is viewable by everyone, you must be logged in to post a new Message.'
+  />
+);
 
 const mapStateToProps = state => ({
   authorisation: state.authorisation
