@@ -13,7 +13,7 @@ export const userTypeDefs = `
   }
 
   type User {
-    id: Int!,
+    id: ID!,
     name: String,
     username: String,
     timezone: String,

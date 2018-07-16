@@ -162,6 +162,8 @@ class GameLoungeMessageContainer extends Component {
           </Grid.Column>
         </Grid.Row>
 
+        <MetaRow loungeMessage={loungeMessage} />
+
         <Grid.Row>
           <Grid.Column className="column-message">
             <RichEditor message={loungeMessage.message} ref={this.editor} readOnly={!(editing)} />
@@ -275,6 +277,26 @@ class GameLoungeMessageContainer extends Component {
 
     return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
   };
+}
+
+function MetaRow(props) {
+  const { loungeMessage: { user, meta } }  = props;
+
+  return meta && (
+    <Grid.Row className="slim">
+      <Grid.Column className="column-meta">
+        <Joined />
+      </Grid.Column>
+    </Grid.Row>
+  );
+
+  function Joined() {
+    const joined = meta === 'join';
+
+    return joined && (
+      <Message color='teal' size="mini">{user.name} applied to join the game.</Message>
+    );
+  }
 }
 
 const mapDispatchToProps = dispatch => ({
