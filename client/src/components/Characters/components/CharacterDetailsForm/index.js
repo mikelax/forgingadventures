@@ -40,6 +40,8 @@ class CharacterDetailsForm extends Component {
         enableReinitialize={true}
         initialValues={characterToValues(character) || validationSchema.default()}
         onSubmit={this._handleSubmit}
+        validateOnChange={false}
+        validateOnBlur={true}
         validationSchema={validationSchema}
         render={({ values, dirty: dirtyMain, handleChange, setFieldValue, submitForm: submitFormMain, errors: errorsMain, submitCount: submitCountMain, isSubmitting: isSubmittingMain }) => (
           <div className="character-detail-form">

@@ -26,7 +26,7 @@ class CreateCharacter extends Component {
             onSubmit={this._onSave}
             renderActions={({ errors, submitForm, submitCount, isSubmitting }) => (
               <Segment>
-                { (!_.isEmpty(errors)) && (
+                { (!_.isEmpty(errors)) && (submitCount > 0) && (
                   <Segment inverted color='orange' tertiary>
                     Please review form for highlighted errors
                   </Segment>
