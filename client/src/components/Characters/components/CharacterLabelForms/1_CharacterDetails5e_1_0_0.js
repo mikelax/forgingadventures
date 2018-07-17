@@ -580,11 +580,12 @@ class SkillField extends Component {
     return (
       <Grid columns={2} stackable verticalAlign="middle">
         <Grid.Row style={{ paddingTop: 4, paddingBottom: 4 }}>
-          <Grid.Column largeScreen={12} computer={10} tablet={10}>
-            <label>{`${displaySkill} (${ability}) Proficient`}</label>
+          <Grid.Column largeScreen={9} computer={8} tablet={8}>
+            <label>{`${displaySkill} (${ability})`}</label>
           </Grid.Column>
 
-          <Grid.Column largeScreen={2} computer={3} tablet={3}>
+          <Grid.Column largeScreen={5} computer={5} tablet={5}>
+            <label style={{ verticalAlign: 'super' }}>Proficient&nbsp;</label>
             <Radio
               toggle
               checked={proficiency}
