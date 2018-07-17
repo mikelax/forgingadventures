@@ -3,7 +3,7 @@ import Yup from 'yup';
 
 const abilityShape = {
   baseValue: Yup.number().integer().label('base value').min(1).required(),
-  raceBonus: Yup.number().integer().min(0),
+  raceBonus: Yup.number().integer().min(0).required(),
   total: Yup.number().integer().min(1).required(),
   modifier: Yup.number().integer().min(-5).required(),
   savingThrows: Yup.boolean()

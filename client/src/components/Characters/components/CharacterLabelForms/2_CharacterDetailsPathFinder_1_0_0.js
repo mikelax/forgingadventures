@@ -338,6 +338,13 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 
 }
 
+const abilityShape = {
+  baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
+  raceBonus: Yup.number().integer().default(0).min(0),
+  total: Yup.number().integer().default(1).min(1).required(),
+  modifier: Yup.number().integer().default(-5).min(-5).required()
+};
+
 const validationSchema = Yup.object().shape({
   meta: Yup.object().shape({
     version: Yup.string().default('1.0.0').required()
@@ -361,42 +368,12 @@ const validationSchema = Yup.object().shape({
     hitDie: Yup.string().label('hit die').default('').required()
   }),
   abilities: Yup.object().shape({
-    strength: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required()
-    }),
-    dexterity: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required()
-    }),
-    constitution: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required()
-    }),
-    intelligence: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required()
-    }),
-    wisdom: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required()
-    }),
-    charisma: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required()
-    })
+    strength: Yup.object().shape(abilityShape),
+    dexterity: Yup.object().shape(abilityShape),
+    constitution: Yup.object().shape(abilityShape),
+    intelligence: Yup.object().shape(abilityShape),
+    wisdom: Yup.object().shape(abilityShape),
+    charisma: Yup.object().shape(abilityShape)
   })
 });
 
