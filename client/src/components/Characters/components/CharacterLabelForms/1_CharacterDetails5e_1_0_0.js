@@ -34,7 +34,12 @@ export default class CharacterDetails5e_1_0_0 extends Component {
           <React.Fragment>
             <Segment>
               <Form className="character-details" as={FormikForm} loading={loading}>
-                <FormFieldAutoCalculator values={values} setFieldValue={setFieldValue} touched={touched} />
+                <FormFieldAutoCalculator
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  autoCalcSkillModifiers={_.isEmpty(characterDetails)}
+                />
 
                 <h2>Custom Character Settings</h2>
 
@@ -573,22 +578,21 @@ class SkillField extends Component {
     const displaySkill = _.capitalize(skillName || skill);
 
     return (
-      <Grid columns={3} stackable>
+      <Grid columns={2} stackable verticalAlign="middle">
         <Grid.Row style={{ paddingTop: 4, paddingBottom: 4 }}>
-          <Grid.Column>
+          <Grid.Column largeScreen={12} computer={10} tablet={10}>
+            <label>{`${displaySkill} (${ability}) Proficient`}</label>
+          </Grid.Column>
+
+          <Grid.Column largeScreen={2} computer={3} tablet={3}>
             <Radio
               toggle
-              label={displaySkill}
               checked={proficiency}
               onChange={this._handleCheck}
             />
           </Grid.Column>
 
-          <Grid.Column>
-            {ability}
-          </Grid.Column>
-
-          <Grid.Column>
+          <Grid.Column largeScreen={2} computer={3} tablet={3}>
             <Field
               name={bonusFieldName}
             />
@@ -611,7 +615,7 @@ class SkillField extends Component {
 class FormFieldAutoCalculator extends Component {
 
   componentDidUpdate(prevProps) {
-    const { setFieldValue } = this.props;
+    const { setFieldValue, autoCalcSkillModifiers } = this.props;
     const valuesPropsChanged = _.partial(propsChanged, prevProps, this.props, 'values');
 
     if (valuesPropsChanged('primaryLevel')) {
@@ -626,19 +630,21 @@ class FormFieldAutoCalculator extends Component {
     }
 
     // ability totals
-    _.each(['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'], (ability) => {
-      if (
-        valuesPropsChanged(`abilities.${ability}.baseValue`) ||
-        valuesPropsChanged(`abilities.${ability}.raceBonus`)
-      ) {
-        const modifier = this._abilityModifier(ability);
+    if (autoCalcSkillModifiers) {
+      _.each(['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'], (ability) => {
+        if (
+          valuesPropsChanged(`abilities.${ability}.baseValue`) ||
+          valuesPropsChanged(`abilities.${ability}.raceBonus`)
+        ) {
+          const modifier = this._abilityModifier(ability);
 
-        setFieldValue(`abilities.${ability}.total`, this._abilityTotal(ability));
-        setFieldValue(`abilities.${ability}.modifier`, modifier);
+          setFieldValue(`abilities.${ability}.total`, this._abilityTotal(ability));
+          setFieldValue(`abilities.${ability}.modifier`, modifier);
 
-        this._updateUntouchedSkillBonuses(ability, modifier);
-      }
-    });
+          this._updateUntouchedSkillBonuses(ability, modifier);
+        }
+      });
+    }
 
   }
 
