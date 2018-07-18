@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form as FormikForm, Formik } from 'formik';
-import { Form, Grid, Segment } from 'semantic-ui-react';
+import { Form, Grid, Segment, Radio } from 'semantic-ui-react';
 import Yup from 'yup';
 
 import { propsChanged, propsBase } from 'services/props';
@@ -28,11 +28,18 @@ export default class CharacterDetails5e_1_0_0 extends Component {
         initialValues={characterToValues(characterDetails) || validationSchema.default()}
         onSubmit={this._handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, dirty, errors, setFieldValue, validateForm, submitForm, resetForm, handleChange, submitCount, isSubmitting }) => (
+        validateOnChange={false}
+        validateOnBlur={true}
+        render={({ values, dirty, touched, errors, setFieldValue, validateForm, submitForm, resetForm, handleChange, submitCount, isSubmitting }) => (
           <React.Fragment>
             <Segment>
               <Form className="character-details" as={FormikForm} loading={loading}>
-                <FormFieldAutoCalculator values={values} setFieldValue={setFieldValue}/>
+                <FormFieldAutoCalculator
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  autoCalcSkillModifiers={_.isEmpty(characterDetails)}
+                />
 
                 <h2>Custom Character Settings</h2>
 
@@ -77,14 +84,14 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 
                   <Form.Field required>
                     <label>XP</label>
-                    <Field name="xp" type="number" min="0"/>
-                    <FormFieldErrorMessage name="xp"/>
+                    <Field name="xp" type="number" min="0" />
+                    <FormFieldErrorMessage name="xp" />
                   </Form.Field>
 
                   <Form.Field required>
                     <label>Armour Class</label>
-                    <Field name="ac" type="number" min="0"/>
-                    <FormFieldErrorMessage name="ac"/>
+                    <Field name="ac" type="number" min="0" />
+                    <FormFieldErrorMessage name="ac" />
                   </Form.Field>
                 </Form.Group>
 
@@ -114,10 +121,10 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                   <Form.Field required>
                     <label>Level</label>
                     <Field name="primaryLevel" type="number" min="1" max="20" />
-                    <FormFieldErrorMessage name="primaryLevel"/>
+                    <FormFieldErrorMessage name="primaryLevel" />
                   </Form.Field>
 
-                  <Form.Field label="Proficiency" name="proficiency" control={Field} readOnly/>
+                  <Form.Field label="Proficiency" name="proficiency" control={Field} readOnly />
                 </Form.Group>
 
                 <h3>Health</h3>
@@ -125,16 +132,16 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                 <Form.Group widths="equal">
                   <Form.Field required>
                     <Form.Field required label="Current" name="health.currentHitPoints" control={Field} type="number"
-                                min="0"/>
+                                min="0" />
                   </Form.Field>
 
                   <Form.Field required>
-                    <Form.Field required label="Max" name="health.maxHitPoints" control={Field} type="number" min="1"/>
+                    <Form.Field required label="Max" name="health.maxHitPoints" control={Field} type="number" min="1" />
                   </Form.Field>
 
                   <Form.Field>
-                    <Form.Field required label="Hit Die" name="health.hitDie" control={Field} type="text"/>
-                    <FormFieldErrorMessage name="health.hitDie"/>
+                    <Form.Field required label="Hit Die" name="health.hitDie" control={Field} type="text" />
+                    <FormFieldErrorMessage name="health.hitDie" />
                   </Form.Field>
                 </Form.Group>
 
@@ -186,7 +193,7 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                               control="textarea"
                               placeholder="Add additional Background Information"
                               onChange={handleChange}
-                              value={values.traits.backgroundInformation}/>
+                              value={values.traits.backgroundInformation} />
                 </Form.Field>
                 <Form.Field required>
                   <label>Physical Characteristics</label>
@@ -194,8 +201,8 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                               control="textarea"
                               placeholder="Describe notable physical characteristics"
                               onChange={handleChange}
-                              value={values.traits.physicalCharacteristics}/>
-                  <FormFieldErrorMessage name="traits.physicalCharacteristics"/>
+                              value={values.traits.physicalCharacteristics} />
+                  <FormFieldErrorMessage name="traits.physicalCharacteristics" />
                 </Form.Field>
                 <Form.Field required>
                   <label>Features and Traits</label>
@@ -203,8 +210,8 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                               onChange={handleChange}
                               placeholder="Describe Features and Traits"
                               control="textarea"
-                              value={values.traits.featuresAndTraits}/>
-                  <FormFieldErrorMessage name="traits.featuresAndTraits"/>
+                              value={values.traits.featuresAndTraits} />
+                  <FormFieldErrorMessage name="traits.featuresAndTraits" />
                 </Form.Field>
 
                 <h3>Abilities</h3>
@@ -215,20 +222,20 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <h4>Strength</h4>
                       <Form.Field required>
                         <label>Base</label>
-                        <Field name="abilities.strength.baseValue" type="number" min="1"/>
-                        <FormFieldErrorMessage name="abilities.strength.baseValue"/>
+                        <Field name="abilities.strength.baseValue" type="number" min="1" />
+                        <FormFieldErrorMessage name="abilities.strength.baseValue" />
                       </Form.Field>
                       <Form.Field>
                         <label>Race Bonus</label>
-                        <Field name="abilities.strength.raceBonus" type="number" min="0"/>
+                        <Field name="abilities.strength.raceBonus" type="number" min="0" />
                       </Form.Field>
                       <Form.Field>
                         <label>Total</label>
-                        <Field name="abilities.strength.total" type="number" min="0" readOnly/>
+                        <Field name="abilities.strength.total" type="number" min="0" readOnly />
                       </Form.Field>
                       <Form.Field>
                         <label>Modifier</label>
-                        <Field name="abilities.strength.modifier" type="number" min="0" readOnly/>
+                        <Field name="abilities.strength.modifier" type="number" min="0" readOnly />
                       </Form.Field>
                       <RadioInput label="Saving Throws (+Proficiency)" name="abilities.strength.savingThrows" />
                     </Grid.Column>
@@ -237,42 +244,42 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <h4>Dexterity</h4>
                       <Form.Field required>
                         <label>Base</label>
-                        <Field name="abilities.dexterity.baseValue" type="number" min="1"/>
-                        <FormFieldErrorMessage name="abilities.dexterity.baseValue"/>
+                        <Field name="abilities.dexterity.baseValue" type="number" min="1" />
+                        <FormFieldErrorMessage name="abilities.dexterity.baseValue" />
                       </Form.Field>
                       <Form.Field>
                         <label>Race Bonus</label>
-                        <Field name="abilities.dexterity.raceBonus" type="number" min="0"/>
+                        <Field name="abilities.dexterity.raceBonus" type="number" min="0" />
                       </Form.Field>
                       <Form.Field>
                         <label>Total</label>
-                        <Field name="abilities.dexterity.total" type="number" min="0" readOnly/>
+                        <Field name="abilities.dexterity.total" type="number" min="0" readOnly />
                       </Form.Field>
                       <Form.Field>
                         <label>Modifier</label>
-                        <Field name="abilities.dexterity.modifier" type="number" min="0" readOnly/>
+                        <Field name="abilities.dexterity.modifier" type="number" min="0" readOnly />
                       </Form.Field>
-                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.dexterity.savingThrows"/>
+                      <RadioInput label="Saving Throws (+Proficiency)" name="abilities.dexterity.savingThrows" />
                     </Grid.Column>
 
                     <Grid.Column>
                       <h4>Constitution</h4>
                       <Form.Field required>
                         <label>Base</label>
-                        <Field name="abilities.constitution.baseValue" type="number" min="1"/>
-                        <FormFieldErrorMessage name="abilities.constitution.baseValue"/>
+                        <Field name="abilities.constitution.baseValue" type="number" min="1" />
+                        <FormFieldErrorMessage name="abilities.constitution.baseValue" />
                       </Form.Field>
                       <Form.Field>
                         <label>Race Bonus</label>
-                        <Field name="abilities.constitution.raceBonus" type="number" min="0"/>
+                        <Field name="abilities.constitution.raceBonus" type="number" min="0" />
                       </Form.Field>
                       <Form.Field>
                         <label>Total</label>
-                        <Field name="abilities.constitution.total" type="number" min="0" readOnly/>
+                        <Field name="abilities.constitution.total" type="number" min="0" readOnly />
                       </Form.Field>
                       <Form.Field>
                         <label>Modifier</label>
-                        <Field name="abilities.constitution.modifier" type="number" min="0" readOnly/>
+                        <Field name="abilities.constitution.modifier" type="number" min="0" readOnly />
                       </Form.Field>
                       <RadioInput label="Saving Throws (+Proficiency)" name="abilities.constitution.savingThrows" />
                     </Grid.Column>
@@ -283,20 +290,20 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <h4>Inelligence</h4>
                       <Form.Field required>
                         <label>Base</label>
-                        <Field name="abilities.intelligence.baseValue" type="number" min="1"/>
-                        <FormFieldErrorMessage name="abilities.intelligence.baseValue"/>
+                        <Field name="abilities.intelligence.baseValue" type="number" min="1" />
+                        <FormFieldErrorMessage name="abilities.intelligence.baseValue" />
                       </Form.Field>
                       <Form.Field>
                         <label>Race Bonus</label>
-                        <Field name="abilities.intelligence.raceBonus" type="number" min="0"/>
+                        <Field name="abilities.intelligence.raceBonus" type="number" min="0" />
                       </Form.Field>
                       <Form.Field>
                         <label>Total</label>
-                        <Field name="abilities.intelligence.total" type="number" min="0" readOnly/>
+                        <Field name="abilities.intelligence.total" type="number" min="0" readOnly />
                       </Form.Field>
                       <Form.Field>
                         <label>Modifier</label>
-                        <Field name="abilities.intelligence.modifier" type="number" min="0" readOnly/>
+                        <Field name="abilities.intelligence.modifier" type="number" min="0" readOnly />
                       </Form.Field>
                       <RadioInput label="Saving Throws (+Proficiency)" name="abilities.intelligence.savingThrows" />
                     </Grid.Column>
@@ -305,20 +312,20 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <h4>Wisdom</h4>
                       <Form.Field required>
                         <label>Base</label>
-                        <Field name="abilities.wisdom.baseValue" type="number" min="1"/>
-                        <FormFieldErrorMessage name="abilities.wisdom.baseValue"/>
+                        <Field name="abilities.wisdom.baseValue" type="number" min="1" />
+                        <FormFieldErrorMessage name="abilities.wisdom.baseValue" />
                       </Form.Field>
                       <Form.Field>
                         <label>Race Bonus</label>
-                        <Field name="abilities.wisdom.raceBonus" type="number" min="0"/>
+                        <Field name="abilities.wisdom.raceBonus" type="number" min="0" />
                       </Form.Field>
                       <Form.Field>
                         <label>Total</label>
-                        <Field name="abilities.wisdom.total" type="number" min="0" readOnly/>
+                        <Field name="abilities.wisdom.total" type="number" min="0" readOnly />
                       </Form.Field>
                       <Form.Field>
                         <label>Modifier</label>
-                        <Field name="abilities.wisdom.modifier" type="number" min="0" readOnly/>
+                        <Field name="abilities.wisdom.modifier" type="number" min="0" readOnly />
                       </Form.Field>
                       <RadioInput label="Saving Throws (+Proficiency)" name="abilities.wisdom.savingThrows" />
                     </Grid.Column>
@@ -327,26 +334,111 @@ export default class CharacterDetails5e_1_0_0 extends Component {
                       <h4>Charisma</h4>
                       <Form.Field required>
                         <label>Base</label>
-                        <Field name="abilities.charisma.baseValue" type="number" min="1"/>
-                        <FormFieldErrorMessage name="abilities.charisma.baseValue"/>
+                        <Field name="abilities.charisma.baseValue" type="number" min="1" />
+                        <FormFieldErrorMessage name="abilities.charisma.baseValue" />
                       </Form.Field>
                       <Form.Field>
                         <label>Race Bonus</label>
-                        <Field name="abilities.charisma.raceBonus" type="number" min="0"/>
+                        <Field name="abilities.charisma.raceBonus" type="number" min="0" />
                       </Form.Field>
                       <Form.Field>
                         <label>Total</label>
-                        <Field name="abilities.charisma.total" type="number" min="0" readOnly/>
+                        <Field name="abilities.charisma.total" type="number" min="0" readOnly />
                       </Form.Field>
                       <Form.Field>
                         <label>Modifier</label>
-                        <Field name="abilities.charisma.modifier" type="number" min="0" readOnly/>
+                        <Field name="abilities.charisma.modifier" type="number" min="0" readOnly />
                       </Form.Field>
                       <RadioInput label="Saving Throws (+Proficiency)" name="abilities.charisma.savingThrows" />
                     </Grid.Column>
                   </Grid.Row>
-
                 </Grid>
+
+                <h3>Skills</h3>
+
+                <Grid columns={2} divided>
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="acrobatics" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="animalHandling" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="arcana" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="athletics" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="deception" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="history" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="insight" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="intimidation" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="investigation" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="medicine" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="nature" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="perception" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="performance" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="persuasion" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="religion" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="sleightOfHand" />
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column>
+                      <SkillField skill="stealth" />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <SkillField skill="survival" />
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+
               </Form>
             </Segment>
 
@@ -375,6 +467,35 @@ export default class CharacterDetails5e_1_0_0 extends Component {
 
 }
 
+const abilityShape = {
+  baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
+  raceBonus: Yup.number().integer().default(0).min(0),
+  total: Yup.number().integer().default(1).min(1).required(),
+  modifier: Yup.number().integer().default(-5).min(-5).required(),
+  savingThrows: Yup.boolean().default(false)
+};
+
+const skillShape = {
+  proficient: Yup.boolean().default(false),
+  bonus: Yup.number().integer().default(0).min(-5)
+};
+
+const dexSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('dexterity').oneOf(['dexterity'])
+});
+const intSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('intelligence').oneOf(['intelligence'])
+});
+const wisSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('wisdom').oneOf(['wisdom'])
+});
+const charSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('charisma').oneOf(['charisma'])
+});
+const strSkillShape = _.merge({}, skillShape, {
+  ability: Yup.string().default('strength').oneOf(['strength'])
+});
+
 const validationSchema = Yup.object().shape({
   meta: Yup.object().shape({
     version: Yup.string().default('1.0.0').required()
@@ -399,48 +520,32 @@ const validationSchema = Yup.object().shape({
     hitDie: Yup.string().label('hit die').default('').required()
   }),
   abilities: Yup.object().shape({
-    strength: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    dexterity: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    constitution: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    intelligence: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    wisdom: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    }),
-    charisma: Yup.object().shape({
-      baseValue: Yup.number().integer().label('base value').default(1).min(1).required(),
-      raceBonus: Yup.number().integer().default(0).min(0),
-      total: Yup.number().integer().default(1).min(1).required(),
-      modifier: Yup.number().integer().default(-5).min(-5).required(),
-      savingThrows: Yup.boolean().default(false)
-    })
+    strength: Yup.object().shape(abilityShape),
+    dexterity: Yup.object().shape(abilityShape),
+    constitution: Yup.object().shape(abilityShape),
+    intelligence: Yup.object().shape(abilityShape),
+    wisdom: Yup.object().shape(abilityShape),
+    charisma: Yup.object().shape(abilityShape)
+  }),
+  skills: Yup.object().shape({
+    acrobatics: Yup.object().shape(dexSkillShape),
+    animalHandling: Yup.object().shape(wisSkillShape),
+    arcana: Yup.object().shape(intSkillShape),
+    athletics: Yup.object().shape(strSkillShape),
+    deception: Yup.object().shape(charSkillShape),
+    history: Yup.object().shape(intSkillShape),
+    insight: Yup.object().shape(wisSkillShape),
+    intimidation: Yup.object().shape(charSkillShape),
+    investigation: Yup.object().shape(intSkillShape),
+    medicine: Yup.object().shape(wisSkillShape),
+    nature: Yup.object().shape(intSkillShape),
+    perception: Yup.object().shape(wisSkillShape),
+    performance: Yup.object().shape(charSkillShape),
+    persuasion: Yup.object().shape(charSkillShape),
+    religion: Yup.object().shape(intSkillShape),
+    sleightOfHand: Yup.object().shape(dexSkillShape),
+    stealth: Yup.object().shape(dexSkillShape),
+    survival: Yup.object().shape(wisSkillShape)
   })
 });
 
@@ -448,10 +553,70 @@ function characterToValues(character) {
   return character && validationSchema.noUnknown().cast(character);
 }
 
+class SkillField extends Component {
+  static contextTypes = {
+    formik: PropTypes.object
+  };
+
+  static propTypes = {
+    skill: PropTypes.string.isRequired
+  };
+
+  render() {
+    const { skill } = this.props;
+    const { context: { formik: { values } } } = this;
+
+    const ability = _(values).chain().get(['skills', skill, 'ability']).take(3).join('').upperCase().value();
+    const proficiency = _.get(values, ['skills', skill, 'proficient']);
+    const bonusFieldName = `skills.${skill}.bonus`;
+
+    const skillName = {
+      animalHandling: 'animal handling',
+      sleightOfHand: 'sleight of hand'
+    }[skill];
+
+    const displaySkill = _.capitalize(skillName || skill);
+
+    return (
+      <Grid columns={2} stackable verticalAlign="middle">
+        <Grid.Row style={{ paddingTop: 4, paddingBottom: 4 }}>
+          <Grid.Column largeScreen={9} computer={8} tablet={8}>
+            <label>{`${displaySkill} (${ability})`}</label>
+          </Grid.Column>
+
+          <Grid.Column largeScreen={5} computer={5} tablet={5}>
+            <label style={{ verticalAlign: 'super' }}>Proficient&nbsp;</label>
+            <Radio
+              toggle
+              checked={proficiency}
+              onChange={this._handleCheck}
+            />
+          </Grid.Column>
+
+          <Grid.Column largeScreen={2} computer={3} tablet={3}>
+            <Field
+              name={bonusFieldName}
+            />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    );
+  }
+
+  _handleCheck = (e, data) => {
+    const { context: { formik: { setFieldValue } } } = this;
+    const { skill } = this.props;
+    const { checked } = data;
+    const fieldName = `skills.${skill}.proficient`;
+
+    setFieldValue(fieldName, checked);
+  };
+}
+
 class FormFieldAutoCalculator extends Component {
 
   componentDidUpdate(prevProps) {
-    const { setFieldValue } = this.props;
+    const { setFieldValue, autoCalcSkillModifiers } = this.props;
     const valuesPropsChanged = _.partial(propsChanged, prevProps, this.props, 'values');
 
     if (valuesPropsChanged('primaryLevel')) {
@@ -471,10 +636,17 @@ class FormFieldAutoCalculator extends Component {
         valuesPropsChanged(`abilities.${ability}.baseValue`) ||
         valuesPropsChanged(`abilities.${ability}.raceBonus`)
       ) {
+        const modifier = this._abilityModifier(ability);
+
         setFieldValue(`abilities.${ability}.total`, this._abilityTotal(ability));
-        setFieldValue(`abilities.${ability}.modifier`, this._abilityModifier(ability));
+        setFieldValue(`abilities.${ability}.modifier`, modifier);
+
+        if (autoCalcSkillModifiers) {
+          this._updateUntouchedSkillBonuses(ability, modifier);
+        }
       }
     });
+
   }
 
   render = () => null; // i haz no render
@@ -508,5 +680,25 @@ class FormFieldAutoCalculator extends Component {
 
     return _.floor((value('baseValue') + value('raceBonus') - 10) / 2);
   };
+
+  _updateUntouchedSkillBonuses = (ability, modifier) => {
+    const { setFieldValue, touched } = this.props;
+
+    const abilitySkills = {
+      dexterity: ['acrobatics', 'sleightOfHand', 'stealth'],
+      intelligence: ['arcana', 'history', 'investigation', 'nature', 'religion'],
+      wisdom: ['animalHandling', 'insight', 'medicine', 'perception', 'survival'],
+      charisma: ['deception', 'intimidation', 'performance', 'persuasion'],
+      strength: ['athletics']
+    }[ability];
+
+    _.each(abilitySkills, (skill) => {
+      const skillBonusFieldName = `skills.${skill}.bonus`;
+
+      if ( !(_.get(touched, skillBonusFieldName)) ) {
+        setFieldValue(skillBonusFieldName, modifier);
+      }
+    });
+  }
 
 }
