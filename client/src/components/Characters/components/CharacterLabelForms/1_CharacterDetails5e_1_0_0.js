@@ -631,21 +631,21 @@ class FormFieldAutoCalculator extends Component {
     }
 
     // ability totals
-    if (autoCalcSkillModifiers) {
-      _.each(['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'], (ability) => {
-        if (
-          valuesPropsChanged(`abilities.${ability}.baseValue`) ||
-          valuesPropsChanged(`abilities.${ability}.raceBonus`)
-        ) {
-          const modifier = this._abilityModifier(ability);
+    _.each(['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'], (ability) => {
+      if (
+        valuesPropsChanged(`abilities.${ability}.baseValue`) ||
+        valuesPropsChanged(`abilities.${ability}.raceBonus`)
+      ) {
+        const modifier = this._abilityModifier(ability);
 
-          setFieldValue(`abilities.${ability}.total`, this._abilityTotal(ability));
-          setFieldValue(`abilities.${ability}.modifier`, modifier);
+        setFieldValue(`abilities.${ability}.total`, this._abilityTotal(ability));
+        setFieldValue(`abilities.${ability}.modifier`, modifier);
 
+        if (autoCalcSkillModifiers) {
           this._updateUntouchedSkillBonuses(ability, modifier);
         }
-      });
-    }
+      }
+    });
 
   }
 
