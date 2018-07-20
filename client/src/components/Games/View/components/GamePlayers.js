@@ -222,7 +222,9 @@ class GamePlayers extends Component {
         }]
       })
         .then(() => {
-          return createGameLoungeMessage({
+          const recordStatusInGameLounge = _.includes(['accepted', 'quit'], status);
+
+          return recordStatusInGameLounge && createGameLoungeMessage({
             variables: {
               input: {
                 gameId,

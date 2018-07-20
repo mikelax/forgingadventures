@@ -3,7 +3,7 @@ exports.up = function(knex) {
     ALTER TABLE "game_lounges"
     DROP CONSTRAINT "game_lounges_meta_check",
     ADD CONSTRAINT "game_lounges_meta_check" 
-    CHECK ("meta" IN ('join', 'kicked', 'accepted', 'rejected', 'quit'))
+    CHECK ("meta" IN ('join', 'accepted', 'quit'))
   `);
 };
 

@@ -285,16 +285,12 @@ function MetaRow(props) {
     const color = {
       join: 'teal',
       accepted: 'green',
-      rejected: 'red',
-      kicked: 'red',
       quit: 'orange'
     }[meta];
 
     const status = {
       join: 'applied to join',
       accepted: 'was accepted to',
-      rejected: 'was rejected from joining',
-      kicked: 'was kicked from',
       quit: 'has quit'
     }[meta];
 
