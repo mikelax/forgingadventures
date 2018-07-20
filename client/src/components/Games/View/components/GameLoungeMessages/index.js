@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
-import { Button, Header, Icon, Grid, Segment, Message } from 'semantic-ui-react';
+import { Button, Header, Grid, Segment, Message } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 import RichEditor from 'components/shared/RichEditor';
@@ -145,8 +145,8 @@ class GameLoungeMessageContainer extends Component {
   editor = React.createRef();
 
   render() {
-    const { loungeMessage } = this.props;
-    const { user } = loungeMessage;
+    const { loungeMessage, loungeMessage: { meta, user } } = this.props;
+    const displayMessageContent = !(meta) || (meta === 'join');
     const { editing } = this.state;
 
     return (
@@ -164,15 +164,17 @@ class GameLoungeMessageContainer extends Component {
 
         <MetaRow loungeMessage={loungeMessage} />
 
-        <Grid.Row>
-          <Grid.Column className="column-message">
-            <RichEditor message={loungeMessage.message} ref={this.editor} readOnly={!(editing)} />
-          </Grid.Column>
-        </Grid.Row>
+        { displayMessageContent && (
+          <Grid.Row>
+            <Grid.Column className="column-message">
+              <RichEditor message={loungeMessage.message} ref={this.editor} readOnly={!(editing)} />
+            </Grid.Column>
+          </Grid.Row>
+        ) }
 
         <Grid.Row columns={2} className="slim" verticalAlign="middle">
           <Grid.Column>
-            {this._messageControls(user.id)}
+            {displayMessageContent && this._messageControls()}
           </Grid.Column>
 
           <Grid.Column textAlign="right" className="column-info">
@@ -186,34 +188,22 @@ class GameLoungeMessageContainer extends Component {
 
   ////// private
 
-  _messageControls = (messageUserId) => {
+  _messageControls = () => {
     const { editing } = this.state;
 
-    return editing ? this._editingControls() : this._viewingControls(messageUserId);
+    return editing ? this._editingControls() : this._viewingControls();
   };
 
-  _renderMeta = () => {
-    const { editing } = this.state;
-    const { loungeMessage } = this.props;
-    const { user } = loungeMessage;
+  _viewingControls = () => {
+    const { loungeMessage: { meta, user: { id: messageUserId } }, meQuery } = this.props;
 
-    if (!(editing)) {
-      if (loungeMessage.meta === 'join') {
-        return (
-          <div className="meta"><Icon name="user plus" color="green" />{user.name} has joined the game!</div>
-        );
-      }
-    }
-  };
-
-  _viewingControls = (messageUserId) => {
-    const canEdit = _.eq(messageUserId, _.get(this.props.meQuery, 'me.id'));
+    const canEdit = _.eq(messageUserId, _.get(meQuery, 'me.id'));
     const canPost = _.get(this.props, ('meQuery.me.id'));
 
     if (canPost) {
       return (
         <React.Fragment>
-          {canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
+          {canEdit && !(meta) && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
           <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
         </React.Fragment>
       );
@@ -285,18 +275,32 @@ function MetaRow(props) {
   return meta && (
     <Grid.Row className="slim">
       <Grid.Column className="column-meta">
-        <Joined />
+        <MetaMessage meta={meta} />
       </Grid.Column>
     </Grid.Row>
   );
 
-  function Joined() {
-    const joined = meta === 'join';
+  function MetaMessage(props) {
+    const { meta } = props;
+    const color = {
+      join: 'teal',
+      accepted: 'green',
+      rejected: 'red',
+      kicked: 'red',
+      quit: 'orange'
+    }[meta];
 
-    return joined && (
-      <Message color='teal' size="mini">{user.name} applied to join the game.</Message>
-    );
+    const status = {
+      join: 'applied to join',
+      accepted: 'was accepted to',
+      rejected: 'was rejected from joining',
+      kicked: 'was kicked from',
+      quit: 'has quit'
+    }[meta];
+
+    return <Message color={color} size="mini">{user.name} {status} the game.</Message>;
   }
+
 }
 
 const mapDispatchToProps = dispatch => ({

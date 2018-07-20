@@ -11,7 +11,12 @@ import CharactersSelect from 'components/shared/CharactersSelect';
 import ApolloLoader from 'components/shared/ApolloLoader';
 import { UserImageAvatar, CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
 
-import { gamePlayersQuery, myGamePlayerQuery, updateGamePlayerMutation } from '../../queries';
+import {
+  createGameLoungeMessageMutation,
+  gamePlayersQuery,
+  myGamePlayerQuery,
+  updateGamePlayerMutation
+} from '../../queries';
 
 import './assets/GamePlayers.styl';
 
@@ -64,7 +69,7 @@ class GamePlayers extends Component {
                   {_.startCase(gamePlayer.status)}
                 </Table.Cell>
                 <Table.Cell>
-                  { isGm ? this._gmActions(gamePlayer.id, gamePlayer.status) : null }
+                  { isGm ? this._gmActions(gamePlayer) : null }
                   { !isGm && gamePlayer.user.id === _.get(me, 'me.id')
                       ? this._playerOptions(gamePlayer) : null }
                 </Table.Cell>
@@ -84,8 +89,9 @@ class GamePlayers extends Component {
 
   ////// private
 
-  _gmActions = (playerId, playerStatus) => {
+  _gmActions = (gamePlayer) => {
     const gameId = this.props.gameId;
+    const { status: playerStatus } = gamePlayer;
 
     if (playerStatus === 'game-master') {
       return (
@@ -109,9 +115,9 @@ class GamePlayers extends Component {
           hoverable
         >
           <Button.Group>
-            <Button positive onClick={this._updatePlayerStatus(playerId, 'accepted')}>Approve</Button>
+            <Button positive onClick={this._updatePlayerStatus(gamePlayer, 'accepted')}>Approve</Button>
             <Button.Or />
-            <Button negative onClick={this._updatePlayerStatus(playerId, 'rejected')}>Reject</Button>
+            <Button negative onClick={this._updatePlayerStatus(gamePlayer, 'rejected')}>Reject</Button>
           </Button.Group>
         </Popup>
       );
@@ -123,7 +129,7 @@ class GamePlayers extends Component {
           hoverable
         >
           <Menu vertical compact size="tiny">
-            <Menu.Item onClick={this._updatePlayerStatus(playerId, 'kicked')}>
+            <Menu.Item onClick={this._updatePlayerStatus(gamePlayer, 'kicked')}>
               <Icon name="remove" />
               Kick Player
             </Menu.Item>
@@ -143,7 +149,7 @@ class GamePlayers extends Component {
           hoverable
         >
           <Menu vertical compact size="tiny">
-            <Menu.Item onClick={this._updatePlayerStatus(playerId, 'quit')}>
+            <Menu.Item onClick={this._updatePlayerStatus(gamePlayer, 'quit')}>
               <Icon name="remove" />
               Leave Game
             </Menu.Item>
@@ -196,10 +202,12 @@ class GamePlayers extends Component {
     }
   };
 
-  _updatePlayerStatus = (playerId, status) => {
+  _updatePlayerStatus = (gamePlayer, status) => {
     return () => {
-      const { gameId, updateGamePlayer } = this.props;
+      const { gameId, updateGamePlayer, createGameLoungeMessage } = this.props;
       const originalStatus = this.props.status;
+      const { id: playerId, user: { name: userName } } = gamePlayer;
+      const message = `${userName} was ${_.capitalize(status)}`;
 
       return updateGamePlayer({
         variables: {
@@ -212,7 +220,18 @@ class GamePlayers extends Component {
           query: gamePlayersQuery,
           variables: { gameId, status: originalStatus }
         }]
-      });
+      })
+        .then(() => {
+          return createGameLoungeMessage({
+            variables: {
+              input: {
+                gameId,
+                meta: status,
+                message
+              }
+            }
+          });
+        });
     };
   };
 
@@ -321,6 +340,9 @@ export default compose(
   }),
   graphql(updateGamePlayerMutation, {
     name: 'updateGamePlayer'
+  }),
+  graphql(createGameLoungeMessageMutation, {
+    name: 'createGameLoungeMessage'
   }),
   connect(mapStateToProps),
   ApolloLoader,
