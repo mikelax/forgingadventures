@@ -65,13 +65,13 @@ class GamePlayers extends Component {
                   {this._characterCell(gamePlayer)}
                 </Table.Cell>
                 <Table.Cell>
-                  { gamePlayer.status === 'accepted' ? <Icon name='checkmark' /> : null }
+                  { gamePlayer.status === 'accepted' && <Icon name='checkmark' /> }
                   {_.startCase(gamePlayer.status)}
                 </Table.Cell>
                 <Table.Cell>
-                  { isGm ? this._gmActions(gamePlayer) : null }
+                  { isGm && this._gmActions(gamePlayer) }
                   { !isGm && gamePlayer.user.id === _.get(me, 'me.id')
-                      ? this._playerOptions(gamePlayer) : null }
+                      && this._playerOptions(gamePlayer) }
                 </Table.Cell>
               </Table.Row>
             ))}
