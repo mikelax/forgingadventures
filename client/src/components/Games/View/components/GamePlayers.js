@@ -207,7 +207,7 @@ class GamePlayers extends Component {
       const { gameId, updateGamePlayer, createGameLoungeMessage } = this.props;
       const originalStatus = this.props.status;
       const { id: playerId, user: { name: userName } } = gamePlayer;
-      const message = `${userName} was ${_.capitalize(status)}`;
+      const message = `${userName} was ${status}`;
 
       return updateGamePlayer({
         variables: {

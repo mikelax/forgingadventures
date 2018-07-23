@@ -275,7 +275,7 @@ class GameLoungeMessageContainer extends Component {
 }
 
 function MetaRow(props) {
-  const { loungeMessage: { user, meta } }  = props;
+  const { loungeMessage: { user, message, meta } }  = props;
 
   return meta && (
     <Grid.Row className="slim">
@@ -295,11 +295,14 @@ function MetaRow(props) {
 
     const status = {
       join: 'applied to join',
-      accepted: 'was accepted to',
       quit: 'has quit'
     }[meta];
 
-    return <Message color={color} size="mini">{user.name} {status} the game.</Message>;
+    const showMessage = meta === 'accepted'
+      ? message
+      : `${user.name} ${status} the game.`;
+
+    return <Message color={color} size="mini">{showMessage}</Message>;
   }
 
 }
