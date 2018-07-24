@@ -105,15 +105,14 @@ export const gamePlayerResolvers = {
 
     updateGamePlayer: (obj, { id, input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
+        // fixme - only current user or the game's GM can update
+        // fixme - the gameplayer's status
         return getOrCreateUserByAuth0Id(context.req.user.sub)
-          .then((user) => {
+          .then(() => {
             return GamePlayer
               .query()
               .patch(input)
-              .where({
-                id,
-                userId: user.id
-              })
+              .where({ id })
               .first()
               .returning('*')
               .execute()
