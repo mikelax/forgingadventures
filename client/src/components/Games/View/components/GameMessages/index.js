@@ -2,10 +2,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { graphql, Query } from 'react-apollo';
+import { graphql, Query, Mutation } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Header, Button, Grid, Segment, Message } from 'semantic-ui-react';
+import { Divider, Header, Button, Icon, Grid, Segment, Message } from 'semantic-ui-react';
 
 import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 import RichEditor from 'components/shared/RichEditor';
@@ -19,11 +19,14 @@ import InCharacterHeader from './InCharacterHeader';
 import OutOfCharacterHeader from './OutOfCharacterHeader';
 import gameMessageStyles from './gameMessageStyles';
 
+import { Consumer } from '../../ViewGameMessagesContext';
+
 import { meQuery } from 'queries/users';
 
 import {
   gameMessagesQuery, gameMessagesSummaryQuery, updateGameMessageMutation,
-  onGameMessageAdded, onGameMessageUpdated, myGamePlayerQuery
+  onGameMessageAdded, onGameMessageUpdated, myGamePlayerQuery,
+  setGameMessageProgressMutation
 } from 'components/Games/queries';
 
 import './GameMessages.styl';
@@ -99,13 +102,19 @@ class MessagesRenderer extends Component {
           >
             {({ data: meQueryData }) => {
               return _.map(gameMessages, (gameMessage) => (
-                <Segment key={`message-${gameMessage.id}`} className='game-message'>
-                  <GameMessageContainer
+                <React.Fragment key={`message-${gameMessage.id}`} >
+                  <Segment className='game-message'>
+                    <GameMessageContainer
+                      gameMessage={gameMessage}
+                      isMemberOfGame={this._isMemberOfGame(meQueryData, myGamePlayerData)}
+                      isCurrentUserMessage={this._messageBelongsToCurrentUser(gameMessage, meQueryData)}
+                    />
+                  </Segment>
+
+                  <GameMessageReadProgressIndicator
                     gameMessage={gameMessage}
-                    isMemberOfGame={this._isMemberOfGame(meQueryData, myGamePlayerData)}
-                    isCurrentUserMessage={this._messageBelongsToCurrentUser(gameMessage, meQueryData)}
                   />
-                </Segment>
+                </React.Fragment>
               ));
             }}
           </Query>
@@ -338,14 +347,26 @@ class GameMessage extends Component {
   };
 
   _viewingControls = () => {
-    const { isCurrentUserMessage, isMemberOfGame } = this.props;
+    const { isCurrentUserMessage, isMemberOfGame, gameMessage } = this.props;
     const canEdit = isCurrentUserMessage && this._editableMessage();
+    const canBookmark = !(isCurrentUserMessage) && this._editableMessage();
 
     if (isMemberOfGame) {
       return (
         <React.Fragment>
           {canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
           <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
+
+          { canBookmark && (
+            <React.Fragment>
+              <span className="divider"/>
+
+              <SetGameMessageProgressButton
+                gameMessage={gameMessage}
+              />
+            </React.Fragment>
+          ) }
+
         </React.Fragment>
       );
     }
@@ -415,6 +436,57 @@ class GameMessage extends Component {
     return <span className="date" title={dateDisplayActual}>{dateDisplayRelative}</span>;
   };
 
+}
+
+function SetGameMessageProgressButton(props) {
+  const { gameMessage: { id: gameMessageId } } = props;
+
+  return (
+    <Consumer>
+      {({ myGamePlayer }) => {
+        const [{ id: gamePlayerId, progressGameMessageId }] = myGamePlayer;
+        const showProgressButtons = gameMessageId > (progressGameMessageId || 0);
+
+        return showProgressButtons && (
+          <Mutation mutation={setGameMessageProgressMutation}>
+            {(setGameMessageProgress, { loading }) => (
+              <Button animated compact size="tiny" loading={loading}
+                onClick={() => setGameMessageProgress({ variables: { gamePlayerId, gameMessageId } })}
+              >
+                <Button.Content visible>Mark Read</Button.Content>
+                <Button.Content hidden><Icon name='bookmark outline' /></Button.Content>
+              </Button>
+            )}
+          </Mutation>
+        );
+      }}
+    </Consumer>
+  );
+}
+
+function GameMessageReadProgressIndicator(props) {
+  const { gameMessage: { id: gameMessageId } } = props;
+
+  return (
+    <Consumer>
+      {({ gamePlayers }) => {
+        const bookmarkGamePlayers = _.filter(gamePlayers, { progressGameMessageId: gameMessageId.toString() });
+
+        return _.map(bookmarkGamePlayers, (bookmarkedGamePlayer) => (
+          <div className="bookmark" key={`progress-book-${bookmarkedGamePlayer.id}`}>
+            <Divider horizontal section>
+              <Icon name='bookmark' />
+              {
+                bookmarkedGamePlayer.character
+                  ? bookmarkedGamePlayer.character.name
+                  : bookmarkedGamePlayer.user.name
+              }
+            </Divider>
+          </div>
+        ));
+      }}
+    </Consumer>
+  );
 }
 
 const mapDispatchToProps = dispatch => ({

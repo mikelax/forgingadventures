@@ -21,6 +21,7 @@ export const gamePlayerTypeDefs = `
   extend type Mutation {
     createGamePlayer(input: CreateGamePlayerInput): GamePlayer
     updateGamePlayer(id: ID!, input: UpdateGamePlayerInput): GamePlayer
+    setGameMessageProgress(gamePlayerId: ID!, gameMessageId: ID!): GamePlayer
   }
 
   extend type Subscription {
@@ -30,6 +31,9 @@ export const gamePlayerTypeDefs = `
 
   type GamePlayer {
     id: ID!,
+    userId: ID!,
+    characterId: ID,
+    progressGameMessageId: ID,
     user: User!,
     game: Game!,
     status: String!,
@@ -83,11 +87,12 @@ export const gamePlayerResolvers = {
       schemaScopeGate(['create:games'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
           .then((user) => {
-            input.userId = user.id;
-
             return GamePlayer
               .query()
-              .insert(input)
+              .insert({
+                ...input,
+                userId: user.id
+              })
               .returning('*')
               .execute()
               .tap((gamePlayerMessage) => {
@@ -97,14 +102,42 @@ export const gamePlayerResolvers = {
               });
           });
       }),
+
     updateGamePlayer: (obj, { id, input }, context) =>
       schemaScopeGate(['create:posts'], context, () => {
         return getOrCreateUserByAuth0Id(context.req.user.sub)
-          .then(() => {
+          .then((user) => {
             return GamePlayer
               .query()
               .patch(input)
-              .where('id', id)
+              .where({
+                id,
+                userId: user.id
+              })
+              .first()
+              .returning('*')
+              .execute()
+              .tap((gamePlayerMessage) => {
+                return pubsub.publish(GAME_PLAYER_UPDATED, {
+                  gamePlayerUpdated: gamePlayerMessage
+                });
+              });
+          });
+      }),
+
+    setGameMessageProgress: (obj, { gamePlayerId, gameMessageId }, context) =>
+      schemaScopeGate(['create:posts'], context, () => {
+        return getOrCreateUserByAuth0Id(context.req.user.sub)
+          .then((user) => {
+            return GamePlayer
+              .query()
+              .where({
+                id: gamePlayerId,
+                userId: user.id
+              })
+              .patch({
+                progressGameMessageId: gameMessageId
+              })
               .first()
               .returning('*')
               .execute()
