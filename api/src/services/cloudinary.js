@@ -70,7 +70,7 @@ function s3UploadFile(fileBuffer, fileName) {
   aws.config.setPromisesDependency(Bluebird);
 
   // Only need to set key and secret in dev, othewise will grab from ECS IAM role
-  if (process.env.NODE_ENV === 'development') {
+  if (config.has('aws.config.accessKeyId')) {
     aws.config.update({
       accessKeyId: config.get('aws.config.accessKeyId'),
       secretAccessKey: config.get('aws.config.secretAccessKey')
