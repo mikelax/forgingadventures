@@ -349,24 +349,15 @@ class GameMessage extends Component {
   _viewingControls = () => {
     const { isCurrentUserMessage, isMemberOfGame, gameMessage } = this.props;
     const canEdit = isCurrentUserMessage && this._editableMessage();
-    const canBookmark = !(isCurrentUserMessage) && this._editableMessage();
 
     if (isMemberOfGame) {
       return (
         <React.Fragment>
-          {canEdit && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
-          <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
+          {canEdit && <Button size="tiny" compact onClick={this._handleEdit}><Icon name='edit outline' />Edit</Button>}
+          <Button size="tiny" compact onClick={this._handleQuote}><Icon name='quote left' />Quote</Button>
 
-          { canBookmark && (
-            <React.Fragment>
-              <span className="divider"/>
-
-              <SetGameMessageProgressButton
-                gameMessage={gameMessage}
-              />
-            </React.Fragment>
-          ) }
-
+          <span className="divider" />
+          <SetGameMessageProgressButton gameMessage={gameMessage} />
         </React.Fragment>
       );
     }
@@ -450,11 +441,10 @@ function SetGameMessageProgressButton(props) {
         return showProgressButtons && (
           <Mutation mutation={setGameMessageProgressMutation}>
             {(setGameMessageProgress, { loading }) => (
-              <Button animated compact size="tiny" loading={loading}
+              <Button compact size="tiny" loading={loading}
                 onClick={() => setGameMessageProgress({ variables: { gamePlayerId, gameMessageId } })}
               >
-                <Button.Content visible>Mark Read</Button.Content>
-                <Button.Content hidden><Icon name='bookmark outline' /></Button.Content>
+                <Icon name='check' />Mark Read
               </Button>
             )}
           </Mutation>
@@ -470,16 +460,16 @@ function GameMessageReadProgressIndicator(props) {
   return (
     <Consumer>
       {({ gamePlayers }) => {
-        const bookmarkGamePlayers = _.filter(gamePlayers, { progressGameMessageId: gameMessageId.toString() });
+        const gamePlayersProgress = _.filter(gamePlayers, { progressGameMessageId: gameMessageId.toString() });
 
-        return _.map(bookmarkGamePlayers, (bookmarkedGamePlayer) => (
-          <div className="bookmark" key={`progress-book-${bookmarkedGamePlayer.id}`}>
+        return _.map(gamePlayersProgress, (gamePlayer) => (
+          <div className="progressMarker" key={`progress-marker-${gamePlayer.id}`}>
             <Divider horizontal section>
-              <Icon name='bookmark' />
+              <Icon circular inverted name='check' />&nbsp;
               {
-                bookmarkedGamePlayer.character
-                  ? bookmarkedGamePlayer.character.name
-                  : bookmarkedGamePlayer.user.name
+                gamePlayer.character
+                  ? gamePlayer.character.name
+                  : '(GM) ' + gamePlayer.user.name
               }
             </Divider>
           </div>
