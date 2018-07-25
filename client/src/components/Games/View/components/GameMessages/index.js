@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { graphql, Query, Mutation } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Divider, Header, Button, Icon, Grid, Segment, Message } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Icon, Message, Segment } from 'semantic-ui-react';
 
 import InlineItemsLoader from 'components/shared/InlineItemsLoader';
 import RichEditor from 'components/shared/RichEditor';
