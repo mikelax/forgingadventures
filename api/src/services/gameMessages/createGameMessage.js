@@ -54,14 +54,14 @@ function startTransaction() {
 
 function getGame() {
   return Game
-    .query()
+    .query(this.trx)
     .findById(this.gameId)
     .then(game => (this.game = game));
 }
 
 function checkIfUserIsInGame() {
   return GamePlayer
-    .query()
+    .query(this.trx)
     .count('id')
     .where({
       gameId: this.gameId,

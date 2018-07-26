@@ -8,19 +8,26 @@ import { graphql } from 'react-apollo';
 import GameHeader from './GameHeader';
 import CreateMessage from './components/GameMessages/CreateMessage';
 import GameMessages from './components/GameMessages';
-import { gameQuery, myGamePlayerQuery } from '../queries';
+import { gameQuery, myGamePlayerQuery, gamePlayersQuery } from '../queries';
 
 import ApolloLoader from 'components/shared/ApolloLoader';
+
+import { Provider } from './ViewGameMessagesContext';
 
 function ViewGameMessages(props) {
   const { data: { game } } = props;
   const myGamePlayer = _.get(props, 'myGamePlayerQuery.myGamePlayer');
+  const gamePlayers = _.get(props, 'gamePlayersQuery.gamePlayers');
 
   return (
     <React.Fragment>
       <GameHeader game={game} />
 
-      <GameMessages gameId={game.id}/>
+      <Provider
+        value={{ gamePlayers, myGamePlayer }}
+      >
+        <GameMessages gameId={game.id}/>
+      </Provider>
 
       <Segment>
         <EditorBlock myGamePlayer={myGamePlayer} game={game}/>
@@ -36,6 +43,10 @@ export default compose(
   graphql(myGamePlayerQuery, {
     name: 'myGamePlayerQuery',
     options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id } })
+  }),
+  graphql(gamePlayersQuery, {
+    name: 'gamePlayersQuery',
+    options: ( { match: { params: { id } } } ) => ({ variables: { gameId: id, status: ['accepted', 'game-master'] } })
   }),
   ApolloLoader,
   pure,

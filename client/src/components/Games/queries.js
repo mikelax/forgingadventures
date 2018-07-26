@@ -100,6 +100,7 @@ export const gamePlayerFields = `
   fragment gamePlayerFields on GamePlayer {
     id
     status
+    progressGameMessageId
     user {
       id
       name
@@ -134,6 +135,15 @@ export const createGamePlayerMutation = gql`
 export const updateGamePlayerMutation = gql`
   mutation updateGamePlayer($id: ID!, $input: UpdateGamePlayerInput) {
     updateGamePlayer(id: $id, input: $input) {
+      ...gamePlayerFields
+    }
+  }
+  ${gamePlayerFields}
+`;
+
+export const setGameMessageProgressMutation = gql`
+  mutation setGameMessageProgress($gamePlayerId: ID!, $gameMessageId: ID!) {
+    setGameMessageProgress(gamePlayerId: $gamePlayerId, gameMessageId: $gameMessageId) {
       ...gamePlayerFields
     }
   }

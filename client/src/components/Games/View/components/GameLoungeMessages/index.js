@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
-import { Button, Header, Grid, Segment, Message } from 'semantic-ui-react';
+import { Button, Grid, Header, Icon, Message, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 import RichEditor from 'components/shared/RichEditor';
@@ -208,8 +208,8 @@ class GameLoungeMessageContainer extends Component {
     if (canPost) {
       return (
         <React.Fragment>
-          {canEdit && !(meta) && <Button size="tiny" compact={true} onClick={this._handleEdit}>Edit</Button>}
-          <Button size="tiny" compact={true} onClick={this._handleQuote}>Quote</Button>
+          {canEdit && !(meta) && <Button size="tiny" compact={true} onClick={this._handleEdit}><Icon name='edit outline' />Edit</Button>}
+          <Button size="tiny" compact={true} onClick={this._handleQuote}><Icon name='quote left' />Quote</Button>
         </React.Fragment>
       );
     }
