@@ -34,18 +34,28 @@ class CreateGame extends Component {
     const { createGame } = this.props;
 
     return createGame({
-        variables: {
-          input: payload
-        },
-        refetchQueries: [{
+      variables: {
+        input: payload
+      },
+      update: (store, { data: { createGame } }) => {
+        // Read the data from our cache for this query.
+        // the variables have to match in order for the new game to display
+        const { games } = store.readQuery({
           query: gamesQuery,
-          variables: { offset: 0 }
-        }]
-      })
+          variables: { offset: 0, searchOptions: { textSearch: '', labelId: '0', gameSettings: {} } }
+        });
+
+        return store.writeQuery({
+          query: gamesQuery,
+          data: { games: [...games, createGame] },
+          variables: { offset: 0, searchOptions: { textSearch: '', labelId: '0', gameSettings: {} } }
+        });
+      }
+    })
       .then(() => this.props.history.replace('/games'));
   };
-};
+}
 
 export default compose(
-    graphql(createGameMutation, { name: 'createGame' })
-  )(CreateGame);
+  graphql(createGameMutation, { name: 'createGame' })
+)(CreateGame);

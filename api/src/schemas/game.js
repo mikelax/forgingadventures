@@ -20,9 +20,9 @@ export const gameTypeDefs = `
   }
   
   extend type Mutation {
-    createGame(input: CreateGameInput): Game
-    updateGame(id: ID!, input: UpdateGameInput): Game
-    updateGameStatus(id: ID!, gameStatus: Int): Game
+    createGame(input: CreateGameInput): Game!
+    updateGame(id: ID!, input: UpdateGameInput): Game!
+    updateGameStatus(id: ID!, gameStatus: Int): Game!
   }
 
   type GameSetting {
@@ -139,7 +139,8 @@ export const gameResolvers = {
                 },
                 overview: sanitiseHtml(input.overview)
               }))
-              .returning('*');
+              .returning('*')
+              .first();
           })
           .tap((gameResponse) => {
             const playerInput = {

@@ -79,7 +79,9 @@ export default connect(
 
 class ListGamesPure extends Component {
 
-  canPage = true;
+  state = {
+    canPage: true
+  };
 
   render() {
     const { data: { games, loading } } = this.props;
@@ -100,14 +102,15 @@ class ListGamesPure extends Component {
   }
 
   _loadMore = (inView) => {
-    const { games, fetchMore, data: { loading } } = this.props;
+    const { fetchMore, data: { games, loading } } = this.props;
+    const { canPage } = this.state;
     const gamesCount = _.get(games, 'length');
 
-    if (this.canPage && inView && !(loading) && gamesCount) {
+    if (canPage && inView && !(loading) && gamesCount) {
       fetchMore()
         .then(({ data: { games } }) => {
           if (_.isEmpty(games)) {
-            this.canPage = false;
+            this.setState({ canPage: false });
           }
         });
     }
