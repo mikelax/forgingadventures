@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
+import { connect } from 'react-redux';
 
 import { createGameMutation, gamesQuery } from '../queries';
 import GameDetailsForm from '../components/GameDetailsForm';
@@ -31,7 +32,7 @@ class CreateGame extends Component {
   };
 
   _onSave = (payload) => {
-    const { createGame } = this.props;
+    const { createGame, gamesSearch } = this.props;
 
     return createGame({
       variables: {
@@ -42,13 +43,13 @@ class CreateGame extends Component {
         // the variables have to match in order for the new game to display
         const { games } = store.readQuery({
           query: gamesQuery,
-          variables: { offset: 0, searchOptions: { textSearch: '', labelId: '0', gameSettings: {} } }
+          variables: { searchOptions: gamesSearch }
         });
 
         return store.writeQuery({
           query: gamesQuery,
           data: { games: [...games, createGame] },
-          variables: { offset: 0, searchOptions: { textSearch: '', labelId: '0', gameSettings: {} } }
+          variables: { searchOptions: gamesSearch }
         });
       }
     })
@@ -57,5 +58,6 @@ class CreateGame extends Component {
 }
 
 export default compose(
+  connect((state) => ({ gamesSearch: state.gamesSearch })),
   graphql(createGameMutation, { name: 'createGame' })
 )(CreateGame);
