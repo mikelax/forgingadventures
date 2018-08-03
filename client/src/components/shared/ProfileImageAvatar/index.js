@@ -18,9 +18,9 @@ const UserImageAvatar = (props) => {
   }
 };
 
-UserImageAvatar.PropTypes = {
+UserImageAvatar.propTypes = {
   user: PropTypes.object.isRequired,
-  size: PropTypes.number
+  size: PropTypes.string
 };
 
 const CharacterImageAvatar = (props) => {
@@ -34,7 +34,7 @@ const CharacterImageAvatar = (props) => {
   }
 };
 
-CharacterImageAvatar.PropTypes = {
+CharacterImageAvatar.propTypes = {
   character: PropTypes.object.isRequired,
   size: PropTypes.number
 };

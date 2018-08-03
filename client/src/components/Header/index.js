@@ -76,7 +76,6 @@ const LeftMenuItemsBase = ({ authorisation: { isAuthenticated } }) => {
   return (
     <React.Fragment>
       <Menu.Item as={NavLink} name="Home" exact to="/"/>
-      <Menu.Item as={NavLink} name="About" to="/about"/>
       {
         isAuthenticated && <Menu.Item as={NavLink} name="Profile" to="/profile"/>
       }

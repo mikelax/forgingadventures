@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Router, Route, Switch } from 'react-router-dom';
 
-import About from '../About';
 import AuthGuard from '../shared/AuthGuard';
 import Characters from '../Characters';
 import Header from '../Header';
@@ -52,7 +51,6 @@ class App extends Component {
           <div className="App">
             <Switch>
               <Route exact path="/" component={Home} />
-              <Route path="/about" component={About} />
               <Route path="/characters" component={AuthGuard(Characters)} />
               <Route path="/profile" component={AuthGuard(Profile)} />
               <Route path="/settings" component={AuthGuard(Settings)} />

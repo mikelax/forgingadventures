@@ -10,6 +10,7 @@ import { Button, Header, Menu, Popup, Icon, Table, Modal } from 'semantic-ui-rea
 import CharactersSelect from 'components/shared/CharactersSelect';
 import ApolloLoader from 'components/shared/ApolloLoader';
 import { UserImageAvatar, CharacterImageAvatar } from 'components/shared/ProfileImageAvatar';
+import TimezoneDiff from 'components/shared/TimezoneDiff';
 
 import {
   createGameLoungeMessageMutation,
@@ -57,7 +58,9 @@ class GamePlayers extends Component {
                     <UserImageAvatar user={gamePlayer.user}/>
                     <Header.Content>
                         {gamePlayer.user.name}
-                      <Header.Subheader>{gamePlayer.user.timezone}</Header.Subheader>
+                      <Header.Subheader>
+                        <TimezoneDiff timezone={gamePlayer.user.timezone}/>
+                      </Header.Subheader>
                     </Header.Content>
                   </Header>
                 </Table.Cell>
