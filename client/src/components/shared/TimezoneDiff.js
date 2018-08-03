@@ -10,8 +10,8 @@ export default function TimezoneDiff(props) {
     const tzTime = moment.tz.zone(timezone);
     const localTime = moment.tz.zone(moment.tz.guess());
 
-    const diff = (tzTime.utcOffset(now) - localTime.utcOffset(now)) / 60;
-    const sign = diff < 0 ? '-' : '+';
+    const diff = (localTime.utcOffset(now) - tzTime.utcOffset(now)) / 60;
+    const sign = diff < 0 ? '' : '+';
 
     return (diff !== 0) && (
       <span title={now.tz(timezone).format('h:m a')}>
