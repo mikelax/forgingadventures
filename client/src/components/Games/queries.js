@@ -164,10 +164,10 @@ export const gameQuery = gql`
   ${gameFields}
 `;
 
-
+// for @connection see: https://www.apollographql.com/docs/react/features/pagination.html#connection-directive
 export const gamesQuery = gql`
   query games($offset: Int, $searchOptions: SearchOptions) {
-    games(offset: $offset, searchOptions: $searchOptions) {
+    games(offset: $offset, searchOptions: $searchOptions) @connection(key: "games", filter: ["searchOptions"]) {
       ...gameFields
     }
   }

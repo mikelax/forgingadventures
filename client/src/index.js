@@ -19,7 +19,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import App from './components/App/App';
 import reducers from './reducers';
 import { getAuthorizationHeader, getAccessToken, isAuthenticated } from './services/login';
-import registerServiceWorker from './registerServiceWorker';
+//import registerServiceWorker from './registerServiceWorker';
 
 // import third party component styles
 import 'semantic-ui-css/semantic.min.css';
@@ -76,4 +76,4 @@ ReactDOM.render(
 );
 
 
-registerServiceWorker();
+//registerServiceWorker();

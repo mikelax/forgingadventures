@@ -6,7 +6,7 @@ import Game from 'models/game';
 
 export default class {
   constructor(options) {
-    this.perPage = 10;
+    this.perPage = 9;
 
     this.offset = options.offset || 0;
     this.searchOptions = options.searchOptions || {};
