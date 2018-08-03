@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
-import { Radio } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { Radio } from 'semantic-ui-react';
 
-export default class extends Component {
+export default class extends React.Component {
   static contextTypes = {
     formik: PropTypes.object
   };

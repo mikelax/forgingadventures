@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import Select from 'react-select';
 
 import 'react-select/dist/react-select.css';
 import timezones from './assets/timezones.json';
 
-export default class TimezoneSelect extends Component {
+export default class TimezoneSelect extends React.Component {
 
   static propTypes = {
     name: PropTypes.string.isRequired,

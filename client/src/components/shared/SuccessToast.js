@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { Message, TransitionablePortal } from 'semantic-ui-react';
 
-export default class SuccessToast extends Component {
+export default class SuccessToast extends React.Component {
 
   static propTypes = {
     open: PropTypes.bool,

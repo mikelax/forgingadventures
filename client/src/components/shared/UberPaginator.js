@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { Query } from 'react-apollo';
 import { Pagination } from 'semantic-ui-react';
 import { withRouter } from 'react-router';
@@ -8,7 +8,7 @@ import queryString from 'query-string';
 import { compose } from 'recompose';
 
 
-class UberPaginator extends Component {
+class UberPaginator extends React.Component {
 
   static propTypes = {
     summaryQuery: PropTypes.shape({
@@ -94,4 +94,3 @@ class UberPaginator extends Component {
 export default compose(
   withRouter,
 )(UberPaginator);
-

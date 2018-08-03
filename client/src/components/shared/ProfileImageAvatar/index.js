@@ -1,9 +1,10 @@
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Image } from 'semantic-ui-react';
 
 
-export function UserImageAvatar(props) {
+const UserImageAvatar = (props) => {
   const { user: { profileImage }, size } = props;
   const publicId = _.get(profileImage, 'publicId');
   const url = _.get(profileImage, 'url');
@@ -15,10 +16,14 @@ export function UserImageAvatar(props) {
   } else {
     return <NoProfileIcon size={size} />;
   }
+};
 
-}
+UserImageAvatar.PropTypes = {
+  user: PropTypes.object.isRequired,
+  size: PropTypes.number
+};
 
-export function CharacterImageAvatar(props) {
+const CharacterImageAvatar = (props) => {
   const { character: { profileImage }, size } = props;
   const publicId = _.get(profileImage, 'publicId');
 
@@ -27,7 +32,12 @@ export function CharacterImageAvatar(props) {
   } else {
     return <NoAvatarIcon size={size} />;
   }
-}
+};
+
+CharacterImageAvatar.PropTypes = {
+  character: PropTypes.object.isRequired,
+  size: PropTypes.number
+};
 
 // private
 
@@ -70,3 +80,5 @@ function NoProfileIcon(props) {
     <CloudinaryImageAvatar publicId={publicId} size={size} />
   );
 }
+
+export { UserImageAvatar, CharacterImageAvatar };

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import Select from 'react-select';
@@ -10,9 +10,10 @@ import { Form, Image, Item, Label, Message } from 'semantic-ui-react';
 import { availableCharactersQuery } from 'components/Characters/queries';
 import { getFullImageUrl } from 'services/image';
 
-class CharactersSelect extends Component {
+class CharactersSelect extends React.Component {
 
   static propTypes = {
+    data: PropTypes.object.isRequired,
     value: PropTypes.PropTypes.string,
     onChange: PropTypes.func.isRequired
   };

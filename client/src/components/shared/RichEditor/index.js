@@ -1,13 +1,13 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 
 import { uploadImage } from 'services/image';
 
 import './assets/RichEditor.styl';
 
-export default class RichTextDisplay extends Component {
+export default class RichTextDisplay extends React.Component {
 
   static propTypes = {
     customButtons: PropTypes.array,
@@ -96,7 +96,7 @@ function RenderMessage({ message }) {
   );
 }
 
-class RichTextDisplayEditor extends Component {
+class RichTextDisplayEditor extends React.Component {
 
   static propTypes = {
     message: PropTypes.string,
