@@ -1,7 +1,7 @@
 // @flow
 
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Router, Route, Switch } from 'react-router-dom';
@@ -22,11 +22,12 @@ import { getMyDetails } from '../../actions/me';
 
 import './App.styl';
 
-class App extends Component {
+class App extends React.Component {
 
   static propTypes = {
     authFailure: PropTypes.func.isRequired,
-    authSuccess: PropTypes.func.isRequired
+    authSuccess: PropTypes.func.isRequired,
+    getMyDetails: PropTypes.func.isRequired
   };
 
   componentDidMount() {

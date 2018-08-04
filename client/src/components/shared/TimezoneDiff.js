@@ -13,9 +13,9 @@ export default function TimezoneDiff(props) {
     const diff = (localTime.utcOffset(now) - tzTime.utcOffset(now)) / 60;
     const sign = diff < 0 ? '' : '+';
 
-    return (diff !== 0) && (
+    return (
       <span title={now.tz(timezone).format('h:m a')}>
-        {`${sign}${diff} hours`}
+        {timezone} {`(${sign}${diff} hrs from you)`}
       </span>
     );
   } else {

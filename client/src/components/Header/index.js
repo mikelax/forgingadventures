@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Container, Dropdown, Icon, Image, Menu, Responsive } from 'semantic-ui-react';
@@ -28,7 +28,7 @@ const NavBarDesktop = () => (
   )
 ;
 
-class NavBarMobile extends Component {
+class NavBarMobile extends React.Component {
   state = {
     visible: false
   };
@@ -84,7 +84,7 @@ const LeftMenuItemsBase = ({ authorisation: { isAuthenticated } }) => {
   );
 };
 
-class RightMenuItemsBase extends Component {
+class RightMenuItemsBase extends React.Component {
   render() {
     const { authorisation: { isAuthenticated } } = this.props;
     const meLoading = _.get(this.props, 'me.loading');
@@ -154,7 +154,7 @@ const RightMenuItems = connect(
   mapStateToProps, null, null, { pure: false }
 )(RightMenuItemsBase);
 
-export default class Header extends Component {
+export default class Header extends React.Component {
   render() {
     return (
       <div className="navbar">

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Bluebird from 'bluebird';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -17,7 +17,7 @@ import { getProfile } from 'services/webAuth';
 import { axiosApi } from 'services/api';
 import { getMyDetails } from 'actions/me';
 
-class Settings extends Component {
+class Settings extends React.Component {
   state = {
     activeItem: 'profile',
     displaySuccess: false,
