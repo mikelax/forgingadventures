@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment-timezone';
 import PropTypes from 'prop-types';
+import { Popup } from 'semantic-ui-react';
 
 export default function TimezoneDiff(props) {
   const { timezone } = props;
@@ -14,9 +15,10 @@ export default function TimezoneDiff(props) {
     const sign = diff < 0 ? '' : '+';
 
     return (
-      <span title={now.tz(timezone).format('h:m a')}>
-        {timezone} {`(${sign}${diff} hrs from you)`}
-      </span>
+      <Popup
+        trigger={<span>{`${timezone} (${sign}${diff} hrs from you)`}</span>}
+        content={`Local time is: ${now.tz(timezone).format('h:m a')}`}
+      />
     );
   } else {
     return null;
