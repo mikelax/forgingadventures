@@ -1,12 +1,11 @@
 // @flow
 
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Router, Route, Switch } from 'react-router-dom';
 
-import About from '../About';
 import AuthGuard from '../shared/AuthGuard';
 import Characters from '../Characters';
 import Header from '../Header';
@@ -23,11 +22,12 @@ import { getMyDetails } from '../../actions/me';
 
 import './App.styl';
 
-class App extends Component {
+class App extends React.Component {
 
   static propTypes = {
     authFailure: PropTypes.func.isRequired,
-    authSuccess: PropTypes.func.isRequired
+    authSuccess: PropTypes.func.isRequired,
+    getMyDetails: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -52,7 +52,6 @@ class App extends Component {
           <div className="App">
             <Switch>
               <Route exact path="/" component={Home} />
-              <Route path="/about" component={About} />
               <Route path="/characters" component={AuthGuard(Characters)} />
               <Route path="/profile" component={AuthGuard(Profile)} />
               <Route path="/settings" component={AuthGuard(Settings)} />
