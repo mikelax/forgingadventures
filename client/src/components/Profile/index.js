@@ -1,7 +1,7 @@
 // @flow
 
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql, Query } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
@@ -22,7 +22,7 @@ import { meQuery } from 'queries/users';
 
 import './Profile.css';
 
-class Profile extends Component {
+class Profile extends React.Component {
 
   render() {
     const { match } = this.props;

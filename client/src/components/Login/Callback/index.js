@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Container, Header, Loader, Message } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 
 import { processLockCallback } from '../../../services/login';
 
-class Callback extends Component {
+class Callback extends React.Component {
 
   componentDidMount() {
     processLockCallback();

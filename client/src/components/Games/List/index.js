@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
@@ -15,7 +15,7 @@ import { gamesQuery } from '../queries';
 
 import { search, resetSearch } from '../../../actions/gamesSearch';
 
-class ListGamesView extends Component {
+class ListGamesView extends React.Component {
 
   componentDidMount() {
     const { resetSearch } = this.props;
@@ -77,7 +77,7 @@ export default connect(
 
 /// private
 
-class ListGamesPure extends Component {
+class ListGamesPure extends React.Component {
 
   state = {
     canPage: true

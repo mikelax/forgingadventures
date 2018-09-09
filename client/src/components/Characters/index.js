@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
@@ -7,20 +7,15 @@ import EditCharacter from './Edit';
 
 import AuthGuard from 'components/shared/AuthGuard';
 
-export default class Characters extends Component {
+const Characters = ({ match }) => (
+  <div className="characters">
+    <Container>
+      <Switch>
+        <Route exact path={`${match.url}/create`} component={AuthGuard(CreateCharacter)}/>
+        <Route exact path={`${match.url}/:id/edit`} component={AuthGuard(EditCharacter)}/>
+      </Switch>
+    </Container>
+  </div>
+);
 
-  render() {
-    const { match } = this.props;
-
-    return (
-      <div className="characters">
-        <Container>
-          <Switch>
-            <Route exact path={`${match.url}/create`} component={AuthGuard(CreateCharacter)}/>
-            <Route exact path={`${match.url}/:id/edit`} component={AuthGuard(EditCharacter)}/>
-          </Switch>
-        </Container>
-      </div>
-    );
-  }
-}
+export default Characters;

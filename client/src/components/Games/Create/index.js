@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
@@ -7,10 +7,9 @@ import { connect } from 'react-redux';
 import { createGameMutation, gamesQuery } from '../queries';
 import GameDetailsForm from '../components/GameDetailsForm';
 
-class CreateGame extends Component {
+class CreateGame extends React.Component {
 
   render() {
-
     return (
       <React.Fragment>
         <Helmet>

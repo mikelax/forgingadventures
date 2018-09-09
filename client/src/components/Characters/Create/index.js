@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
@@ -10,7 +10,7 @@ import CharacterDetailsForm from '../components/CharacterDetailsForm';
 
 import './CreateCharacter.styl';
 
-class CreateCharacter extends Component {
+class CreateCharacter extends React.Component {
 
   render() {
     return (

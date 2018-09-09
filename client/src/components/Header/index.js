@@ -11,7 +11,6 @@ import logo from './logo.png';
 import './Header.styl';
 
 
-
 const NavBarDesktop = () => (
     <Menu inverted>
       <Menu.Item>

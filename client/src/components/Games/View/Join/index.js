@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { Button, Form, Header } from 'semantic-ui-react';
@@ -11,7 +11,7 @@ import CharactersSelect from 'components/shared/CharactersSelect';
 import { gameQuery, createGamePlayerMutation, createGameLoungeMessageMutation } from '../../queries';
 
 
-const JoinGame = class JoinGame extends Component {
+const JoinGame = class JoinGame extends React.Component {
 
   state = {
     store: {

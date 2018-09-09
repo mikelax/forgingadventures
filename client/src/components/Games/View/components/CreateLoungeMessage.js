@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import { graphql } from 'react-apollo';
 import { Form, Button } from 'semantic-ui-react';
@@ -9,7 +9,7 @@ import RichEditor from 'components/shared/RichEditor';
 
 import { createGameLoungeMessageMutation } from '../../queries';
 
-class CreateGameLoungeMessage extends Component {
+class CreateGameLoungeMessage extends React.Component {
 
   state = {
     hasContent: false

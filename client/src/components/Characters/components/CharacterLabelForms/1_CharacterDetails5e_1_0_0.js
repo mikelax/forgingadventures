@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form as FormikForm, Formik } from 'formik';
 import { Form, Grid, Segment, Radio } from 'semantic-ui-react';
@@ -10,7 +10,7 @@ import FormFieldErrorMessage from 'components/shared/FormFieldErrorMessage';
 import RadioInput from 'components/shared/RadioInput';
 
 
-export default class CharacterDetails5e_1_0_0 extends Component {
+export default class CharacterDetails5e_1_0_0 extends React.Component {
 
   static propTypes = {
     renderActions: PropTypes.func.isRequired,
@@ -553,7 +553,7 @@ function characterToValues(character) {
   return character && validationSchema.noUnknown().cast(character);
 }
 
-class SkillField extends Component {
+class SkillField extends React.Component {
   static contextTypes = {
     formik: PropTypes.object
   };
@@ -613,7 +613,7 @@ class SkillField extends Component {
   };
 }
 
-class FormFieldAutoCalculator extends Component {
+class FormFieldAutoCalculator extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { setFieldValue, autoCalcSkillModifiers } = this.props;

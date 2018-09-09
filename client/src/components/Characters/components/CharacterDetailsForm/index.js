@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { Form as FormikForm, Formik } from 'formik';
 import { Form, Image, Segment } from 'semantic-ui-react';
 import Yup from 'yup';
@@ -16,7 +16,7 @@ import CharacterDetailsPathFinder_1_0_0 from '../CharacterLabelForms/2_Character
 
 import './CharacterDetailsForm.styl';
 
-class CharacterDetailsForm extends Component {
+class CharacterDetailsForm extends React.Component {
 
   static propTypes = {
     renderActions: PropTypes.func.isRequired,

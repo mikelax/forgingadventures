@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { showLogin } from '../../../services/login';
 
 import './Login.styl';
 
-class Login extends Component {
+class Login extends React.Component {
 
   static propTypes = {
     authorisation: PropTypes.shape({
