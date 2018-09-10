@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
@@ -12,7 +12,7 @@ import { gameStatus, gameStatuses } from '../utils/gameSettings';
 
 import OwnerGuard from 'components/shared/OwnerGuard';
 
-class EditGame extends Component {
+class EditGame extends React.Component {
   state = { activeItem: 'details' };
 
   render() {
@@ -128,7 +128,7 @@ class EditGame extends Component {
   }
 }
 
-class GameStatus extends Component {
+class GameStatus extends React.Component {
   render() {
     const { game, playerCount } = this.props;
     const countColor = playerCount >= game.gameSettings.minPlayers && playerCount <= game.gameSettings.maxPlayers ?

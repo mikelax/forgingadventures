@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { Helmet } from 'react-helmet';
 import { compose } from 'recompose';
@@ -11,7 +11,7 @@ import OwnerGuard from '../../shared/OwnerGuard';
 
 import './EditCharacter.styl';
 
-class EditCharacter extends Component {
+class EditCharacter extends React.Component {
   render() {
     const character = _.get(this.props, 'data.character');
     const name = _.get(this.props, 'data.character.name');

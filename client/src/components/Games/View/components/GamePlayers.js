@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
@@ -21,7 +21,7 @@ import {
 
 import './assets/GamePlayers.styl';
 
-class GamePlayers extends Component {
+class GamePlayers extends React.Component {
 
   static propTypes = {
     gameId: PropTypes.string.isRequired,
@@ -275,7 +275,7 @@ class GamePlayers extends Component {
   };
 }
 
-class SelectCharacterModal extends Component {
+class SelectCharacterModal extends React.Component {
 
   static propTypes = {
     open: PropTypes.bool,

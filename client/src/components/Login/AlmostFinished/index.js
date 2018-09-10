@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Bluebird from 'bluebird';
-import React, { Component } from 'react';
+import React from 'react';
 import { graphql } from 'react-apollo';
 import { Button, Container, Form, Message } from 'semantic-ui-react';
 import { Helmet } from 'react-helmet';
@@ -15,7 +15,7 @@ import { getMyDetails } from 'actions/me';
 import './AlmostFinished.styl';
 
 
-class AlmostFinished extends Component {
+class AlmostFinished extends React.Component {
   state = {
     // the form control state
     store: {
