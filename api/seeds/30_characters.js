@@ -131,7 +131,7 @@ exports.seed = function (knex, Promise) {
       };
 
       return knex('users').select('id')
-        .where('auth0UserId', 'google-oauth2|103015308867869178931')
+        .where('auth0UserId', 'oauth2|twitch|196175247')
         .then(userRs => userRs[0].id)
         .then(userId =>
           // Inserts seed entries
