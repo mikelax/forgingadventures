@@ -7,7 +7,7 @@ exports.seed = function(knex, Promise) {
           name: 'Mike'
         },
         {
-          auth0UserId: 'google-oauth2|103015308867869178931',  // nazar gmail
+          auth0UserId: 'oauth2|twitch|196175247',  // nazar twitch
           name: 'Nazar'
         }
       ]));
