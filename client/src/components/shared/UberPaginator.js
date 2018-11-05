@@ -4,7 +4,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Pagination } from 'semantic-ui-react';
 import { withRouter } from 'react-router';
-import queryString from 'query-string';
+import qs from 'qs';
 import { compose } from 'recompose';
 
 
@@ -43,7 +43,8 @@ class UberPaginator extends React.Component {
           const { search } = location;
 
           const totalPages = _.ceil(_.get(data, summaryQuery.dataKey, 0) / perPage);
-          const locationPage = queryString.parse(search);
+          const locationPage = qs.parse(search, { ignoreQueryPrefix: true });
+
           const activePage = _.get(locationPage, 'page', totalPages);
           const page = activePage ? activePage - 1 : activePage;
 
@@ -82,7 +83,7 @@ class UberPaginator extends React.Component {
 
   _handlePageChange = (refetch) => (e, { activePage }) => {
     const { history, match: { url } } = this.props;
-    const page = queryString.stringify({ page: activePage });
+    const page = qs.stringify({ page: activePage });
 
     history.push(`${url}?${page}`);
 
