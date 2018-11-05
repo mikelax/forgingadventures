@@ -13,9 +13,8 @@ COPY /config /usr/src/app/config
 COPY /public /usr/src/app/public
 COPY /scripts /usr/src/app/scripts
 COPY /src /usr/src/app/src
-
-# copy specific build target env files
-COPY .env.* .
+COPY .env.* /usr/src/app/
+COPY .eslint* /usr/src/app/
 
 RUN mkdir /usr/src/app/build
 
