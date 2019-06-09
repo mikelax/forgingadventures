@@ -178,7 +178,7 @@ class RichTextDisplayEditor extends React.Component {
       ],
       toolbar: toolbarTemplate(toolbarSwitches),
       content_css: [
-        `${window.PUBLIC_URL}/editor.css`
+        `${window.PUBLIC_URL}/tinymce/editor.css`
       ],
       style_formats,
       setup: (editor) => {
